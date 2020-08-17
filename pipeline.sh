@@ -10,7 +10,7 @@ LOG_FILE="pipeline.log"
 
 usage()
 {
-  echo "usage: pipeline.sh -i <arg> -o <arg> [-f]
+  echo "usage: pipeline.sh -i <arg> -o <arg> [-f] [-d] [-k]
 
 -i, --input  <arg>        Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        Output VCF file (.vcf or .vcf.gz).
