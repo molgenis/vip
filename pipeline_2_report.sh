@@ -20,7 +20,11 @@ fi
 module load vip-report
 module load Java
 
-java -Djava.io.tmpdir="${TMPDIR}" -jar ${EBROOTVIPMINREPORT}/vcf-report.jar -i ${REPORT_INPUT} -o ${REPORT_OUTPUT}
+if [ ! -z ${INPUT_PED} ]; then
+	java -Djava.io.tmpdir="${TMPDIR}" -jar ${EBROOTVIPMINREPORT}/vcf-report.jar -i ${REPORT_INPUT} -o ${REPORT_OUTPUT} -pd ${INPUT_PED}
+else
+	java -Djava.io.tmpdir="${TMPDIR}" -jar ${EBROOTVIPMINREPORT}/vcf-report.jar -i ${REPORT_INPUT} -o ${REPORT_OUTPUT}
+fi
 
 module unload Java
 module unload vip-report

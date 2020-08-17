@@ -2,6 +2,7 @@
 set -e
 
 INPUT=""
+INPUT_PED=""
 OUTPUT=""
 FORCE=""
 DEBUG=""
@@ -14,16 +15,17 @@ fi
 
 usage()
 {
-  echo "usage: pipeline.sh -i <arg> -o <arg> [-f] [-d] [-k]
+  echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-d] [-k]
 
 -i, --input  <arg>        Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        Output VCF file (.vcf or .vcf.gz).
+-p, --pedigree <arg>      Pedigree file (.ped).
 -f, --force               Override the output file if it already exists.
 -d, --debug               Enable debug logging.
 -k, --keep                Keep intermediate files."
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:fdk --long input:,output:,force,debug,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:fdk --long input:,output:,pedigree:,force,debug,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -40,6 +42,10 @@ do
         ;;
     -o | --output)
         OUTPUT="$2"
+        shift 2
+        ;;
+    -p | --pedigree)
+        INPUT_PED="$2"
         shift 2
         ;;
     -f | --force)
@@ -120,7 +126,15 @@ then
                 exit 2
         fi
 fi
-
+if [ ! -z ${INPUT_PED} ]
+then
+		if [ ! -f "${INPUT_PED}" ]
+		then
+			echo "${INPUT_PED} does not exist.
+			"
+			exit 2
+		fi
+fi
 if [ -f "${LOG_FILE}" ]
 then
         if [ "${FORCE}" == "1" ]
