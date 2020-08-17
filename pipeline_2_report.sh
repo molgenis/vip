@@ -20,7 +20,7 @@ fi
 module load vip-report
 module load Java
 
-java -jar ${EBROOTVIPMINREPORT}/vcf-report.jar -i ${REPORT_INPUT} -o ${REPORT_OUTPUT}
+java -Djava.io.tmpdir="${TMPDIR}" -jar ${EBROOTVIPMINREPORT}/vcf-report.jar -i ${REPORT_INPUT} -o ${REPORT_OUTPUT}
 
 module unload Java
 module unload vip-report

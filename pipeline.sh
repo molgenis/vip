@@ -8,6 +8,10 @@ DEBUG=""
 KEEP=""
 LOG_FILE="pipeline.log"
 
+if [ -z ${var+x} ]; then
+	TMPDIR=/tmp
+fi
+
 usage()
 {
   echo "usage: pipeline.sh -i <arg> -o <arg> [-f] [-d] [-k]
