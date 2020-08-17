@@ -3,6 +3,7 @@ set -e
 
 INPUT=""
 INPUT_PED=""
+INPUT_PHENO=""
 OUTPUT=""
 FORCE=""
 DEBUG=""
@@ -17,15 +18,25 @@ usage()
 {
   echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-d] [-k]
 
--i, --input  <arg>        Input VCF file (.vcf or .vcf.gz).
--o, --output <arg>        Output VCF file (.vcf or .vcf.gz).
--p, --pedigree <arg>      Pedigree file (.ped).
--f, --force               Override the output file if it already exists.
--d, --debug               Enable debug logging.
--k, --keep                Keep intermediate files."
+-i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
+-o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
+-p, --pedigree <arg>      optional: Pedigree file (.ped).
+-t, --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
+-f, --force               optional: Override the output file if it already exists.
+-d, --debug               optional: Enable debug logging.
+-k, --keep                optional: Keep intermediate files.
+
+examples:
+  pipeline.sh -i in.vcf -o out.vcf
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123;HPO:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123,sample1/HPO:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -d -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:fdk --long input:,output:,pedigree:,force,debug,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:t:fdk --long input:,output:,pedigree:,phenotypes:,force,debug,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -46,6 +57,10 @@ do
         ;;
     -p | --pedigree)
         INPUT_PED="$2"
+        shift 2
+        ;;
+    -t | --phenotypes)
+        INPUT_PHENO="$2"
         shift 2
         ;;
     -f | --force)
