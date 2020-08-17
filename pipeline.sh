@@ -8,7 +8,7 @@ DEBUG=""
 KEEP=""
 LOG_FILE="pipeline.log"
 
-if [ -z ${var+x} ]; then
+if [ -z ${TMPDIR+x} ]; then
 	TMPDIR=/tmp
 fi
 
