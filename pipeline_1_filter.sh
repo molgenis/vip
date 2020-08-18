@@ -37,6 +37,6 @@ module load GATK
 gatk VariantFiltration \
    -V "${GATK_INPUT}" \
    -O "${GATK_OUTPUT}" \
-   --filter-expression "DP > 25" \
-   --filter-name "DP"
+   --filter-expression "CAP > 0.9" \
+   --filter-name "CAP"
 module unload GATK
