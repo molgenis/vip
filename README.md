@@ -1,5 +1,8 @@
 # Variant Interpretation Pipeline
 
+## Installation
+The [capice2vcf jar](https://github.com/molgenis/capice) must be present in the root directory of the pipeline.
+
 ## Usage
 ```
 usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-d] [-k]
