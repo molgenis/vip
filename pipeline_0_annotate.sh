@@ -60,7 +60,7 @@ vep \
 --hgvs \
 --no_escape \
 --numbers \
---fork 4
+--fork ${PARALLEL_THREADS}
 
 module unload VEP
 
@@ -109,7 +109,7 @@ fi
 module load CADD
 # strip headers from input vcf for cadd
 gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
-CADD.sh -a -g GRCh37 -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
+CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
 module unload CADD
 
 module load CAPICE
@@ -117,10 +117,10 @@ python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 --input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
 --model_path ${EBROOTCAPICE}/CAPICE_model/xgb_booster.pickle.dat \
 --prediction_savepath ${CAPICE_OUTPUT} \
---log_path ${CAPICE_OUTPUT_LOG} &> ${CAPICE_OUTPUT_LOG}
+--log_path ${CAPICE_OUTPUT_LOG}
 
 module load Java
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -Xmx1g -jar capice2vcf.jar -i ${CAPICE_OUTPUT} -o ${CAPICE_OUTPUT_VCF}  &> ${CAPICE_OUTPUT_LOG}
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -Xmx1g -jar capice2vcf.jar -i ${CAPICE_OUTPUT} -o ${CAPICE_OUTPUT_VCF}
 module unload Java
 
 #VcfAnno
@@ -143,24 +143,13 @@ then
                 exit 2
         fi
 fi
-if [ -f "$VCFANNO_OUTPUT_LOG" ]
-then
-        if [ "$FORCE" == "1" ]
-        then
-                rm "$VCFANNO_OUTPUT_LOG"
-        else
-                echo "$VCFANNO_OUTPUT_LOG already exists, use -f to overwrite.
-                "
-                exit 2
-        fi
-fi
 
 module load vcfanno
 module load HTSlib
 #inject location of the capice2vcf tool in the vcfAnno config.
 CAPICE_OUTPUT_fixed="${CAPICE_OUTPUT_VCF/\.\//}"
 sed "s|OUTPUT_DIR|${CAPICE_OUTPUT_fixed}|g" conf.template > ${VCFANNO_OUTPUT_DIR}/conf.toml
-vcfanno ${VCFANNO_OUTPUT_DIR}/conf.toml ${VCFANNO_INPUT} 2> ${VCFANNO_OUTPUT_LOG} | bgzip > ${VCFANNO_OUTPUT}
+vcfanno -p ${PARALLEL_THREADS} ${VCFANNO_OUTPUT_DIR}/conf.toml ${VCFANNO_INPUT} | bgzip > ${VCFANNO_OUTPUT}
 module unload vcfanno
 module unload HTSlib
 

@@ -9,6 +9,8 @@ FORCE=""
 DEBUG=""
 KEEP=""
 LOG_FILE="pipeline.log"
+ASSEMBLY=GRCh37
+PARALLEL_THREADS=4
 
 if [ -z ${TMPDIR+x} ]; then
 	TMPDIR=/tmp
