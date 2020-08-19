@@ -42,6 +42,7 @@ vep \
 --no_intergenic \
 --af_gnomad --pubmed --gene_phenotype \
 --hgvs \
+--shift_3prime 1 \
 --no_escape \
 --numbers \
 --fork 4
