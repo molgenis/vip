@@ -6,7 +6,6 @@ INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
 FORCE=""
-DEBUG=""
 KEEP=""
 LOG_FILE="pipeline.log"
 ASSEMBLY=GRCh37
@@ -18,14 +17,13 @@ fi
 
 usage()
 {
-  echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-d] [-k]
+  echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-k]
 
 -i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
 -p, --pedigree <arg>      optional: Pedigree file (.ped).
 -t, --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -f, --force               optional: Override the output file if it already exists.
--d, --debug               optional: Enable debug logging.
 -k, --keep                optional: Keep intermediate files.
 
 examples:
@@ -35,10 +33,10 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123;HPO:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123,sample1/HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -d -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:t:fdk --long input:,output:,pedigree:,phenotypes:,force,debug,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:t:fk --long input:,output:,pedigree:,phenotypes:,force,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -67,10 +65,6 @@ do
         ;;
     -f | --force)
         FORCE=1
-        shift
-        ;;
-    -d | --debug)
-        DEBUG=1
         shift
         ;;
     -k | --keep)
@@ -105,10 +99,6 @@ fi
 if [ -z ${FORCE} ]
 then
 	FORCE=0
-fi
-if [ -z ${DEBUG} ]
-then
-        DEBUG=0
 fi
 if [ -z ${KEEP} ]
 then
@@ -170,12 +160,6 @@ OUTPUT_FILE=$(basename "${OUTPUT}")
 
 LOG="${OUTPUT_DIR}"/"${LOG_FILE}"
 echo logging to "${LOG}"
-
-if [ "$DEBUG" == "1" ]; then
-        exec > >(tee "${LOG}") 2>&1
-else
-	exec 1>"${LOG}" 2>&1
-fi
 
 echo "step 1/3 annotating ..."
 START_TIME=$SECONDS
