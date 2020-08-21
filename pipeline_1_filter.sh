@@ -1,42 +1,27 @@
 #!/bin/bash
-GATK_INPUT="${VCFANNO_OUTPUT}"
-GATK_INPUT_INDEX="${GATK_INPUT}".tbi
-GATK_OUTPUT_DIR="${OUTPUT_DIR}"/step1_filter
-GATK_OUTPUT="${GATK_OUTPUT_DIR}"/"${OUTPUT_FILE}"
+FILTER_INPUT="${VCFANNO_OUTPUT}"
+FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step1_filter
+FILTER_OUTPUT="${FILTER_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
-mkdir -p "${GATK_OUTPUT_DIR}"
+mkdir -p "${FILTER_OUTPUT_DIR}"
 
-if [ -f "${GATK_INPUT_INDEX}" ]
+if [ -f "${FILTER_OUTPUT}" ]
 then
         if [ "$FORCE" == "1" ]
         then
-                rm "${GATK_INPUT_INDEX}"
+                rm "${FILTER_OUTPUT}"
         else
-                echo "${GATK_INPUT_INDEX} already exists, use -f to overwrite.
-                "
-                exit 2
-        fi
-fi
-if [ -f "${GATK_OUTPUT}" ]
-then
-        if [ "$FORCE" == "1" ]
-        then
-                rm "${GATK_OUTPUT}"
-        else
-                echo "${GATK_OUTPUT} already exists, use -f to overwrite.
+                echo "${FILTER_OUTPUT} already exists, use -f to overwrite.
                 "
                 exit 2
         fi
 fi
 
+module load BCFtools
 module load HTSlib
-tabix "${GATK_INPUT}"
-module unload HTSlib
 
-module load GATK
-gatk VariantFiltration \
-   -V "${GATK_INPUT}" \
-   -O "${GATK_OUTPUT}" \
-   --filter-expression "CAP > 0.9" \
-   --filter-name "CAP"
-module unload GATK
+bcftools filter -i'CAP[*]>0.9' "${FILTER_INPUT}" | \
+bgzip -c > "${FILTER_OUTPUT}"
+
+module unload HTSlib
+module unload BCFtools
