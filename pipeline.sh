@@ -154,9 +154,27 @@ then
         fi
 fi
 
-OUTPUT_DIR=$(dirname "${OUTPUT}")
-mkdir -p "${OUTPUT_DIR}"
 OUTPUT_FILE=$(basename "${OUTPUT}")
+if [[ "${OUTPUT}" == *.vcf.gz ]]
+  then
+      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
+  else
+      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf)
+fi
+OUTPUT_DIR=$(dirname "${OUTPUT}")/${OUTPUT_FILENAME}_pipeline_out
+
+if [ -d "$OUTPUT_DIR" ]
+then
+        if [ "$FORCE" == "1" ]
+        then
+                rm -R "$OUTPUT_DIR"
+        else
+                echo "$OUTPUT_DIR already exists, use -f to overwrite."
+                exit 2
+        fi
+fi
+
+mkdir -p "${OUTPUT_DIR}"
 
 LOG="${OUTPUT_DIR}"/"${LOG_FILE}"
 echo logging to "${LOG}"
@@ -174,10 +192,10 @@ ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/3 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 if [ "$KEEP" == "0" ]; then
-	rm -rf "${VEP_OUTPUT_DIR}"
+  rm -rf "${ANNOTATE_OUTPUT_DIR}"
 fi
 
-cp "${GATK_OUTPUT}" "${OUTPUT}"
+cp "${FILTER_OUTPUT}" "${OUTPUT}"
 
 echo "step 3/3 generating report ..."
 START_TIME=$SECONDS
@@ -186,13 +204,14 @@ ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/3 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 if [ "$KEEP" == "0" ]; then
-        rm -rf "${GATK_OUTPUT_DIR}"
+        rm -rf "${FILTER_OUTPUT_DIR}"
 fi
 
 cp "${REPORT_OUTPUT}" "${OUTPUT}".html
 
+# done, so we can clean up the entire output dir
 if [ "$KEEP" == "0" ]; then
-        rm -rf "${REPORT_OUTPUT_DIR}"
+        rm -rf "${OUTPUT_DIR}"
 fi
 
 echo "done"
