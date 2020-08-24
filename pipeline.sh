@@ -48,19 +48,19 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT="$2"
+        INPUT=$(realpath "$2")
         shift 2
         ;;
     -o | --output)
-        OUTPUT="$2"
+        OUTPUT=$(realpath "$2")
         shift 2
         ;;
     -p | --pedigree)
-        INPUT_PED="$2"
+        INPUT_PED=$(realpath "$2")
         shift 2
         ;;
     -t | --phenotypes)
-        INPUT_PHENO="$2"
+        INPUT_PHENO=$(realpath "$2")
         shift 2
         ;;
     -f | --force)
