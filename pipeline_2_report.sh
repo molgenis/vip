@@ -5,8 +5,7 @@ REPORT_OUTPUT="${REPORT_OUTPUT_DIR}"/"${OUTPUT_FILE}".html
 
 mkdir -p "${REPORT_OUTPUT_DIR}"
 
-module load vip-report
-module load Java
+module load vcf-report
 
 REPORT_ARGS="-i ${REPORT_INPUT} -o ${REPORT_OUTPUT}"
 if [ ! -z "${INPUT_PED}" ]; then
@@ -16,7 +15,6 @@ if [ ! -z "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=" -ph ${INPUT_PHENO}"
 fi
 
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVIPMINREPORT}/vcf-report.jar ${REPORT_ARGS}
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar ${REPORT_ARGS}
 
-module unload Java
-module unload vip-report
+module unload vcf-report
