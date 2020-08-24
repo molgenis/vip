@@ -5,7 +5,6 @@ VEP_INPUT="${INPUT}"
 VEP_OUTPUT_DIR="${ANNOTATE_OUTPUT_DIR}"/step0a_vep
 VEP_OUTPUT="${VEP_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 VEP_OUTPUT_STATS="${VEP_OUTPUT}"
-VEP_OUTPUT_ERRORS="${VEP_OUTPUT}.err"
 
 mkdir -p "${VEP_OUTPUT_DIR}"
 
@@ -14,7 +13,6 @@ module load VEP
 vep \
 --input_file ${VEP_INPUT} --format vcf \
 --output_file ${VEP_OUTPUT} --vcf --compress_output bgzip --force_overwrite \
---warning_file ${VEP_OUTPUT_ERRORS} \
 --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --offline --cache --dir_cache /apps/data/Ensembl/VEP/100 --fasta /apps/data/Ensembl/VEP/100/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz \
 --species homo_sapiens --assembly ${ASSEMBLY} \
@@ -39,11 +37,9 @@ if [[ "${OUTPUT_FILE}" == *vcf ]]
 then
     CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
     CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.vcf.gz}"
-    CAPICE_OUTPUT_LOG="${CAPICE_OUTPUT}.log"
 else
     CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
     CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-    CAPICE_OUTPUT_LOG="${CAPICE_OUTPUT/.tsv/.log}"
 fi
 
 mkdir -p "${CAPICE_OUTPUT_DIR}"
@@ -59,7 +55,6 @@ python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 --input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
 --model_path ${EBROOTCAPICE}/CAPICE_model/xgb_booster.pickle.dat \
 --prediction_savepath ${CAPICE_OUTPUT} \
---log_path ${CAPICE_OUTPUT_LOG}
 
 module load Java
 java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -Xmx1g -jar capice2vcf.jar -i ${CAPICE_OUTPUT} -o ${CAPICE_OUTPUT_VCF}
@@ -70,7 +65,6 @@ module unload Java
 VCFANNO_INPUT="${VEP_OUTPUT}"
 VCFANNO_OUTPUT_DIR="${ANNOTATE_OUTPUT_DIR}"/step0c_vcfAnno
 VCFANNO_OUTPUT="${VCFANNO_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-VCFANNO_OUTPUT_LOG="${VCFANNO_OUTPUT}.log"
 
 mkdir -p "${VCFANNO_OUTPUT_DIR}"
 

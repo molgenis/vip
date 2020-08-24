@@ -7,7 +7,6 @@ INPUT_PHENO=""
 OUTPUT=""
 FORCE=""
 KEEP=""
-LOG_FILE="pipeline.log"
 ASSEMBLY=GRCh37
 CPU_CORES=4
 
@@ -142,17 +141,6 @@ then
 			exit 2
 		fi
 fi
-if [ -f "${LOG_FILE}" ]
-then
-        if [ "${FORCE}" == "1" ]
-        then
-                rm "${LOG_FILE}"
-        else
-                echo "${LOG_FILE} already exists, use -f to overwrite.
-                "
-                exit 2
-        fi
-fi
 
 OUTPUT_FILE=$(basename "${OUTPUT}")
 if [[ "${OUTPUT}" == *.vcf.gz ]]
@@ -175,9 +163,6 @@ then
 fi
 
 mkdir -p "${OUTPUT_DIR}"
-
-LOG="${OUTPUT_DIR}"/"${LOG_FILE}"
-echo logging to "${LOG}"
 
 echo "step 1/3 annotating ..."
 START_TIME=$SECONDS
