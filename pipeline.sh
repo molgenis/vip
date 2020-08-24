@@ -8,6 +8,8 @@ OUTPUT=""
 FORCE=""
 KEEP=""
 LOG_FILE="pipeline.log"
+ASSEMBLY=GRCh37
+CPU_CORES=4
 
 if [ -z ${TMPDIR+x} ]; then
 	TMPDIR=/tmp
@@ -46,19 +48,19 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT="$2"
+        INPUT=$(realpath "$2")
         shift 2
         ;;
     -o | --output)
-        OUTPUT="$2"
+        OUTPUT=$(realpath "$2")
         shift 2
         ;;
     -p | --pedigree)
-        INPUT_PED="$2"
+        INPUT_PED=$(realpath "$2")
         shift 2
         ;;
     -t | --phenotypes)
-        INPUT_PHENO="$2"
+        INPUT_PHENO=$(realpath "$2")
         shift 2
         ;;
     -f | --force)
@@ -152,9 +154,27 @@ then
         fi
 fi
 
-OUTPUT_DIR=$(dirname "${OUTPUT}")
-mkdir -p "${OUTPUT_DIR}"
 OUTPUT_FILE=$(basename "${OUTPUT}")
+if [[ "${OUTPUT}" == *.vcf.gz ]]
+  then
+      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
+  else
+      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf)
+fi
+OUTPUT_DIR=$(dirname "${OUTPUT}")/${OUTPUT_FILENAME}_pipeline_out
+
+if [ -d "$OUTPUT_DIR" ]
+then
+        if [ "$FORCE" == "1" ]
+        then
+                rm -R "$OUTPUT_DIR"
+        else
+                echo "$OUTPUT_DIR already exists, use -f to overwrite."
+                exit 2
+        fi
+fi
+
+mkdir -p "${OUTPUT_DIR}"
 
 LOG="${OUTPUT_DIR}"/"${LOG_FILE}"
 echo logging to "${LOG}"
@@ -171,11 +191,8 @@ source ./pipeline_1_filter.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/3 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-if [ "$KEEP" == "0" ]; then
-	rm -rf "${VEP_OUTPUT_DIR}"
-fi
-
-cp "${GATK_OUTPUT}" "${OUTPUT}"
+mv "${FILTER_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${FILTER_OUTPUT}"
 
 echo "step 3/3 generating report ..."
 START_TIME=$SECONDS
@@ -183,14 +200,11 @@ source ./pipeline_2_report.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/3 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-if [ "$KEEP" == "0" ]; then
-        rm -rf "${GATK_OUTPUT_DIR}"
-fi
-
 cp "${REPORT_OUTPUT}" "${OUTPUT}".html
 
+# done, so we can clean up the entire output dir
 if [ "$KEEP" == "0" ]; then
-        rm -rf "${REPORT_OUTPUT_DIR}"
+        rm -rf "${OUTPUT_DIR}"
 fi
 
 echo "done"
