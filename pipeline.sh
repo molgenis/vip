@@ -191,10 +191,6 @@ source ./pipeline_1_filter.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/3 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-if [ "$KEEP" == "0" ]; then
-  rm -rf "${ANNOTATE_OUTPUT_DIR}"
-fi
-
 cp "${FILTER_OUTPUT}" "${OUTPUT}"
 
 echo "step 3/3 generating report ..."
@@ -202,10 +198,6 @@ START_TIME=$SECONDS
 source ./pipeline_2_report.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/3 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
-
-if [ "$KEEP" == "0" ]; then
-        rm -rf "${FILTER_OUTPUT_DIR}"
-fi
 
 cp "${REPORT_OUTPUT}" "${OUTPUT}".html
 
