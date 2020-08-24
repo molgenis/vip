@@ -9,7 +9,7 @@ FORCE=""
 KEEP=""
 LOG_FILE="pipeline.log"
 ASSEMBLY=GRCh37
-PARALLEL_THREADS=4
+CPU_CORES=4
 
 if [ -z ${TMPDIR+x} ]; then
 	TMPDIR=/tmp
@@ -191,7 +191,8 @@ source ./pipeline_1_filter.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/3 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-cp "${FILTER_OUTPUT}" "${OUTPUT}"
+mv "${FILTER_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${FILTER_OUTPUT}"
 
 echo "step 3/3 generating report ..."
 START_TIME=$SECONDS

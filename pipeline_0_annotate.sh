@@ -17,7 +17,7 @@ vep \
 --warning_file ${VEP_OUTPUT_ERRORS} \
 --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --offline --cache --dir_cache /apps/data/Ensembl/VEP/100 --fasta /apps/data/Ensembl/VEP/100/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz \
---species homo_sapiens --assembly GRCh37 \
+--species homo_sapiens --assembly ${ASSEMBLY} \
 --flag_pick_allele \
 --coding_only \
 --no_intergenic \
@@ -26,7 +26,7 @@ vep \
 --shift_3prime 1 \
 --no_escape \
 --numbers \
---fork ${PARALLEL_THREADS}
+--fork ${CPU_CORES}
 
 module unload VEP
 
@@ -35,7 +35,7 @@ module unload VEP
 CAPICE_INPUT="${INPUT}"
 CAPICE_OUTPUT_DIR="${ANNOTATE_OUTPUT_DIR}"/step0b_capice
 
-if [[ ${OUTPUT_FILE} == *vcf ]]
+if [[ "${OUTPUT_FILE}" == *vcf ]]
 then
     CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
     CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.vcf.gz}"
@@ -77,9 +77,9 @@ mkdir -p "${VCFANNO_OUTPUT_DIR}"
 module load vcfanno
 module load HTSlib
 #inject location of the capice2vcf tool in the vcfAnno config.
-CAPICE_OUTPUT_fixed="${CAPICE_OUTPUT_VCF/\.\//}"
-sed "s|OUTPUT_DIR|${CAPICE_OUTPUT_fixed}|g" conf.template > ${VCFANNO_OUTPUT_DIR}/conf.toml
-vcfanno -p ${PARALLEL_THREADS} ${VCFANNO_OUTPUT_DIR}/conf.toml ${VCFANNO_INPUT} | bgzip > ${VCFANNO_OUTPUT}
+CAPICE_OUTPUT_FIXED="${CAPICE_OUTPUT_VCF/\.\//}"
+sed "s|OUTPUT_DIR|${CAPICE_OUTPUT_FIXED}|g" conf.template > ${VCFANNO_OUTPUT_DIR}/conf.toml
+vcfanno -p ${CPU_CORES} ${VCFANNO_OUTPUT_DIR}/conf.toml ${VCFANNO_INPUT} | bgzip > ${VCFANNO_OUTPUT}
 module unload vcfanno
 module unload HTSlib
 

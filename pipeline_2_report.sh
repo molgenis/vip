@@ -16,7 +16,7 @@ if [ ! -z "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=" -ph ${INPUT_PHENO}"
 fi
 
-java -Djava.io.tmpdir="${TMPDIR}" -jar ${EBROOTVIPMINREPORT}/vcf-report.jar ${REPORT_ARGS}
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVIPMINREPORT}/vcf-report.jar ${REPORT_ARGS}
 
 module unload Java
 module unload vip-report
