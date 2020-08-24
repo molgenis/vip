@@ -57,13 +57,12 @@ module unload CADD
 module load CAPICE
 python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 --input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
---model_path ${EBROOTCAPICE}/CAPICE_model/xgb_booster.pickle.dat \
+--model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
 --prediction_savepath ${CAPICE_OUTPUT} \
 --log_path ${CAPICE_OUTPUT_LOG}
 
-module load Java
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -Xmx1g -jar capice2vcf.jar -i ${CAPICE_OUTPUT} -o ${CAPICE_OUTPUT_VCF}
-module unload Java
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -Xmx1g -jar ${EBROOTCAPICE}/capice2vcf.jar -i ${CAPICE_OUTPUT} -o ${CAPICE_OUTPUT_VCF}
+module unload CAPICE
 
 #VcfAnno
 
