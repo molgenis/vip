@@ -1,4 +1,14 @@
 #!/bin/bash
+#SBATCH --job-name=vip
+#SBATCH --output=vip.out
+#SBATCH --error=vip.err
+#SBATCH --time=05:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16gb
+#SBATCH --nodes=1
+#SBATCH --export=NONE
+#SBATCH --get-user-env=L60
+
 set -euo pipefail
 
 INPUT=""
