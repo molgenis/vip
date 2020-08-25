@@ -8,7 +8,7 @@ mkdir -p "${FILTER_OUTPUT_DIR}"
 module load BCFtools
 module load HTSlib
 
-bcftools filter -i'CAP[*]>0.9' "${FILTER_INPUT}" | \
+bcftools filter -e'CAP[*]<0.9' "${FILTER_INPUT}" | \
 bgzip -c > "${FILTER_OUTPUT}"
 
 module unload HTSlib
