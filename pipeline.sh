@@ -64,7 +64,7 @@ do
         shift 2
         ;;
     -o | --output)
-        OUTPUT=$(realpath "$2")
+        OUTPUT=$(realpath -s "$2")
         shift 2
         ;;
     -r | --reference)
@@ -76,7 +76,7 @@ do
         shift 2
         ;;
     -t | --phenotypes)
-        INPUT_PHENO=$(realpath "$2")
+        INPUT_PHENO="$2"
         shift 2
         ;;
     -f | --force)
