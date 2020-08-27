@@ -22,6 +22,8 @@ VEP_ARGS="\
 --shift_3prime 1 \
 --no_escape \
 --numbers \
+--dont_skip \
+--allow_non_variant \
 --fork ${CPU_CORES}"
 
 if [ ! -z ${INPUT_REF} ]; then
