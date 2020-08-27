@@ -16,9 +16,9 @@ examples:
   pipeline.sh -i in.vcf -o out.vcf
   pipeline.sh -i in.vcf -o out.vcf -r human_g1k_v37.fasta.gz
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123;HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123,sample1/HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -k
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HPO:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 -f -k
 ```
