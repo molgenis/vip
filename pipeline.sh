@@ -12,6 +12,7 @@
 set -euo pipefail
 
 INPUT=""
+INPUT_REF=""
 INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
@@ -28,24 +29,26 @@ usage()
 {
   echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-k]
 
--i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
--o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
--p, --pedigree <arg>      optional: Pedigree file (.ped).
--t, --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
--f, --force               optional: Override the output file if it already exists.
--k, --keep                optional: Keep intermediate files.
+-i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
+-o,  --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
+-r,  --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
+-p,  --pedigree <arg>      optional: Pedigree file (.ped).
+-t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
+-f,  --force               optional: Override the output file if it already exists.
+-k,  --keep                optional: Keep intermediate files.
 
 examples:
   pipeline.sh -i in.vcf -o out.vcf
+  pipeline.sh -i in.vcf -o out.vcf -r human_g1k_v37.fasta.gz
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123;HPO:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123,sample1/HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:p:t:fk --long input:,output:,pedigree:,phenotypes:,force,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -62,6 +65,10 @@ do
         ;;
     -o | --output)
         OUTPUT=$(realpath "$2")
+        shift 2
+        ;;
+    -r | --reference)
+        INPUT_REF=$(realpath "$2")
         shift 2
         ;;
     -p | --pedigree)
@@ -150,6 +157,15 @@ then
 			"
 			exit 2
 		fi
+fi
+if [ ! -z ${INPUT_REF} ]
+then
+                if [ ! -f "${INPUT_REF}" ]
+                then
+                        echo "${INPUT_REF} does not exist.
+                        "
+                        exit 2
+                fi
 fi
 
 OUTPUT_FILE=$(basename "${OUTPUT}")

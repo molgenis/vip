@@ -9,24 +9,28 @@ VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 mkdir -p "${VEP_OUTPUT_DIR}"
 
 module load VEP
-
-vep \
+VEP_ARGS="\
 --input_file ${VEP_INPUT} --format vcf \
 --output_file ${VEP_OUTPUT} --vcf --compress_output bgzip --force_overwrite \
 --stats_file ${VEP_OUTPUT_STATS} --stats_text \
---offline --cache --dir_cache /apps/data/Ensembl/VEP/100 --fasta /apps/data/Ensembl/VEP/100/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz \
+--offline --cache --dir_cache /apps/data/Ensembl/VEP/100 \
 --species homo_sapiens --assembly ${ASSEMBLY} \
 --flag_pick_allele \
 --coding_only \
 --no_intergenic \
 --af_gnomad --pubmed --gene_phenotype \
---hgvs \
 --shift_3prime 1 \
 --no_escape \
 --numbers \
 --dont_skip \
 --allow_non_variant \
---fork ${CPU_CORES}
+--fork ${CPU_CORES}"
+
+if [ ! -z ${INPUT_REF} ]; then
+	VEP_ARGS+=" --fasta ${INPUT_REF} --hgvs"
+fi
+
+vep ${VEP_ARGS}
 
 module unload VEP
 
