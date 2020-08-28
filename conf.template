@@ -1,4 +1,10 @@
 [[annotation]]
+file="/apps/data/VKGL/VKGL_public_consensus_jun2020_normalized.vcf.gz"
+fields = ["VKGL_CL"]
+ops=["self"]
+names=["VKGL"]
+
+[[annotation]]
 file="OUTPUT_DIR"
 fields = ["CAP"]
 ops=["self"]
