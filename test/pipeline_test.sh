@@ -6,7 +6,7 @@ ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.vcf.gz.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
-EXPECTED_NR_OF_HEADERS=49
+EXPECTED_NR_OF_HEADERS=50
 LOG='./test/output/test_output.log'
 
 sh ./pipeline.sh -i "${INPUT}" -o "${ACTUAL_VCF}.gz" -p "${PED}" -t "${HPO}" -f &> "${LOG}"
@@ -22,14 +22,13 @@ fi
 rm ${ACTUAL_VCF}
 gunzip ${ACTUAL_VCF}.gz
 
-cp ${ACTUAL_VCF} ${ACTUAL_VCF}.bak
-
 HEADERS_COUNT=$(grep '^##' ${ACTUAL_VCF} | wc -l)
 if [ ${EXPECTED_NR_OF_HEADERS} != ${HEADERS_COUNT} ]
 then
   echo -e "\e[31mNr of vcf headers test failed: expected: ${EXPECTED_NR_OF_HEADERS} got: ${HEADERS_COUNT} \e[39m"
+  FAILED=1
 else
-    echo -e "\e[32mNr of vcf headers test passed \e[39m"
+    echo -e "\e[32mNr of vcf headers test passed. \e[39m"
 fi
 
 #remove parts that differ per run or environment before comparing output.
@@ -46,15 +45,24 @@ then
   echo "---BEGIN diff---"
 	echo $VCF_DIFF
 	echo "---END diff---"
+	FAILED=1
 else
-    echo -e "\e[32mvcf file test passed \e[39m"
+    echo -e "\e[32mvcf file test passed. \e[39m"
 fi
 
 REPORT_DIFF=$(diff $ACTUAL_HTML $EXPECTED_HTML)
 if [ "$REPORT_DIFF" != "" ] 
 then
-    	echo -e "\e[31report file test failed, output file differs from expected,\n \e[39m"
-  echo "run 'diff ${ACTUAL_VCF} ${EXPECTED_VCF}' for more information."
+    	echo -e "\e[31report file test failed, output file differs from expected, \e[39m"
+  echo "run 'diff $ACTUAL_HTML $EXPECTED_HTML}' for more information."
+  FAILED=1
 else
     echo -e "\e[32mreport file test passed. \e[39m"
+fi
+
+if [ "${FAILED}" == 1 ]
+then
+  exit 1
+else
+  exit 0
 fi

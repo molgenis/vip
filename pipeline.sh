@@ -41,11 +41,11 @@ examples:
   pipeline.sh -i in.vcf -o out.vcf
   pipeline.sh -i in.vcf -o out.vcf -r human_g1k_v37.fasta.gz
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HPO:0000123;HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HPO:0000123,sample1/HPO:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HPO:0000123;HPO:0000234,sample1/HPO:0000345 -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 -f -k"
 }
 
 PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep -- "$@")
@@ -190,26 +190,32 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-echo "step 1/3 annotating ..."
+echo "step 1/4 preprocessing ..."
 START_TIME=$SECONDS
-source ./pipeline_0_annotate.sh
+source ./pipeline_0_preprocess.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 1/3 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-echo "step 2/3 filtering ..."
+echo "step 2/4 annotating ..."
 START_TIME=$SECONDS
-source ./pipeline_1_filter.sh
+source ./pipeline_1_annotate.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 2/3 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 2/4 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+
+echo "step 3/4 filtering ..."
+START_TIME=$SECONDS
+source ./pipeline_2_filter.sh
+ELAPSED_TIME=$(($SECONDS - $START_TIME))
+echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 mv "${FILTER_OUTPUT}" "${OUTPUT}"
 ln -s "${OUTPUT}" "${FILTER_OUTPUT}"
 
-echo "step 3/3 generating report ..."
+echo "step 4/4 generating report ..."
 START_TIME=$SECONDS
-source ./pipeline_2_report.sh
+source ./pipeline_3_report.sh
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 3/3 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 cp "${REPORT_OUTPUT}" "${OUTPUT}".html
 
