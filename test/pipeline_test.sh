@@ -19,7 +19,10 @@ else
   exit 1
 fi
 
-rm ${ACTUAL_VCF}
+if [ -f ${ACTUAL_VCF} ]
+then
+  rm ${ACTUAL_VCF}
+fi
 gunzip ${ACTUAL_VCF}.gz
 
 HEADERS_COUNT=$(grep '^##' ${ACTUAL_VCF} | wc -l)
