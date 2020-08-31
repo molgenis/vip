@@ -9,7 +9,7 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
 
-set -euo pipefail
+source utils/header.sh
 
 INPUT=""
 INPUT_REF=""
@@ -21,10 +21,6 @@ FORCE=""
 KEEP=""
 ASSEMBLY=GRCh37
 CPU_CORES=4
-
-if [ -z ${TMPDIR+x} ]; then
-	TMPDIR=/tmp
-fi
 
 usage()
 {
@@ -68,7 +64,11 @@ do
         shift 2
         ;;
     -o | --output)
-        OUTPUT=$(realpath -s "$2")
+        OUTPUT_ARG="$2"
+        OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+        OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+        OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+        OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
         shift 2
         ;;
     -r | --reference)
@@ -176,14 +176,13 @@ then
                 fi
 fi
 
-OUTPUT_FILE=$(basename "${OUTPUT}")
 if [[ "${OUTPUT}" == *.vcf.gz ]]
   then
       OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
   else
       OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf)
 fi
-OUTPUT_DIR=$(dirname "${OUTPUT}")/${OUTPUT_FILENAME}_pipeline_out
+OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/${OUTPUT_FILENAME}_pipeline_out
 
 if [ -d "$OUTPUT_DIR" ]
 then
@@ -200,19 +199,66 @@ mkdir -p "${OUTPUT_DIR}"
 
 echo "step 1/4 preprocessing ..."
 START_TIME=$SECONDS
-source ./pipeline_0_preprocess.sh
+PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
+mkdir -p "${PREPROCESS_OUTPUT_DIR}"
+PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
+echo "PREPROCESS_OUTPUT: ${PREPROCESS_OUTPUT}"
+PREPROCESS_ARGS="\
+  -i ${INPUT}\
+  -o ${PREPROCESS_OUTPUT}\
+  -c ${CPU_CORES}"
+if [ ! -z "${INPUT_REF}" ]; then
+	PREPROCESS_ARGS+=" -r ${INPUT_REF}"
+fi
+if [ ! -z "${FORCE}" ]; then
+	PREPROCESS_ARGS+=" -f"
+fi
+sh ./pipeline_preprocess.sh ${PREPROCESS_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 echo "step 2/4 annotating ..."
 START_TIME=$SECONDS
-source ./pipeline_1_annotate.sh
+ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step1_annotate/
+mkdir -p "${ANNOTATE_OUTPUT_DIR}"
+ANNOTATE_OUTPUT="${ANNOTATE_OUTPUT_DIR}/${OUTPUT_FILE}"
+ANNOTATE_ARGS="\
+  -i ${PREPROCESS_OUTPUT} \
+  -o ${ANNOTATE_OUTPUT} \
+  -c ${CPU_CORES} \
+  -a ${ASSEMBLY}"
+if [ ! -z "${INPUT_REF}" ]; then
+	ANNOTATE_ARGS+=" -r ${INPUT_REF}"
+fi
+if [ ! -z "${KEEP}" ]; then
+	ANNOTATE_ARGS+=" -k"
+fi
+if [ ! -z "${FORCE}" ]; then
+	ANNOTATE_ARGS+=" -f"
+fi
+
+if [ ! -z "${ANN_VEP}" ]; then
+	sh ./pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
+else
+  sh ./pipeline_annotate.sh ${ANNOTATE_ARGS}
+fi
+
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/4 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 echo "step 3/4 filtering ..."
 START_TIME=$SECONDS
-source ./pipeline_2_filter.sh
+FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step2_filter/
+mkdir -p "${FILTER_OUTPUT_DIR}"
+FILTER_OUTPUT="${FILTER_OUTPUT_DIR}/${OUTPUT_FILE}"
+FILTER_ARGS="\
+  -i ${ANNOTATE_OUTPUT}\
+  -o ${FILTER_OUTPUT} \
+  -c ${CPU_CORES}"
+if [ ! -z "${FORCE}" ]; then
+	FILTER_ARGS+=" -f"
+fi
+sh ./pipeline_filter.sh ${FILTER_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
@@ -221,11 +267,26 @@ ln -s "${OUTPUT}" "${FILTER_OUTPUT}"
 
 echo "step 4/4 generating report ..."
 START_TIME=$SECONDS
-source ./pipeline_3_report.sh
+REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step4_report/
+mkdir -p "${REPORT_OUTPUT_DIR}"
+REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
+REPORT_ARGS="\
+  -i ${FILTER_OUTPUT} \
+  -o ${REPORT_OUTPUT}"
+if [ ! -z "${INPUT_PED}" ]; then
+	REPORT_ARGS+=" -p ${INPUT_PED}"
+fi
+if [ ! -z "${INPUT_PHENO}" ]; then
+	REPORT_ARGS+=" -t ${INPUT_PHENO}"
+fi
+if [ ! -z "${FORCE}" ]; then
+	REPORT_ARGS+=" -f"
+fi
+sh ./pipeline_report.sh ${REPORT_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-cp "${REPORT_OUTPUT}" "${OUTPUT}".html
+cp "${REPORT_OUTPUT}" "${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILENAME}.html"
 
 # done, so we can clean up the entire output dir
 if [ "$KEEP" == "0" ]; then
