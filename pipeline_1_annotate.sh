@@ -30,6 +30,10 @@ if [ ! -z ${INPUT_REF} ]; then
 	VEP_ARGS+=" --fasta ${INPUT_REF} --hgvs"
 fi
 
+if [ ! -z "${ANN_VEP}" ]; then
+	VEP_ARGS+=" ${ANN_VEP}"
+fi
+
 vep ${VEP_ARGS}
 
 module unload VEP

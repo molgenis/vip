@@ -16,6 +16,7 @@ INPUT_REF=""
 INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
+ANN_VEP=""
 FORCE=""
 KEEP=""
 ASSEMBLY=GRCh37
@@ -37,18 +38,21 @@ usage()
 -f,  --force               optional: Override the output file if it already exists.
 -k,  --keep                optional: Keep intermediate files.
 
+--ann_vep                  optional: Variant Effect Predictor (VEP) options
+
 examples:
   pipeline.sh -i in.vcf -o out.vcf
-  pipeline.sh -i in.vcf -o out.vcf -r human_g1k_v37.fasta.gz
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep,ann_vep: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -77,6 +81,10 @@ do
         ;;
     -t | --phenotypes)
         INPUT_PHENO="$2"
+        shift 2
+        ;;
+    --ann_vep)
+        ANN_VEP="$2"
         shift 2
         ;;
     -f | --force)
