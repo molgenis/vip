@@ -3,7 +3,7 @@ PED='./test/data/test.ped'
 HPO='HP:0004383'
 
 ACTUAL_VCF='./test/output/test_output.vcf'
-ACTUAL_HTML='./test/output/test_output.vcf.gz.html'
+ACTUAL_HTML='./test/output/test_output.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
 EXPECTED_NR_OF_HEADERS=50
@@ -52,6 +52,8 @@ then
 else
     echo -e "\e[32mvcf file test passed. \e[39m"
 fi
+
+sed -i 's/"args":"-i.*step2_capice/REMOVE_PATH_DEPENDENT_VALUES/g' test/output/test_output.html
 
 REPORT_DIFF=$(diff $ACTUAL_HTML $EXPECTED_HTML)
 if [ "$REPORT_DIFF" != "" ] 
