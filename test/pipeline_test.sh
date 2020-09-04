@@ -9,6 +9,8 @@ EXPECTED_HTML='./test/data/expected.html'
 EXPECTED_NR_OF_HEADERS=50
 LOG='./test/output/test_output.log'
 
+echo -e "Test started..."
+
 sh ./pipeline.sh -i "${INPUT}" -o "${ACTUAL_VCF}.gz" -p "${PED}" -t "${HPO}" -f &> "${LOG}"
 
 if [ $? -eq 0 ]
@@ -16,6 +18,7 @@ then
   echo -e "\e[32mPipeline ran succesfully.  \e[39m"
 else
   echo -e "\e[31mAn error occured while running the pipeline, see './test/output/test_output.log' for more details.  \e[39m"
+  echo -e "\e[31mTest should run from the 'main' pipeline folder 'sh test/pipeline_test.sh' \e[39m"
   exit 1
 fi
 
@@ -64,6 +67,8 @@ then
 else
     echo -e "\e[32mreport file test passed. \e[39m"
 fi
+
+echo -e "Test finished..."
 
 if [ "${FAILED}" == 1 ]
 then
