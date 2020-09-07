@@ -198,7 +198,7 @@ fi
 
 vep ${VEP_ARGS}
 
-module unload VEP
+module purge
 
 #CAPICE
 
@@ -222,7 +222,7 @@ module load CADD
 CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
 gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
 CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CADD_INPUT}
-module unload CADD
+module purge
 
 module load CAPICE
 python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
@@ -244,7 +244,7 @@ then
 fi
 java ${CAPICE_ARGS}
 
-module unload CAPICE
+module purge
 
 #VcfAnno
 
@@ -269,8 +269,7 @@ else
 	vcfanno ${VCFANNO_ARGS} > ${VCFANNO_OUTPUT}
 fi
 
-module unload vcfanno
-module unload HTSlib
+module purge
 
 mv "${VCFANNO_OUTPUT}" "${OUTPUT}"
 ln -s "${OUTPUT}" "${VCFANNO_OUTPUT}"

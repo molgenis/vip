@@ -151,4 +151,4 @@ echo 'normalizing ...'
 bcftools ${BCFTOOLS_ARGS}
 echo 'normalizing done'
 
-module unload BCFtools
+module purge

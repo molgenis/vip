@@ -128,5 +128,4 @@ else
 	bcftools filter -e'CAP[*]<0.9' ${BCFTOOLS_ARGS} > "${OUTPUT}"
 fi
 
-module unload HTSlib
-module unload BCFtools
+module purge
