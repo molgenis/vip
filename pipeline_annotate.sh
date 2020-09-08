@@ -234,7 +234,7 @@ else
 	# strip headers from input vcf for cadd
 	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
 	gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
-	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CADD_INPUT}
+	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz -c ${CPU_CORES} -s ${CADD_INPUT}
 	module purge
 
 	module load CAPICE
