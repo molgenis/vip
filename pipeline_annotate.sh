@@ -163,8 +163,124 @@ if [ -z ${TMPDIR+x} ]; then
 	TMPDIR=/tmp
 fi
 
-VEP_INPUT="${INPUT}"
-VEP_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_vep
+#VcfAnno
+VCFANNO_INPUT="${INPUT}"
+VCFANNO_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_vcfAnno
+VCFANNO_OUTPUT="${VCFANNO_OUTPUT_DIR}"/vcfanno_pre.vcf.gz
+VCFANNO_PRE_CONF="${VCFANNO_OUTPUT_DIR}"/conf_pre.toml
+
+rm -rf "${VCFANNO_OUTPUT_DIR}"
+mkdir -p "${VCFANNO_OUTPUT_DIR}"
+
+cat > "${VCFANNO_PRE_CONF}" << EOT
+[[annotation]]
+file="/apps/data/VKGL/VKGL_public_consensus_jun2020_normalized.vcf.gz"
+fields = ["VKGL_CL"]
+ops=["self"]
+names=["VKGL"]
+
+[[annotation]]
+file="/apps/data/CAPICE/${ASSEMBLY}/capice_v1.0_indels.vcf.gz"
+fields = ["CAP"]
+ops=["self"]
+names=["CAP"]
+
+[[annotation]]
+file="/apps/data/CAPICE/${ASSEMBLY}/capice_v1.0_snvs.vcf.gz"
+fields = ["CAP"]
+ops=["self"]
+names=["CAP"]
+EOT
+
+module load vcfanno
+module load HTSlib
+
+VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_PRE_CONF} ${VCFANNO_INPUT}"
+vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_OUTPUT}
+
+module purge
+
+# CAPICE
+CAPICE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step2_capice
+BCFTOOLS_FILTER_INPUT="${VCFANNO_OUTPUT}"
+BCFTOOLS_FILTER_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter.vcf.gz
+CAPICE_INPUT="${BCFTOOLS_FILTER_OUTPUT}"
+VCFANNO_POST_CONF="${CAPICE_OUTPUT_DIR}"/conf_post.toml
+
+if [[ "${OUTPUT_FILE}" == *vcf ]]
+then
+    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
+else
+    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
+fi
+CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter_capice.vcf.gz
+
+rm -rf "${CAPICE_OUTPUT_DIR}"
+mkdir -p "${CAPICE_OUTPUT_DIR}"
+
+module load BCFtools
+bcftools filter -i 'CAP="."' --threads "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
+module purge
+
+if [ `zgrep -c -m 1 "^[^#]" "${BCFTOOLS_FILTER_OUTPUT}"` -eq 0 ]
+then
+	VCFANNO_ALL_OUTPUT="${BCFTOOLS_FILTER_INPUT}"
+	echo "skipping CAPICE score calculation because all variants have precomputed scores ..."
+else
+	VCFANNO_ALL_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_all.vcf.gz
+	echo "calculating CAPICE scores for variants without precomputed score ..."
+	
+	module load CADD
+	# strip headers from input vcf for cadd
+	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
+	gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
+	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CADD_INPUT}
+	module purge
+
+	module load CAPICE
+	python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
+	--input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
+	--model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
+	--prediction_savepath ${CAPICE_OUTPUT} \
+
+	CAPICE_ARGS="\
+	-Djava.io.tmpdir="${TMPDIR}" \
+	-XX:ParallelGCThreads=2 \
+	-Xmx1g \
+	-jar ${EBROOTCAPICE}/capice2vcf.jar \
+	-i ${CAPICE_OUTPUT} \
+	-o ${CAPICE_OUTPUT_VCF}
+	"
+	if [ "${FORCE}" == "1" ]
+	then
+		CAPICE_ARGS+=" -f"
+	fi
+	java ${CAPICE_ARGS}
+
+	module purge
+
+	cat > "${VCFANNO_POST_CONF}" << EOT
+[[annotation]]
+file="${CAPICE_OUTPUT_VCF}"
+fields = ["CAP"]
+ops=["self"]
+names=["CAP"]
+EOT
+
+	module load vcfanno
+	module load HTSlib
+
+	VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_POST_CONF} ${VCFANNO_OUTPUT}"
+	vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_ALL_OUTPUT}
+
+	module purge
+fi
+
+
+
+# VEP
+VEP_INPUT="${VCFANNO_ALL_OUTPUT}"
+VEP_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step3_vep
 VEP_OUTPUT="${VEP_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 rm -rf "${VEP_OUTPUT_DIR}"
@@ -173,8 +289,13 @@ mkdir -p "${VEP_OUTPUT_DIR}"
 module load VEP
 VEP_ARGS="\
 --input_file ${VEP_INPUT} --format vcf \
---output_file ${VEP_OUTPUT} --vcf --compress_output bgzip --force_overwrite \
---stats_file ${VEP_OUTPUT_STATS} --stats_text \
+--output_file ${VEP_OUTPUT} --vcf"
+if [[ "${OUTPUT}" == *.vcf.gz ]]
+then
+	VEP_ARGS+=" --compress_output bgzip"
+fi
+
+VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --offline --cache --dir_cache /apps/data/Ensembl/VEP/100 \
 --species homo_sapiens --assembly ${ASSEMBLY} \
 --flag_pick_allele \
@@ -200,79 +321,8 @@ vep ${VEP_ARGS}
 
 module purge
 
-#CAPICE
-
-CAPICE_INPUT="${INPUT}"
-CAPICE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step2_capice
-
-if [[ "${OUTPUT_FILE}" == *vcf ]]
-then
-    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
-    CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.vcf.gz}"
-else
-    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
-    CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-fi
-
-rm -rf "${CAPICE_OUTPUT_DIR}"
-mkdir -p "${CAPICE_OUTPUT_DIR}"
-
-module load CADD
-# strip headers from input vcf for cadd
-CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
-gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
-CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CADD_INPUT}
-module purge
-
-module load CAPICE
-python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
---input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
---model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
---prediction_savepath ${CAPICE_OUTPUT} \
-
-CAPICE_ARGS="\
--Djava.io.tmpdir="${TMPDIR}" \
--XX:ParallelGCThreads=2 \
--Xmx1g \
--jar ${EBROOTCAPICE}/capice2vcf.jar \
--i ${CAPICE_OUTPUT} \
--o ${CAPICE_OUTPUT_VCF}
-"
-if [ "${FORCE}" == "1" ]
-then
-	CAPICE_ARGS+=" -f"
-fi
-java ${CAPICE_ARGS}
-
-module purge
-
-#VcfAnno
-
-VCFANNO_INPUT="${VEP_OUTPUT}"
-VCFANNO_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step3_vcfAnno
-VCFANNO_OUTPUT="${VCFANNO_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-
-rm -rf "${VCFANNO_OUTPUT_DIR}"
-mkdir -p "${VCFANNO_OUTPUT_DIR}"
-
-module load vcfanno
-module load HTSlib
-#inject location of the capice2vcf tool in the vcfAnno config.
-CAPICE_OUTPUT_FIXED="${CAPICE_OUTPUT_VCF/\.\//}"
-sed "s|OUTPUT_DIR|${CAPICE_OUTPUT_FIXED}|g" conf.template > ${VCFANNO_OUTPUT_DIR}/conf.toml
-
-VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_OUTPUT_DIR}/conf.toml ${VCFANNO_INPUT}"
-if [[ "${OUTPUT}" == *.vcf.gz ]]
-then
-	vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_OUTPUT}
-else
-	vcfanno ${VCFANNO_ARGS} > ${VCFANNO_OUTPUT}
-fi
-
-module purge
-
-mv "${VCFANNO_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${VCFANNO_OUTPUT}"
+mv "${VEP_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${VEP_OUTPUT}"
 
 if [ "$KEEP" == "0" ]; then
         rm -rf "${VEP_OUTPUT_DIR}"
