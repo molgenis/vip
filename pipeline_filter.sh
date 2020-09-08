@@ -9,7 +9,8 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
 
-source utils/header.sh
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
 OUTPUT=""
