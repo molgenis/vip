@@ -16,7 +16,7 @@ else
   SCRIPT_SUBMIT_DIR=$(realpath "$0")
 fi
 SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%% *}" # Removes any arguments after initial script path.
-SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes script name.
+readonly SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes script name.
 
 source "${SCRIPT_SUBMIT_DIR}"/utils/header.sh
 
