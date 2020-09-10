@@ -9,8 +9,16 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "${SCRIPT_DIR}"/utils/header.sh
+# Retrieve original directory of submitted script.
+if [ -n "$SLURM_JOB_ID" ] ; then # If Slurm job.
+  SCRIPT_SUBMIT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
+else
+  SCRIPT_SUBMIT_DIR=$(realpath "$0")
+fi
+SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%% *}" # Removes any arguments after initial script path.
+SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes script name.
+
+source "${SCRIPT_SUBMIT_DIR}"/utils/header.sh
 
 INPUT=""
 OUTPUT=""
