@@ -11,14 +11,14 @@
 
 # Retrieve original directory of submitted script.
 if [ -n "$SLURM_JOB_ID" ] ; then # If Slurm job.
-  SCRIPT_SUBMIT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
-  SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%% *}" # Removes anything starting at first space (so keep script path).
+  SCRIPT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
+  SCRIPT_DIR="${SCRIPT_DIR%% *}" # Removes anything starting at first space (so keep script path).
 else
-  SCRIPT_SUBMIT_DIR=$(realpath "$0")
+  SCRIPT_DIR=$(realpath "$0")
 fi
-readonly SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes "/<scriptname>".
+readonly SCRIPT_DIR="${SCRIPT_DIR%/*}" # Removes "/<scriptname>".
 
-source "${SCRIPT_SUBMIT_DIR}"/utils/header.sh
+source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
 INPUT_REF=""
@@ -222,7 +222,7 @@ fi
 if [ ! -z "${FORCE}" ]; then
 	PREPROCESS_ARGS+=" -f"
 fi
-sh "${SCRIPT_SUBMIT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
+sh "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
@@ -247,9 +247,9 @@ if [ ! -z "${FORCE}" ]; then
 fi
 
 if [ ! -z "${ANN_VEP}" ]; then
-  sh "${SCRIPT_SUBMIT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
+  sh "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
 else
-  sh "${SCRIPT_SUBMIT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}
+  sh "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
@@ -267,7 +267,7 @@ FILTER_ARGS="\
 if [ ! -z "${FORCE}" ]; then
 	FILTER_ARGS+=" -f"
 fi
-sh "${SCRIPT_SUBMIT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
+sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
@@ -291,7 +291,7 @@ fi
 if [ ! -z "${FORCE}" ]; then
 	REPORT_ARGS+=" -f"
 fi
-sh "${SCRIPT_SUBMIT_DIR}"/pipeline_report.sh ${REPORT_ARGS}
+sh "${SCRIPT_DIR}"/pipeline_report.sh ${REPORT_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
