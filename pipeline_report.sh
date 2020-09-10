@@ -9,7 +9,15 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# Retrieve original directory of submitted script.
+if [ -n "$SLURM_JOB_ID" ] ; then # If Slurm job.
+  SCRIPT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
+  SCRIPT_DIR="${SCRIPT_DIR%% *}" # Removes anything starting at first space (so keep script path).
+else
+  SCRIPT_DIR=$(realpath "$0")
+fi
+readonly SCRIPT_DIR="${SCRIPT_DIR%/*}" # Removes "/<scriptname>".
+
 source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
