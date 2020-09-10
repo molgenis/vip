@@ -12,11 +12,11 @@
 # Retrieve original directory of submitted script.
 if [ -n "$SLURM_JOB_ID" ] ; then # If Slurm job.
   SCRIPT_SUBMIT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
+  SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%% *}" # Removes anything starting at first space (so keep script path).
 else
   SCRIPT_SUBMIT_DIR=$(realpath "$0")
 fi
-SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%% *}" # Removes any arguments after initial script path.
-readonly SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes script name.
+readonly SCRIPT_SUBMIT_DIR="${SCRIPT_SUBMIT_DIR%/*}" # Removes "/<scriptname>".
 
 source "${SCRIPT_SUBMIT_DIR}"/utils/header.sh
 
