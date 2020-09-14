@@ -23,8 +23,8 @@ source "${SCRIPT_DIR}"/utils/header.sh
 INPUT=""
 INPUT_REF=""
 OUTPUT=""
-CPU_CORES=""
-FORCE=""
+CPU_CORES=4
+FORCE=0
 
 usage()
 {
@@ -54,67 +54,56 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT=$(realpath "$2")
+      shift 2
+      ;;
     -o | --output)
-        OUTPUT_ARG="$2"
-        OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-        OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-        OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-        OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-        shift 2
-        ;;
+      OUTPUT_ARG="$2"
+      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      shift 2
+      ;;
     -c | --cpu_cores)
-        CPU_CORES="$2"
-        shift 2
-        ;;
+      CPU_CORES="$2"
+      shift 2
+      ;;
     -f | --force)
-        FORCE=1
-        shift
-        ;;
+      FORCE=1
+      shift
+      ;;
     -r | --reference)
-        INPUT_REF=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT_REF=$(realpath "$2")
+      shift 2
+      ;;
     --)
-        shift
-        break
-        ;;
+      shift
+      break
+      ;;
     *)
-        usage
-	exit 2
-        ;;
+      usage
+	    exit 2
+      ;;
   esac
 done
 
-if [ -z ${INPUT} ]
+if [ -z "${INPUT}" ]
 then
-        echo "missing required option -i
-	"
+  echo -e "missing required option -i\n"
 	usage
 	exit 2
 fi
-if [ -z ${OUTPUT} ]
+if [ -z "${OUTPUT}" ]
 then
-        echo "missing required option -o
-	"
+  echo -e "missing required option -o\n"
 	usage
 	exit 2
-fi
-if [ -z ${CPU_CORES} ]
-then
-	CPU_CORES=4
-fi
-if [ -z ${FORCE} ]
-then
-	FORCE=0
 fi
 
 if [ ! -f "${INPUT}" ]
 then
-	echo "$INPUT does not exist.
-	"
+	echo -e "$INPUT does not exist.\n"
 	exit 2
 fi
 if [ -f "${OUTPUT}" ]
@@ -123,19 +112,17 @@ then
 	then
 		rm "${OUTPUT}"
 	else
-		echo "${OUTPUT} already exists, use -f to overwrite.
-        	"
-	        exit 2
+		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+    exit 2
 	fi
 fi
 if [ ! -z "${INPUT_REF}" ]
 then
-                if [ ! -f "${INPUT_REF}" ]
-                then
-                        echo "${INPUT_REF} does not exist.
-                        "
-                        exit 2
-                fi
+  if [ ! -f "${INPUT_REF}" ]
+  then
+    echo -e "${INPUT_REF} does not exist.\n"
+    exit 2
+  fi
 fi
 
 PREPROCESS_INPUT="${INPUT}"
@@ -151,7 +138,7 @@ if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
 	BCFTOOLS_ARGS+=" -O z"
 fi
-if [ ! -z ${INPUT_REF} ]; then
+if [ ! -z "${INPUT_REF}" ]; then
 	BCFTOOLS_ARGS+=" -f ${INPUT_REF} -c e"
 fi
 BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${PREPROCESS_INPUT}"
