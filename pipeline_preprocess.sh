@@ -9,14 +9,8 @@
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
 
-# Retrieve original directory of submitted script.
-if [ -n "$SLURM_JOB_ID" ] ; then # If Slurm job.
-  SCRIPT_DIR=$(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}')
-  SCRIPT_DIR="${SCRIPT_DIR%% *}" # Removes anything starting at first space (so keep script path).
-else
-  SCRIPT_DIR=$(realpath "$0")
-fi
-readonly SCRIPT_DIR="${SCRIPT_DIR%/*}" # Removes "/<scriptname>".
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
 
 source "${SCRIPT_DIR}"/utils/header.sh
 
