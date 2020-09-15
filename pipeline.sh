@@ -26,8 +26,8 @@ INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
 ANN_VEP=""
-FORCE=""
-KEEP=""
+FORCE=0
+KEEP=0
 ASSEMBLY=GRCh37
 CPU_CORES=4
 
@@ -69,79 +69,67 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT=$(realpath "$2")
+      shift 2
+      ;;
     -o | --output)
-        OUTPUT_ARG="$2"
-        OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-        OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-        OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-        OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-        shift 2
-        ;;
+      OUTPUT_ARG="$2"
+      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      shift 2
+      ;;
     -r | --reference)
-        INPUT_REF=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT_REF=$(realpath "$2")
+      shift 2
+      ;;
     -p | --pedigree)
-        INPUT_PED=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT_PED=$(realpath "$2")
+      shift 2
+      ;;
     -t | --phenotypes)
-        INPUT_PHENO="$2"
-        shift 2
-        ;;
+      INPUT_PHENO="$2"
+      shift 2
+      ;;
     --ann_vep)
-        ANN_VEP="$2"
-        shift 2
-        ;;
+      ANN_VEP="$2"
+      shift 2
+      ;;
     -f | --force)
-        FORCE=1
-        shift
-        ;;
+      FORCE=1
+      shift
+      ;;
     -k | --keep)
-        KEEP=1
-        shift
-        ;;
+      KEEP=1
+      shift
+      ;;
     --)
-        shift
-        break
-        ;;
+      shift
+      break
+      ;;
     *)
-        usage
-	exit 2
-        ;;
+      usage
+	    exit 2
+      ;;
   esac
 done
 
-if [ -z ${INPUT} ]
+if [ -z "${INPUT}" ]
 then
-        echo "missing required option -i
-	"
+  echo -e "missing required option -i\n"
 	usage
 	exit 2
 fi
-if [ -z ${OUTPUT} ]
+if [ -z "${OUTPUT}" ]
 then
-        echo "missing required option -o
-	"
+  echo -e "missing required option -o\n"
 	usage
 	exit 2
 fi
-if [ -z ${FORCE} ]
-then
-	FORCE=0
-fi
-if [ -z ${KEEP} ]
-then
-        KEEP=0
-fi
-
 if [ ! -f "${INPUT}" ]
 then
-	echo "$INPUT does not exist.
-	"
+	echo -e "$INPUT does not exist.\n"
 	exit 2
 fi
 if [ -f "${OUTPUT}" ]
@@ -150,58 +138,48 @@ then
 	then
 		rm "${OUTPUT}"
 	else
-		echo "${OUTPUT} already exists, use -f to overwrite.
-        	"
-	        exit 2
+		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+    exit 2
 	fi
 fi
 if [ -f "${OUTPUT}".html ]
 then
-        if [ "${FORCE}" == "1" ]
-        then
-                rm "${OUTPUT}".html
-        else
-                echo "${OUTPUT}.html already exists, use -f to overwrite.
-                "
-                exit 2
-        fi
+  if [ "${FORCE}" == "1" ]
+  then
+    rm "${OUTPUT}".html
+  else
+    echo -e "${OUTPUT}.html already exists, use -f to overwrite.\n"
+    exit 2
+  fi
 fi
-if [ ! -z ${INPUT_PED} ]
+if [ ! -z ${INPUT_PED} ] && [ ! -f "${INPUT_PED}" ]
 then
-		if [ ! -f "${INPUT_PED}" ]
-		then
-			echo "${INPUT_PED} does not exist.
-			"
-			exit 2
-		fi
+  echo -e "${INPUT_PED} does not exist.\n"
+  exit 2
 fi
-if [ ! -z ${INPUT_REF} ]
+if [ ! -z ${INPUT_REF} ] && [ ! -f "${INPUT_REF}" ]
 then
-                if [ ! -f "${INPUT_REF}" ]
-                then
-                        echo "${INPUT_REF} does not exist.
-                        "
-                        exit 2
-                fi
+  echo -e "${INPUT_REF} does not exist.\n"
+  exit 2
 fi
 
 if [[ "${OUTPUT}" == *.vcf.gz ]]
-  then
-      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
-  else
-      OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf)
+then
+  OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
+else
+  OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf)
 fi
 OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/${OUTPUT_FILENAME}_pipeline_out
 
 if [ -d "$OUTPUT_DIR" ]
 then
-        if [ "$FORCE" == "1" ]
-        then
-                rm -R "$OUTPUT_DIR"
-        else
-                echo "$OUTPUT_DIR already exists, use -f to overwrite."
-                exit 2
-        fi
+  if [ "$FORCE" == "1" ]
+  then
+    rm -R "$OUTPUT_DIR"
+  else
+    echo -e "$OUTPUT_DIR already exists, use -f to overwrite.\n"
+    exit 2
+  fi
 fi
 
 mkdir -p "${OUTPUT_DIR}"
@@ -219,7 +197,7 @@ PREPROCESS_ARGS="\
 if [ ! -z "${INPUT_REF}" ]; then
 	PREPROCESS_ARGS+=" -r ${INPUT_REF}"
 fi
-if [ ! -z "${FORCE}" ]; then
+if [ "${FORCE}" == "1" ]; then
 	PREPROCESS_ARGS+=" -f"
 fi
 sh "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
@@ -239,10 +217,10 @@ ANNOTATE_ARGS="\
 if [ ! -z "${INPUT_REF}" ]; then
 	ANNOTATE_ARGS+=" -r ${INPUT_REF}"
 fi
-if [ ! -z "${KEEP}" ]; then
+if [ "${KEEP}" == "1" ]; then
 	ANNOTATE_ARGS+=" -k"
 fi
-if [ ! -z "${FORCE}" ]; then
+if [ "${FORCE}" == "1" ]; then
 	ANNOTATE_ARGS+=" -f"
 fi
 
@@ -264,7 +242,7 @@ FILTER_ARGS="\
   -i ${ANNOTATE_OUTPUT}\
   -o ${FILTER_OUTPUT} \
   -c ${CPU_CORES}"
-if [ ! -z "${FORCE}" ]; then
+if [ "${FORCE}" == "1" ]; then
 	FILTER_ARGS+=" -f"
 fi
 sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
@@ -288,7 +266,7 @@ fi
 if [ ! -z "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=" -t ${INPUT_PHENO}"
 fi
-if [ ! -z "${FORCE}" ]; then
+if [ "${FORCE}" == "1" ]; then
 	REPORT_ARGS+=" -f"
 fi
 sh "${SCRIPT_DIR}"/pipeline_report.sh ${REPORT_ARGS}

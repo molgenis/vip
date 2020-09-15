@@ -24,7 +24,7 @@ INPUT=""
 INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
-FORCE=""
+FORCE=0
 
 usage()
 {
@@ -58,90 +58,81 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT=$(realpath "$2")
+      shift 2
+      ;;
     -o | --output)
-        OUTPUT_ARG="$2"
-        OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-        OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-        OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-        OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-        shift 2
-        ;;
+      OUTPUT_ARG="$2"
+      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      shift 2
+      ;;
     -p | --pedigree)
-        INPUT_PED=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT_PED=$(realpath "$2")
+      shift 2
+      ;;
     -t | --phenotypes)
-        INPUT_PHENO="$2"
-        echo "PHENO ${INPUT_PHENO}"
-        shift 2
-        ;;
+      INPUT_PHENO="$2"
+      echo "PHENO ${INPUT_PHENO}"
+      shift 2
+      ;;
     -f | --force)
-        FORCE=1
-        shift
-        ;;
+      FORCE=1
+      shift
+      ;;
     --)
-        shift
-        break
-        ;;
+      shift
+      break
+      ;;
     *)
-        usage
-	exit 2
-        ;;
+      usage
+	    exit 2
+      ;;
   esac
 done
 
 #FIXME map params
 
-if [ -z ${INPUT} ]
+if [ -z "${INPUT}" ]
 then
-        echo "missing required option -i
-	"
+  echo -e "missing required option -i\n"
 	usage
 	exit 2
 fi
-if [ -z ${OUTPUT} ]
+if [ -z "${OUTPUT}" ]
 then
-        echo "missing required option -o
-	"
+  echo -e "missing required option -o\n"
 	usage
 	exit 2
-fi
-if [ -z ${FORCE} ]
-then
-	FORCE=0
 fi
 
 if [ ! -f "${INPUT}" ]
 then
-	echo "$INPUT does not exist.
-	"
+	echo -e "$INPUT does not exist.\n"
 	exit 2
 fi
 if [ -f "${OUTPUT}" ]
 then
-        if [ "${FORCE}" == "1" ]
-        then
-                rm "${OUTPUT}"
-        else
-                echo "${OUTPUT} already exists, use -f to overwrite.
-                "
-                exit 2
-        fi
+  if [ "${FORCE}" == "1" ]
+  then
+    rm "${OUTPUT}"
+  else
+    echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+    exit 2
+  fi
 fi
-if [ ! -z ${INPUT_PED} ]
+if [ ! -z "${INPUT_PED}" ]
 then
-		if [ ! -f "${INPUT_PED}" ]
-		then
-			echo "${INPUT_PED} does not exist.
-			"
-			exit 2
-		fi
+  if [ ! -f "${INPUT_PED}" ]
+  then
+    echo -e "${INPUT_PED} does not exist.\n"
+    exit 2
+  fi
 fi
 
-if [ -z ${TMPDIR+x} ]; then
+if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
