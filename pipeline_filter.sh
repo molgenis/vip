@@ -110,19 +110,105 @@ then
 	fi
 fi
 
-FILTER_INPUT="${INPUT}"
+# vcf-decision-tree
+DECISION_TREE_INPUT="${INPUT}"
+DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
+DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
+
+cat > "${DECISION_TREE_CONF}" << EOT
+{
+  "rootNode": "filter",
+  "nodes": {
+	"filter": {
+		"type": "BOOL",
+		"description": "All filters passed",
+		"query": {
+			"field": "FILTER",
+			"operator": "==",
+			"value": ["PASS"]
+		},
+		"outcomeTrue": {
+			"nextNode": "capice"
+		},
+		"outcomeFalse": {
+			"nextNode": "exit_f"
+		},
+		"outcomeMissing": {
+			"nextNode": "capice"
+		}
+	},
+    "capice": {
+      "type": "BOOL",
+      "description": "CAPICE score >= 0.9",
+      "query": {
+        "field": "INFO/CAP",
+        "operator": ">=",
+        "value": 0.9
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_t"
+      },
+      "outcomeFalse": {
+        "nextNode": "vkgl"
+      },
+      "outcomeMissing": {
+        "nextNode": "vkgl"
+      }
+    },
+	"vkgl": {
+      "type": "CATEGORICAL",
+      "field": "INFO/VKGL",
+      "outcomeMap": {
+		"P": {
+          "nextNode": "exit_t"
+        },
+        "LP": {
+          "nextNode": "exit_t"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_f"
+      },
+      "outcomeDefault": {
+        "nextNode": "exit_f"
+      }
+    },
+    "exit_t": {
+      "type": "LEAF",
+      "class": "T"
+    },
+    "exit_f": {
+      "type": "LEAF",
+      "class": "F"
+    }
+  }
+}
+EOT
+
+DECISION_TREE_ARGS="-i ${DECISION_TREE_INPUT} -c ${DECISION_TREE_CONF} -o ${DECISION_TREE_OUTPUT}"
+if [ "${FORCE}" == "1" ]
+then
+  DECISION_TREE_ARGS+=" -f"
+fi
+if [ -z "${TMPDIR+x}" ]; then
+	TMPDIR=/tmp
+fi
+
+module load vcf-decision-tree
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMINDECISIONMINTREE}"/vcf-decision-tree.jar ${DECISION_TREE_ARGS}
+module purge
+
+# bcftools filter
+BCFTOOLS_FILTER_INPUT="${DECISION_TREE_OUTPUT}"
+BCFTOOLS_FILTER_OUTPUT="${OUTPUT}"
+BCFTOOLS_FILTER_ARGS="--threads ${CPU_CORES} ${BCFTOOLS_FILTER_INPUT}"
 
 module load BCFtools
 module load HTSlib
-
-BCFTOOLS_ARGS="\
---threads ${CPU_CORES} \
-${INPUT}"
-if [[ "${OUTPUT}" == *.vcf.gz ]]
+if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]
 then
-	bcftools filter -e'CAP[*]<0.9' ${BCFTOOLS_ARGS} | bgzip -c > "${OUTPUT}"
+	bcftools filter -i'VIPC=="T"' ${BCFTOOLS_FILTER_ARGS} | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
 else
-	bcftools filter -e'CAP[*]<0.9' ${BCFTOOLS_ARGS} > "${OUTPUT}"
+	bcftools filter -i'VIPC=="T"' ${BCFTOOLS_FILTER_ARGS} > "${BCFTOOLS_FILTER_OUTPUT}"
 fi
-
 module purge

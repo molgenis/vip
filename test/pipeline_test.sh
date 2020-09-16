@@ -6,7 +6,7 @@ ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
-EXPECTED_NR_OF_HEADERS=50
+EXPECTED_NR_OF_HEADERS=53
 LOG='./test/output/test_output.log'
 
 echo -e "Test started..."
@@ -42,6 +42,7 @@ sed -i '/^##VEP/d' ${ACTUAL_VCF}
 sed -i '/^##bcftools/d' ${ACTUAL_VCF}
 sed -i '/^##contig/d' ${ACTUAL_VCF}
 sed -i '/^##fileDate/d' ${ACTUAL_VCF}
+sed -i '/^##VIP/d' ${ACTUAL_VCF}
 sed -i 's/"CAPICE pathogenicity prediction.*/"CAPICE pathogenicity prediction"/g' ${ACTUAL_VCF}
 
 VCF_DIFF=$(diff $ACTUAL_VCF $EXPECTED_VCF)
