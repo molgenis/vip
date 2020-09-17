@@ -17,11 +17,11 @@ source "${SCRIPT_DIR}"/utils/header.sh
 INPUT=""
 OUTPUT=""
 INPUT_REF=""
-ASSEMBLY=""
+ASSEMBLY=GRCh37
 ANN_VEP=""
-CPU_CORES=""
-FORCE=""
-KEEP=""
+CPU_CORES=4
+FORCE=0
+KEEP=0
 
 usage()
 {
@@ -57,87 +57,68 @@ while :
 do
   case "$1" in
     -i | --input)
-        INPUT=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT=$(realpath "$2")
+      shift 2
+      ;;
     -o | --output)
-        OUTPUT_ARG="$2"
-        OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-        OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-        OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-        OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-        shift 2
-        ;;
+      OUTPUT_ARG="$2"
+      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      shift 2
+      ;;
     -r | --reference)
-        INPUT_REF=$(realpath "$2")
-        shift 2
-        ;;
+      INPUT_REF=$(realpath "$2")
+      shift 2
+      ;;
     -c | --cpu_cores)
-        CPU_CORES="$2"
-        shift 2
-        ;;
+      CPU_CORES="$2"
+      shift 2
+      ;;
     -a | --assembly)
-        ASSEMBLY="$2"
-        shift 2
-        ;;
+      ASSEMBLY="$2"
+      shift 2
+      ;;
     --ann_vep)
-        ANN_VEP="$2"
-        shift 2
-        ;;
+      ANN_VEP="$2"
+      shift 2
+      ;;
     -f | --force)
-        FORCE=1
-        shift
-        ;;
+      FORCE=1
+      shift
+      ;;
     -k | --keep)
-        KEEP=1
-        shift
-        ;;
+      KEEP=1
+      shift
+      ;;
     --)
-        shift
-        break
-        ;;
+      shift
+      break
+      ;;
     *)
-        usage
-	exit 2
-        ;;
+      usage
+	    exit 2
+      ;;
   esac
 done
 
-if [ -z ${INPUT} ]
+if [ -z "${INPUT}" ]
 then
-        echo "missing required option -i
-	"
+  echo -e "missing required option -i\n"
 	usage
 	exit 2
 fi
-if [ -z ${OUTPUT} ]
+if [ -z "${OUTPUT}" ]
 then
-        echo "missing required option -o
-	"
+  echo -e "missing required option -o\n"
 	usage
 	exit 2
-fi
-if [ -z ${ASSEMBLY} ]
-then
-	ASSEMBLY=GRCh37
-fi
-if [ -z ${CPU_CORES} ]
-then
-	CPU_CORES=4
-fi
-if [ -z ${FORCE} ]
-then
-	FORCE=0
-fi
-if [ -z ${KEEP} ]
-then
-        KEEP=0
 fi
 
 if [ ! -f "${INPUT}" ]
 then
-	echo "$INPUT does not exist.
-	"
+	echo -e "$INPUT does not exist.\n"
 	exit 2
 fi
 if [ -f "${OUTPUT}" ]
@@ -146,23 +127,21 @@ then
 	then
 		rm "${OUTPUT}"
 	else
-		echo "${OUTPUT} already exists, use -f to overwrite.
-        	"
-	        exit 2
+		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+    exit 2
 	fi
 fi
 if [ ! -z "${INPUT_REF}" ]
 then
-                if [ ! -f "${INPUT_REF}" ]
-                then
-                        echo "${INPUT_REF} does not exist.
-                        "
-                        exit 2
-                fi
+  if [ ! -f "${INPUT_REF}" ]
+  then
+    echo -e "${INPUT_REF} does not exist.\n"
+    exit 2
+  fi
 fi
 
 
-if [ -z ${TMPDIR+x} ]; then
+if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
@@ -212,9 +191,9 @@ VCFANNO_POST_CONF="${CAPICE_OUTPUT_DIR}"/conf_post.toml
 
 if [[ "${OUTPUT_FILE}" == *vcf ]]
 then
-    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
+  CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
 else
-    CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
+  CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
 fi
 CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter_capice.vcf.gz
 
@@ -237,14 +216,14 @@ else
 	# strip headers from input vcf for cadd
 	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
 	gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
-	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CADD_INPUT}
+	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz -c ${CPU_CORES} -s ${CADD_INPUT}
 	module purge
 
 	module load CAPICE
 	python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 	--input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
 	--model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
-	--prediction_savepath ${CAPICE_OUTPUT} \
+	--prediction_savepath ${CAPICE_OUTPUT}
 
 	CAPICE_ARGS="\
 	-Djava.io.tmpdir="${TMPDIR}" \
@@ -328,7 +307,7 @@ mv "${VEP_OUTPUT}" "${OUTPUT}"
 ln -s "${OUTPUT}" "${VEP_OUTPUT}"
 
 if [ "$KEEP" == "0" ]; then
-        rm -rf "${VEP_OUTPUT_DIR}"
-        rm -rf "${CAPICE_OUTPUT_DIR}"
-        rm -rf "${VCFANNO_OUTPUT_DIR}"
+  rm -rf "${VEP_OUTPUT_DIR}"
+  rm -rf "${CAPICE_OUTPUT_DIR}"
+  rm -rf "${VCFANNO_OUTPUT_DIR}"
 fi
