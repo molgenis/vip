@@ -159,26 +159,6 @@ REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
 mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
 
-BCFTOOLS_REMOVE_ARGS="\
-annotate \
--x INFO/CAP,INFO/CSQ,INFO/VKGL
--o ${REMOVE_ANN_OUTPUT}"
-if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
-then
-	BCFTOOLS_REMOVE_ARGS+=" -O z"
-fi
-BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
-
-
-echo 'removing existing annotations ...'
-bcftools ${BCFTOOLS_REMOVE_ARGS}
-echo 'removing existing annotations done'
-REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
-REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-
-rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
-mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
-
 BCFTOOLS_ARGS="\
 annotate \
 -x INFO/CAP,INFO/CSQ,INFO/VKGL
@@ -194,21 +174,12 @@ echo 'removing existing annotations ...'
 bcftools ${BCFTOOLS_REMOVE_ARGS}
 echo 'removing existing annotations done'
 
-module unload BCFtools
+module purge
 
 mv "${REMOVE_ANN_OUTPUT}" "${OUTPUT}"
 ln -s "${OUTPUT}" "${REMOVE_ANN_OUTPUT}"
 
 if [ "${KEEP}" == "0" ]; then
-  rm -rf "${NORMALIZE_OUTPUT_DIR}"
-  rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
-fi
-module unload BCFtools
-
-mv "${REMOVE_ANN_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${REMOVE_ANN_OUTPUT}"
-
-if [ "$KEEP" == "0" ]; then
   rm -rf "${NORMALIZE_OUTPUT_DIR}"
   rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
 fi
