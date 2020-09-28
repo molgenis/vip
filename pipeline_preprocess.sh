@@ -159,15 +159,15 @@ REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
 mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
 
-BCFTOOLS_ARGS="\
+BCFTOOLS_REMOVE_ARGS="\
 annotate \
--x INFO/CAP,INFO/CSQ,INFO/VKGL
+-x INFO
 -o ${REMOVE_ANN_OUTPUT}"
 if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
 then
-	BCFTOOLS_ARGS+=" -O z"
+	BCFTOOLS_REMOVE_ARGS+=" -O z"
 fi
-BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
+BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
 
 
 echo 'removing existing annotations ...'
