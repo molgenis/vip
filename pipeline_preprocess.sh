@@ -19,24 +19,26 @@ INPUT_REF=""
 OUTPUT=""
 CPU_CORES=4
 FORCE=0
+KEEP=0
 
 usage()
 {
-  echo "usage: pipeline_preprocess.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [-f]
+  echo "usage: pipeline_preprocess.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [-f] [-k]
 
 -i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
 -r, --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
 -c, --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f, --force               optional: Override the output file if it already exists.
+-k,  --keep                optional: Keep intermediate files.
 
 examples:
   pipeline_preprocess.sh -i in.vcf -o out.vcf
   pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -c 2 -f"
+  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -c 2 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:c:f --long input:,output:,reference:,cpu_cores:,force -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:c:fk --long input:,output:,reference:,cpu_cores:,force,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -65,6 +67,10 @@ do
       ;;
     -f | --force)
       FORCE=1
+      shift
+      ;;
+    -k | --keep)
+      KEEP=1
       shift
       ;;
     -r | --reference)
@@ -153,6 +159,26 @@ REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
 mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
 
+BCFTOOLS_REMOVE_ARGS="\
+annotate \
+-x INFO/CAP,INFO/CSQ,INFO/VKGL
+-o ${REMOVE_ANN_OUTPUT}"
+if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
+then
+	BCFTOOLS_REMOVE_ARGS+=" -O z"
+fi
+BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
+
+
+echo 'removing existing annotations ...'
+bcftools ${BCFTOOLS_REMOVE_ARGS}
+echo 'removing existing annotations done'
+REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
+REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
+
+rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
+mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
+
 BCFTOOLS_ARGS="\
 annotate \
 -x INFO/CAP,INFO/CSQ,INFO/VKGL
@@ -168,6 +194,15 @@ echo 'removing existing annotations ...'
 bcftools ${BCFTOOLS_REMOVE_ARGS}
 echo 'removing existing annotations done'
 
+module unload BCFtools
+
+mv "${REMOVE_ANN_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${REMOVE_ANN_OUTPUT}"
+
+if [ "${KEEP}" == "0" ]; then
+  rm -rf "${NORMALIZE_OUTPUT_DIR}"
+  rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
+fi
 module unload BCFtools
 
 mv "${REMOVE_ANN_OUTPUT}" "${OUTPUT}"

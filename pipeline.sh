@@ -194,6 +194,9 @@ fi
 if [ "${FORCE}" == "1" ]; then
 	PREPROCESS_ARGS+=" -f"
 fi
+if [ "${KEEP}" == "1" ]; then
+	PREPROCESS_ARGS+=" -k"
+fi
 sh "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
