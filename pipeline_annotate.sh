@@ -281,11 +281,11 @@ VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --offline --cache --dir_cache /apps/data/Ensembl/VEP/100 \
 --species homo_sapiens --assembly ${ASSEMBLY} \
 --flag_pick_allele \
---coding_only \
 --no_intergenic \
 --af_gnomad --pubmed --gene_phenotype \
 --shift_3prime 1 \
 --no_escape \
+--allele_number \
 --numbers \
 --dont_skip \
 --allow_non_variant \
