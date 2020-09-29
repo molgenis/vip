@@ -285,6 +285,7 @@ VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --af_gnomad --pubmed --gene_phenotype \
 --shift_3prime 1 \
 --no_escape \
+--allele_number \
 --numbers \
 --dont_skip \
 --allow_non_variant \
