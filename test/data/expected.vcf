@@ -4,8 +4,6 @@
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##INFO=<ID=CAP,Number=A,Type=Float,Description="CAPICE pathogenicity prediction"
 ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|ALLELE_NUM|DISTANCE|STRAND|FLAGS|PICK|SYMBOL_SOURCE|HGNC_ID|GENE_PHENO|gnomAD_AF|gnomAD_AFR_AF|gnomAD_AMR_AF|gnomAD_ASJ_AF|gnomAD_EAS_AF|gnomAD_FIN_AF|gnomAD_NFE_AF|gnomAD_OTH_AF|gnomAD_SAS_AF|CLIN_SIG|SOMATIC|PHENO|PUBMED|CHECK_REF">
-##INFO=<ID=GADO,Number=.,Type=String,Description="Gene|Symbol|Rank|ZScore">
-##INFO=<ID=UMCG_MVL,Number=1,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from input/vcfanno/vkgl_umcg_2020-02-28_11_28_42.vcf.gz)">
 ##INFO=<ID=VIPC,Number=A,Type=String,Description="VIP decision tree classification">
 ##INFO=<ID=VKGL,Number=A,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from /apps/data/VKGL/VKGL_public_consensus_jun2020_normalized.vcf.gz)">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Patient	Mother	Father
