@@ -3,3 +3,4 @@
 
 # Ignores Intellij IDEA folder.
 .IDEA/
+/vip.iml
