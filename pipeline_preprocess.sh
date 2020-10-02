@@ -30,7 +30,7 @@ usage()
 -r, --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
 -c, --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f, --force               optional: Override the output file if it already exists.
--k,  --keep                optional: Keep intermediate files.
+-k,  --keep               optional: Keep intermediate files.
 
 examples:
   pipeline_preprocess.sh -i in.vcf -o out.vcf
@@ -150,8 +150,6 @@ echo 'removing existing INFO annotations ...'
 bcftools ${BCFTOOLS_REMOVE_ARGS}
 echo 'removing existing INFO annotations done'
 
-module purge
-
 NORMALIZE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step0_normalize
 NORMALIZE_OUTPUT="${NORMALIZE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
@@ -175,6 +173,8 @@ BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${REMOVE_ANN_OUTPUT}"
 echo 'normalizing ...'
 bcftools ${BCFTOOLS_ARGS}
 echo 'normalizing done'
+
+module purge
 
 mv "${NORMALIZE_OUTPUT}" "${OUTPUT}"
 ln -s "${OUTPUT}" "${NORMALIZE_OUTPUT}"
