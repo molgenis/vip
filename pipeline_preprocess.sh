@@ -30,7 +30,7 @@ usage()
 -r, --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
 -c, --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f, --force               optional: Override the output file if it already exists.
--k, --keep               optional: Keep intermediate files.
+-k, --keep                optional: Keep intermediate files.
 
 examples:
   pipeline_preprocess.sh -i in.vcf -o out.vcf
