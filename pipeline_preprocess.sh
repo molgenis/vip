@@ -129,6 +129,29 @@ PREPROCESS_INPUT="${INPUT}"
 
 module load BCFtools
 
+REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
+REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
+
+rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
+mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
+
+BCFTOOLS_REMOVE_ARGS="\
+annotate \
+-x INFO
+-o ${REMOVE_ANN_OUTPUT}"
+if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
+then
+	BCFTOOLS_REMOVE_ARGS+=" -O z"
+fi
+BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${PREPROCESS_INPUT}"
+
+
+echo 'removing existing INFO annotations ...'
+bcftools ${BCFTOOLS_REMOVE_ARGS}
+echo 'removing existing INFO annotations done'
+
+module purge
+
 NORMALIZE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step0_normalize
 NORMALIZE_OUTPUT="${NORMALIZE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
@@ -147,37 +170,14 @@ fi
 if [ ! -z "${INPUT_REF}" ]; then
 	BCFTOOLS_ARGS+=" -f ${INPUT_REF} -c e"
 fi
-BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${PREPROCESS_INPUT}"
+BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${REMOVE_ANN_OUTPUT}"
 
 echo 'normalizing ...'
 bcftools ${BCFTOOLS_ARGS}
 echo 'normalizing done'
 
-REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
-REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-
-rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
-mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
-
-BCFTOOLS_REMOVE_ARGS="\
-annotate \
--x INFO
--o ${REMOVE_ANN_OUTPUT}"
-if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
-then
-	BCFTOOLS_REMOVE_ARGS+=" -O z"
-fi
-BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
-
-
-echo 'removing existing INFO annotations ...'
-bcftools ${BCFTOOLS_REMOVE_ARGS}
-echo 'removing existing INFO annotations done'
-
-module purge
-
-mv "${REMOVE_ANN_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${REMOVE_ANN_OUTPUT}"
+mv "${NORMALIZE_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${NORMALIZE_OUTPUT}"
 
 if [ "${KEEP}" == "0" ]; then
   rm -rf "${NORMALIZE_OUTPUT_DIR}"
