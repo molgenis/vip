@@ -170,9 +170,9 @@ fi
 BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_OUTPUT}"
 
 
-echo 'removing existing annotations ...'
+echo 'removing existing INFO annotations ...'
 bcftools ${BCFTOOLS_REMOVE_ARGS}
-echo 'removing existing annotations done'
+echo 'removing existing INFO annotations done'
 
 module purge
 
