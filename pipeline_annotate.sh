@@ -172,6 +172,18 @@ file="/apps/data/CAPICE/${ASSEMBLY}/capice_v1.0_snvs.vcf.gz"
 fields = ["CAP"]
 ops=["self"]
 names=["CAP"]
+
+[[annotation]]
+file="/apps/data/UMCG/MVL/${ASSEMBLY}/MVL_Totaal-Molecular_variants-2019-03-18_13-56-30_normalized.vcf.gz"
+fields = ["MVL"]
+ops=["self"]
+names=["MVL"]
+
+[[annotation]]
+file="/apps/data/UMCG/MVL/${ASSEMBLY}/Artefact_Totaal-Molecular_variants-2020-09-03_normalized.vcf.gz"
+fields = ["MVL"]
+ops=["self"]
+names=["MVLA"]
 EOT
 
 module load vcfanno
