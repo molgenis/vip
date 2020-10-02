@@ -2,22 +2,10 @@
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-##Filterfile=example_vep_vcfanno.filter.yml
 ##INFO=<ID=CAP,Number=A,Type=Float,Description="CAPICE pathogenicity prediction"
-##INFO=<ID=CLINVAR_SIGNIFICANCE,Number=.,Type=String,Description="Clinical significance for this single variant (from /apps/data/ClinVar/clinvar_20200224.vcf.gz)">
-##INFO=<ID=CS,Number=1,Type=Float,Description="CAPICE score (from input/vcfanno/capice.vcf.gz)">
 ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|ALLELE_NUM|DISTANCE|STRAND|FLAGS|PICK|SYMBOL_SOURCE|HGNC_ID|GENE_PHENO|gnomAD_AF|gnomAD_AFR_AF|gnomAD_AMR_AF|gnomAD_ASJ_AF|gnomAD_EAS_AF|gnomAD_FIN_AF|gnomAD_NFE_AF|gnomAD_OTH_AF|gnomAD_SAS_AF|CLIN_SIG|SOMATIC|PHENO|PUBMED|CHECK_REF">
-##INFO=<ID=FILTER_LABELS,Number=.,Type=String,Description=".">
-##INFO=<ID=FILTER_ROUTE,Number=.,Type=String,Description=".">
-##INFO=<ID=GADO,Number=.,Type=String,Description="Gene|Symbol|Rank|ZScore">
-##INFO=<ID=INHERITANCE_LABELS,Number=.,Type=String,Description=".">
-##INFO=<ID=INHERITANCE_ROUTE,Number=.,Type=String,Description=".">
-##INFO=<ID=UMCG_MVL,Number=1,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from input/vcfanno/vkgl_umcg_2020-02-28_11_28_42.vcf.gz)">
 ##INFO=<ID=VIPC,Number=A,Type=String,Description="VIP decision tree classification">
 ##INFO=<ID=VKGL,Number=A,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from /apps/data/VKGL/VKGL_public_consensus_jun2020_normalized.vcf.gz)">
-##INFO=<ID=VKGL_CL,Number=1,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from input/vcfanno/VKGL_public_consensus_dec2019.vcf.gz)">
-##INFO=<ID=VKGL_NR,Number=1,Type=Integer,Description="Number of supporting labs (from input/vcfanno/VKGL_public_consensus_dec2019.vcf.gz)">
-##Routesfile=example_vep_vcfanno.route.tsv
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Patient	Mother	Father
 1	10042538	.	C	T	.	PASS	CAP=0.0022;CSQ=T|missense_variant|MODERATE|NMNAT1|ENSG00000173614|Transcript|ENST00000377205|protein_coding|5/5||||763|619|207|R/W|Cgg/Tgg|rs142968179&CM127756|1||1||1|HGNC|17877|1|3.58e-05|0|2.891e-05|0|0|0|6.157e-05|0.0001629|0|pathogenic||1&1|26103963&22842229&22842230|,T|downstream_gene_variant|MODIFIER|NMNAT1|ENSG00000173614|Transcript|ENST00000403197|protein_coding||||||||||rs142968179&CM127756|1|714|1|||HGNC|17877|1|3.58e-05|0|2.891e-05|0|0|0|6.157e-05|0.0001629|0|pathogenic||1&1|26103963&22842229&22842230|,T|upstream_gene_variant|MODIFIER|RP11-807G9.2|ENSG00000241326|Transcript|ENST00000413148|sense_intronic||||||||||rs142968179&CM127756|1|661|1|||Clone_based_vega_gene|||3.58e-05|0|2.891e-05|0|0|0|6.157e-05|0.0001629|0|pathogenic||1&1|26103963&22842229&22842230|,T|missense_variant&NMD_transcript_variant|MODERATE|NMNAT1|ENSG00000173614|Transcript|ENST00000462686|nonsense_mediated_decay|5/6||||762|619|207|R/W|Cgg/Tgg|rs142968179&CM127756|1||1|||HGNC|17877|1|3.58e-05|0|2.891e-05|0|0|0|6.157e-05|0.0001629|0|pathogenic||1&1|26103963&22842229&22842230|,T|intron_variant|MODIFIER|NMNAT1|ENSG00000173614|Transcript|ENST00000496751|protein_coding||1/1||||||||rs142968179&CM127756|1||1|cds_start_NF||HGNC|17877|1|3.58e-05|0|2.891e-05|0|0|0|6.157e-05|0.0001629|0|pathogenic||1&1|26103963&22842229&22842230|;VIPC=T;VKGL=LP	GT:DP	1|0:50	0|0:10	0|0:10
 1	16376412	.	G	A	.	PASS	CAP=0.7896;CSQ=A|splice_donor_variant|HIGH|CLCNKB|ENSG00000184908|Transcript|ENST00000375667|protein_coding||3/12||||||||rs201204502&CS971662&CS1211892|1||1|||HGNC|2027|1|6.381e-05|6.155e-05|0|0|0|0|0.0001326|0|0|||0&1&1||,A|splice_donor_variant|HIGH|CLCNKB|ENSG00000184908|Transcript|ENST00000375679|protein_coding||10/19||||||||rs201204502&CS971662&CS1211892|1||1||1|HGNC|2027|1|6.381e-05|6.155e-05|0|0|0|0|0.0001326|0|0|||0&1&1||,A|upstream_gene_variant|MODIFIER|CLCNKB|ENSG00000184908|Transcript|ENST00000431772|protein_coding||||||||||rs201204502&CS971662&CS1211892|1|2406|1|cds_start_NF||HGNC|2027|1|6.381e-05|6.155e-05|0|0|0|0|0.0001326|0|0|||0&1&1||;VIPC=T;VKGL=LP	GT:DP	0|1:10	1|0:11	1|0:11

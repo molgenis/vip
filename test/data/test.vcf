@@ -1,20 +1,6 @@
 ##fileformat=VCFv4.2
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-##Filterfile=example_vep_vcfanno.filter.yml
-##INFO=<ID=CLINVAR_SIGNIFICANCE,Number=.,Type=String,Description="Clinical significance for this single variant (from /apps/data/ClinVar/clinvar_20200224.vcf.gz)">
-##INFO=<ID=CS,Number=1,Type=Float,Description="CAPICE score (from input/vcfanno/capice.vcf.gz)">
-##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|FLAGS|SYMBOL_SOURCE|HGNC_ID|REFSEQ_MATCH|SOURCE|HGVS_OFFSET|gnomAD_AF|gnomAD_AFR_AF|gnomAD_AMR_AF|gnomAD_ASJ_AF|gnomAD_EAS_AF|gnomAD_FIN_AF|gnomAD_NFE_AF|gnomAD_OTH_AF|gnomAD_SAS_AF|CLIN_SIG|SOMATIC|PHENO">
-##INFO=<ID=FILTER_LABELS,Number=.,Type=String,Description=".">
-##INFO=<ID=FILTER_ROUTE,Number=.,Type=String,Description=".">
-##INFO=<ID=GADO,Number=.,Type=String,Description="Gene|Symbol|Rank|ZScore">
-##INFO=<ID=INHERITANCE_LABELS,Number=.,Type=String,Description=".">
-##INFO=<ID=INHERITANCE_ROUTE,Number=.,Type=String,Description=".">
-##INFO=<ID=UMCG_MVL,Number=1,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from input/vcfanno/vkgl_umcg_2020-02-28_11_28_42.vcf.gz)">
-##INFO=<ID=VKGL_CL,Number=1,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from input/vcfanno/VKGL_public_consensus_dec2019.vcf.gz)">
-##INFO=<ID=VKGL_NR,Number=1,Type=Integer,Description="Number of supporting labs (from input/vcfanno/VKGL_public_consensus_dec2019.vcf.gz)">
-##Routesfile=example_vep_vcfanno.route.tsv
-##VEP="v94" time="2020-04-16 05:48:32" cache="/apps/data/Ensembl/VEP/94/homo_sapiens_merged/94_GRCh37" ensembl-funcgen=94.e493cc7 ensembl-io=94.d37323b ensembl=94.5c08d90 ensembl-variation=94.066b102 1000genomes="phase3" COSMIC="81" ClinVar="201706" ESP="20141103" HGMD-PUBLIC="20164" assembly="GRCh37.p13" dbSNP="150" gencode="GENCODE 19" genebuild="2011-04" gnomAD="170228" polyphen="2.2.2" refseq="01_2015" regbuild="1.0" sift="sift5.2.2"
 ##contig=<ID=1,length=249250621,assembly=b37>
 ##contig=<ID=2,assembly=b37,length=243199373>
 ##contig=<ID=3,assembly=b37,length=198022430>
