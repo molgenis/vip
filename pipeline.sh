@@ -20,6 +20,7 @@ INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
 ANN_VEP=""
+FLT_TREE=""
 FORCE=0
 KEEP=0
 ASSEMBLY=GRCh37
@@ -37,7 +38,8 @@ usage()
 -f,  --force               optional: Override the output file if it already exists.
 -k,  --keep                optional: Keep intermediate files.
 
---ann_vep                  optional: Variant Effect Predictor (VEP) options
+--ann_vep                  optional: Variant Effect Predictor (VEP) options.
+--flt_tree                 optional: Decision tree file (.json) that applies classes 'F' and 'T'.
 
 examples:
   pipeline.sh -i in.vcf -o out.vcf
@@ -48,10 +50,10 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep,ann_vep: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep,ann_vep:,flt_tree: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -88,6 +90,10 @@ do
       ;;
     --ann_vep)
       ANN_VEP="$2"
+      shift 2
+      ;;
+    --flt_tree)
+      FLT_TREE="$2"
       shift 2
       ;;
     -f | --force)
@@ -242,7 +248,12 @@ FILTER_ARGS="\
 if [ "${FORCE}" == "1" ]; then
 	FILTER_ARGS+=" -f"
 fi
-sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
+if [ ! -z "${FLT_TREE}" ]; then
+  sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS} --tree "${FLT_TREE}"
+else
+  sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
+fi
+
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
