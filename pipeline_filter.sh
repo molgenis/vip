@@ -16,6 +16,7 @@ source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
 OUTPUT=""
+TREE=""
 CPU_CORES=4
 FORCE=0
 
@@ -23,8 +24,9 @@ usage()
 {
   echo "usage: pipeline_filter.sh -i <arg> -o <arg> [-f]
 
--i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
--o,  --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
+-i,  --input   <arg>       required: Input VCF file (.vcf or .vcf.gz).
+-o,  --output  <arg>       required: Output VCF file (.vcf or .vcf.gz).
+-t,  --tree    <arg>       optional: Decision tree file (.json) that applies classes 'F' and 'T'.
 -c,  --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f,  --force               optional: Override the output file if it already exists.
 
@@ -33,7 +35,7 @@ examples:
   pipeline_filter.sh -i in.vcf.gz -o out.vcf.gz -c 2 -f"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:c:f --long input:,output:,cpu_cores:,force -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:t:c:f --long input:,output:,tree:,cpu_cores:,force -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -58,6 +60,10 @@ do
       ;;
     -c | --cpu_cores)
       CPU_CORES="$2"
+      shift 2
+      ;;
+    -t | --tree)
+      TREE=$(realpath "$2")
       shift 2
       ;;
     -f | --force)
@@ -106,10 +112,10 @@ fi
 
 # vcf-decision-tree
 DECISION_TREE_INPUT="${INPUT}"
-DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
-DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
-
-cat > "${DECISION_TREE_CONF}" << EOT
+if [ -z "${TREE}" ]
+then
+  DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
+  cat > "${DECISION_TREE_CONF}" << EOT
 {
   "rootNode": "filter",
   "nodes": {
@@ -178,6 +184,10 @@ cat > "${DECISION_TREE_CONF}" << EOT
   }
 }
 EOT
+else
+  DECISION_TREE_CONF="${TREE}"
+fi
+DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
 
 DECISION_TREE_ARGS="-i ${DECISION_TREE_INPUT} -c ${DECISION_TREE_CONF} -o ${DECISION_TREE_OUTPUT}"
 if [ "${FORCE}" == "1" ]

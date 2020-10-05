@@ -12,6 +12,9 @@ usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-k]
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 
+--ann_vep                 optional: Variant Effect Predictor (VEP) options.
+--flt_tree                optional: Decision tree file (.json) that applies classes 'F' and 'T'.
+
 examples:
   pipeline.sh -i in.vcf -o out.vcf
   pipeline.sh -i in.vcf -o out.vcf -r human_g1k_v37.fasta.gz
