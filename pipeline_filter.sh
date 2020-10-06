@@ -161,7 +161,7 @@ then
       "query": {
         "field": "INFO/CAP",
         "operator": ">=",
-        "value": 0.9
+        "value": 0.02
       },
       "outcomeTrue": {
         "nextNode": "MVL_b"
@@ -260,15 +260,15 @@ then
         "operator": "contains",
         "value": "pathogenic"
       },
-        "outcomeTrue": {
-          "nextNode": "exit_t"
-        },
-        "outcomeFalse": {
-          "nextNode": "clinvar_lp"
-        },
-        "outcomeMissing": {
-          "nextNode": "clinvar_lp"
-        }
+      "outcomeTrue": {
+        "nextNode": "exit_t"
+      },
+      "outcomeFalse": {
+        "nextNode": "clinvar_lp"
+      },
+      "outcomeMissing": {
+        "nextNode": "clinvar_lp"
+      }
     },
     "clinvar_lp": {
       "type": "BOOL",
@@ -277,32 +277,15 @@ then
         "operator": "contains",
         "value": "likely_pathogenic"
       },
-        "outcomeTrue": {
-          "nextNode": "exit_t"
-        },
-        "outcomeFalse": {
-          "nextNode": "clinvar_v"
-        },
-        "outcomeMissing": {
-          "nextNode": "clinvar_v"
-        }
-    },
-    "clinvar_v": {
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/CLIN_SIG",
-        "operator": "contains",
-        "value": "uncertain_significance"
+      "outcomeTrue": {
+        "nextNode": "exit_t"
       },
-        "outcomeTrue": {
-          "nextNode": "exit_t"
-        },
-        "outcomeFalse": {
-          "nextNode": "exit_f"
-        },
-        "outcomeMissing": {
-          "nextNode": "exit_f"
-        }
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_f"
+      }
     },
     "clinvar_lb": {
       "type": "BOOL",
@@ -311,15 +294,15 @@ then
         "operator": "contains",
         "value": "likely_benign"
       },
-        "outcomeTrue": {
-          "nextNode": "exit_f"
-        },
-        "outcomeFalse": {
-          "nextNode": "clinvar_b"
-        },
-        "outcomeMissing": {
-          "nextNode": "clinvar_b"
-        }
+      "outcomeTrue": {
+        "nextNode": "exit_f"
+      },
+      "outcomeFalse": {
+        "nextNode": "clinvar_b"
+      },
+      "outcomeMissing": {
+        "nextNode": "clinvar_b"
+      }
     },
     "clinvar_b": {
       "type": "BOOL",
@@ -327,16 +310,16 @@ then
         "field": "INFO/CSQ/CLIN_SIG",
         "operator": "contains",
         "value": "benign"},
-        "outcomeTrue": {
-          "nextNode": "exit_f"
-        },
-        "outcomeFalse": {
-          "nextNode": "gnomad"
-        },
-        "outcomeMissing": {
-          "nextNode": "gnomad"
-        }
+      "outcomeTrue": {
+        "nextNode": "exit_f"
       },
+      "outcomeFalse": {
+        "nextNode": "gnomad"
+      },
+      "outcomeMissing": {
+        "nextNode": "gnomad"
+      }
+    },
     "gnomad": {
       "type": "BOOL",
       "query": {
