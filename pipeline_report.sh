@@ -70,7 +70,6 @@ do
       ;;
     -t | --phenotypes)
       INPUT_PHENO="$2"
-      echo "PHENO ${INPUT_PHENO}"
       shift 2
       ;;
     -f | --force)
