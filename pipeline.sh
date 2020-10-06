@@ -12,6 +12,7 @@
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
 
+# shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
@@ -189,7 +190,6 @@ START_TIME=$SECONDS
 PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
 mkdir -p "${PREPROCESS_OUTPUT_DIR}"
 PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
-echo "PREPROCESS_OUTPUT: ${PREPROCESS_OUTPUT}"
 PREPROCESS_ARGS="\
   -i ${INPUT}\
   -o ${PREPROCESS_OUTPUT}\
