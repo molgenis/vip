@@ -186,8 +186,8 @@ ops=["self"]
 names=["MVLA"]
 EOT
 
-module load vcfanno
-module load HTSlib
+module load "${MOD_VCF_ANNO}"
+module load "${MOD_HTS_LIB}"
 
 VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_PRE_CONF} ${VCFANNO_INPUT}"
 vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_OUTPUT}
@@ -212,7 +212,7 @@ CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter_capice.vcf.gz
 rm -rf "${CAPICE_OUTPUT_DIR}"
 mkdir -p "${CAPICE_OUTPUT_DIR}"
 
-module load BCFtools
+module load "${MOD_BCF_TOOLS}"
 bcftools filter -i 'CAP="."' --threads "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
 module purge
 
@@ -224,14 +224,14 @@ else
 	VCFANNO_ALL_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_all.vcf.gz
 	echo "calculating CAPICE scores for variants without precomputed score ..."
 	
-	module load CADD
+	module load "${MOD_CADD}"
 	# strip headers from input vcf for cadd
 	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
 	gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
 	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz -c ${CPU_CORES} -s ${CADD_INPUT}
 	module purge
 
-	module load CAPICE
+	module load "${MOD_CAPICE}"
 	python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 	--input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
 	--model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
@@ -261,8 +261,8 @@ ops=["self"]
 names=["CAP"]
 EOT
 
-	module load vcfanno
-	module load HTSlib
+	module load "${MOD_VCF_ANNO}"
+	module load "${MOD_HTS_LIB}"
 
 	VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_POST_CONF} ${VCFANNO_OUTPUT}"
 	vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_ALL_OUTPUT}
@@ -280,7 +280,7 @@ VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 rm -rf "${VEP_OUTPUT_DIR}"
 mkdir -p "${VEP_OUTPUT_DIR}"
 
-module load VEP
+module load "${MOD_VEP}"
 VEP_ARGS="\
 --input_file ${VEP_INPUT} --format vcf \
 --output_file ${VEP_OUTPUT} --vcf"

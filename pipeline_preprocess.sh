@@ -127,7 +127,7 @@ fi
 
 PREPROCESS_INPUT="${INPUT}"
 
-module load BCFtools
+module load "${MOD_BCF_TOOLS}"
 
 REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
 REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
