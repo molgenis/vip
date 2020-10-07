@@ -199,13 +199,31 @@ then
         "value": 0.2
       },
       "outcomeTrue": {
+        "nextNode": "consequence"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "consequence"
+      }
+    },
+    "consequence": {
+      "type": "BOOL",
+      "description": "CSQ annotation exists",
+      "query": {
+        "field": "INFO/CSQ",
+        "operator": "!=",
+        "value": null
+      },
+      "outcomeTrue": {
         "nextNode": "gnomad"
       },
       "outcomeFalse": {
         "nextNode": "exit_f"
       },
       "outcomeMissing": {
-        "nextNode": "gnomad"
+        "nextNode": "exit_f"
       }
     },
     "gnomad": {
