@@ -212,9 +212,9 @@ then
       "type": "BOOL",
       "description": "CSQ annotation exists",
       "query": {
-        "field": "INFO/CSQ",
+        "field": "INFO/CSQ/SYMBOL",
         "operator": "!=",
-        "value": null
+        "value": "DUMMY_SYMBOL"
       },
       "outcomeTrue": {
         "nextNode": "gnomad"
