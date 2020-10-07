@@ -12,6 +12,7 @@
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
 
+# shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
@@ -69,7 +70,6 @@ do
       ;;
     -t | --phenotypes)
       INPUT_PHENO="$2"
-      echo "PHENO ${INPUT_PHENO}"
       shift 2
       ;;
     -f | --force)
@@ -130,7 +130,7 @@ if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
-module load vcf-report
+module load "${MOD_VCF_REPORT}"
 
 REPORT_ARGS="-i ${INPUT} -o ${OUTPUT}"
 if [ ! -z "${INPUT_PED}" ]; then

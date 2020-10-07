@@ -12,6 +12,7 @@
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
 
+# shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
@@ -250,7 +251,7 @@ if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
-module load vcf-decision-tree
+module load "${MOD_VCF_DECISION_TREE}"
 java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMINDECISIONMINTREE}"/vcf-decision-tree.jar ${DECISION_TREE_ARGS}
 module purge
 
@@ -259,8 +260,8 @@ BCFTOOLS_FILTER_INPUT="${DECISION_TREE_OUTPUT}"
 BCFTOOLS_FILTER_OUTPUT="${OUTPUT}"
 BCFTOOLS_FILTER_ARGS="--threads ${CPU_CORES} ${BCFTOOLS_FILTER_INPUT}"
 
-module load BCFtools
-module load HTSlib
+module load "${MOD_BCF_TOOLS}"
+module load "${MOD_HTS_LIB}"
 if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]
 then
 	bcftools filter -i'VIPC=="T"' ${BCFTOOLS_FILTER_ARGS} | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"

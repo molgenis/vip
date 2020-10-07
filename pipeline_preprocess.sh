@@ -12,6 +12,7 @@
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
 
+# shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 
 INPUT=""
@@ -127,7 +128,7 @@ fi
 
 PREPROCESS_INPUT="${INPUT}"
 
-module load BCFtools
+module load "${MOD_BCF_TOOLS}"
 
 REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
 REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
