@@ -142,7 +142,7 @@ then
     "mvl": {
       "type": "CATEGORICAL",
       "description": "Managed Variant List classification",
-      "field": "MVL",
+      "field": "INFO/MVL",
       "outcomeMap": {
         "P": {
           "nextNode": "exit_t"
@@ -167,7 +167,7 @@ then
     "vkgl": {
       "type": "CATEGORICAL",
       "description": "VKGL classification",
-      "field": "VKGL",
+      "field": "INFO/VKGL",
       "outcomeMap": {
         "P": {
           "nextNode": "exit_t"
