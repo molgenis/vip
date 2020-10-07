@@ -125,7 +125,9 @@ then
       "query": {
         "field": "FILTER",
         "operator": "==",
-        "value": ["PASS"]
+        "value": [
+          "PASS"
+        ]
       },
       "outcomeTrue": {
         "nextNode": "mvl"
@@ -149,10 +151,10 @@ then
           "nextNode": "exit_t"
         },
         "LB": {
-          "nextNode": "exit_f",
+          "nextNode": "exit_f"
         },
         "B": {
-          "nextNode": "exit_f",
+          "nextNode": "exit_f"
         }
       },
       "outcomeMissing": {
@@ -174,10 +176,10 @@ then
           "nextNode": "exit_t"
         },
         "LB": {
-          "nextNode": "exit_f",
+          "nextNode": "exit_f"
         },
         "B": {
-          "nextNode": "exit_f",
+          "nextNode": "exit_f"
         }
       },
       "outcomeMissing": {
