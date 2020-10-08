@@ -228,10 +228,10 @@ then
     },
     "gnomad": {
       "type": "BOOL",
-      "description": "gnomAD_AF >= 0.02",
+      "description": "gnomAD_AF < 0.02",
       "query": {
         "field": "INFO/CSQ/gnomAD_AF",
-        "operator": ">=",
+        "operator": "<",
         "value": 0.02
       },
       "outcomeTrue": {
