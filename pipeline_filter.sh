@@ -120,58 +120,128 @@ then
 {
   "rootNode": "filter",
   "nodes": {
-	"filter": {
-		"type": "BOOL",
-		"description": "All filters passed",
-		"query": {
-			"field": "FILTER",
-			"operator": "==",
-			"value": ["PASS"]
-		},
-		"outcomeTrue": {
-			"nextNode": "capice"
-		},
-		"outcomeFalse": {
-			"nextNode": "exit_f"
-		},
-		"outcomeMissing": {
-			"nextNode": "capice"
-		}
-	},
+    "filter": {
+      "type": "BOOL",
+      "description": "All filters passed",
+      "query": {
+        "field": "FILTER",
+        "operator": "==",
+        "value": [
+          "PASS"
+        ]
+      },
+      "outcomeTrue": {
+        "nextNode": "mvl"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "mvl"
+      }
+    },
+    "mvl": {
+      "type": "CATEGORICAL",
+      "description": "Managed Variant List classification",
+      "field": "INFO/MVL",
+      "outcomeMap": {
+        "P": {
+          "nextNode": "exit_t"
+        },
+        "LP": {
+          "nextNode": "exit_t"
+        },
+        "LB": {
+          "nextNode": "exit_f"
+        },
+        "B": {
+          "nextNode": "exit_f"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "vkgl"
+      },
+      "outcomeDefault": {
+        "nextNode": "vkgl"
+      }
+    },
+    "vkgl": {
+      "type": "CATEGORICAL",
+      "description": "VKGL classification",
+      "field": "INFO/VKGL",
+      "outcomeMap": {
+        "P": {
+          "nextNode": "exit_t"
+        },
+        "LP": {
+          "nextNode": "exit_t"
+        },
+        "LB": {
+          "nextNode": "exit_f"
+        },
+        "B": {
+          "nextNode": "exit_f"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "capice"
+      },
+      "outcomeDefault": {
+        "nextNode": "capice"
+      }
+    },
     "capice": {
       "type": "BOOL",
-      "description": "CAPICE score >= 0.9",
+      "description": "CAPICE score >= 0.2",
       "query": {
         "field": "INFO/CAP",
         "operator": ">=",
-        "value": 0.9
+        "value": 0.2
+      },
+      "outcomeTrue": {
+        "nextNode": "consequence"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "consequence"
+      }
+    },
+    "consequence": {
+      "type": "BOOL",
+      "description": "CSQ annotation exists",
+      "query": {
+        "field": "INFO/CSQ/SYMBOL",
+        "operator": "!=",
+        "value": "DUMMY_SYMBOL"
+      },
+      "outcomeTrue": {
+        "nextNode": "gnomad"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_f"
+      }
+    },
+    "gnomad": {
+      "type": "BOOL",
+      "description": "gnomAD_AF < 0.02",
+      "query": {
+        "field": "INFO/CSQ/gnomAD_AF",
+        "operator": "<",
+        "value": 0.02
       },
       "outcomeTrue": {
         "nextNode": "exit_t"
       },
       "outcomeFalse": {
-        "nextNode": "vkgl"
-      },
-      "outcomeMissing": {
-        "nextNode": "vkgl"
-      }
-    },
-	"vkgl": {
-      "type": "CATEGORICAL",
-      "field": "INFO/VKGL",
-      "outcomeMap": {
-		"P": {
-          "nextNode": "exit_t"
-        },
-        "LP": {
-          "nextNode": "exit_t"
-        }
-      },
-      "outcomeMissing": {
         "nextNode": "exit_f"
       },
-      "outcomeDefault": {
-        "nextNode": "exit_f"
+      "outcomeMissing": {
+        "nextNode": "exit_t"
       }
     },
     "exit_t": {
