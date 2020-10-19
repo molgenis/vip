@@ -9,3 +9,6 @@ MOD_VCF_ANNO="vcfanno/v0.3.2"
 MOD_VCF_DECISION_TREE="vcf-decision-tree/v0.0.2-Java-11-LTS"
 MOD_VCF_REPORT="vcf-report/v1.0.3-Java-11-LTS"
 MOD_VEP="VEP/100.4-foss-2018b-Perl-5.28.0"
+
+# Exits if (the specific version of) a module is missing.
+for i in ${!MOD_*}; do if ! module is-avail ${!i}; then echo "missing module: ${!i}"; exit 1; fi; done
