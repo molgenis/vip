@@ -127,7 +127,7 @@ fi
 
 PREPROCESS_INPUT="${INPUT}"
 
-module load BCFtools
+module load "${MOD_BCF_TOOLS}"
 
 BCFTOOLS_ARGS="\
 norm \

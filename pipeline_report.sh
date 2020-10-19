@@ -136,7 +136,7 @@ if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
-module load vcf-report
+module load "${MOD_VCF_REPORT}"
 
 REPORT_ARGS="-i ${INPUT} -o ${OUTPUT}"
 if [ ! -z "${INPUT_PED}" ]; then
