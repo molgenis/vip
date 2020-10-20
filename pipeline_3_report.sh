@@ -5,7 +5,7 @@ REPORT_OUTPUT="${REPORT_OUTPUT_DIR}"/"${OUTPUT_FILE}".html
 
 mkdir -p "${REPORT_OUTPUT_DIR}"
 
-module load vcf-report
+module load vcf-report/v0.0.9-Java-11-LTS
 
 REPORT_ARGS="-i ${REPORT_INPUT} -o ${REPORT_OUTPUT}"
 if [ ! -z "${INPUT_PED}" ]; then

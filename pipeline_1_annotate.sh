@@ -8,7 +8,7 @@ VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 
 mkdir -p "${VEP_OUTPUT_DIR}"
 
-module load VEP
+module load VEP/100.4-foss-2018b-Perl-5.28.0
 VEP_ARGS="\
 --input_file ${VEP_INPUT} --format vcf \
 --output_file ${VEP_OUTPUT} --vcf --compress_output bgzip --force_overwrite \
@@ -50,13 +50,13 @@ fi
 
 mkdir -p "${CAPICE_OUTPUT_DIR}"
 
-module load CADD
+module load CADD/v1.4-foss-2018b
 # strip headers from input vcf for cadd
 gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
 CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
 module unload CADD
 
-module load CAPICE
+module load CAPICE/v1.3.0-foss-2018b
 python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
 --input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
 --model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
@@ -73,8 +73,8 @@ VCFANNO_OUTPUT="${VCFANNO_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
 mkdir -p "${VCFANNO_OUTPUT_DIR}"
 
-module load vcfanno
-module load HTSlib
+module load vcfanno/v0.3.2
+module load HTSlib/1.10.2-GCCcore-7.3.0
 #inject location of the capice2vcf tool in the vcfAnno config.
 CAPICE_OUTPUT_FIXED="${CAPICE_OUTPUT_VCF/\.\//}"
 sed "s|OUTPUT_DIR|${CAPICE_OUTPUT_FIXED}|g" conf.template > ${VCFANNO_OUTPUT_DIR}/conf.toml
