@@ -60,7 +60,7 @@ module load "${MOD_CADD}"
 # strip headers from input vcf for cadd
 gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
 CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz ${CAPICE_OUTPUT_DIR}/input_headerless.vcf.gz
-module unload CADD
+module unload "${MOD_CADD}"
 
 module load CAPICE/v1.3.0-foss-2018b
 python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
