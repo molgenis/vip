@@ -53,7 +53,7 @@ mkdir -p "${CAPICE_OUTPUT_DIR}"
 # Use minimal CADD module if the non-minimal module is not available
 MOD_CADD="CADD/v1.4-foss-2018b"
 if ! module is-avail "${MOD_CADD}"; then
-  MOD_CADD="${MOD_CADD-minimal}"
+  MOD_CADD="${MOD_CADD}-minimal"
 fi
 module load "${MOD_CADD}"
 
