@@ -5,8 +5,8 @@ FILTER_OUTPUT="${FILTER_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
 mkdir -p "${FILTER_OUTPUT_DIR}"
 
-module load BCFtools
-module load HTSlib
+module load BCFtools/1.10.2-GCCcore-7.3.0
+module load HTSlib/1.10.2-GCCcore-7.3.0
 
 bcftools filter -e'CAP[*]<0.9' "${FILTER_INPUT}" | \
 bgzip -c > "${FILTER_OUTPUT}"

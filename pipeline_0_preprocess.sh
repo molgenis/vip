@@ -5,7 +5,7 @@ PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
 mkdir -p "${PREPROCESS_OUTPUT_DIR}"
 
-module load BCFtools
+module load BCFtools/1.10.2-GCCcore-7.3.0
 
 BCFTOOLS_ARGS="\
 norm \
