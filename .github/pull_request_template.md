@@ -1,7 +1,7 @@
 ## SOP
 ### Before merge:
 - [ ] Functionality works & meets specs
-- [ ] No issues running `sh test/pipeline_test.sh`
+- [ ] No issues running `bash test/pipeline_test.sh`
 - [ ] Code reviewed
 - [ ] Documentation was updated
 
