@@ -21,13 +21,15 @@ INPUT=""
 INPUT_REF=""
 INPUT_PROBANDS=""
 OUTPUT=""
+FILTER_LOW_QUAL=0
+FILTER_READ_DEPTH=20
 CPU_CORES=4
 FORCE=0
 KEEP=0
 
 usage()
 {
-  echo "usage: pipeline_preprocess.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [-f] [-k]
+  echo "usage: pipeline_preprocess.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [--filter_low_qual] [--filter_read_depth] [-f] [-k]
 
 -i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
@@ -37,14 +39,18 @@ usage()
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 
+--filter_low_qual         optional: Filter low quality records using filter status and read depth.
+--filter_read_depth       optional: Filter read depth threshold (default: 20)
+
 examples:
   pipeline_preprocess.sh -i in.vcf -o out.vcf
   pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
   pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -b sample0
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -c 2 -f -k"
+  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz --filter_low_qual --filter_read_depth 30
+  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 --filter_low_qual --filter_read_depth 30 -c 2 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:c:fk --long input:,output:,reference:,probands:,cpu_cores:,force,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:c:fk --long input:,output:,reference:,probands:,filter_low_qual,filter_read_depth:,cpu_cores:,force,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -85,6 +91,14 @@ do
       ;;
     -b | --probands)
       INPUT_PROBANDS="$2"
+      shift 2
+      ;;
+    --filter_low_qual)
+      FILTER_LOW_QUAL=1
+      shift
+      ;;
+    --filter_read_depth)
+      FILTER_READ_DEPTH="$2"
       shift 2
       ;;
     --)
@@ -163,6 +177,55 @@ echo 'removing existing INFO annotations ...'
 bcftools ${BCFTOOLS_REMOVE_ARGS}
 echo 'removing existing INFO annotations done'
 
+if [ "${FILTER_LOW_QUAL}" == "1" ];	then
+  echo -e "filtering low-quality records ..."
+
+  FILTER_LOW_QUAL_INPUT="${REMOVE_ANN_OUTPUT}"
+  FILTER_LOW_QUAL_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step2_filter_low_qual
+  FILTER_LOW_QUAL_OUTPUT="${FILTER_LOW_QUAL_OUTPUT_DIR}"/"${OUTPUT_FILE}"
+
+  rm -rf "${FILTER_LOW_QUAL_OUTPUT_DIR}"
+  mkdir -p "${FILTER_LOW_QUAL_OUTPUT_DIR}"
+
+  # get sample names from vcf
+  SAMPLE_NAMES=()
+  mapfile -t SAMPLE_NAMES < <( bcftools query -l "${INPUT}" )
+
+  if [ "${#SAMPLE_NAMES[*]}" == "0" ]; then
+          bcftools filter -i '(FILTER=="PASS" || FILTER==".")' --threads "${CPU_CORES}" "${FILTER_LOW_QUAL_INPUT}" > "${FILTER_LOW_QUAL_OUTPUT}"
+  else
+          if [ -n "$INPUT_PROBANDS" ]; then
+            # create sample name to sample index map
+            declare -A SAMPLE_NAMES_MAP
+            for i in "${!SAMPLE_NAMES[@]}"; do
+                  SAMPLE_NAMES_MAP["${SAMPLE_NAMES[$i]}"]=$i
+            done
+
+            # create proband ids
+            PROBAND_IDS=()
+            # shellcheck disable=SC2206
+            PROBAND_NAMES=(${INPUT_PROBANDS//,/ })
+            for i in "${PROBAND_NAMES[@]}"; do
+                    PROBAND_IDS+=("${SAMPLE_NAMES_MAP[$i]}")
+            done
+            PROBAND_IDS_STR=$(IFS=","; echo "${PROBAND_IDS[*]}")
+          else
+            PROBAND_IDS_STR="*"
+          fi
+
+
+          # run include filter and exclude filter
+          FILTER_INCLUDE="(FILTER==\"PASS\" || FILTER==\".\") && FORMAT/DP[${PROBAND_IDS_STR}] >= ${FILTER_READ_DEPTH}"
+          FILTER_EXCLUDE="FORMAT/DP < ${FILTER_READ_DEPTH}"
+          bcftools filter -i "${FILTER_INCLUDE}" "${FILTER_LOW_QUAL_INPUT}" | bcftools filter -e "${FILTER_EXCLUDE}" -S . --threads "${CPU_CORES}" > "${FILTER_LOW_QUAL_OUTPUT}"
+  fi
+
+  echo -e "filtering low-quality records done"
+else
+  FILTER_LOW_QUAL_OUTPUT="${REMOVE_ANN_OUTPUT}"
+fi
+
+NORMALIZE_INPUT="${FILTER_LOW_QUAL_OUTPUT}"
 NORMALIZE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step0_normalize
 NORMALIZE_OUTPUT="${NORMALIZE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 
@@ -181,7 +244,7 @@ fi
 if [ ! -z "${INPUT_REF}" ]; then
 	BCFTOOLS_ARGS+=" -f ${INPUT_REF} -c e"
 fi
-BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${REMOVE_ANN_OUTPUT}"
+BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_INPUT}"
 
 echo 'normalizing ...'
 bcftools ${BCFTOOLS_ARGS}
@@ -195,4 +258,7 @@ ln -s "${OUTPUT}" "${NORMALIZE_OUTPUT}"
 if [ "${KEEP}" == "0" ]; then
   rm -rf "${NORMALIZE_OUTPUT_DIR}"
   rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
+  if [ "${FILTER_LOW_QUAL}" == "1" ];	then
+    rm -rf "${FILTER_LOW_QUAL_OUTPUT_DIR}"
+  fi
 fi
