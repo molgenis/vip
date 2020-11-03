@@ -14,9 +14,12 @@ if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
+# shellcheck source=utils/utils.sh
+source "${SCRIPT_DIR}"/utils/utils.sh
 
 INPUT=""
 INPUT_REF=""
+INPUT_PROBANDS=""
 OUTPUT=""
 CPU_CORES=4
 FORCE=0
@@ -29,6 +32,7 @@ usage()
 -i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
 -r, --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
+-b, --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
 -c, --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
@@ -36,10 +40,11 @@ usage()
 examples:
   pipeline_preprocess.sh -i in.vcf -o out.vcf
   pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -c 2 -f -k"
+  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -b sample0
+  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -c 2 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:c:fk --long input:,output:,reference:,cpu_cores:,force,keep -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:c:fk --long input:,output:,reference:,probands:,cpu_cores:,force,keep -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -76,6 +81,10 @@ do
       ;;
     -r | --reference)
       INPUT_REF=$(realpath "$2")
+      shift 2
+      ;;
+    -b | --probands)
+      INPUT_PROBANDS="$2"
       shift 2
       ;;
     --)
@@ -124,6 +133,9 @@ then
     echo -e "${INPUT_REF} does not exist.\n"
     exit 2
   fi
+fi
+if ! containsProbands "${INPUT_PROBANDS}" "${INPUT}"; then
+  exit 2
 fi
 
 PREPROCESS_INPUT="${INPUT}"

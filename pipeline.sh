@@ -14,9 +14,12 @@ if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
+# shellcheck source=utils/utils.sh
+source "${SCRIPT_DIR}"/utils/utils.sh
 
 INPUT=""
 INPUT_REF=""
+INPUT_PROBANDS=""
 INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
@@ -29,11 +32,12 @@ CPU_CORES=4
 
 usage()
 {
-  echo "usage: pipeline.sh -i <arg> -o <arg> [-p <arg>] [-f] [-k]
+  echo "usage: pipeline.sh -i <arg> -o <arg>
 
 -i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o,  --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
 -r,  --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
+-b,  --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
 -p,  --pedigree <arg>      optional: Pedigree file (.ped).
 -t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -f,  --force               optional: Override the output file if it already exists.
@@ -45,16 +49,17 @@ usage()
 examples:
   pipeline.sh -i in.vcf -o out.vcf
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -b sample0
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:p:t:fk --long input:,output:,reference:,pedigree:,phenotypes:,force,keep,ann_vep:,flt_tree: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,flt_tree: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -79,6 +84,10 @@ do
       ;;
     -r | --reference)
       INPUT_REF=$(realpath "$2")
+      shift 2
+      ;;
+    -b | --probands)
+      INPUT_PROBANDS="$2"
       shift 2
       ;;
     -p | --pedigree)
@@ -153,6 +162,9 @@ then
     exit 2
   fi
 fi
+if ! containsProbands "${INPUT_PROBANDS}" "${INPUT}"; then
+  exit 2
+fi
 if [ ! -z ${INPUT_PED} ] && [ ! -f "${INPUT_PED}" ]
 then
   echo -e "${INPUT_PED} does not exist.\n"
@@ -163,7 +175,6 @@ then
   echo -e "${INPUT_REF} does not exist.\n"
   exit 2
 fi
-
 if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
   OUTPUT_FILENAME=$(basename "${OUTPUT}" .vcf.gz)
@@ -197,13 +208,16 @@ PREPROCESS_ARGS="\
 if [ ! -z "${INPUT_REF}" ]; then
 	PREPROCESS_ARGS+=" -r ${INPUT_REF}"
 fi
+if [ -n "${INPUT_PROBANDS}" ]; then
+	PREPROCESS_ARGS+=" -b ${INPUT_PROBANDS}"
+fi
 if [ "${FORCE}" == "1" ]; then
 	PREPROCESS_ARGS+=" -f"
 fi
 if [ "${KEEP}" == "1" ]; then
 	PREPROCESS_ARGS+=" -k"
 fi
-sh "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
+bash "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
@@ -228,9 +242,9 @@ if [ "${FORCE}" == "1" ]; then
 fi
 
 if [ ! -z "${ANN_VEP}" ]; then
-  sh "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
+  bash "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
 else
-  sh "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}
+  bash "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
@@ -249,9 +263,9 @@ if [ "${FORCE}" == "1" ]; then
 	FILTER_ARGS+=" -f"
 fi
 if [ ! -z "${FLT_TREE}" ]; then
-  sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS} --tree "${FLT_TREE}"
+  bash "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS} --tree "${FLT_TREE}"
 else
-  sh "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
+  bash "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
@@ -268,6 +282,9 @@ REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
 REPORT_ARGS="\
   -i ${FILTER_OUTPUT} \
   -o ${REPORT_OUTPUT}"
+if [ -n "${INPUT_PROBANDS}" ]; then
+	REPORT_ARGS+=" -b ${INPUT_PROBANDS}"
+fi
 if [ ! -z "${INPUT_PED}" ]; then
 	REPORT_ARGS+=" -p ${INPUT_PED}"
 fi
@@ -277,7 +294,7 @@ fi
 if [ "${FORCE}" == "1" ]; then
 	REPORT_ARGS+=" -f"
 fi
-sh "${SCRIPT_DIR}"/pipeline_report.sh ${REPORT_ARGS}
+bash "${SCRIPT_DIR}"/pipeline_report.sh ${REPORT_ARGS}
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 

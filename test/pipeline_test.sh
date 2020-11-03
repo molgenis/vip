@@ -1,3 +1,4 @@
+#!/bin/bash
 INPUT='./test/data/test.vcf'
 PED='./test/data/test.ped'
 HPO='HP:0004383'
@@ -11,14 +12,14 @@ LOG='./test/output/test_output.log'
 
 echo -e "Test started..."
 
-sh ./pipeline.sh -i "${INPUT}" -o "${ACTUAL_VCF}.gz" -p "${PED}" -t "${HPO}" -f &> "${LOG}"
+bash ./pipeline.sh -i "${INPUT}" -o "${ACTUAL_VCF}.gz" -p "${PED}" -t "${HPO}" -f &> "${LOG}"
 
 if [ $? -eq 0 ]
 then
   echo -e "\e[32mPipeline ran succesfully.  \e[39m"
 else
   echo -e "\e[31mAn error occured while running the pipeline, see './test/output/test_output.log' for more details.  \e[39m"
-  echo -e "\e[31mTest should run from the 'main' pipeline folder 'sh test/pipeline_test.sh' \e[39m"
+  echo -e "\e[31mTest should run from the 'main' pipeline folder 'bash test/pipeline_test.sh' \e[39m"
   exit 1
 fi
 
