@@ -204,6 +204,7 @@ PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
 PREPROCESS_ARGS="\
   -i ${INPUT}\
   -o ${PREPROCESS_OUTPUT}\
+  --filter_low_qual\
   -c ${CPU_CORES}"
 if [ ! -z "${INPUT_REF}" ]; then
 	PREPROCESS_ARGS+=" -r ${INPUT_REF}"
