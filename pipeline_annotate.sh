@@ -190,8 +190,8 @@ EOT
 module load "${MOD_VCF_ANNO}"
 module load "${MOD_HTS_LIB}"
 
-VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_PRE_CONF} ${VCFANNO_INPUT}"
-vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_OUTPUT}
+VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_PRE_CONF}" "${VCFANNO_INPUT}")
+vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_OUTPUT}"
 
 module purge
 
@@ -228,29 +228,22 @@ else
 	module load "${MOD_CADD}"
 	# strip headers from input vcf for cadd
 	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
-	gunzip -c $CAPICE_INPUT | sed '/^#/d' | bgzip > ${CADD_INPUT}
-	CADD.sh -a -g ${ASSEMBLY} -o ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz -c ${CPU_CORES} -s ${CADD_INPUT}
+	gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip > "${CADD_INPUT}"
+	CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}")
+	CADD.sh "${CADD_ARGS[@]}"
 	module purge
 
 	module load "${MOD_CAPICE}"
-	python ${EBROOTCAPICE}/CAPICE_scripts/model_inference.py \
-	--input_path ${CAPICE_OUTPUT_DIR}/cadd.tsv.gz \
-	--model_path ${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat \
-	--prediction_savepath ${CAPICE_OUTPUT}
+	PYTHON_ARGS=("${EBROOTCAPICE}/CAPICE_scripts/model_inference.py" "--input_path" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "--model_path" "${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat" "--prediction_savepath" "${CAPICE_OUTPUT}")
+	python "${PYTHON_ARGS[@]}"
 
-	CAPICE_ARGS="\
-	-Djava.io.tmpdir="${TMPDIR}" \
-	-XX:ParallelGCThreads=2 \
-	-Xmx1g \
-	-jar ${EBROOTCAPICE}/capice2vcf.jar \
-	-i ${CAPICE_OUTPUT} \
-	-o ${CAPICE_OUTPUT_VCF}
-	"
+	CAPICE_ARGS=("-Djava.io.tmpdir=${TMPDIR}" "-XX:ParallelGCThreads=2" "-Xmx1g" "-jar" "${EBROOTCAPICE}/capice2vcf.jar" "-i" "${CAPICE_OUTPUT}" "-o" "${CAPICE_OUTPUT_VCF}")
+
 	if [ "${FORCE}" == "1" ]
 	then
-		CAPICE_ARGS+=" -f"
+		CAPICE_ARGS+=("-f")
 	fi
-	java ${CAPICE_ARGS}
+	java "${CAPICE_ARGS[@]}"
 
 	module purge
 
@@ -265,8 +258,8 @@ EOT
 	module load "${MOD_VCF_ANNO}"
 	module load "${MOD_HTS_LIB}"
 
-	VCFANNO_ARGS="-p ${CPU_CORES} ${VCFANNO_POST_CONF} ${VCFANNO_OUTPUT}"
-	vcfanno ${VCFANNO_ARGS} | bgzip > ${VCFANNO_ALL_OUTPUT}
+	VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_POST_CONF}" "${VCFANNO_OUTPUT}")
+	vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_ALL_OUTPUT}"
 
 	module purge
 fi
@@ -282,37 +275,36 @@ rm -rf "${VEP_OUTPUT_DIR}"
 mkdir -p "${VEP_OUTPUT_DIR}"
 
 module load "${MOD_VEP}"
-VEP_ARGS="\
---input_file ${VEP_INPUT} --format vcf \
---output_file ${VEP_OUTPUT} --vcf"
+VEP_ARGS=("--input_file" "${VEP_INPUT}" "--format" "vcf")
+VEP_ARGS+=("--output_file" "${VEP_OUTPUT}" "--vcf")
 if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
-	VEP_ARGS+=" --compress_output bgzip"
+	VEP_ARGS+=("--compress_output" "bgzip")
 fi
 
-VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
---offline --cache --dir_cache /apps/data/Ensembl/VEP/100 \
---species homo_sapiens --assembly ${ASSEMBLY} \
---flag_pick_allele \
---no_intergenic \
---af_gnomad --pubmed --gene_phenotype \
---shift_3prime 1 \
---no_escape \
---allele_number \
---numbers \
---dont_skip \
---allow_non_variant \
---fork ${CPU_CORES}"
+VEP_ARGS+=("--stats_file" "${VEP_OUTPUT_STATS}" "--stats_text")
+VEP_ARGS+=("--offline" "--cache" "--dir_cache" "/apps/data/Ensembl/VEP/100")
+VEP_ARGS+=("--species" "homo_sapiens" "--assembly" "${ASSEMBLY}")
+VEP_ARGS+=("--flag_pick_allele")
+VEP_ARGS+=("--no_intergenic")
+VEP_ARGS+=("--af_gnomad" "--pubmed" "--gene_phenotype")
+VEP_ARGS+=("--shift_3prime" "1")
+VEP_ARGS+=("--no_escape")
+VEP_ARGS+=("--allele_number")
+VEP_ARGS+=("--numbers")
+VEP_ARGS+=("--dont_skip")
+VEP_ARGS+=("--allow_non_variant")
+VEP_ARGS+=("--fork" "${CPU_CORES}")
 
-if [ ! -z ${INPUT_REF} ]; then
-	VEP_ARGS+=" --fasta ${INPUT_REF} --hgvs"
+if [ -n "${INPUT_REF}" ]; then
+	VEP_ARGS+=("--fasta" "${INPUT_REF}" "--hgvs")
 fi
 
-if [ ! -z "${ANN_VEP}" ]; then
-	VEP_ARGS+=" ${ANN_VEP}"
+if [ -n "${ANN_VEP}" ]; then
+	VEP_ARGS+=("${ANN_VEP}")
 fi
 
-vep ${VEP_ARGS}
+vep "${VEP_ARGS[@]}"
 
 module purge
 

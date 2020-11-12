@@ -162,19 +162,15 @@ REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
 mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
 
-BCFTOOLS_REMOVE_ARGS="\
-annotate \
--x INFO
--o ${REMOVE_ANN_OUTPUT}"
+BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO" "-o" "${REMOVE_ANN_OUTPUT}")
 if [[ "${REMOVE_ANN_OUTPUT}" == *.vcf.gz ]]
 then
-	BCFTOOLS_REMOVE_ARGS+=" -O z"
+	BCFTOOLS_REMOVE_ARGS+=("-O" "z")
 fi
-BCFTOOLS_REMOVE_ARGS+=" --threads ${CPU_CORES} ${PREPROCESS_INPUT}"
-
+BCFTOOLS_REMOVE_ARGS+=("--threads" "${CPU_CORES}" "${PREPROCESS_INPUT}")
 
 echo 'removing existing INFO annotations ...'
-bcftools ${BCFTOOLS_REMOVE_ARGS}
+bcftools "${BCFTOOLS_REMOVE_ARGS[@]}"
 echo 'removing existing INFO annotations done'
 
 if [ "${FILTER_LOW_QUAL}" == "1" ];	then
@@ -232,22 +228,18 @@ NORMALIZE_OUTPUT="${NORMALIZE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 rm -rf "${NORMALIZE_OUTPUT_DIR}"
 mkdir -p "${NORMALIZE_OUTPUT_DIR}"
 
-BCFTOOLS_ARGS="\
-norm \
--m -both \
--s \
--o ${NORMALIZE_OUTPUT}"
+BCFTOOLS_ARGS=("norm" "-m" "-both" "-s" "-o" "${NORMALIZE_OUTPUT}")
 if [[ "${NORMALIZE_OUTPUT}" == *.vcf.gz ]]
 then
-	BCFTOOLS_ARGS+=" -O z"
+	BCFTOOLS_ARGS+=("-O" "z")
 fi
-if [ ! -z "${INPUT_REF}" ]; then
-	BCFTOOLS_ARGS+=" -f ${INPUT_REF} -c e"
+if [ -n "${INPUT_REF}" ]; then
+	BCFTOOLS_ARGS+=("-f" "${INPUT_REF}" "-c" "e")
 fi
-BCFTOOLS_ARGS+=" --threads ${CPU_CORES} ${NORMALIZE_INPUT}"
+BCFTOOLS_ARGS+=("--threads" "${CPU_CORES}" "${NORMALIZE_INPUT}")
 
 echo 'normalizing ...'
-bcftools ${BCFTOOLS_ARGS}
+bcftools "${BCFTOOLS_ARGS[@]}"
 echo 'normalizing done'
 
 module purge
