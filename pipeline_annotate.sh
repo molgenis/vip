@@ -296,7 +296,7 @@ VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --symbol \
 --flag_pick_allele \
 --no_intergenic \
---af_gnomad --pubmed --gene_phenotype \
+--af_gnomad --pubmed \
 --shift_3prime 1 \
 --no_escape \
 --allele_number \
