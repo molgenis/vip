@@ -293,6 +293,7 @@ fi
 VEP_ARGS+=" --stats_file ${VEP_OUTPUT_STATS} --stats_text \
 --offline --cache --dir_cache /apps/data/Ensembl/VEP/100 \
 --species homo_sapiens --assembly ${ASSEMBLY} \
+--symbol \
 --flag_pick_allele \
 --no_intergenic \
 --af_gnomad --pubmed --gene_phenotype \
