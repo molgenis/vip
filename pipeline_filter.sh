@@ -260,30 +260,30 @@ else
 fi
 DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
 
-DECISION_TREE_ARGS="-i ${DECISION_TREE_INPUT} -c ${DECISION_TREE_CONF} -o ${DECISION_TREE_OUTPUT}"
+DECISION_TREE_ARGS=("-i" "${DECISION_TREE_INPUT}" "-c" "${DECISION_TREE_CONF}" "-o" "${DECISION_TREE_OUTPUT}")
 if [ "${FORCE}" == "1" ]
 then
-  DECISION_TREE_ARGS+=" -f"
+  DECISION_TREE_ARGS+=("-f")
 fi
 if [ -z "${TMPDIR+x}" ]; then
 	TMPDIR=/tmp
 fi
 
 module load "${MOD_VCF_DECISION_TREE}"
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMINDECISIONMINTREE}"/vcf-decision-tree.jar ${DECISION_TREE_ARGS}
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMINDECISIONMINTREE}"/vcf-decision-tree.jar "${DECISION_TREE_ARGS[@]}"
 module purge
 
 # bcftools filter
 BCFTOOLS_FILTER_INPUT="${DECISION_TREE_OUTPUT}"
 BCFTOOLS_FILTER_OUTPUT="${OUTPUT}"
-BCFTOOLS_FILTER_ARGS="--threads ${CPU_CORES} ${BCFTOOLS_FILTER_INPUT}"
+BCFTOOLS_FILTER_ARGS=("--threads" "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}")
 
 module load "${MOD_BCF_TOOLS}"
 module load "${MOD_HTS_LIB}"
 if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]
 then
-	bcftools filter -i'VIPC=="T"' ${BCFTOOLS_FILTER_ARGS} | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
+	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
 else
-	bcftools filter -i'VIPC=="T"' ${BCFTOOLS_FILTER_ARGS} > "${BCFTOOLS_FILTER_OUTPUT}"
+	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" > "${BCFTOOLS_FILTER_OUTPUT}"
 fi
 module purge

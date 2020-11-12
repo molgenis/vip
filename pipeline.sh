@@ -201,24 +201,20 @@ START_TIME=$SECONDS
 PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
 mkdir -p "${PREPROCESS_OUTPUT_DIR}"
 PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
-PREPROCESS_ARGS="\
-  -i ${INPUT}\
-  -o ${PREPROCESS_OUTPUT}\
-  --filter_low_qual\
-  -c ${CPU_CORES}"
-if [ ! -z "${INPUT_REF}" ]; then
-	PREPROCESS_ARGS+=" -r ${INPUT_REF}"
+PREPROCESS_ARGS=("-i" "${INPUT}" "-o" "${PREPROCESS_OUTPUT}" "--filter_low_qual" "-c" "${CPU_CORES}")
+if [ -n "${INPUT_REF}" ]; then
+        PREPROCESS_ARGS+=("-r" "${INPUT_REF}")
 fi
 if [ -n "${INPUT_PROBANDS}" ]; then
-	PREPROCESS_ARGS+=" -b ${INPUT_PROBANDS}"
+        PREPROCESS_ARGS+=("-b" "${INPUT_PROBANDS}")
 fi
 if [ "${FORCE}" == "1" ]; then
-	PREPROCESS_ARGS+=" -f"
+        PREPROCESS_ARGS+=("-f")
 fi
 if [ "${KEEP}" == "1" ]; then
-	PREPROCESS_ARGS+=" -k"
+        PREPROCESS_ARGS+=("-k")
 fi
-bash "${SCRIPT_DIR}"/pipeline_preprocess.sh ${PREPROCESS_ARGS}
+bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
@@ -227,25 +223,21 @@ START_TIME=$SECONDS
 ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step1_annotate/
 mkdir -p "${ANNOTATE_OUTPUT_DIR}"
 ANNOTATE_OUTPUT="${ANNOTATE_OUTPUT_DIR}/${OUTPUT_FILE}"
-ANNOTATE_ARGS="\
-  -i ${PREPROCESS_OUTPUT} \
-  -o ${ANNOTATE_OUTPUT} \
-  -c ${CPU_CORES} \
-  -a ${ASSEMBLY}"
-if [ ! -z "${INPUT_REF}" ]; then
-	ANNOTATE_ARGS+=" -r ${INPUT_REF}"
+ANNOTATE_ARGS=("-i" "${PREPROCESS_OUTPUT}" "-o" "${ANNOTATE_OUTPUT}" "-c" "${CPU_CORES}" "-a" "${ASSEMBLY}")
+if [ -n "${INPUT_REF}" ]; then
+	ANNOTATE_ARGS+=("-r" "${INPUT_REF}")
 fi
 if [ "${KEEP}" == "1" ]; then
-	ANNOTATE_ARGS+=" -k"
+	ANNOTATE_ARGS+=("-k")
 fi
 if [ "${FORCE}" == "1" ]; then
-	ANNOTATE_ARGS+=" -f"
+  ANNOTATE_ARGS+=("-f")
 fi
-
-if [ ! -z "${ANN_VEP}" ]; then
-  bash "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}  --ann_vep "${ANN_VEP}"
+# TODO merge
+if [ -n "${ANN_VEP}" ]; then
+  bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"  --ann_vep "${ANN_VEP}"
 else
-  bash "${SCRIPT_DIR}"/pipeline_annotate.sh ${ANNOTATE_ARGS}
+  bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
@@ -256,17 +248,15 @@ START_TIME=$SECONDS
 FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step2_filter/
 mkdir -p "${FILTER_OUTPUT_DIR}"
 FILTER_OUTPUT="${FILTER_OUTPUT_DIR}/${OUTPUT_FILE}"
-FILTER_ARGS="\
-  -i ${ANNOTATE_OUTPUT}\
-  -o ${FILTER_OUTPUT} \
-  -c ${CPU_CORES}"
+FILTER_ARGS=("-i" "${ANNOTATE_OUTPUT}" "-o" "${FILTER_OUTPUT}" "-c" "${CPU_CORES}")
 if [ "${FORCE}" == "1" ]; then
-	FILTER_ARGS+=" -f"
+	FILTER_ARGS+=("-f")
 fi
-if [ ! -z "${FLT_TREE}" ]; then
-  bash "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS} --tree "${FLT_TREE}"
+# TODO merge
+if [ -n "${FLT_TREE}" ]; then
+  bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}" --tree "${FLT_TREE}"
 else
-  bash "${SCRIPT_DIR}"/pipeline_filter.sh ${FILTER_ARGS}
+  bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
@@ -280,22 +270,20 @@ START_TIME=$SECONDS
 REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step4_report/
 mkdir -p "${REPORT_OUTPUT_DIR}"
 REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
-REPORT_ARGS="\
-  -i ${FILTER_OUTPUT} \
-  -o ${REPORT_OUTPUT}"
+REPORT_ARGS=("-i" "${FILTER_OUTPUT}" "-o" "${REPORT_OUTPUT}")
 if [ -n "${INPUT_PROBANDS}" ]; then
-	REPORT_ARGS+=" -b ${INPUT_PROBANDS}"
+	REPORT_ARGS+=("-b" "${INPUT_PROBANDS}")
 fi
-if [ ! -z "${INPUT_PED}" ]; then
-	REPORT_ARGS+=" -p ${INPUT_PED}"
+if [ -n "${INPUT_PED}" ]; then
+	REPORT_ARGS+=("-p" "${INPUT_PED}")
 fi
-if [ ! -z "${INPUT_PHENO}" ]; then
-	REPORT_ARGS+=" -t ${INPUT_PHENO}"
+if [ -n "${INPUT_PHENO}" ]; then
+	REPORT_ARGS+=("-t" "${INPUT_PHENO}")
 fi
 if [ "${FORCE}" == "1" ]; then
-	REPORT_ARGS+=" -f"
+	REPORT_ARGS+=("-f")
 fi
-bash "${SCRIPT_DIR}"/pipeline_report.sh ${REPORT_ARGS}
+bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 

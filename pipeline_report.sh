@@ -142,17 +142,17 @@ fi
 
 module load "${MOD_VCF_REPORT}"
 
-REPORT_ARGS="-i ${INPUT} -o ${OUTPUT}"
+REPORT_ARGS=("-i" "${INPUT}" "-o" "${OUTPUT}")
 if [ -n "${INPUT_PROBANDS}" ]; then
-	REPORT_ARGS+=" -pb ${INPUT_PROBANDS}"
+	REPORT_ARGS+=("-pb" "${INPUT_PROBANDS}")
 fi
 if [ -n "${INPUT_PED}" ]; then
-	REPORT_ARGS+=" -pd ${INPUT_PED}"
+	REPORT_ARGS+=("-pd" "${INPUT_PED}")
 fi
 if [ -n "${INPUT_PHENO}" ]; then
-	REPORT_ARGS+=" -ph ${INPUT_PHENO}"
+	REPORT_ARGS+=("-ph" "${INPUT_PHENO}")
 fi
 
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar ${REPORT_ARGS}
+java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar "${REPORT_ARGS[@]}"
 
 module unload vcf-report
