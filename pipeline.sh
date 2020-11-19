@@ -233,12 +233,10 @@ fi
 if [ "${FORCE}" == "1" ]; then
   ANNOTATE_ARGS+=("-f")
 fi
-# TODO merge
 if [ -n "${ANN_VEP}" ]; then
-  bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"  --ann_vep "${ANN_VEP}"
-else
-  bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
+  ANNOTATE_ARGS+=("--ann_vep" "${ANN_VEP}")
 fi
+bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 2/4 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
@@ -252,12 +250,10 @@ FILTER_ARGS=("-i" "${ANNOTATE_OUTPUT}" "-o" "${FILTER_OUTPUT}" "-c" "${CPU_CORES
 if [ "${FORCE}" == "1" ]; then
 	FILTER_ARGS+=("-f")
 fi
-# TODO merge
 if [ -n "${FLT_TREE}" ]; then
-  bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}" --tree "${FLT_TREE}"
-else
-  bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
+  FILTER_ARGS+=("--tree" "${FLT_TREE}")
 fi
+bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"

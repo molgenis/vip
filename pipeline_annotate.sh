@@ -302,7 +302,8 @@ if [ -n "${INPUT_REF}" ]; then
 fi
 
 if [ -n "${ANN_VEP}" ]; then
-	VEP_ARGS+=("${ANN_VEP}")
+	# shellcheck disable=SC2206
+	VEP_ARGS+=(${ANN_VEP})
 fi
 
 vep "${VEP_ARGS[@]}"
