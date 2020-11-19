@@ -157,7 +157,7 @@ mkdir -p "${VCFANNO_OUTPUT_DIR}"
 
 cat > "${VCFANNO_PRE_CONF}" << EOT
 [[annotation]]
-file="/apps/data/VKGL/VKGL_public_consensus_jun2020_normalized.vcf.gz"
+file="/apps/data/VKGL/vkgl_consensus_jun2020_normalized.vcf.gz"
 fields = ["VKGL_CL"]
 ops=["self"]
 names=["VKGL"]
