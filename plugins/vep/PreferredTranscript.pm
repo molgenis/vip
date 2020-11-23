@@ -41,11 +41,11 @@ sub new {
     while(<FH>){
         my $preferred_transcript = $_;
 	chomp $preferred_transcript;
+	$preferred_transcript =~ s/(.*)\..*/$1/;
         $preferred_transcripts{$preferred_transcript} = 1;
     }
 
     $self->{preferred_transcripts} = \%preferred_transcripts;
-
     return $self;
 }
 
@@ -54,7 +54,7 @@ sub run {
     my $preferred_transcripts = $self->{preferred_transcripts};
 
     my $transcriptId = $tva->transcript->stable_id;
-
+    $transcriptId =~ s/(.*)\..*/$1/;
     return {
        PREFERRED => $preferred_transcripts->{$transcriptId}
     };
