@@ -10,7 +10,7 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
  Hpo
 =head1 SYNOPSIS
  mv Hpo.pm ~/.vep/Plugins
- ./vep -i variations.vcf --plugin Hpo,/FULL_PATH_TO_GENES_TO_PHENOTYPE_FILE/genes_to_phenotype.txt,HP:0000275;HP:0000276
+ ./vep -i variations.vcf --plugin Hpo,/FULL_PATH_TO_GENES_TO_PHENOTYPE_FILE/genes_to_phenotype.txt,HP:0000275\;HP:0000276
 =head1 DESCRIPTION
  Plugin to annotate consequences with HPO flag based on given HPO identifiers.
  'genes_to_phenotype.txt' can be downloaded through https://hpo.jax.org/.
@@ -53,7 +53,7 @@ sub new {
         $hpo_id = $tokens[2];
         if (exists($hpo_ids{$hpo_id})) {
             $entrez_gene_id = $tokens[0];
-            $entrez_gene_ids{$entrez_gene_id} = 1;
+            push(@{$entrez_gene_ids{$entrez_gene_id}}, $hpo_id);
         }
     }
 
@@ -69,8 +69,10 @@ sub run {
 
     my $entrez_gene_id = $transcript->{_gene_stable_id};
     my $entrez_gene_ids = $self->{entrez_gene_ids};
+    my $hpo_ids = $entrez_gene_ids->{$entrez_gene_id};
+    return {} unless $hpo_ids;
     return {
-        HPO => $entrez_gene_ids->{$entrez_gene_id}
+        HPO => join('&', @{$hpo_ids})
     };
 }
 
