@@ -283,7 +283,7 @@ then
 fi
 
 VEP_ARGS+=("--stats_file" "${VEP_OUTPUT_STATS}" "--stats_text")
-VEP_ARGS+=("--offline" "--cache" "--dir_cache" "/apps/data/Ensembl/VEP/100")
+VEP_ARGS+=("--refseq" "--offline" "--cache" "--dir_cache" "/apps/data/Ensembl/VEP/100")
 VEP_ARGS+=("--species" "homo_sapiens" "--assembly" "${ASSEMBLY}")
 VEP_ARGS+=("--symbol")
 VEP_ARGS+=("--flag_pick_allele")

@@ -196,7 +196,7 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-echo "step 1/4 preprocessing ..."
+echo "step 1/5 preprocessing ..."
 START_TIME=$SECONDS
 PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
 mkdir -p "${PREPROCESS_OUTPUT_DIR}"
@@ -216,11 +216,11 @@ if [ "${KEEP}" == "1" ]; then
 fi
 bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 1/4 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 1/5 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-echo "step 2/4 annotating ..."
+echo "step 2/5 annotating ..."
 START_TIME=$SECONDS
-ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step1_annotate/
+ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step2_annotate/
 mkdir -p "${ANNOTATE_OUTPUT_DIR}"
 ANNOTATE_OUTPUT="${ANNOTATE_OUTPUT_DIR}/${OUTPUT_FILE}"
 ANNOTATE_ARGS=("-i" "${PREPROCESS_OUTPUT}" "-o" "${ANNOTATE_OUTPUT}" "-c" "${CPU_CORES}" "-a" "${ASSEMBLY}")
@@ -239,11 +239,11 @@ fi
 bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 2/4 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 2/5 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-echo "step 3/4 filtering ..."
+echo "step 3/5 filtering ..."
 START_TIME=$SECONDS
-FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step2_filter/
+FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step3_filter/
 mkdir -p "${FILTER_OUTPUT_DIR}"
 FILTER_OUTPUT="${FILTER_OUTPUT_DIR}/${OUTPUT_FILE}"
 FILTER_ARGS=("-i" "${ANNOTATE_OUTPUT}" "-o" "${FILTER_OUTPUT}" "-c" "${CPU_CORES}")
@@ -256,14 +256,44 @@ fi
 bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 3/4 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 3/5 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-mv "${FILTER_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${FILTER_OUTPUT}"
-
-echo "step 4/4 generating report ..."
+echo "step 4/5 inheritance matching ..."
 START_TIME=$SECONDS
-REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step4_report/
+module load "${MOD_BCF_TOOLS}"
+HEADER=$(bcftools view -h "${FILTER_OUTPUT}")
+if echo "$HEADER" | grep -q "##InheritanceModesGene"; then
+  if [ -z "${INPUT_PED}" ]
+  then
+    echo "skipping inheritance matching: no PED file provided."
+    INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
+  else
+    INHERITANCE_OUTPUT_DIR="${OUTPUT_DIR}"/step4_inheritance/
+    mkdir -p "${INHERITANCE_OUTPUT_DIR}"
+    INHERITANCE_OUTPUT="${INHERITANCE_OUTPUT_DIR}/${OUTPUT_FILE}"
+    INHERITANCE_ARGS=("-i" "${FILTER_OUTPUT}" "-o" "${INHERITANCE_OUTPUT}" "-p" "${INPUT_PED}" "-c" "${CPU_CORES}")
+    if [ "${FORCE}" == "1" ]; then
+      INHERITANCE_ARGS+=("-f")
+    fi
+    if [ -n "${INPUT_PROBANDS}" ]; then
+      INHERITANCE_ARGS+=("-b" "${INPUT_PROBANDS}")
+    fi
+    bash "${SCRIPT_DIR}"/pipeline_inheritance.sh "${INHERITANCE_ARGS[@]}"
+  fi
+else
+  echo "skipping inheritance matching: Inheritance plugin for VEP was not executed"
+  INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
+fi
+ELAPSED_TIME=$(($SECONDS - $START_TIME))
+module purge
+echo "step 4/5 inheritance matching completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+
+mv "${INHERITANCE_OUTPUT}" "${OUTPUT}"
+ln -s "${OUTPUT}" "${INHERITANCE_OUTPUT}"
+
+echo "step 5/5 generating report ..."
+START_TIME=$SECONDS
+REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step5_report/
 mkdir -p "${REPORT_OUTPUT_DIR}"
 REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
 REPORT_ARGS=("-i" "${FILTER_OUTPUT}" "-o" "${REPORT_OUTPUT}")
@@ -281,7 +311,7 @@ if [ "${FORCE}" == "1" ]; then
 fi
 bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 4/4 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+echo "step 5/5 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
 cp "${REPORT_OUTPUT}" "${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILENAME}.html"
 

@@ -79,16 +79,19 @@ sub new {
 }
 
 sub run {
-    my ($self, $tva) = @_;
+    my ($self, $transcript_variation_allele) = @_;
     my $gene_data = $self->{gene_data};
     my $pheno_data = $self->{pheno_data};
 
-    my $gene = $tva->transcript->{_gene}->stable_id;
-    return {} unless $gene;
+    my $transcript = $transcript_variation_allele->transcript;
+    return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
+
+    my $entrez_gene_id = $transcript->{_gene_stable_id};
+    return {} unless $entrez_gene_id;
 
     return {
-        InheritanceModesGene => $gene_data->{$gene},
-        InheritanceModesPheno => $pheno_data->{$gene}
+        InheritanceModesGene => $gene_data->{$entrez_gene_id},
+        InheritanceModesPheno => $pheno_data->{$entrez_gene_id}
     };
 }
 
