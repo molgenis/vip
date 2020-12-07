@@ -128,12 +128,14 @@ then
 fi
 
 module load "${MOD_BCF_TOOLS}"
-SPLIT_VEP_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/splitted.vcf.gz
 
 SPLIT_VEP_ARGS=("-c" "Gene" "${INPUT}")
 if [[ "${INPUT}" == *.vcf.gz ]]
 then
+  SPLIT_VEP_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/splitted.vcf.gz
 	SPLIT_VEP_ARGS+=("-O" "z")
+else
+  SPLIT_VEP_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/splitted.vcf
 fi
 bcftools +split-vep "${SPLIT_VEP_ARGS[@]}" > "${SPLIT_VEP_OUTPUT}"
 
@@ -164,12 +166,15 @@ java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMININ
 module purge
 
 module load "${MOD_BCF_TOOLS}"
-INH_REMOVE_ANN_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/remove_annotations.vcf.gz
-INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Gene,INFO/Compounds,INFO/GeneticModels" "-o" "${INH_REMOVE_ANN_OUTPUT}")
-if [[ "${INHERITANCE_OUTPUT}" == *.vcf.gz ]]
+INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Gene,INFO/Compounds,INFO/GeneticModels")
+if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
+  INH_REMOVE_ANN_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/remove_annotations.vcf.gz
 	INH_BCFTOOLS_REMOVE_ARGS+=("-O" "z")
+else
+  INH_REMOVE_ANN_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/remove_annotations.vcf
 fi
+INH_BCFTOOLS_REMOVE_ARGS+=("-o" "${INH_REMOVE_ANN_OUTPUT}")
 INH_BCFTOOLS_REMOVE_ARGS+=("--threads" "${CPU_CORES}" "${INHERITANCE_OUTPUT}")
 
 echo 'removing INFO inheritance annotations ...'
