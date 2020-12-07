@@ -10,7 +10,7 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
  Inheritance
 =head1 SYNOPSIS
  mv Inheritance.pm ~/.vep/Plugins
- ./vep -i variations.vcf --plugin Inheritance,/FULL_PATH_TO_PREPROCESSED_INHERITANCE_FILE/gene_inheritance_mdoes.tsv
+ ./vep -i variations.vcf --plugin Inheritance,/FULL_PATH_TO_PREPROCESSED_INHERITANCE_FILE/gene_inheritance_modes.tsv
 =head1 DESCRIPTION
  Plugin to annotate consequences with inheritance modes based on their gene.
 =head1 MAPPING
