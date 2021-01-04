@@ -59,6 +59,7 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
 }
 
+ARGUMENTS="$(printf ' %q' "$@")"
 PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,flt_tree: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
@@ -288,8 +289,17 @@ ELAPSED_TIME=$(($SECONDS - $START_TIME))
 module purge
 echo "step 4/5 inheritance matching completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-mv "${INHERITANCE_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${INHERITANCE_OUTPUT}"
+# write pipeline version and command headers to output vcf
+module load "${MOD_BCF_TOOLS}"
+BCFTOOLS_ANNOTATE_HEADER_ARGS=("annotate" "-h" "-")
+if [[ "${OUTPUT}" == *.vcf.gz ]]
+then
+        BCFTOOLS_ANNOTATE_HEADER_ARGS+=("-O" "z")
+fi
+BCFTOOLS_ANNOTATE_HEADER_ARGS+=("-o" "${OUTPUT}")
+BCFTOOLS_ANNOTATE_HEADER_ARGS+=("--no-version" "--threads" "${CPU_CORES}" "${INHERITANCE_OUTPUT}")
+printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "${ARGUMENTS}" | bcftools "${BCFTOOLS_ANNOTATE_HEADER_ARGS[@]}"
+module purge
 
 echo "step 5/5 generating report ..."
 START_TIME=$SECONDS
