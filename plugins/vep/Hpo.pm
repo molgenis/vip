@@ -49,7 +49,8 @@ sub new {
 
     <FH>; # skip header
     while (<FH>) {
-        @tokens = split(/\t/, $_);
+        chomp; # avoid \n on last field
+        @tokens = split(/\t/);
         $hpo_id = $tokens[2];
         if (exists($hpo_ids{$hpo_id})) {
             $entrez_gene_id = $tokens[0];
