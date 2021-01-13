@@ -25,6 +25,7 @@ INPUT_PHENO=""
 OUTPUT=""
 ANN_VEP=""
 ADDITONAL_ARGS_PREPROCESS=""
+ADDITONAL_ARGS_REPORT=""
 FLT_TREE=""
 FORCE=0
 KEEP=0
@@ -46,6 +47,7 @@ usage()
 
 --ann_vep                  optional: Variant Effect Predictor (VEP) options.
 --args_preprocess          optional: Additional preprocessing arguments.
+--args_report              optional: Additional vip-report.jar options.
 --flt_tree                 optional: Decision tree file (.json) that applies classes 'F' and 'T'.
 
 examples:
@@ -59,11 +61,12 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --args_preprocess "--filter_read_depth -1"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz --args_report "--max_samples 10"
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
 }
 
 ARGUMENTS="$(printf ' %q' "$@")"
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,args_preprocess:,flt_tree: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,args_preprocess:,args_report:,flt_tree: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -104,6 +107,10 @@ do
       ;;
     --args_preprocess)
       ADDITONAL_ARGS_PREPROCESS="$2"
+      shift 2
+      ;;
+    --args_report)
+      ADDITONAL_ARGS_REPORT="$2"
       shift 2
       ;;
     --ann_vep)
@@ -328,6 +335,10 @@ if [ -n "${INPUT_PHENO}" ]; then
 fi
 if [ "${FORCE}" == "1" ]; then
 	REPORT_ARGS+=("-f")
+fi
+if [ -n "${ADDITONAL_ARGS_REPORT}" ]; then
+	# shellcheck disable=SC2206
+	REPORT_ARGS+=("--args" "${ADDITONAL_ARGS_REPORT}")
 fi
 bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))

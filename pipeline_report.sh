@@ -21,12 +21,13 @@ INPUT=""
 INPUT_PROBANDS=""
 INPUT_PED=""
 INPUT_PHENO=""
+INPUT_ARGS=""
 OUTPUT=""
 FORCE=0
 
 usage()
 {
-  echo "usage: pipeline_report.sh -i <arg> -o <arg> [-b <arg>] [-p <arg>] [-t <arg>] [-f]
+  echo "usage: pipeline_report.sh -i <arg> -o <arg> [-b <arg>] [-p <arg>] [-t <arg>] [--args <arg>]  [-f]
 
 -i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o,  --output <arg>        required: Output report file (.html).
@@ -35,10 +36,13 @@ usage()
 -t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -f,  --force               optional: Override the output file if it already exists.
 
+--args                     optional: Additional vip-report.jar options.
+
 examples:
   pipeline_report.sh -i in.vcf -o out.html
   pipeline_report.sh -i in.vcf.gz -o out.html -b sample0
   pipeline_report.sh -i in.vcf.gz -o out.html -p in.ped
+  pipeline_report.sh -i in.vcf.gz -o out.html --args "--max_samples 10"
   pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123
   pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123;HP:0000234
   pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123
@@ -46,7 +50,7 @@ examples:
   pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 -f"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:f --long input:,output:,probands:,pedigree:,phenotypes:,force -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:f --long input:,output:,probands:,pedigree:,phenotypes:,args:,force -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -79,6 +83,10 @@ do
       ;;
     -t | --phenotypes)
       INPUT_PHENO="$2"
+      shift 2
+      ;;
+    --args)
+      INPUT_ARGS="$2"
       shift 2
       ;;
     -f | --force)
@@ -151,6 +159,9 @@ if [ -n "${INPUT_PED}" ]; then
 fi
 if [ -n "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=("-ph" "${INPUT_PHENO}")
+fi
+if [ -n "${INPUT_ARGS}" ]; then
+	REPORT_ARGS+=(${INPUT_ARGS})
 fi
 
 java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar "${REPORT_ARGS[@]}"
