@@ -24,6 +24,7 @@ INPUT_PED=""
 INPUT_PHENO=""
 OUTPUT=""
 ANN_VEP=""
+ADDITONAL_ARGS_PREPROCESS=""
 FLT_TREE=""
 FORCE=0
 KEEP=0
@@ -44,6 +45,7 @@ usage()
 -k,  --keep                optional: Keep intermediate files.
 
 --ann_vep                  optional: Variant Effect Predictor (VEP) options.
+--args_preprocess          optional: Additional preprocessing arguments.
 --flt_tree                 optional: Decision tree file (.json) that applies classes 'F' and 'T'.
 
 examples:
@@ -56,11 +58,12 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz --args_preprocess "--filter_read_depth -1"
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json -f -k"
 }
 
 ARGUMENTS="$(printf ' %q' "$@")"
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,flt_tree: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,args_preprocess:,flt_tree: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -97,6 +100,10 @@ do
       ;;
     -t | --phenotypes)
       INPUT_PHENO="$2"
+      shift 2
+      ;;
+    --args_preprocess)
+      ADDITONAL_ARGS_PREPROCESS="$2"
       shift 2
       ;;
     --ann_vep)
@@ -214,6 +221,9 @@ if [ "${FORCE}" == "1" ]; then
 fi
 if [ "${KEEP}" == "1" ]; then
         PREPROCESS_ARGS+=("-k")
+fi
+if [ -n "${ADDITONAL_ARGS_PREPROCESS}" ]; then
+	PREPROCESS_ARGS+=(${ADDITONAL_ARGS_PREPROCESS})
 fi
 bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
