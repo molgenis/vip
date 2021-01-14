@@ -211,9 +211,14 @@ if [ "${FILTER_LOW_QUAL}" == "1" ];	then
 
 
           # run include filter and exclude filter
-          FILTER_INCLUDE="(FILTER==\"PASS\" || FILTER==\".\") && FORMAT/DP[${PROBAND_IDS_STR}] >= ${FILTER_READ_DEPTH}"
-          FILTER_EXCLUDE="FORMAT/DP < ${FILTER_READ_DEPTH}"
-          bcftools filter -i "${FILTER_INCLUDE}" "${FILTER_LOW_QUAL_INPUT}" | bcftools filter -e "${FILTER_EXCLUDE}" -S . --threads "${CPU_CORES}" > "${FILTER_LOW_QUAL_OUTPUT}"
+          if [ "${FILTER_READ_DEPTH}" != -1 ]; then
+            FILTER_INCLUDE="(FILTER==\"PASS\" || FILTER==\".\") && FORMAT/DP[${PROBAND_IDS_STR}] >= ${FILTER_READ_DEPTH}"
+            FILTER_EXCLUDE="FORMAT/DP < ${FILTER_READ_DEPTH}"
+            bcftools filter -i "${FILTER_INCLUDE}" "${FILTER_LOW_QUAL_INPUT}" --threads "${CPU_CORES}" | bcftools filter -e "${FILTER_EXCLUDE}" -S . --threads "${CPU_CORES}" > "${FILTER_LOW_QUAL_OUTPUT}"
+          else
+            FILTER_INCLUDE="(FILTER==\"PASS\" || FILTER==\".\")"
+            bcftools filter -i "${FILTER_INCLUDE}" "${FILTER_LOW_QUAL_INPUT}" --threads "${CPU_CORES}" > "${FILTER_LOW_QUAL_OUTPUT}"
+          fi
   fi
 
   echo -e "filtering low-quality records done"
