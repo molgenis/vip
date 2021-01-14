@@ -335,7 +335,7 @@ if [ "${FORCE}" == "1" ]; then
 	REPORT_ARGS+=("-f")
 fi
 if [ -n "${ADDITONAL_ARGS_REPORT}" ]; then
-	REPORT_ARGS+=("--args" "${ADDITONAL_ARGS_REPORT}")
+	REPORT_ARGS+=(${ADDITONAL_ARGS_REPORT})
 fi
 bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))

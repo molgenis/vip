@@ -21,22 +21,23 @@ INPUT=""
 INPUT_PROBANDS=""
 INPUT_PED=""
 INPUT_PHENO=""
-INPUT_ARGS=""
+INPUT_MAX_RECORDS=""
+INPUT_MAX_SAMPLES=""
 OUTPUT=""
 FORCE=0
 
 usage()
 {
-  echo "usage: pipeline_report.sh -i <arg> -o <arg> [-b <arg>] [-p <arg>] [-t <arg>] [--args <arg>]  [-f]
+  echo "usage: pipeline_report.sh -i <arg> -o <arg> [-b <arg>] [-p <arg>] [-t <arg>] [--max_records <arg>] [--max_samples <arg>]  [-f]
 
 -i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
 -o,  --output <arg>        required: Output report file (.html).
 -b,  --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
 -p,  --pedigree <arg>      optional: Pedigree file (.ped).
 -t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
+-r,  --max_records <arg>    optional: Maximum number of records  in the report. Default: 100
+-s,  --max_samples <arg>    optional: Maximum number of samples  in the report. Default: 100
 -f,  --force               optional: Override the output file if it already exists.
-
---args                     optional: Additional vip-report.jar options.
 
 examples:
   pipeline_report.sh -i in.vcf -o out.html
@@ -47,10 +48,10 @@ examples:
   pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123;HP:0000234
   pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123
   pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123,sample1/HP:0000234
-  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --args \"--max_samples 10\" -f"
+  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --max_samples 10 --max_records 10 -f"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:f --long input:,output:,probands:,pedigree:,phenotypes:,args:,force -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:r:s:f --long input:,output:,probands:,pedigree:,phenotypes:,args:,max_records:,max_samples:,force -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -85,8 +86,12 @@ do
       INPUT_PHENO="$2"
       shift 2
       ;;
-    --args)
-      INPUT_ARGS="$2"
+    --max_records)
+      INPUT_MAX_RECORDS="$2"
+      shift 2
+      ;;
+    --max_samples)
+      INPUT_MAX_SAMPLES="$2"
       shift 2
       ;;
     -f | --force)
@@ -160,9 +165,11 @@ fi
 if [ -n "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=("-ph" "${INPUT_PHENO}")
 fi
-if [ -n "${INPUT_ARGS}" ]; then
-  # shellcheck disable=SC2206
-	REPORT_ARGS+=(${INPUT_ARGS})
+if [ -n "${INPUT_MAX_RECORDS}" ]; then
+	REPORT_ARGS+=("-mr" "${INPUT_MAX_RECORDS}")
+fi
+if [ -n "${INPUT_MAX_SAMPLES}" ]; then
+	REPORT_ARGS+=("-ms" "${INPUT_MAX_SAMPLES}")
 fi
 
 java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar "${REPORT_ARGS[@]}"
