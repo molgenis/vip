@@ -228,6 +228,7 @@ if [ "${KEEP}" == "1" ]; then
         PREPROCESS_ARGS+=("-k")
 fi
 if [ -n "${ADDITONAL_ARGS_PREPROCESS}" ]; then
+	# shellcheck disable=SC2206
 	PREPROCESS_ARGS+=(${ADDITONAL_ARGS_PREPROCESS})
 fi
 bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
@@ -335,6 +336,7 @@ if [ "${FORCE}" == "1" ]; then
 	REPORT_ARGS+=("-f")
 fi
 if [ -n "${ADDITONAL_ARGS_REPORT}" ]; then
+	# shellcheck disable=SC2206
 	REPORT_ARGS+=(${ADDITONAL_ARGS_REPORT})
 fi
 bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
