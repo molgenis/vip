@@ -42,12 +42,12 @@ examples:
   pipeline_report.sh -i in.vcf -o out.html
   pipeline_report.sh -i in.vcf.gz -o out.html -b sample0
   pipeline_report.sh -i in.vcf.gz -o out.html -p in.ped
-  pipeline_report.sh -i in.vcf.gz -o out.html --args "--max_samples 10"
+  pipeline_report.sh -i in.vcf.gz -o out.html
   pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123
   pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123;HP:0000234
   pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123
   pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123,sample1/HP:0000234
-  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 -f"
+  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --args \"--max_samples 10\" -f"
 }
 
 PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:f --long input:,output:,probands:,pedigree:,phenotypes:,args:,force -- "$@")
@@ -161,6 +161,7 @@ if [ -n "${INPUT_PHENO}" ]; then
 	REPORT_ARGS+=("-ph" "${INPUT_PHENO}")
 fi
 if [ -n "${INPUT_ARGS}" ]; then
+  # shellcheck disable=SC2206
 	REPORT_ARGS+=(${INPUT_ARGS})
 fi
 
