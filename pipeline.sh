@@ -31,6 +31,7 @@ FORCE=0
 KEEP=0
 ASSEMBLY=GRCh37
 CPU_CORES=4
+START_FROM=0
 
 usage()
 {
@@ -44,6 +45,7 @@ usage()
 -t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -f,  --force               optional: Override the output file if it already exists.
 -k,  --keep                optional: Keep intermediate files.
+-s,  --start_from                optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
 --ann_vep                  optional: Variant Effect Predictor (VEP) options.
 --args_preprocess          optional: Additional preprocessing module arguments.
@@ -60,11 +62,12 @@ examples:
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
   pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
   pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep \"--refseq --exclude_predicted --use_given_ref\"
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep \"--refseq --exclude_predicted --use_given_ref\" --flt_tree custom_tree.json --args_report \"--max_samples 10\" --args_preprocess \"--filter_read_depth -1\" -f -k"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -s inheritance\"
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep \"--refseq --exclude_predicted --use_given_ref\" --flt_tree custom_tree.json --args_report \"--max_samples 10\" --args_preprocess \"--filter_read_depth -1\" --start_from inheritance -f -k"
 }
 
 ARGUMENTS="$(printf ' %q' "$@")"
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,args_preprocess:,args_report:,flt_tree: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:p:t:s:fk --long input:,output:,reference:,probands:,pedigree:,phenotypes:,force,keep,ann_vep:,args_preprocess:,args_report:,flt_tree:,start_from: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -85,6 +88,28 @@ do
       OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
       OUTPUT_FILE=$(basename "$OUTPUT_ARG")
       OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      shift 2
+      ;;
+    -s | --start_from)
+      case $2 in
+        annotate)
+          START_FROM=2;
+          ;;
+        filter)
+          START_FROM=3;
+          ;;
+        inheritance)
+          START_FROM=4;
+          ;;
+        report)
+          START_FROM=5;
+          ;;
+        *)
+          echo -e "Unknown step '$2' in -s\n"
+          usage
+          exit 2
+      esac
+
       shift 2
       ;;
     -r | --reference)
@@ -209,101 +234,125 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-echo "step 1/5 preprocessing ..."
-START_TIME=$SECONDS
-PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
-mkdir -p "${PREPROCESS_OUTPUT_DIR}"
-PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
-PREPROCESS_ARGS=("-i" "${INPUT}" "-o" "${PREPROCESS_OUTPUT}" "--filter_low_qual" "-c" "${CPU_CORES}")
-if [ -n "${INPUT_REF}" ]; then
-        PREPROCESS_ARGS+=("-r" "${INPUT_REF}")
-fi
-if [ -n "${INPUT_PROBANDS}" ]; then
-        PREPROCESS_ARGS+=("-b" "${INPUT_PROBANDS}")
-fi
-if [ "${FORCE}" == "1" ]; then
-        PREPROCESS_ARGS+=("-f")
-fi
-if [ "${KEEP}" == "1" ]; then
-        PREPROCESS_ARGS+=("-k")
-fi
-if [ -n "${ADDITONAL_ARGS_PREPROCESS}" ]; then
-	# shellcheck disable=SC2206
-	PREPROCESS_ARGS+=(${ADDITONAL_ARGS_PREPROCESS})
-fi
-bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
-ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 1/5 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
-
-echo "step 2/5 annotating ..."
-START_TIME=$SECONDS
-ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step2_annotate/
-mkdir -p "${ANNOTATE_OUTPUT_DIR}"
-ANNOTATE_OUTPUT="${ANNOTATE_OUTPUT_DIR}/${OUTPUT_FILE}"
-ANNOTATE_ARGS=("-i" "${PREPROCESS_OUTPUT}" "-o" "${ANNOTATE_OUTPUT}" "-c" "${CPU_CORES}" "-a" "${ASSEMBLY}")
-if [ -n "${INPUT_REF}" ]; then
-	ANNOTATE_ARGS+=("-r" "${INPUT_REF}")
-fi
-if [ "${KEEP}" == "1" ]; then
-	ANNOTATE_ARGS+=("-k")
-fi
-if [ "${FORCE}" == "1" ]; then
-  ANNOTATE_ARGS+=("-f")
-fi
-if [ -n "${ANN_VEP}" ]; then
-  ANNOTATE_ARGS+=("--ann_vep" "${ANN_VEP}")
-fi
-bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
-
-ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 2/5 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
-
-echo "step 3/5 filtering ..."
-START_TIME=$SECONDS
-FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step3_filter/
-mkdir -p "${FILTER_OUTPUT_DIR}"
-FILTER_OUTPUT="${FILTER_OUTPUT_DIR}/${OUTPUT_FILE}"
-FILTER_ARGS=("-i" "${ANNOTATE_OUTPUT}" "-o" "${FILTER_OUTPUT}" "-c" "${CPU_CORES}")
-if [ "${FORCE}" == "1" ]; then
-	FILTER_ARGS+=("-f")
-fi
-if [ -n "${FLT_TREE}" ]; then
-  FILTER_ARGS+=("--tree" "${FLT_TREE}")
-fi
-bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
-
-ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 3/5 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
-
-echo "step 4/5 inheritance matching ..."
-START_TIME=$SECONDS
-module load "${MOD_BCF_TOOLS}"
-HEADER=$(bcftools view -h "${FILTER_OUTPUT}")
-if echo "$HEADER" | grep -q "##InheritanceModesGene"; then
-  if [ -z "${INPUT_PED}" ]
+  if [ "$START_FROM" -le 1 ]
   then
-    echo "skipping inheritance matching: no PED file provided."
-    INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
-  else
-    INHERITANCE_OUTPUT_DIR="${OUTPUT_DIR}"/step4_inheritance/
-    mkdir -p "${INHERITANCE_OUTPUT_DIR}"
-    INHERITANCE_OUTPUT="${INHERITANCE_OUTPUT_DIR}/${OUTPUT_FILE}"
-    INHERITANCE_ARGS=("-i" "${FILTER_OUTPUT}" "-o" "${INHERITANCE_OUTPUT}" "-p" "${INPUT_PED}" "-c" "${CPU_CORES}")
-    if [ "${FORCE}" == "1" ]; then
-      INHERITANCE_ARGS+=("-f")
+    echo "step 1/5 preprocessing ..."
+    START_TIME=$SECONDS
+    PREPROCESS_OUTPUT_DIR="${OUTPUT_DIR}"/step0_preprocess
+    mkdir -p "${PREPROCESS_OUTPUT_DIR}"
+    PREPROCESS_OUTPUT="${PREPROCESS_OUTPUT_DIR}/${OUTPUT_FILE}"
+    PREPROCESS_ARGS=("-i" "${INPUT}" "-o" "${PREPROCESS_OUTPUT}" "--filter_low_qual" "-c" "${CPU_CORES}")
+    if [ -n "${INPUT_REF}" ]; then
+            PREPROCESS_ARGS+=("-r" "${INPUT_REF}")
     fi
     if [ -n "${INPUT_PROBANDS}" ]; then
-      INHERITANCE_ARGS+=("-b" "${INPUT_PROBANDS}")
+            PREPROCESS_ARGS+=("-b" "${INPUT_PROBANDS}")
     fi
-    bash "${SCRIPT_DIR}"/pipeline_inheritance.sh "${INHERITANCE_ARGS[@]}"
+    if [ "${FORCE}" == "1" ]; then
+            PREPROCESS_ARGS+=("-f")
+    fi
+    if [ "${KEEP}" == "1" ]; then
+            PREPROCESS_ARGS+=("-k")
+    fi
+    if [ -n "${ADDITONAL_ARGS_PREPROCESS}" ]; then
+      # shellcheck disable=SC2206
+      PREPROCESS_ARGS+=(${ADDITONAL_ARGS_PREPROCESS})
+    fi
+    bash "${SCRIPT_DIR}"/pipeline_preprocess.sh "${PREPROCESS_ARGS[@]}"
+    ELAPSED_TIME=$(($SECONDS - $START_TIME))
+    echo "step 1/5 preprocessing completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+  else
+    PREPROCESS_OUTPUT="$INPUT"
+    echo "skipping step 1/5 preprocessing."
   fi
-else
-  echo "skipping inheritance matching: Inheritance plugin for VEP was not executed"
-  INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
-fi
-ELAPSED_TIME=$(($SECONDS - $START_TIME))
-module purge
-echo "step 4/5 inheritance matching completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+
+  if [ "$START_FROM" -le 2 ]
+  then
+    echo "step 2/5 annotating ..."
+    START_TIME=$SECONDS
+    ANNOTATE_OUTPUT_DIR="${OUTPUT_DIR}"/step2_annotate/
+    mkdir -p "${ANNOTATE_OUTPUT_DIR}"
+    ANNOTATE_OUTPUT="${ANNOTATE_OUTPUT_DIR}/${OUTPUT_FILE}"
+    ANNOTATE_ARGS=("-i" "${PREPROCESS_OUTPUT}" "-o" "${ANNOTATE_OUTPUT}" "-c" "${CPU_CORES}" "-a" "${ASSEMBLY}")
+    if [ -n "${INPUT_REF}" ]; then
+      ANNOTATE_ARGS+=("-r" "${INPUT_REF}")
+    fi
+    if [ "${KEEP}" == "1" ]; then
+      ANNOTATE_ARGS+=("-k")
+    fi
+    if [ "${FORCE}" == "1" ]; then
+      ANNOTATE_ARGS+=("-f")
+    fi
+    if [ -n "${ANN_VEP}" ]; then
+      ANNOTATE_ARGS+=("--ann_vep" "${ANN_VEP}")
+    fi
+    bash "${SCRIPT_DIR}"/pipeline_annotate.sh "${ANNOTATE_ARGS[@]}"
+
+    ELAPSED_TIME=$(($SECONDS - $START_TIME))
+    echo "step 2/5 annotating completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+  else
+    ANNOTATE_OUTPUT="$PREPROCESS_OUTPUT"
+    echo "skipping step 2/5 annotating."
+  fi
+
+  if [ "$START_FROM" -le 3 ]
+  then
+    echo "step 3/5 filtering ..."
+    START_TIME=$SECONDS
+    FILTER_OUTPUT_DIR="${OUTPUT_DIR}"/step3_filter/
+    mkdir -p "${FILTER_OUTPUT_DIR}"
+    FILTER_OUTPUT="${FILTER_OUTPUT_DIR}/${OUTPUT_FILE}"
+    FILTER_ARGS=("-i" "${ANNOTATE_OUTPUT}" "-o" "${FILTER_OUTPUT}" "-c" "${CPU_CORES}")
+    if [ "${FORCE}" == "1" ]; then
+      FILTER_ARGS+=("-f")
+    fi
+    if [ -n "${FLT_TREE}" ]; then
+      FILTER_ARGS+=("--tree" "${FLT_TREE}")
+    fi
+    bash "${SCRIPT_DIR}"/pipeline_filter.sh "${FILTER_ARGS[@]}"
+
+    ELAPSED_TIME=$(($SECONDS - $START_TIME))
+    echo "step 3/5 filtering completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+  else
+    FILTER_OUTPUT="${ANNOTATE_OUTPUT}"
+    echo "skipping step 3/5 filtering."
+  fi
+
+  if [ "$START_FROM" -le 4 ]
+  then
+    echo "step 4/5 inheritance matching ..."
+    START_TIME=$SECONDS
+    module load "${MOD_BCF_TOOLS}"
+    HEADER=$(bcftools view -h "${FILTER_OUTPUT}")
+    if echo "$HEADER" | grep -q "##InheritanceModesGene"; then
+      if [ -z "${INPUT_PED}" ]
+      then
+        echo "skipping inheritance matching: no PED file provided."
+        INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
+      else
+        INHERITANCE_OUTPUT_DIR="${OUTPUT_DIR}"/step4_inheritance/
+        mkdir -p "${INHERITANCE_OUTPUT_DIR}"
+        INHERITANCE_OUTPUT="${INHERITANCE_OUTPUT_DIR}/${OUTPUT_FILE}"
+        INHERITANCE_ARGS=("-i" "${FILTER_OUTPUT}" "-o" "${INHERITANCE_OUTPUT}" "-p" "${INPUT_PED}" "-c" "${CPU_CORES}")
+        if [ "${FORCE}" == "1" ]; then
+          INHERITANCE_ARGS+=("-f")
+        fi
+        if [ -n "${INPUT_PROBANDS}" ]; then
+          INHERITANCE_ARGS+=("-b" "${INPUT_PROBANDS}")
+        fi
+        bash "${SCRIPT_DIR}"/pipeline_inheritance.sh "${INHERITANCE_ARGS[@]}"
+      fi
+    else
+      echo "skipping inheritance matching: Inheritance plugin for VEP was not executed"
+      INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
+    fi
+    ELAPSED_TIME=$(($SECONDS - $START_TIME))
+    module purge
+    echo "step 4/5 inheritance matching completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+  else
+    INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
+    echo "skipping step 4/5 inheritance matching."
+  fi
 
 # write pipeline version and command headers to output vcf
 module load "${MOD_BCF_TOOLS}"
@@ -317,34 +366,39 @@ BCFTOOLS_ANNOTATE_HEADER_ARGS+=("--no-version" "--threads" "${CPU_CORES}" "${INH
 printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "${ARGUMENTS}" | bcftools "${BCFTOOLS_ANNOTATE_HEADER_ARGS[@]}"
 module purge
 
-echo "step 5/5 generating report ..."
-START_TIME=$SECONDS
-REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step5_report/
-mkdir -p "${REPORT_OUTPUT_DIR}"
-REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
-REPORT_ARGS=("-i" "${INHERITANCE_OUTPUT}" "-o" "${REPORT_OUTPUT}")
-if [ -n "${INPUT_PROBANDS}" ]; then
-	REPORT_ARGS+=("-b" "${INPUT_PROBANDS}")
-fi
-if [ -n "${INPUT_PED}" ]; then
-	REPORT_ARGS+=("-p" "${INPUT_PED}")
-fi
-if [ -n "${INPUT_PHENO}" ]; then
-	REPORT_ARGS+=("-t" "${INPUT_PHENO}")
-fi
-if [ "${FORCE}" == "1" ]; then
-	REPORT_ARGS+=("-f")
-fi
-if [ -n "${ADDITONAL_ARGS_REPORT}" ]; then
-	# shellcheck disable=SC2206
-	REPORT_ARGS+=(${ADDITONAL_ARGS_REPORT})
-fi
-bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
-ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "step 5/5 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
+  if [ "$START_FROM" -le 5 ]
+  then
+    echo "step 5/5 generating report ..."
+    START_TIME=$SECONDS
+    REPORT_OUTPUT_DIR="${OUTPUT_DIR}"/step5_report/
+    mkdir -p "${REPORT_OUTPUT_DIR}"
+    REPORT_OUTPUT="${REPORT_OUTPUT_DIR}/${OUTPUT_FILENAME}.html"
+    REPORT_ARGS=("-i" "${INHERITANCE_OUTPUT}" "-o" "${REPORT_OUTPUT}")
+    if [ -n "${INPUT_PROBANDS}" ]; then
+      REPORT_ARGS+=("-b" "${INPUT_PROBANDS}")
+    fi
+    if [ -n "${INPUT_PED}" ]; then
+      REPORT_ARGS+=("-p" "${INPUT_PED}")
+    fi
+    if [ -n "${INPUT_PHENO}" ]; then
+      REPORT_ARGS+=("-t" "${INPUT_PHENO}")
+    fi
+    if [ "${FORCE}" == "1" ]; then
+      REPORT_ARGS+=("-f")
+    fi
+    if [ -n "${ADDITONAL_ARGS_REPORT}" ]; then
+      # shellcheck disable=SC2206
+      REPORT_ARGS+=(${ADDITONAL_ARGS_REPORT})
+    fi
+    bash "${SCRIPT_DIR}"/pipeline_report.sh "${REPORT_ARGS[@]}"
+    ELAPSED_TIME=$(($SECONDS - $START_TIME))
+    echo "step 5/5 generating report completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
 
-cp "${REPORT_OUTPUT}" "${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILENAME}.html"
-
+    cp "${REPORT_OUTPUT}" "${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILENAME}.html"
+  else
+    echo -e "Cannot start from a point beyond the last step."
+    exit 2
+  fi
 # done, so we can clean up the entire output dir
 if [ "$KEEP" == "0" ]; then
         rm -rf "${OUTPUT_DIR}"
