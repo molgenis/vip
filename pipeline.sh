@@ -45,7 +45,7 @@ usage()
 -t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -f,  --force               optional: Override the output file if it already exists.
 -k,  --keep                optional: Keep intermediate files.
--s,  --start_from                optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
+-s,  --start_from          optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
 --ann_vep                  optional: Variant Effect Predictor (VEP) options.
 --args_preprocess          optional: Additional preprocessing module arguments.
