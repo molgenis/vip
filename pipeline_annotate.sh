@@ -309,10 +309,13 @@ then
   get_unique_phenotypes "${INPUT_PHENO}"
   for i in "${!UNIQUE_PHENOTYPES[@]}"
   do
+    VIBE_OUTPUT="${VEP_OUTPUT_DIR}/${i//[:]/_}.txt"
     VIBE_ARGS=("-t" "/apps/data/VIBE/vibe-5.0.0-hdt/vibe-5.0.0.hdt" "-w" "/apps/data/VIBE/hp_2020-12-07.owl")
     VIBE_ARGS+=("-p" "$i")
-    VIBE_ARGS+=("-l" "-o" "${VEP_OUTPUT_DIR}/${i//[:]/_}.txt")
+    VIBE_ARGS+=("-l" "-o" "${VIBE_OUTPUT}")
     java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVIBE}"/vibe.jar "${VIBE_ARGS[@]}"
+
+    echo -e "#HPO=$i\n$(cat "${VIBE_OUTPUT}")" > "${VIBE_OUTPUT}"
   done
 
   module purge
