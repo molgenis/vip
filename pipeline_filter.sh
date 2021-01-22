@@ -21,8 +21,7 @@ TREE=""
 CPU_CORES=4
 FORCE=0
 
-usage()
-{
+usage() {
   echo "usage: pipeline_filter.sh -i <arg> -o <arg> [-f]
 
 -i,  --input   <arg>       required: Input VCF file (.vcf or .vcf.gz).
@@ -39,84 +38,77 @@ examples:
 PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:t:c:f --long input:,output:,tree:,cpu_cores:,force -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
-	usage
-	exit 2
+  usage
+  exit 2
 fi
 
 eval set -- "$PARSED_ARGUMENTS"
-while :
-do
+while :; do
   case "$1" in
-    -i | --input)
-      INPUT=$(realpath "$2")
-      shift 2
-      ;;
-    -o | --output)
-      OUTPUT_ARG="$2"
-      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-      shift 2
-      ;;
-    -c | --cpu_cores)
-      CPU_CORES="$2"
-      shift 2
-      ;;
-    -t | --tree)
-      TREE=$(realpath "$2")
-      shift 2
-      ;;
-    -f | --force)
-      FORCE=1
-      shift
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      usage
-	    exit 2
-      ;;
+  -i | --input)
+    INPUT=$(realpath "$2")
+    shift 2
+    ;;
+  -o | --output)
+    OUTPUT_ARG="$2"
+    OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+    OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+    OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+    OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+    shift 2
+    ;;
+  -c | --cpu_cores)
+    CPU_CORES="$2"
+    shift 2
+    ;;
+  -t | --tree)
+    TREE=$(realpath "$2")
+    shift 2
+    ;;
+  -f | --force)
+    FORCE=1
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
   esac
 done
 
-if [ -z "${INPUT}" ]
-then
+if [ -z "${INPUT}" ]; then
   echo -e "missing required option -i\n"
-	usage
-	exit 2
+  usage
+  exit 2
 fi
-if [ -z "${OUTPUT}" ]
-then
+if [ -z "${OUTPUT}" ]; then
   echo -e "missing required option -o\n"
-	usage
-	exit 2
+  usage
+  exit 2
 fi
 
-if [ ! -f "${INPUT}" ]
-then
-	echo -e "$INPUT does not exist.\n"
-	exit 2
+if [ ! -f "${INPUT}" ]; then
+  echo -e "$INPUT does not exist.\n"
+  exit 2
 fi
-if [ -f "${OUTPUT}" ]
-then
-	if [ "${FORCE}" == "1" ]
-	then
-		rm "${OUTPUT}"
-	else
-		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+if [ -f "${OUTPUT}" ]; then
+  if [ "${FORCE}" == "1" ]; then
+    rm "${OUTPUT}"
+  else
+    echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
     exit 2
-	fi
+  fi
 fi
 
 # vcf-decision-tree
 DECISION_TREE_INPUT="${INPUT}"
-if [ -z "${TREE}" ]
-then
+if [ -z "${TREE}" ]; then
   DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
-  cat > "${DECISION_TREE_CONF}" << EOT
+  cat >"${DECISION_TREE_CONF}" <<EOT
 {
   "rootNode": "filter",
   "nodes": {
@@ -143,7 +135,7 @@ then
     "mvl": {
       "type": "CATEGORICAL",
       "description": "Managed Variant List classification",
-      "field": "INFO/MVL",
+      "field": "INFO/VKGL_UMCG",
       "outcomeMap": {
         "P": {
           "nextNode": "exit_t"
@@ -261,12 +253,11 @@ fi
 DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
 
 DECISION_TREE_ARGS=("-i" "${DECISION_TREE_INPUT}" "-c" "${DECISION_TREE_CONF}" "-o" "${DECISION_TREE_OUTPUT}")
-if [ "${FORCE}" == "1" ]
-then
+if [ "${FORCE}" == "1" ]; then
   DECISION_TREE_ARGS+=("-f")
 fi
 if [ -z "${TMPDIR+x}" ]; then
-	TMPDIR=/tmp
+  TMPDIR=/tmp
 fi
 
 module load "${MOD_VCF_DECISION_TREE}"
@@ -280,10 +271,9 @@ BCFTOOLS_FILTER_ARGS=("--threads" "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}")
 
 module load "${MOD_BCF_TOOLS}"
 module load "${MOD_HTS_LIB}"
-if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]
-then
-	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
+if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]; then
+  bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" | bgzip -c >"${BCFTOOLS_FILTER_OUTPUT}"
 else
-	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" > "${BCFTOOLS_FILTER_OUTPUT}"
+  bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" >"${BCFTOOLS_FILTER_OUTPUT}"
 fi
 module purge
