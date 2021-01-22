@@ -18,6 +18,7 @@ source "${SCRIPT_DIR}"/utils/header.sh
 INPUT=""
 OUTPUT=""
 INPUT_REF=""
+INPUT_PHENO=""
 ASSEMBLY=GRCh37
 ANN_VEP=""
 CPU_CORES=4
@@ -32,6 +33,7 @@ usage()
 -o,  --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
 -r,  --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
 -a,  --assembly            optional: Assembly to be used (e.g. GRCh37). Default: GRCh37
+-t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
 -c,  --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
 -f,  --force               optional: Override the output file if it already exists.
 -k,  --keep                optional: Keep intermediate files.
@@ -42,11 +44,34 @@ examples:
   pipeline_annotate.sh -i in.vcf -o out.vcf
   pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
   pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -a GRCh37
-  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "\""--refseq --exclude_predicted --use_given_ref"\""
-  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -a GRCh37 --ann_vep "\""--refseq --exclude_predicted --use_given_ref"\"" -c 2 -f -k"
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz --ann_vep \"--refseq --exclude_predicted --use_given_ref\"
+  pipeline_annotate.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -a GRCh37 -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep \"--refseq --exclude_predicted --use_given_ref\" -c 2 -f -k"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:a:c:fk --long input:,output:,reference:,assembly:,cpu_cores:,force,keep,ann_vep: -- "$@")
+get_unique_phenotypes() {
+  IFS=',' read -ra SAMPLE_PHENOTYPES <<< "$1"
+  for i in "${SAMPLE_PHENOTYPES[@]}"
+  do
+    if [[ "$i" =~ (.*\/)?(.*) ]]
+    then
+      IFS=';' read -ra PHENOTYPES <<< "${BASH_REMATCH[2]}"
+      for j in "${PHENOTYPES[@]}"
+      do
+        UNIQUE_PHENOTYPES["$j"]=1
+      done
+    else
+      echo -e "Invalid phenotype '${INPUT_PHENO}' in -t or --phenotypes\n"
+      usage
+      exit 2
+    fi
+  done
+}
+
+PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:a:t:c:fk --long input:,output:,reference:,assembly:,phenotypes:,cpu_cores:,force,keep,ann_vep: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	usage
@@ -79,6 +104,10 @@ do
       ;;
     -a | --assembly)
       ASSEMBLY="$2"
+      shift 2
+      ;;
+    -t | --phenotypes)
+      INPUT_PHENO="$2"
       shift 2
       ;;
     --ann_vep)
@@ -264,8 +293,6 @@ EOT
 	module purge
 fi
 
-
-
 # VEP
 VEP_INPUT="${VCFANNO_ALL_OUTPUT}"
 VEP_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step3_vep
@@ -273,6 +300,23 @@ VEP_OUTPUT="${VEP_OUTPUT_DIR}"/"${OUTPUT_FILE}"
 VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 rm -rf "${VEP_OUTPUT_DIR}"
 mkdir -p "${VEP_OUTPUT_DIR}"
+
+if [ -n "${INPUT_PHENO}" ]
+then
+  module load "${MOD_VIBE}"
+
+  declare -A UNIQUE_PHENOTYPES
+  get_unique_phenotypes "${INPUT_PHENO}"
+  for i in "${!UNIQUE_PHENOTYPES[@]}"
+  do
+    VIBE_ARGS=("-t" "/apps/data/VIBE/vibe-5.0.0-hdt/vibe-5.0.0.hdt" "-w" "/apps/data/VIBE/hp_2020-12-07.owl")
+    VIBE_ARGS+=("-p" "$i")
+    VIBE_ARGS+=("-l" "-o" "${VEP_OUTPUT_DIR}/${i//[:]/_}.txt")
+    java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVIBE}"/vibe.jar "${VIBE_ARGS[@]}"
+  done
+
+  module purge
+fi
 
 module load "${MOD_VEP}"
 VEP_ARGS=("--input_file" "${VEP_INPUT}" "--format" "vcf")
