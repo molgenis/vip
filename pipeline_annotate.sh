@@ -158,9 +158,9 @@ mkdir -p "${VCFANNO_OUTPUT_DIR}"
 cat > "${VCFANNO_PRE_CONF}" << EOT
 [[annotation]]
 file="/apps/data/VKGL/vkgl_consensus_jun2020_normalized.vcf.gz"
-fields = ["VKGL_CL"]
-ops=["self"]
-names=["VKGL"]
+fields = ["VKGL_CL", "AMC", "EMC", "LUMC", "NKI", "RMMC", "UMCG", "UMCU", "VUMC"]
+ops=["self","self","self","self","self","self","self","self","self"]
+names=["VKGL", "VKGL_AMC", "VKGL_EMC", "VKGL_LUMC", "VKGL_NKI", "VKGL_RMMC", "VKGL_UMCG", "VKGL_UMCU", "VKGL_VUMC"]
 
 [[annotation]]
 file="/apps/data/CAPICE/${ASSEMBLY}/capice_v1.0_indels.vcf.gz"
@@ -173,12 +173,6 @@ file="/apps/data/CAPICE/${ASSEMBLY}/capice_v1.0_snvs.vcf.gz"
 fields = ["CAP"]
 ops=["self"]
 names=["CAP"]
-
-[[annotation]]
-file="/apps/data/UMCG/MVL/${ASSEMBLY}/MVL_Totaal-Molecular_variants-2019-03-18_13-56-30_normalized.vcf.gz"
-fields = ["MVL"]
-ops=["self"]
-names=["MVL"]
 
 [[annotation]]
 file="/apps/data/UMCG/MVL/${ASSEMBLY}/Artefact_Totaal-Molecular_variants-2020-09-03_normalized.vcf.gz"
@@ -224,7 +218,7 @@ then
 else
 	VCFANNO_ALL_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_all.vcf.gz
 	echo "calculating CAPICE scores for variants without precomputed score ..."
-	
+
 	module load "${MOD_CADD}"
 	# strip headers from input vcf for cadd
 	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"

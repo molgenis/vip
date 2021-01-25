@@ -7,7 +7,7 @@ ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
-EXPECTED_NR_OF_HEADERS=49
+EXPECTED_NR_OF_HEADERS=56
 LOG='./test/output/test_output.log'
 
 echo -e "Test started..."
@@ -47,7 +47,7 @@ sed -i '/^##VIP/d' ${ACTUAL_VCF}
 sed -i 's/"CAPICE pathogenicity prediction.*/"CAPICE pathogenicity prediction"/g' ${ACTUAL_VCF}
 
 VCF_DIFF=$(diff $ACTUAL_VCF $EXPECTED_VCF)
-if [ "$VCF_DIFF" != "" ] 
+if [ "$VCF_DIFF" != "" ]
 then
   echo -e "\e[31mvcf file test failed, output file differs from expected: \e[39m"
   echo "---BEGIN diff---"
@@ -61,9 +61,9 @@ fi
 sed -i 's/"args":"-i.*step2_capice/REMOVE_PATH_DEPENDENT_VALUES/g' test/output/test_output.html
 
 REPORT_DIFF=$(diff $ACTUAL_HTML $EXPECTED_HTML)
-if [ "$REPORT_DIFF" != "" ] 
+if [ "$REPORT_DIFF" != "" ]
 then
-    	echo -e "\e[31report file test failed, output file differs from expected, \e[39m"
+    	echo -e "\e[31mreport file test failed, output file differs from expected, \e[39m"
   echo "run 'diff $ACTUAL_HTML $EXPECTED_HTML}' for more information."
   FAILED=1
 else

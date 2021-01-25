@@ -143,7 +143,7 @@ then
     "mvl": {
       "type": "CATEGORICAL",
       "description": "Managed Variant List classification",
-      "field": "INFO/MVL",
+      "field": "INFO/VKGL_UMCG",
       "outcomeMap": {
         "P": {
           "nextNode": "exit_t"
