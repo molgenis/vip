@@ -127,24 +127,10 @@ then
 	fi
 fi
 
-module load "${MOD_BCF_TOOLS}"
-
-SPLIT_VEP_ARGS=("-c" "Gene" "${INPUT}")
-if [[ "${INPUT}" == *.vcf.gz ]]
-then
-  SPLIT_VEP_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/splitted.vcf.gz
-	SPLIT_VEP_ARGS+=("-O" "z")
-else
-  SPLIT_VEP_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/splitted.vcf
-fi
-bcftools +split-vep "${SPLIT_VEP_ARGS[@]}" > "${SPLIT_VEP_OUTPUT}"
-
-module purge
-
 module load "${MOD_PYTHON_PLUS}"
 GENMOD_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/genmod.vcf
 
-GENMOD_ARGS=("${SPLIT_VEP_OUTPUT}" "-f" "${PEDIGREE}" "-k" "Gene" "-p" "${CPU_CORES}")
+GENMOD_ARGS=("${INPUT}" "-f" "${PEDIGREE}" "--vep" "-p" "${CPU_CORES}")
 genmod models "${GENMOD_ARGS[@]}" > "${GENMOD_OUTPUT}"
 
 module purge
@@ -166,7 +152,7 @@ java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMININ
 module purge
 
 module load "${MOD_BCF_TOOLS}"
-INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Gene,INFO/Compounds,INFO/GeneticModels")
+INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Compounds,INFO/GeneticModels")
 if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
   INH_REMOVE_ANN_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/remove_annotations.vcf.gz
