@@ -63,7 +63,7 @@ sed -i 's/"args":"-i.*step2_capice/REMOVE_PATH_DEPENDENT_VALUES/g' test/output/t
 REPORT_DIFF=$(diff $ACTUAL_HTML $EXPECTED_HTML)
 if [ "$REPORT_DIFF" != "" ]
 then
-    	echo -e "\e[31report file test failed, output file differs from expected, \e[39m"
+    	echo -e "\e[31mreport file test failed, output file differs from expected, \e[39m"
   echo "run 'diff $ACTUAL_HTML $EXPECTED_HTML}' for more information."
   FAILED=1
 else
