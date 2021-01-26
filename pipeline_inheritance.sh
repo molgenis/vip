@@ -166,7 +166,7 @@ java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMININ
 module purge
 
 module load "${MOD_BCF_TOOLS}"
-INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Gene,INFO/Compounds,INFO/GeneticModels")
+INH_BCFTOOLS_REMOVE_ARGS=("annotate" "-x" "INFO/Gene,INFO/Compounds,INFO/GeneticModels,INFO/ModelScore")
 if [[ "${OUTPUT}" == *.vcf.gz ]]
 then
   INH_REMOVE_ANN_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/remove_annotations.vcf.gz
