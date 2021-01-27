@@ -130,6 +130,7 @@ fi
 module load "${MOD_PYTHON_PLUS}"
 GENMOD_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/genmod.vcf
 
+GENMOD_ARGS=("${SPLIT_VEP_OUTPUT}" "-f" "${PEDIGREE}" "-k" "Gene" "-p" "${CPU_CORES}" "-r" "/apps/data/UMCG/non_penetrance/UMCG_non_penetrantie_genes_entrez_20210125.tsv")
 GENMOD_ARGS=("${INPUT}" "-f" "${PEDIGREE}" "--vep" "-p" "${CPU_CORES}")
 genmod models "${GENMOD_ARGS[@]}" > "${GENMOD_OUTPUT}"
 
