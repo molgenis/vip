@@ -277,6 +277,9 @@ mkdir -p "${OUTPUT_DIR}"
     if [ -n "${INPUT_REF}" ]; then
       ANNOTATE_ARGS+=("-r" "${INPUT_REF}")
     fi
+    if [ -n "${INPUT_PHENO}" ]; then
+      ANNOTATE_ARGS+=("-t" "${INPUT_PHENO}")
+    fi
     if [ "${KEEP}" == "1" ]; then
       ANNOTATE_ARGS+=("-k")
     fi
