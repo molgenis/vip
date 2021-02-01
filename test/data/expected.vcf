@@ -4,7 +4,7 @@
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##INFO=<ID=CAP,Number=A,Type=Float,Description="CAPICE pathogenicity prediction"
 ##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|ALLELE_NUM|DISTANCE|STRAND|FLAGS|PICK|SYMBOL_SOURCE|HGNC_ID|gnomAD_AF|gnomAD_AFR_AF|gnomAD_AMR_AF|gnomAD_ASJ_AF|gnomAD_EAS_AF|gnomAD_FIN_AF|gnomAD_NFE_AF|gnomAD_OTH_AF|gnomAD_SAS_AF|CLIN_SIG|SOMATIC|PHENO|PUBMED|CHECK_REF">
-##INFO=<ID=MVLA,Number=A,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from /apps/data/UMCG/MVL/GRCh37/Artefact_Totaal-Molecular_variants-2020-09-03_normalized.vcf.gz)">
+##INFO=<ID=MVLA,Number=A,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from /apps/data/UMCG/MVL/GRCh37/Artefact_Totaal-Molecular_variants-2020-10-08_07-49-09_normalized.vcf.gz)">
 ##INFO=<ID=VIPC,Number=A,Type=String,Description="VIP decision tree classification">
 ##INFO=<ID=VKGL,Number=A,Type=String,Description="Clinical significance: LB (likely benign), VUS (unknown significance), LP (likely pathogenic) (from /apps/data/VKGL/vkgl_consensus_jan2021_normalized.vcf.gz)">
 ##INFO=<ID=VKGL_AMC,Number=A,Type=String,Description="Amsterdam UMC clinical significance: B (benign), LB (likely benign), VUS (unknown significance), LP (likely pathogenic), P (pathogenic) (from /apps/data/VKGL/vkgl_consensus_jan2021_normalized.vcf.gz)">
