@@ -12,7 +12,7 @@ MOD_VCF_DECISION_TREE="vcf-decision-tree/v0.0.2-Java-11-LTS"
 MOD_VCF_INHERITANCE_MATCHER="vcf-inheritance-matcher/v0.0.3-Java-11-LTS"
 MOD_VCF_REPORT="vcf-report/v1.7.0-Java-11-LTS"
 MOD_VEP="VEP/100.4-foss-2018b-Perl-5.28.0"
-MOD_VIBE="VIBE/5.0.0-Java-11-LTS"
+MOD_VIBE="VIBE/5.0.1-Java-11-LTS"
 MOD_PYTHON_PLUS="PythonPlus/3.7.4-foss-2018b-v20.11.1"
 
 # Use non-minimal CADD module if the minimal module is not available
