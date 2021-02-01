@@ -204,7 +204,7 @@ ops=["self"]
 names=["CAP"]
 
 [[annotation]]
-file="/apps/data/UMCG/MVL/${ASSEMBLY}/Artefact_Totaal-Molecular_variants-2020-09-03_normalized.vcf.gz"
+file="/apps/data/UMCG/MVL/${ASSEMBLY}/Artefact_Totaal-Molecular_variants-2020-10-08_07-49-09_normalized.vcf.gz"
 fields = ["MVL"]
 ops=["self"]
 names=["MVLA"]
