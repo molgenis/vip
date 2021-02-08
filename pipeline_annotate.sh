@@ -240,37 +240,39 @@ module load "${MOD_BCF_TOOLS}"
 bcftools filter -i 'CAP="."' --threads "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
 module purge
 
-if [ `zgrep -c -m 1 "^[^#]" "${BCFTOOLS_FILTER_OUTPUT}"` -eq 0 ]
+if [[ "${ASSEMBLY}" == GRCh37 ]]
 then
-	VCFANNO_ALL_OUTPUT="${BCFTOOLS_FILTER_INPUT}"
-	echo "skipping CAPICE score calculation because all variants have precomputed scores ..."
-else
-	VCFANNO_ALL_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_all.vcf.gz
-	echo "calculating CAPICE scores for variants without precomputed score ..."
+  if [ `zgrep -c -m 1 "^[^#]" "${BCFTOOLS_FILTER_OUTPUT}"` -eq 0 ]
+  then
+    VCFANNO_ALL_OUTPUT="${BCFTOOLS_FILTER_INPUT}"
+    echo "skipping CAPICE score calculation because all variants have precomputed scores ..."
+  else
+    VCFANNO_ALL_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_all.vcf.gz
+    echo "calculating CAPICE scores for variants without precomputed score ..."
 
-	module load "${MOD_CADD}"
-	# strip headers from input vcf for cadd
-	CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
-	gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip > "${CADD_INPUT}"
-	CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}")
-	CADD.sh "${CADD_ARGS[@]}"
-	module purge
+    module load "${MOD_CADD}"
+    # strip headers from input vcf for cadd
+    CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
+    gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip > "${CADD_INPUT}"
+    CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}")
+    CADD.sh "${CADD_ARGS[@]}"
+    module purge
 
-	module load "${MOD_CAPICE}"
-	PYTHON_ARGS=("${EBROOTCAPICE}/CAPICE_scripts/model_inference.py" "--input_path" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "--model_path" "${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat" "--prediction_savepath" "${CAPICE_OUTPUT}")
-	python "${PYTHON_ARGS[@]}"
+    module load "${MOD_CAPICE}"
+    PYTHON_ARGS=("${EBROOTCAPICE}/CAPICE_scripts/model_inference.py" "--input_path" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "--model_path" "${EBROOTCAPICE}/CAPICE_model/${ASSEMBLY}/xgb_booster.pickle.dat" "--prediction_savepath" "${CAPICE_OUTPUT}")
+    python "${PYTHON_ARGS[@]}"
 
-	CAPICE_ARGS=("-Djava.io.tmpdir=${TMPDIR}" "-XX:ParallelGCThreads=2" "-Xmx1g" "-jar" "${EBROOTCAPICE}/capice2vcf.jar" "-i" "${CAPICE_OUTPUT}" "-o" "${CAPICE_OUTPUT_VCF}")
+    CAPICE_ARGS=("-Djava.io.tmpdir=${TMPDIR}" "-XX:ParallelGCThreads=2" "-Xmx1g" "-jar" "${EBROOTCAPICE}/capice2vcf.jar" "-i" "${CAPICE_OUTPUT}" "-o" "${CAPICE_OUTPUT_VCF}")
 
-	if [ "${FORCE}" == "1" ]
-	then
-		CAPICE_ARGS+=("-f")
-	fi
-	java "${CAPICE_ARGS[@]}"
+    if [ "${FORCE}" == "1" ]
+    then
+      CAPICE_ARGS+=("-f")
+    fi
+    java "${CAPICE_ARGS[@]}"
 
-	module purge
+    module purge
 
-	cat > "${VCFANNO_POST_CONF}" << EOT
+	  cat > "${VCFANNO_POST_CONF}" << EOT
 [[annotation]]
 file="${CAPICE_OUTPUT_VCF}"
 fields = ["CAP"]
@@ -278,13 +280,17 @@ ops=["self"]
 names=["CAP"]
 EOT
 
-	module load "${MOD_VCF_ANNO}"
-	module load "${MOD_HTS_LIB}"
+    module load "${MOD_VCF_ANNO}"
+    module load "${MOD_HTS_LIB}"
 
-	VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_POST_CONF}" "${VCFANNO_OUTPUT}")
-	vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_ALL_OUTPUT}"
+    VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_POST_CONF}" "${VCFANNO_OUTPUT}")
+    vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_ALL_OUTPUT}"
 
-	module purge
+    module purge
+  fi
+else
+  echo "Skipping capice for ${ASSEMBLY}"
+  VCFANNO_ALL_OUTPUT="${VCFANNO_OUTPUT}"
 fi
 
 # VEP
