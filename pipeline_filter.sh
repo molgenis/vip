@@ -116,7 +116,7 @@ DECISION_TREE_INPUT="${INPUT}"
 if [ -z "${TREE}" ]
 then
   DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
-  cat > "${DECISION_TREE_CONF}" << EOT
+    cat > "${DECISION_TREE_CONF}" << EOT
 {
   "rootNode": "filter",
   "nodes": {
