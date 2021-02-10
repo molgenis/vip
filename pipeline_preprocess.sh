@@ -174,7 +174,7 @@ filterLowQualityRecords() {
     fi
 
     # run include filter and exclude filter
-    if [ "${READ_DEPTH_THRESHOLD}" != -1 ]; then
+    if [ "${READ_DEPTH_THRESHOLD}" != -1 ] && containsFormatDpHeader "${INPUT_VCF}"; then
       FILTER+=" && ("
       FILTER+="GT[${PROBAND_IDS_STR}]!=\"ref\" & GT[${PROBAND_IDS_STR}]!=\"mis\""
       FILTER+=" & ("
