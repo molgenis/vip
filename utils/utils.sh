@@ -54,6 +54,29 @@ containsProbands () {
 }
 
 #######################################
+# Returns whether VCF file contains a FORMAT/DP header.
+#
+# Arguments:
+#   path to VCF file
+# Returns:
+#   0 if the VCF file contains a FORMAT/DP header
+#   1 if the VCF file doesn't contain a FORMAT/DP header
+#######################################
+containsFormatDpHeader () {
+  local VCF_PATH=$1
+
+  local VCF_HEADER
+  VCF_HEADER=$(bcftools view -h "${VCF_PATH}")
+
+  if [[ "${VCF_HEADER}" =~ .*ID=DP.* ]]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#######################################
 # Returns whether VCF file contains structural variants.
 #
 # Arguments:
