@@ -14,6 +14,8 @@ if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
+# shellcheck source=utils/utils.sh
+source "${SCRIPT_DIR}"/utils/utils.sh
 
 INPUT=""
 OUTPUT=""
@@ -25,8 +27,7 @@ CPU_CORES=4
 FORCE=0
 KEEP=0
 
-usage()
-{
+usage() {
   echo "usage: pipeline_annotate.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [-a <arg>] [-f] [-k]
 
 -i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
@@ -53,14 +54,11 @@ examples:
 }
 
 get_unique_phenotypes() {
-  IFS=',' read -ra SAMPLE_PHENOTYPES <<< "$1"
-  for i in "${SAMPLE_PHENOTYPES[@]}"
-  do
-    if [[ "$i" =~ (.*\/)?(.*) ]]
-    then
-      IFS=';' read -ra PHENOTYPES <<< "${BASH_REMATCH[2]}"
-      for j in "${PHENOTYPES[@]}"
-      do
+  IFS=',' read -ra SAMPLE_PHENOTYPES <<<"$1"
+  for i in "${SAMPLE_PHENOTYPES[@]}"; do
+    if [[ "$i" =~ (.*\/)?(.*) ]]; then
+      IFS=';' read -ra PHENOTYPES <<<"${BASH_REMATCH[2]}"
+      for j in "${PHENOTYPES[@]}"; do
         UNIQUE_PHENOTYPES["$j"]=1
       done
     else
@@ -71,108 +69,138 @@ get_unique_phenotypes() {
   done
 }
 
+#######################################
+# Filter non-SV records without CAPICE score
+#
+# Arguments:
+#   path to input VCF file
+#   path to output VCF file
+#   number of worker threads
+#######################################
+filterUnscoredCapiceRecords() {
+  echo -e "filtering records without CAPICE score ..."
+
+  local INPUT_VCF="$1"
+  local OUTPUT_VCF="$2"
+  local THREADS="$3"
+
+  local FILTER
+  if containsStructuralVariants "${INPUT_VCF}"; then
+    FILTER="(CAP=\".\" && SVTYPE=\".\")"
+  else
+    FILTER="CAP=\".\""
+  fi
+
+  local ARGS=()
+  ARGS+=("filter")
+  ARGS+=("-i" "${FILTER}")
+  ARGS+=("-o" "${OUTPUT_VCF}")
+  if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
+    ARGS+=("-O" "z")
+  fi
+  ARGS+=("--threads" "${THREADS}")
+  ARGS+=("${INPUT_VCF}")
+
+  module load "${MOD_BCF_TOOLS}"
+  bcftools "${ARGS[@]}"
+  module purge
+
+  echo -e "filtering records without CAPICE score done"
+}
+
 PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:a:t:c:fk --long input:,output:,reference:,assembly:,phenotypes:,cpu_cores:,force,keep,ann_vep: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
-	usage
-	exit 2
+  usage
+  exit 2
 fi
 
 eval set -- "$PARSED_ARGUMENTS"
-while :
-do
+while :; do
   case "$1" in
-    -i | --input)
-      INPUT=$(realpath "$2")
-      shift 2
-      ;;
-    -o | --output)
-      OUTPUT_ARG="$2"
-      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-      shift 2
-      ;;
-    -r | --reference)
-      INPUT_REF=$(realpath "$2")
-      shift 2
-      ;;
-    -c | --cpu_cores)
-      CPU_CORES="$2"
-      shift 2
-      ;;
-    -a | --assembly)
-      ASSEMBLY="$2"
-      shift 2
-      ;;
-    -t | --phenotypes)
-      INPUT_PHENO="$2"
-      shift 2
-      ;;
-    --ann_vep)
-      ANN_VEP="$2"
-      shift 2
-      ;;
-    -f | --force)
-      FORCE=1
-      shift
-      ;;
-    -k | --keep)
-      KEEP=1
-      shift
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      usage
-	    exit 2
-      ;;
+  -i | --input)
+    INPUT=$(realpath "$2")
+    shift 2
+    ;;
+  -o | --output)
+    OUTPUT_ARG="$2"
+    OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
+    OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
+    OUTPUT_FILE=$(basename "$OUTPUT_ARG")
+    OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+    shift 2
+    ;;
+  -r | --reference)
+    INPUT_REF=$(realpath "$2")
+    shift 2
+    ;;
+  -c | --cpu_cores)
+    CPU_CORES="$2"
+    shift 2
+    ;;
+  -a | --assembly)
+    ASSEMBLY="$2"
+    shift 2
+    ;;
+  -t | --phenotypes)
+    INPUT_PHENO="$2"
+    shift 2
+    ;;
+  --ann_vep)
+    ANN_VEP="$2"
+    shift 2
+    ;;
+  -f | --force)
+    FORCE=1
+    shift
+    ;;
+  -k | --keep)
+    KEEP=1
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
   esac
 done
 
-if [ -z "${INPUT}" ]
-then
+if [ -z "${INPUT}" ]; then
   echo -e "missing required option -i\n"
-	usage
-	exit 2
+  usage
+  exit 2
 fi
-if [ -z "${OUTPUT}" ]
-then
+if [ -z "${OUTPUT}" ]; then
   echo -e "missing required option -o\n"
-	usage
-	exit 2
+  usage
+  exit 2
 fi
 
-if [ ! -f "${INPUT}" ]
-then
-	echo -e "$INPUT does not exist.\n"
-	exit 2
+if [ ! -f "${INPUT}" ]; then
+  echo -e "$INPUT does not exist.\n"
+  exit 2
 fi
-if [ -f "${OUTPUT}" ]
-then
-	if [ "${FORCE}" == "1" ]
-	then
-		rm "${OUTPUT}"
-	else
-		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
+if [ -f "${OUTPUT}" ]; then
+  if [ "${FORCE}" == "1" ]; then
+    rm "${OUTPUT}"
+  else
+    echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
     exit 2
-	fi
+  fi
 fi
-if [ ! -z "${INPUT_REF}" ]
-then
-  if [ ! -f "${INPUT_REF}" ]
-  then
+if [ ! -z "${INPUT_REF}" ]; then
+  if [ ! -f "${INPUT_REF}" ]; then
     echo -e "${INPUT_REF} does not exist.\n"
     exit 2
   fi
 fi
 
-
 if [ -z "${TMPDIR+x}" ]; then
-	TMPDIR=/tmp
+  TMPDIR=/tmp
 fi
 
 #VcfAnno
@@ -184,7 +212,7 @@ VCFANNO_PRE_CONF="${VCFANNO_OUTPUT_DIR}"/conf_pre.toml
 rm -rf "${VCFANNO_OUTPUT_DIR}"
 mkdir -p "${VCFANNO_OUTPUT_DIR}"
 
-cat > "${VCFANNO_PRE_CONF}" << EOT
+cat >"${VCFANNO_PRE_CONF}" <<EOT
 [[annotation]]
 file="/apps/data/VKGL/vkgl_consensus_jan2021_normalized.vcf.gz"
 fields = ["VKGL_CL", "AMC", "EMC", "LUMC", "NKI", "RMMC", "UMCG", "UMCU", "VUMC"]
@@ -214,7 +242,7 @@ module load "${MOD_VCF_ANNO}"
 module load "${MOD_HTS_LIB}"
 
 VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_PRE_CONF}" "${VCFANNO_INPUT}")
-vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_OUTPUT}"
+vcfanno "${VCFANNO_ARGS[@]}" | bgzip >"${VCFANNO_OUTPUT}"
 
 module purge
 
@@ -225,8 +253,7 @@ BCFTOOLS_FILTER_OUTPUT="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter.vcf.gz
 CAPICE_INPUT="${BCFTOOLS_FILTER_OUTPUT}"
 VCFANNO_POST_CONF="${CAPICE_OUTPUT_DIR}"/conf_post.toml
 
-if [[ "${OUTPUT_FILE}" == *vcf ]]
-then
+if [[ "${OUTPUT_FILE}" == *vcf ]]; then
   CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf/.tsv}"
 else
   CAPICE_OUTPUT="${CAPICE_OUTPUT_DIR}"/"${OUTPUT_FILE/.vcf.gz/.tsv}"
@@ -236,14 +263,10 @@ CAPICE_OUTPUT_VCF="${CAPICE_OUTPUT_DIR}"/vcfanno_bcftools_filter_capice.vcf.gz
 rm -rf "${CAPICE_OUTPUT_DIR}"
 mkdir -p "${CAPICE_OUTPUT_DIR}"
 
-module load "${MOD_BCF_TOOLS}"
-bcftools filter -i 'CAP="."' --threads "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
-module purge
+filterUnscoredCapiceRecords "${BCFTOOLS_FILTER_INPUT}" "${BCFTOOLS_FILTER_OUTPUT}" "${CPU_CORES}"
 
-if [[ "${ASSEMBLY}" == GRCh37 ]]
-then
-  if [ `zgrep -c -m 1 "^[^#]" "${BCFTOOLS_FILTER_OUTPUT}"` -eq 0 ]
-  then
+if [[ "${ASSEMBLY}" == GRCh37 ]]; then
+  if [ $(zgrep -c -m 1 "^[^#]" "${BCFTOOLS_FILTER_OUTPUT}") -eq 0 ]; then
     VCFANNO_ALL_OUTPUT="${BCFTOOLS_FILTER_INPUT}"
     echo "skipping CAPICE score calculation because all variants have precomputed scores ..."
   else
@@ -253,7 +276,7 @@ then
     module load "${MOD_CADD}"
     # strip headers from input vcf for cadd
     CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
-    gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip > "${CADD_INPUT}"
+    gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip >"${CADD_INPUT}"
     CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}")
     CADD.sh "${CADD_ARGS[@]}"
     module purge
@@ -264,15 +287,14 @@ then
 
     CAPICE_ARGS=("-Djava.io.tmpdir=${TMPDIR}" "-XX:ParallelGCThreads=2" "-Xmx1g" "-jar" "${EBROOTCAPICE}/capice2vcf.jar" "-i" "${CAPICE_OUTPUT}" "-o" "${CAPICE_OUTPUT_VCF}")
 
-    if [ "${FORCE}" == "1" ]
-    then
+    if [ "${FORCE}" == "1" ]; then
       CAPICE_ARGS+=("-f")
     fi
     java "${CAPICE_ARGS[@]}"
 
     module purge
 
-	  cat > "${VCFANNO_POST_CONF}" << EOT
+    cat >"${VCFANNO_POST_CONF}" <<EOT
 [[annotation]]
 file="${CAPICE_OUTPUT_VCF}"
 fields = ["CAP"]
@@ -284,7 +306,7 @@ EOT
     module load "${MOD_HTS_LIB}"
 
     VCFANNO_ARGS=("-p" "${CPU_CORES}" "${VCFANNO_POST_CONF}" "${VCFANNO_OUTPUT}")
-    vcfanno "${VCFANNO_ARGS[@]}" | bgzip > "${VCFANNO_ALL_OUTPUT}"
+    vcfanno "${VCFANNO_ARGS[@]}" | bgzip >"${VCFANNO_ALL_OUTPUT}"
 
     module purge
   fi
@@ -301,21 +323,19 @@ VEP_OUTPUT_STATS="${VEP_OUTPUT}"
 rm -rf "${VEP_OUTPUT_DIR}"
 mkdir -p "${VEP_OUTPUT_DIR}"
 
-if [ -n "${INPUT_PHENO}" ]
-then
+if [ -n "${INPUT_PHENO}" ]; then
   module load "${MOD_VIBE}"
 
   declare -A UNIQUE_PHENOTYPES
   get_unique_phenotypes "${INPUT_PHENO}"
-  for i in "${!UNIQUE_PHENOTYPES[@]}"
-  do
+  for i in "${!UNIQUE_PHENOTYPES[@]}"; do
     VIBE_OUTPUT="${VEP_OUTPUT_DIR}/${i//[:]/_}.txt"
     VIBE_ARGS=("-t" "/apps/data/VIBE/vibe-5.0.0-hdt/vibe-5.0.0.hdt" "-w" "/apps/data/VIBE/hp_2020-12-07.owl")
     VIBE_ARGS+=("-p" "$i")
     VIBE_ARGS+=("-l" "-o" "${VIBE_OUTPUT}")
     java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVIBE}"/vibe.jar "${VIBE_ARGS[@]}"
 
-    echo -e "#HPO=$i\n$(cat "${VIBE_OUTPUT}")" > "${VIBE_OUTPUT}"
+    echo -e "#HPO=$i\n$(cat "${VIBE_OUTPUT}")" >"${VIBE_OUTPUT}"
   done
 
   module purge
@@ -324,9 +344,8 @@ fi
 module load "${MOD_VEP}"
 VEP_ARGS=("--input_file" "${VEP_INPUT}" "--format" "vcf")
 VEP_ARGS+=("--output_file" "${VEP_OUTPUT}" "--vcf")
-if [[ "${OUTPUT}" == *.vcf.gz ]]
-then
-	VEP_ARGS+=("--compress_output" "bgzip")
+if [[ "${OUTPUT}" == *.vcf.gz ]]; then
+  VEP_ARGS+=("--compress_output" "bgzip")
 fi
 
 VEP_ARGS+=("--stats_file" "${VEP_OUTPUT_STATS}" "--stats_text")
@@ -344,12 +363,12 @@ VEP_ARGS+=("--allow_non_variant")
 VEP_ARGS+=("--fork" "${CPU_CORES}")
 
 if [ -n "${INPUT_REF}" ]; then
-	VEP_ARGS+=("--fasta" "${INPUT_REF}" "--hgvs")
+  VEP_ARGS+=("--fasta" "${INPUT_REF}" "--hgvs")
 fi
 
 if [ -n "${ANN_VEP}" ]; then
-	# shellcheck disable=SC2206
-	VEP_ARGS+=(${ANN_VEP})
+  # shellcheck disable=SC2206
+  VEP_ARGS+=(${ANN_VEP})
 fi
 
 vep "${VEP_ARGS[@]}"
