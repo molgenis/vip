@@ -214,7 +214,7 @@ mkdir -p "${VCFANNO_OUTPUT_DIR}"
 
 cat >"${VCFANNO_PRE_CONF}" <<EOT
 [[annotation]]
-file="/apps/data/VKGL/vkgl_consensus_jan2021_normalized.vcf.gz"
+file="/apps/data/VKGL/${ASSEMBLY}/vkgl_consensus_jan2021_normalized.vcf.gz"
 fields = ["VKGL_CL", "AMC", "EMC", "LUMC", "NKI", "RMMC", "UMCG", "UMCU", "VUMC"]
 ops=["self","self","self","self","self","self","self","self","self"]
 names=["VKGL", "VKGL_AMC", "VKGL_EMC", "VKGL_LUMC", "VKGL_NKI", "VKGL_RMMC", "VKGL_UMCG", "VKGL_UMCU", "VKGL_VUMC"]

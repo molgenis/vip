@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-VIP_VERSION="1.8.0"
+VIP_VERSION="1.8.1"
 
 MOD_BCF_TOOLS="BCFtools/1.11-GCCcore-7.3.0"
 MOD_CADD="CADD/v1.4-foss-2018b-minimal"
