@@ -331,9 +331,7 @@ mkdir -p "${OUTPUT_DIR}"
   then
     echo "step 4/5 inheritance matching ..."
     START_TIME=$SECONDS
-    module load "${MOD_BCF_TOOLS}"
-    HEADER=$(bcftools view -h "${FILTER_OUTPUT}")
-    if echo "$HEADER" | grep -q "##InheritanceModesGene"; then
+    if containsInheritanceModesGeneAnnotations "${FILTER_OUTPUT}"; then
       if [ -z "${INPUT_PED}" ]
       then
         echo "skipping inheritance matching: no PED file provided."
@@ -356,7 +354,6 @@ mkdir -p "${OUTPUT_DIR}"
       INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
     fi
     ELAPSED_TIME=$(($SECONDS - $START_TIME))
-    module purge
     echo "step 4/5 inheritance matching completed in $(($ELAPSED_TIME/60))m$(($ELAPSED_TIME%60))s"
   else
     INHERITANCE_OUTPUT="${FILTER_OUTPUT}"
