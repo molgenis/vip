@@ -100,3 +100,28 @@ containsStructuralVariants () {
     return 1
   fi
 }
+
+#######################################
+# Returns whether VCF file contains InheritanceModesGene annotations.
+#
+# Arguments:
+#   path to VCF file
+# Returns:
+#   0 if the VCF file contains InheritanceModesGene annotations
+#   1 if the VCF file doesn't contain InheritanceModesGene annotations
+#######################################
+containsInheritanceModesGeneAnnotations () {
+  local VCF_PATH=$1
+
+  module load "${MOD_BCF_TOOLS}"
+  local VCF_HEADER
+  VCF_HEADER=$(bcftools view -h "${VCF_PATH}")
+  module purge
+
+  if [[ "${VCF_HEADER}" =~ .*##InheritanceModesGene.* ]]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
