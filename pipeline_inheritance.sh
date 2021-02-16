@@ -8,6 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
+#SBATCH --tmp=4gb
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi

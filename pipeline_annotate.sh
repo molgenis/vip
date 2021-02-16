@@ -8,6 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --export=NONE
 #SBATCH --get-user-env=L60
+#SBATCH --tmp=4gb
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
@@ -277,7 +278,7 @@ if [[ "${ASSEMBLY}" == GRCh37 ]]; then
     # strip headers from input vcf for cadd
     CADD_INPUT="${CAPICE_OUTPUT_DIR}/input_headerless_$(date +%s).vcf.gz"
     gunzip -c "$CAPICE_INPUT" | sed '/^#/d' | bgzip >"${CADD_INPUT}"
-    CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}")
+    CADD_ARGS=("-a" "-g" "${ASSEMBLY}" "-o" "${CAPICE_OUTPUT_DIR}/cadd.tsv.gz" "-c" "${CPU_CORES}" "-s" "${CADD_INPUT}" "-t" "${TMPDIR}")
     CADD.sh "${CADD_ARGS[@]}"
     module purge
 
