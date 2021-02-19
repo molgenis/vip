@@ -50,9 +50,9 @@ VCF_DIFF=$(diff $ACTUAL_VCF $EXPECTED_VCF)
 if [ "$VCF_DIFF" != "" ]
 then
   echo -e "\e[31mvcf file test failed, output file differs from expected: \e[39m"
-  echo "---BEGIN diff---"
+  echo -e "---BEGIN diff---"
 	echo $VCF_DIFF
-	echo "---END diff---"
+	echo -e "---END diff---"
 	FAILED=1
 else
     echo -e "\e[32mvcf file test passed. \e[39m"
@@ -64,7 +64,7 @@ REPORT_DIFF=$(diff $ACTUAL_HTML $EXPECTED_HTML)
 if [ "$REPORT_DIFF" != "" ]
 then
     	echo -e "\e[31mreport file test failed, output file differs from expected, \e[39m"
-  echo "run 'diff $ACTUAL_HTML $EXPECTED_HTML}' for more information."
+  echo -e "run 'diff $ACTUAL_HTML $EXPECTED_HTML}' for more information."
   FAILED=1
 else
     echo -e "\e[32mreport file test passed. \e[39m"

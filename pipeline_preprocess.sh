@@ -11,46 +11,33 @@
 #SBATCH --tmp=4gb
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
-if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 # shellcheck source=utils/utils.sh
 source "${SCRIPT_DIR}"/utils/utils.sh
 
-INPUT=""
-INPUT_REF=""
-INPUT_PROBANDS=""
-OUTPUT=""
-FILTER_LOW_QUAL=0
-FILTER_READ_DEPTH=20
-CPU_CORES=4
-FORCE=0
-KEEP=0
-
 #######################################
 # Print usage
 #######################################
 usage() {
-  echo "usage: pipeline_preprocess.sh -i <arg> -o <arg> [-r <arg>] [-c <arg>] [--filter_low_qual] [--filter_read_depth] [-f] [-k]
+  echo -e "usage: ${SCRIPT_NAME} -i <arg>
 
 -i, --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
--o, --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
--r, --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
+-o, --output <arg>        optional: Output VCF file (.vcf.gz).
 -b, --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
--c, --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
+
+-c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 
---filter_low_qual         optional: Filter low quality records using filter status and read depth.
---filter_read_depth       optional: Filter read depth threshold (default: 20)
-
-examples:
-  pipeline_preprocess.sh -i in.vcf -o out.vcf
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -b sample0
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz --filter_low_qual --filter_read_depth 30
-  pipeline_preprocess.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -b sample0,sample1 --filter_low_qual --filter_read_depth 30 -c 2 -f -k"
+config:
+  preprocess_filter_low_qual    filter low quality records using filter status and read depth.
+  preprocess_filter_read_depth  filter read depth threshold (default: 20)
+  reference                     see pipeline.sh
+  cpu_cores                     see pipeline.sh"
 }
 
 #######################################
@@ -64,54 +51,56 @@ examples:
 removeInfoAnnotations() {
   echo -e "removing existing INFO annotations ..."
 
-  local INPUT_VCF="$1"
-  local OUTPUT_VCF="$2"
-  local THREADS="$3"
+  local inputVcf="$1"
+  local outputVcf="$2"
+  local threads="$3"
+
+  module load "${MOD_BCF_TOOLS}"
 
   # INFO keys to keep
-  local INFO_KEYS=()
+  local infoKeys=()
   # from: https://github.com/Illumina/manta/blob/v1.6.0/docs/userGuide/README.md#vcf-info-fields
-  INFO_KEYS+=("INFO/IMPRECISE")
-  INFO_KEYS+=("INFO/SVTYPE")
-  INFO_KEYS+=("INFO/SVLEN")
-  INFO_KEYS+=("INFO/END")
-  INFO_KEYS+=("INFO/CIPOS")
-  INFO_KEYS+=("INFO/CIEND")
-  INFO_KEYS+=("INFO/CIPOS")
-  INFO_KEYS+=("INFO/MATEID")
-  INFO_KEYS+=("INFO/EVENT")
-  INFO_KEYS+=("INFO/HOMLEN")
-  INFO_KEYS+=("INFO/HOMSEQ")
-  INFO_KEYS+=("INFO/SVINSLEN")
-  INFO_KEYS+=("INFO/SVINSSEQ")
-  INFO_KEYS+=("INFO/LEFT_SVINSSEQ")
-  INFO_KEYS+=("INFO/RIGHT_SVINSSEQ")
-  INFO_KEYS+=("INFO/BND_DEPTH")
-  INFO_KEYS+=("INFO/MATE_BND_DEPTH")
-  INFO_KEYS+=("INFO/JUNCTION_QUAL")
-  INFO_KEYS+=("INFO/SOMATIC")
-  INFO_KEYS+=("INFO/SOMATICSCORE")
-  INFO_KEYS+=("INFO/JUNCTION_SOMATICSCORE")
-  INFO_KEYS+=("INFO/CONTIG")
+  infoKeys+=("INFO/IMPRECISE")
+  infoKeys+=("INFO/SVTYPE")
+  infoKeys+=("INFO/SVLEN")
+  infoKeys+=("INFO/END")
+  infoKeys+=("INFO/CIPOS")
+  infoKeys+=("INFO/CIEND")
+  infoKeys+=("INFO/CIPOS")
+  infoKeys+=("INFO/MATEID")
+  infoKeys+=("INFO/EVENT")
+  infoKeys+=("INFO/HOMLEN")
+  infoKeys+=("INFO/HOMSEQ")
+  infoKeys+=("INFO/SVINSLEN")
+  infoKeys+=("INFO/SVINSSEQ")
+  infoKeys+=("INFO/LEFT_SVINSSEQ")
+  infoKeys+=("INFO/RIGHT_SVINSSEQ")
+  infoKeys+=("INFO/BND_DEPTH")
+  infoKeys+=("INFO/MATE_BND_DEPTH")
+  infoKeys+=("INFO/JUNCTION_QUAL")
+  infoKeys+=("INFO/SOMATIC")
+  infoKeys+=("INFO/SOMATICSCORE")
+  infoKeys+=("INFO/JUNCTION_SOMATICSCORE")
+  infoKeys+=("INFO/CONTIG")
 
-  local INFO_KEYS_STR
-  INFO_KEYS_STR=$(
+  local infoKeysStr
+  infoKeysStr=$(
     IFS=","
-    echo "${INFO_KEYS[*]}"
+    echo -e "${infoKeys[*]}"
   )
 
-  local ARGS=()
-  ARGS+=("annotate")
-  ARGS+=("-x" "^${INFO_KEYS_STR}")
-  ARGS+=("-o" "${OUTPUT_VCF}")
-  if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
-    ARGS+=("-O" "z")
-  fi
-  ARGS+=("--threads" "${THREADS}")
-  ARGS+=("${INPUT_VCF}")
+  local args=()
+  args+=("annotate")
+  args+=("-x" "^${infoKeysStr}")
+  args+=("-o" "${outputVcf}")
+  args+=("-O" "z")
+  args+=("--threads" "${threads}")
+  args+=("${inputVcf}")
 
-  bcftools "${ARGS[@]}"
+  bcftools "${args[@]}"
   echo -e "removing existing INFO annotations done"
+
+  module purge
 }
 
 #######################################
@@ -127,102 +116,99 @@ removeInfoAnnotations() {
 filterLowQualityRecords() {
   echo -e "filtering low-quality records ..."
 
-  local INPUT_VCF="$1"
-  local PROBANDS="$2"
-  local READ_DEPTH_THRESHOLD=$3
-  local OUTPUT_VCF="$4"
-  local THREADS="$5"
+  local inputVcf="$1"
+  local probands="$2"
+  local readDepthThreshold=$3
+  local outputVcf="$4"
+  local threads="$5"
+
+  module load "${MOD_BCF_TOOLS}"
 
   # get sample names from vcf
-  local SAMPLE_NAMES=()
-  mapfile -t SAMPLE_NAMES < <(bcftools query -l "${INPUT_VCF}")
+  local sampleNames=()
+  mapfile -t sampleNames < <(bcftools query -l "${inputVcf}")
 
-  local FILTER="(FILTER==\"PASS\" || FILTER==\".\")"
-  if [ "${#SAMPLE_NAMES[*]}" == "0" ]; then
-    local ARGS=()
-    ARGS+=("filter")
-    ARGS+=("-i" "${FILTER}")
-    ARGS+=("-o" "${OUTPUT_VCF}")
-    if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
-      ARGS+=("-O" "z")
-    fi
-    ARGS+=("--threads" "${THREADS}")
-    ARGS+=("${INPUT_VCF}")
+  local filter="(filter==\"PASS\" || filter==\".\")"
+  if [ "${#sampleNames[*]}" == "0" ]; then
+    local args=()
+    args+=("filter")
+    args+=("-i" "${filter}")
+    args+=("-o" "${outputVcf}")
+    args+=("-O" "z")
+    args+=("--threads" "${threads}")
+    args+=("${inputVcf}")
 
-    bcftools "${ARGS[@]}"
+    bcftools "${args[@]}"
   else
-    local PROBAND_IDS_STR
-    if [ -n "$PROBANDS" ]; then
+    local probandIdsStr
+    if [ -n "$probands" ]; then
       # create sample name to sample index map
       declare -A SAMPLE_NAMES_MAP
-      for i in "${!SAMPLE_NAMES[@]}"; do
-        SAMPLE_NAMES_MAP["${SAMPLE_NAMES[$i]}"]=$i
+      for i in "${!sampleNames[@]}"; do
+        SAMPLE_NAMES_MAP["${sampleNames[$i]}"]=$i
       done
 
       # create proband ids
       local PROBAND_IDS=()
       # shellcheck disable=SC2206
-      local PROBAND_NAMES=(${PROBANDS//,/ })
+      local PROBAND_NAMES=(${probands//,/ })
       for i in "${PROBAND_NAMES[@]}"; do
         PROBAND_IDS+=("${SAMPLE_NAMES_MAP[$i]}")
       done
-      PROBAND_IDS_STR=$(
+      probandIdsStr=$(
         IFS=","
-        echo "${PROBAND_IDS[*]}"
+        echo -e "${PROBAND_IDS[*]}"
       )
     else
-      PROBAND_IDS_STR="*"
+      probandIdsStr="*"
     fi
 
     # run include filter and exclude filter
-    if [ "${READ_DEPTH_THRESHOLD}" != -1 ] && containsFormatDpHeader "${INPUT_VCF}"; then
-      FILTER+=" && ("
-      FILTER+="GT[${PROBAND_IDS_STR}]!=\"ref\" & GT[${PROBAND_IDS_STR}]!=\"mis\""
-      FILTER+=" & ("
-      FILTER+="DP[${PROBAND_IDS_STR}]=\".\" | DP[${PROBAND_IDS_STR}]>=${READ_DEPTH_THRESHOLD}"
-      FILTER+=")"
-      FILTER+=")"
+    if [ "${readDepthThreshold}" != -1 ] && containsFormatDpHeader "${inputVcf}"; then
+      filter+=" && ("
+      filter+="GT[${probandIdsStr}]!=\"ref\" & GT[${probandIdsStr}]!=\"mis\""
+      filter+=" & ("
+      filter+="DP[${probandIdsStr}]=\".\" | DP[${probandIdsStr}]>=${readDepthThreshold}"
+      filter+=")"
+      filter+=")"
 
-      local ARGS=()
-      ARGS+=("filter")
-      ARGS+=("-i" "${FILTER}")
-      ARGS+=("--threads" "${THREADS}")
-      ARGS+=("${INPUT_VCF}")
+      local args=()
+      args+=("filter")
+      args+=("-i" "${filter}")
+      args+=("--threads" "${threads}")
+      args+=("${inputVcf}")
 
-      FILTER_EXCLUDE="FORMAT/DP < ${READ_DEPTH_THRESHOLD}"
+      filterExclude="FORMAT/DP < ${readDepthThreshold}"
 
-      local ARGS_EXCLUDE=()
-      ARGS_EXCLUDE+=("filter")
-      ARGS_EXCLUDE+=("-e" "${FILTER_EXCLUDE}")
+      local argsExclude=()
+      argsExclude+=("filter")
+      argsExclude+=("-e" "${filterExclude}")
       # set genotypes of failed samples to missing value '.'
-      ARGS_EXCLUDE+=("-S" ".")
-      ARGS_EXCLUDE+=("-o" "${OUTPUT_VCF}")
-      if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
-        ARGS_EXCLUDE+=("-O" "z")
-      fi
-      ARGS_EXCLUDE+=("--threads" "${THREADS}")
+      argsExclude+=("-S" ".")
+      argsExclude+=("-o" "${outputVcf}")
+      argsExclude+=("-O" "z")
+      argsExclude+=("--threads" "${threads}")
 
-      bcftools "${ARGS[@]}" | bcftools "${ARGS_EXCLUDE[@]}"
+      bcftools "${args[@]}" | bcftools "${argsExclude[@]}"
     else
-      FILTER+=" && ("
-      FILTER+="GT[${PROBAND_IDS_STR}]!=\"ref\" & GT[${PROBAND_IDS_STR}]!=\"mis\""
-      FILTER+=")"
+      filter+=" && ("
+      filter+="GT[${probandIdsStr}]!=\"ref\" & GT[${probandIdsStr}]!=\"mis\""
+      filter+=")"
 
-      local ARGS=()
-      ARGS+=("filter")
-      ARGS+=("-i" "${FILTER}")
-      ARGS+=("-o" "${OUTPUT_VCF}")
-      if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
-        ARGS+=("-O" "z")
-      fi
-      ARGS+=("--threads" "${THREADS}")
-      ARGS+=("${INPUT_VCF}")
+      local args=()
+      args+=("filter")
+      args+=("-i" "${filter}")
+      args+=("-o" "${outputVcf}")
+      args+=("-O" "z")
+      args+=("--threads" "${threads}")
+      args+=("${inputVcf}")
 
-      bcftools "${ARGS[@]}"
+      bcftools "${args[@]}"
     fi
   fi
 
   echo -e "filtering low-quality records done"
+  module purge
 }
 
 #######################################
@@ -237,167 +223,187 @@ filterLowQualityRecords() {
 normalizeIndels() {
   echo -e "normalizing ..."
 
-  local INPUT_VCF="$1"
-  local REF_FASTA="$2"
-  local OUTPUT_VCF="$3"
-  local THREADS="$4"
+  local inputVcf="$1"
+  local refFasta="$2"
+  local outputVcf="$3"
+  local threads="$4"
 
-  local ARGS=()
-  ARGS+=("norm")
+  module load "${MOD_BCF_TOOLS}"
+
+  local args=()
+  args+=("norm")
   # split multi-allelic sites into bi-allelic records (both SNPs and indels are merged separately into two records)
-  ARGS+=("-m" "-both")
+  args+=("-m" "-both")
   # strict
-  ARGS+=("-s")
-  ARGS+=("-o" "${OUTPUT_VCF}")
-  if [[ "${OUTPUT_VCF}" == *.vcf.gz ]]; then
-    ARGS+=("-O" "z")
-  fi
-  if [ -n "${REF_FASTA}" ]; then
-    ARGS+=("-f" "${REF_FASTA}")
+  args+=("-s")
+  args+=("-o" "${outputVcf}")
+  args+=("-O" "z")
+  if [ -n "${refFasta}" ]; then
+    args+=("-f" "${refFasta}")
     # warn when incorrect or missing REF allele is encountered or when alternate allele is non-ACGTN (e.g. structural variant)
-    ARGS+=("-c" "w")
+    args+=("-c" "w")
   fi
-  ARGS+=("--threads" "${THREADS}")
-  ARGS+=("${INPUT_VCF}")
+  args+=("--threads" "${threads}")
+  args+=("${inputVcf}")
 
-  bcftools "${ARGS[@]}"
+  bcftools "${args[@]}"
   echo -e "normalizing done"
+  module purge
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:r:b:c:fk --long input:,output:,reference:,probands:,filter_low_qual,filter_read_depth:,cpu_cores:,force,keep -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
-  usage
-  exit 2
-fi
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 comma-separated proband identifiers (optional)
+#   $4 force
+#   $5 path to reference sequence (optional)
+#   $6 cpu cores
+#   $7 filter low quality flag
+#   $8 filter read depth threshold
+validate() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r probands="${3}"
+  local -r force="${4}"
+  local -r referencePath="${5}"
+  local -r cpuCores="${6}"
+  local -r filterLowQual="${7}"
+  local -r filterReadDepth="${8}"
 
-eval set -- "$PARSED_ARGUMENTS"
-while :; do
-  case "$1" in
-  -i | --input)
-    INPUT=$(realpath "$2")
-    shift 2
-    ;;
-  -o | --output)
-    OUTPUT_ARG="$2"
-    OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-    OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-    OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-    OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-    shift 2
-    ;;
-  -c | --cpu_cores)
-    CPU_CORES="$2"
-    shift 2
-    ;;
-  -f | --force)
-    FORCE=1
-    shift
-    ;;
-  -k | --keep)
-    KEEP=1
-    shift
-    ;;
-  -r | --reference)
-    INPUT_REF=$(realpath "$2")
-    shift 2
-    ;;
-  -b | --probands)
-    INPUT_PROBANDS="$2"
-    shift 2
-    ;;
-  --filter_low_qual)
-    FILTER_LOW_QUAL=1
-    shift
-    ;;
-  --filter_read_depth)
-    FILTER_READ_DEPTH="$2"
-    shift 2
-    ;;
-  --)
-    shift
-    break
-    ;;
-  *)
+  if ! validateInputPath "${inputFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if ! validateOutputPath "${outputFilePath}" "${force}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if [[ -n "${probands}" ]] && ! containsProbands "${probands}" "${inputFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if [[ -n "${referencePath}" ]] && [[ ! -f "${referencePath}" ]]; then
+    echo -e "reference ${referencePath} does not exist."
+    exit 1
+  fi
+}
+
+main() {
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:c:fk --long input:,output:,probands:,config:,force,keep -- "$@")
+  # shellcheck disable=SC2181
+  if [[ $? != 0 ]]; then
     usage
     exit 2
-    ;;
-  esac
-done
+  fi
 
-if [ -z "${INPUT}" ]; then
-  echo -e "missing required option -i"
-  usage
-  exit 2
-fi
-if [ -z "${OUTPUT}" ]; then
-  echo -e "missing required option -o"
-  usage
-  exit 2
-fi
+  local inputFilePath=""
+  local outputFilePath=""
+  local probands=""
+  local cfgFilePath=""
+  local force=0
+  local keep=0
 
-if [ ! -f "${INPUT}" ]; then
-  echo -e "$INPUT does not exist."
-  exit 2
-fi
-if [ -f "${OUTPUT}" ]; then
-  if [ "${FORCE}" == "1" ]; then
-    rm "${OUTPUT}"
+  eval set -- "${parsedArguments}"
+  while :; do
+    case "$1" in
+    -i | --input)
+      inputFilePath=$(realpath "$2")
+      shift 2
+      ;;
+    -o | --output)
+      outputFilePath="$2"
+      shift 2
+      ;;
+    -b | --probands)
+      probands="$2"
+      shift 2
+      ;;
+    -c | --config)
+      cfgFilePath=$(realpath "$2")
+      shift 2
+      ;;
+    -f | --force)
+      force=1
+      shift
+      ;;
+    -k | --keep)
+      keep=1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      exit 2
+      ;;
+    esac
+  done
+
+  local inputRefPath=""
+  local cpuCores=4
+  local filterLowQual=0
+  local filterReadDepth=20
+
+  if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${cfgFilePath}"
+    if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
+      inputRefPath="${VIP_CFG_MAP["reference"]}"
+    fi
+    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+      cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
+    fi
+    if [[ -n "${VIP_CFG_MAP["preprocess_filter_low_qual"]+unset}" ]]; then
+      filterLowQual="${VIP_CFG_MAP["preprocess_filter_low_qual"]}"
+    fi
+    if [[ -n "${VIP_CFG_MAP["preprocess_filter_read_depth"]+unset}" ]]; then
+      filterReadDepth="${VIP_CFG_MAP["preprocess_filter_read_depth"]}"
+    fi
+  fi
+
+  if [[ -z "${outputFilePath}" ]]; then
+    outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_preprocess")"
+  fi
+
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${force}" "${inputRefPath}" "${cpuCores}" "${filterLowQual}" "${filterReadDepth}"
+
+  local -r outputFilename="$(basename "${outputFilePath}")"
+  local -r outputDir="$(dirname "${outputFilePath}")"
+  if [[ -f "${outputFilePath}" ]]; then
+    if [[ "${force}" == "1" ]]; then
+      rm "${outputFilePath}"
+    fi
   else
-    echo -e "${OUTPUT} already exists, use -f to overwrite."
-    exit 2
+    mkdir -p "${outputDir}"
   fi
-fi
-if [ ! -z "${INPUT_REF}" ]; then
-  if [ ! -f "${INPUT_REF}" ]; then
-    echo -e "${INPUT_REF} does not exist."
-    exit 2
+
+  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  local -r workDir="${VIP_WORK_DIR}"
+
+  local currentInputFilePath="${inputFilePath}" currentOutputDir currentOutputFilePath
+
+  # step 1: remove info annotations
+  currentOutputDir="${workDir}/1_remove_annotations"
+  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+  mkdir -p "${currentOutputDir}"
+  removeInfoAnnotations "${currentInputFilePath}" "${currentOutputFilePath}" "${cpuCores}"
+  currentInputFilePath="${currentOutputFilePath}"
+
+  # step 2: filter low quality records
+  if [ "${filterLowQual}" == "1" ]; then
+    currentOutputDir="${workDir}/2_filter_low_qual"
+    currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+    mkdir -p "${currentOutputDir}"
+    filterLowQualityRecords "${currentInputFilePath}" "${probands}" "${filterReadDepth}" "${currentOutputFilePath}" "${cpuCores}"
+    currentInputFilePath="${currentOutputFilePath}"
   fi
-fi
-if ! containsProbands "${INPUT_PROBANDS}" "${INPUT}"; then
-  exit 2
-fi
 
-module load "${MOD_BCF_TOOLS}"
+  # step 3: normalize variants
+  normalizeIndels "${currentInputFilePath}" "${inputRefPath}" "${outputFilePath}" "${cpuCores}"
+}
 
-# Step: remove info fields from records
-REMOVE_ANN_INPUT="${INPUT}"
-REMOVE_ANN_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step1_remove_annotations
-REMOVE_ANN_OUTPUT="${REMOVE_ANN_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
-mkdir -p "${REMOVE_ANN_OUTPUT_DIR}"
-
-removeInfoAnnotations "${REMOVE_ANN_INPUT}" "${REMOVE_ANN_OUTPUT}" "${CPU_CORES}"
-
-# Step: remove low-quality records
-if [ "${FILTER_LOW_QUAL}" == "1" ]; then
-  FILTER_LOW_QUAL_INPUT="${REMOVE_ANN_OUTPUT}"
-  FILTER_LOW_QUAL_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step2_filter_low_qual
-  FILTER_LOW_QUAL_OUTPUT="${FILTER_LOW_QUAL_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-  rm -rf "${FILTER_LOW_QUAL_OUTPUT_DIR}"
-  mkdir -p "${FILTER_LOW_QUAL_OUTPUT_DIR}"
-
-  filterLowQualityRecords "${FILTER_LOW_QUAL_INPUT}" "${INPUT_PROBANDS}" "${FILTER_READ_DEPTH}" "${FILTER_LOW_QUAL_OUTPUT}" "${CPU_CORES}"
-else
-  FILTER_LOW_QUAL_OUTPUT="${REMOVE_ANN_OUTPUT}"
-fi
-
-# Step: normalize variants
-NORMALIZE_INPUT="${FILTER_LOW_QUAL_OUTPUT}"
-NORMALIZE_OUTPUT_DIR="${OUTPUT_DIR_ABSOLUTE}"/step0_normalize
-NORMALIZE_OUTPUT="${NORMALIZE_OUTPUT_DIR}"/"${OUTPUT_FILE}"
-rm -rf "${NORMALIZE_OUTPUT_DIR}"
-mkdir -p "${NORMALIZE_OUTPUT_DIR}"
-
-normalizeIndels "${NORMALIZE_INPUT}" "${INPUT_REF}" "${NORMALIZE_OUTPUT}" "${CPU_CORES}"
-
-module purge
-
-mv "${NORMALIZE_OUTPUT}" "${OUTPUT}"
-ln -s "${OUTPUT}" "${NORMALIZE_OUTPUT}"
-
-if [ "${KEEP}" == "0" ]; then
-  rm -rf "${REMOVE_ANN_OUTPUT_DIR}"
-  rm -rf "${FILTER_LOW_QUAL_OUTPUT_DIR}"
-  rm -rf "${NORMALIZE_OUTPUT_DIR}"
-fi
+main "${@}"
