@@ -10,7 +10,9 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
  AnnotSV
 =head1 SYNOPSIS
  mv AnnotSV.pm ~/.vep/Plugins
- ./vep -i variations.vcf --plugin AnnotSV,/FULL_PATH_TO_ANNOTSV_OUTPUT,column1;column22
+ ./vep -i variations.vcf --plugin AnnotSV,/FULL_PATH_TO_ANNOTSV_OUTPUT,column1;column2
+ Please note that for columns with spaces in the name, those spaces should be replaces with underscores.
+ Results in the CSQ will be prefixed with ASV_ to avoid name collisions.
 =head1 DESCRIPTION
  Plugin to annotate consequences of structural variants with specified columns from the AnnotSV output.
 =cut
