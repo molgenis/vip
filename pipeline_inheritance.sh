@@ -260,7 +260,7 @@ main() {
   currentInputFilePath="${currentOutputFilePath}"
 
   # step 3: remove INFO annotations
-  removeAnnotations "${currentInputFilePath}" "${outputFilePath}"
+  removeAnnotations "${currentInputFilePath}" "${outputFilePath}" "${cpuCores}"
 }
 
 main "${@}"
