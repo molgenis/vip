@@ -562,14 +562,14 @@ main() {
   local currentInputFilePath="${inputFilePath}" currentOutputFilePath
 
   # step 1: annotate input with vcfanno
-  currentOutputDir="${outputDir}/1_vcfanno"
+  currentOutputDir="${workDir}/1_vcfanno"
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
   executeVcfanno "${currentInputFilePath}" "${currentOutputFilePath}" "${cpuCores}"
   currentInputFilePath="${currentOutputFilePath}"
 
   # step 2: annotate input with CAPICE
-  currentOutputDir="${outputDir}/2_capice"
+  currentOutputDir="${workDir}/2_capice"
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
   executeCapice "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${cpuCores}"
@@ -577,20 +577,20 @@ main() {
 
   # step 3: execute VIBE
   if [ -n "${phenotypes}" ]; then
-    currentOutputDir="${outputDir}/3_vibe"
+    currentOutputDir="${workDir}/3_vibe"
     currentOutputFilePath="${currentOutputDir}/${outputFilename}"
     mkdir -p "${currentOutputDir}"
     executeVibe "${phenotypes}" "${currentOutputDir}"
   fi
 
   # step 4: annotate structural variants
-  currentOutputDir="${outputDir}/4_annotsv"
+  currentOutputDir="${workDir}/4_annotsv"
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
   executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
   currentInputFilePath="${currentOutputFilePath}"
 
-  # step 4: execute VEP
+  # step 5: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${annVep}" "${cpuCores}"
 }
 
