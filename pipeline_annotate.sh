@@ -588,6 +588,7 @@ main() {
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
   executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
+  currentInputFilePath="${currentOutputFilePath}"
 
   # step 4: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${annVep}" "${cpuCores}"
