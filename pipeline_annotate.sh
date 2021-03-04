@@ -80,6 +80,7 @@ filterUnscoredCapiceRecords() {
   args+=("-i" "${filter}")
   args+=("-o" "${outputVcf}")
   args+=("-O" "z")
+  args+=("--no-version")
   args+=("--threads" "${threads}")
   args+=("${inputVcf}")
 

@@ -107,6 +107,7 @@ removeAnnotations() {
   args+=("-x" "INFO/Compounds,INFO/GeneticModels,INFO/ModelScore")
   args+=("-O" "z")
   args+=("-o" "${outputFilePath}")
+  args+=("--no-version")
   args+=("--threads" "${cpuCores}")
   args+=("${inputFilePath}")
 

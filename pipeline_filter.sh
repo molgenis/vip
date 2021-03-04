@@ -225,6 +225,7 @@ filter() {
   args+=("-i" "VIPC==\"T\"")
   args+=("-o" "${outputFilePath}")
   args+=("-O" "z")
+  args+=("--no-version")
   args+=("--threads" "${threads}")
   args+=("${inputFilePath}")
 

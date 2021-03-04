@@ -94,6 +94,7 @@ removeInfoAnnotations() {
   args+=("-x" "^${infoKeysStr}")
   args+=("-o" "${outputVcf}")
   args+=("-O" "z")
+  args+=("--no-version")
   args+=("--threads" "${threads}")
   args+=("${inputVcf}")
 
@@ -135,6 +136,7 @@ filterLowQualityRecords() {
     args+=("-i" "${filter}")
     args+=("-o" "${outputVcf}")
     args+=("-O" "z")
+    args+=("--no-version")
     args+=("--threads" "${threads}")
     args+=("${inputVcf}")
 
@@ -187,6 +189,7 @@ filterLowQualityRecords() {
       argsExclude+=("-S" ".")
       argsExclude+=("-o" "${outputVcf}")
       argsExclude+=("-O" "z")
+      argsExclude+=("--no-version")
       argsExclude+=("--threads" "${threads}")
 
       bcftools "${args[@]}" | bcftools "${argsExclude[@]}"
@@ -200,6 +203,7 @@ filterLowQualityRecords() {
       args+=("-i" "${filter}")
       args+=("-o" "${outputVcf}")
       args+=("-O" "z")
+      args+=("--no-version")
       args+=("--threads" "${threads}")
       args+=("${inputVcf}")
 
@@ -243,6 +247,7 @@ normalizeIndels() {
     # warn when incorrect or missing REF allele is encountered or when alternate allele is non-ACGTN (e.g. structural variant)
     args+=("-c" "w")
   fi
+  args+=("--no-version")
   args+=("--threads" "${threads}")
   args+=("${inputVcf}")
 
