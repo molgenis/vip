@@ -93,8 +93,8 @@ report() {
 # arguments:
 #   $1 path to input file
 #   $2 path to output file
-#   $3 path to pedigree file (optional)
-#   $4 probands (optional)
+#   $3 probands (optional)
+#   $4 path to pedigree file (optional)
 #   $5 phenotypes (optional)
 #   $6 force
 #   $7 maxRecords (optional)
@@ -103,8 +103,8 @@ report() {
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
-  local -r pedFilePath="${3}"
-  local -r probands="${4}"
+  local -r probands="${3}"
+  local -r pedFilePath="${4}"
   local -r phenotypes="${5}"
   local -r force="${6}"
   local -r maxRecords="${7}"
