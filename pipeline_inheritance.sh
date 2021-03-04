@@ -16,6 +16,8 @@ SCRIPT_NAME="$(basename "$0")"
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
+# shellcheck source=utils/utils.sh
+source "${SCRIPT_DIR}"/utils/utils.sh
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} -i <arg> -p <arg>
