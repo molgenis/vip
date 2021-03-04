@@ -98,19 +98,13 @@ validate() {
   fi
 
   if [[ -n "${pedFilePath}" ]] && [[ ! -f "${pedFilePath}" ]]; then
-    echo -e "${pedFilePath} does not exist."
+    echo -e "pedigree ${pedFilePath} does not exist."
     exit 1
   fi
 
   if [[ -n "${phenotypes}" ]]; then
     #TODO validate phenotypes
     :
-  fi
-
-  if [[ -n "${cfgFilePath}" ]] && [[ ! -f "${cfgFilePath}" ]]; then
-    echo -e "${cfgFilePath} does not exist."
-    echo -e "Try '${SCRIPT_NAME} --help' for more information."
-    exit 1
   fi
 }
 
