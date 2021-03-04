@@ -246,7 +246,7 @@ doInheritance() {
   if ! containsInheritanceModesGeneAnnotations "${inputPath}"; then
     echo -e "step 4/5 inheritance matching skipped: input is missing inheritance modes for gene symbols."
     return 1
-  elif [[ -n "${pedigreePath}" ]]; then
+  elif [[ -z "${pedigreePath}" ]]; then
     echo -e "step 4/5 inheritance matching skipped: pedigree not provided."
     return 1
   else
