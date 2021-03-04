@@ -583,12 +583,14 @@ main() {
     executeVibe "${phenotypes}" "${currentOutputDir}"
   fi
 
-  # step 4: annotate structural variants
-  currentOutputDir="${workDir}/4_annotsv"
-  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-  mkdir -p "${currentOutputDir}"
-  executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
-  currentInputFilePath="${currentOutputFilePath}"
+  if containsStructuralVariants "${inputFilePath}"; then
+    # step 4: annotate structural variants
+    currentOutputDir="${workDir}/4_annotsv"
+    currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+    mkdir -p "${currentOutputDir}"
+    executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
+    currentInputFilePath="${currentOutputFilePath}"
+  fi
 
   # step 5: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${annVep}" "${cpuCores}"
