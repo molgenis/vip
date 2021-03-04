@@ -342,6 +342,22 @@ if [ -n "${INPUT_PHENO}" ]; then
   module purge
 fi
 
+module load "${MOD_ANNOTSV}"
+
+ANNOTSV_OUTPUT="${VEP_OUTPUT_DIR}/AnnotSV.tsv"
+
+ANNOTSV_ARGS=("-SVinputFile" "${VCFANNO_ALL_OUTPUT}")
+ANNOTSV_ARGS+=("-outputFile" "${ANNOTSV_OUTPUT}")
+ANNOTSV_ARGS+=("-genomeBuild" "${ASSEMBLY}")
+ANNOTSV_ARGS+=("-overwrite" "yes")
+ANNOTSV_ARGS+=("-typeOfAnnotation" "split")
+if [ -n "${INPUT_PHENO}" ]
+then
+	ANNOTSV_ARGS+=("-hpo" "${INPUT_PHENO}")
+fi
+${EBROOTANNOTSV}/bin/AnnotSV "${ANNOTSV_ARGS[@]}"
+module purge
+
 module load "${MOD_VEP}"
 VEP_ARGS=("--input_file" "${VEP_INPUT}" "--format" "vcf")
 VEP_ARGS+=("--output_file" "${VEP_OUTPUT}" "--vcf")
