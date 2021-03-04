@@ -392,6 +392,34 @@ executeVibe() {
 #   $1 path to input file
 #   $2 path to output file
 #   $3 assembly
+executeAnnotSv() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r assembly="${3}"
+  local -r phenotypes="${4}"
+
+  module load "${MOD_ANNOTSV}"
+
+  args=()
+  args+=("-SVinputFile" "${inputFilePath}")
+  args+=("-outputFile" "${outputFilePath}")
+  args+=("-genomeBuild" "${assembly}")
+  args+=("-typeOfAnnotation" "split")
+  #TODO fix phenotypes (see VIBE)
+  if [ -n "${phenotypes}" ]
+  then
+    args+=("-hpo" "${phenotypes}")
+  fi
+
+  ${EBROOTANNOTSV}/bin/AnnotSV "${args[@]}"
+
+  module purge
+}
+
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 assembly
 #   $4 path to reference sequence (optional)
 #   $5 annVep
 #   $6 cpu cores
@@ -554,6 +582,12 @@ main() {
     mkdir -p "${currentOutputDir}"
     executeVibe "${phenotypes}" "${currentOutputDir}"
   fi
+
+  # step 4: annotate structural variants
+  currentOutputDir="${outputDir}/4_annotsv"
+  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+  mkdir -p "${currentOutputDir}"
+  executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
 
   # step 4: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${annVep}" "${cpuCores}"
