@@ -572,14 +572,13 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}" "${annVep}" "${vibeHdtPath}" "${vibeHpoPath}"
 
+  mkdir -p "$(dirname "${outputFilePath}")"
+  local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
   local -r outputFilename="$(basename "${outputFilePath}")"
-  local -r outputDir="$(dirname "${outputFilePath}")"
-  if [[ -f "${outputFilePath}" ]]; then
-    if [[ "${force}" == "1" ]]; then
-      rm "${outputFilePath}"
-    fi
-  else
-    mkdir -p "${outputDir}"
+  outputFilePath="${outputDir}/${outputFilename}"
+
+  if [[ -f "${outputFilePath}" ]] && [[ "${force}" == "1" ]]; then
+    rm "${outputFilePath}"
   fi
 
   initWorkDir "${outputFilePath}" "${force}" "${keep}"
