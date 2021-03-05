@@ -177,6 +177,7 @@ filterLowQualityRecords() {
       local args=()
       args+=("filter")
       args+=("-i" "${filter}")
+      args+=("--no-version")
       args+=("--threads" "${threads}")
       args+=("${inputVcf}")
 
@@ -351,7 +352,7 @@ main() {
 
   local inputRefPath=""
   local cpuCores=4
-  local filterLowQual=0
+  local filterLowQual=1
   local filterReadDepth=20
 
   if [[ -n "${cfgFilePath}" ]]; then
