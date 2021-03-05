@@ -11,113 +11,35 @@
 #SBATCH --tmp=4gb
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
-if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
+# shellcheck source=utils/utils.sh
+source "${SCRIPT_DIR}"/utils/utils.sh
 
-INPUT=""
-OUTPUT=""
-TREE=""
-CPU_CORES=4
-FORCE=0
+usage() {
+  echo -e "usage: ${SCRIPT_NAME} -i <arg>
 
-usage()
-{
-  echo "usage: pipeline_filter.sh -i <arg> -o <arg> [-f]
+-i, --input      <arg>    required: Input VCF file (.vcf or .vcf.gz).
+-o, --output     <arg>    optional: Output VCF file (.vcf.gz).
 
--i,  --input   <arg>       required: Input VCF file (.vcf or .vcf.gz).
--o,  --output  <arg>       required: Output VCF file (.vcf or .vcf.gz).
--t,  --tree    <arg>       optional: Decision tree file (.json) that applies classes 'F' and 'T'.
--c,  --cpu_cores           optional: Number of CPU cores available for this process. Default: 4
--f,  --force               optional: Override the output file if it already exists.
+-c, --config     <arg>    optional: Configuration file (.cfg)
+-f, --force               optional: Override the output file if it already exists.
+-k, --keep                optional: Keep intermediate files.
 
-examples:
-  pipeline_filter.sh -i in.vcf -o out.vcf
-  pipeline_filter.sh -i in.vcf.gz -o out.vcf.gz -c 2 -f"
+config:
+  filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
+  cpu_cores               see pipeline.sh"
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:t:c:f --long input:,output:,tree:,cpu_cores:,force -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
-	usage
-	exit 2
-fi
+# arguments:
+#   $1 path to decision tree file
+createDefaultDecisionTree() {
+  local -r treeFilePath="${1}"
 
-eval set -- "$PARSED_ARGUMENTS"
-while :
-do
-  case "$1" in
-    -i | --input)
-      INPUT=$(realpath "$2")
-      shift 2
-      ;;
-    -o | --output)
-      OUTPUT_ARG="$2"
-      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
-      shift 2
-      ;;
-    -c | --cpu_cores)
-      CPU_CORES="$2"
-      shift 2
-      ;;
-    -t | --tree)
-      TREE=$(realpath "$2")
-      shift 2
-      ;;
-    -f | --force)
-      FORCE=1
-      shift
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      usage
-	    exit 2
-      ;;
-  esac
-done
-
-if [ -z "${INPUT}" ]
-then
-  echo -e "missing required option -i\n"
-	usage
-	exit 2
-fi
-if [ -z "${OUTPUT}" ]
-then
-  echo -e "missing required option -o\n"
-	usage
-	exit 2
-fi
-
-if [ ! -f "${INPUT}" ]
-then
-	echo -e "$INPUT does not exist.\n"
-	exit 2
-fi
-if [ -f "${OUTPUT}" ]
-then
-	if [ "${FORCE}" == "1" ]
-	then
-		rm "${OUTPUT}"
-	else
-		echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
-    exit 2
-	fi
-fi
-
-# vcf-decision-tree
-DECISION_TREE_INPUT="${INPUT}"
-if [ -z "${TREE}" ]
-then
-  DECISION_TREE_CONF="${OUTPUT_DIR_ABSOLUTE}"/decision-tree.json
-  cat > "${DECISION_TREE_CONF}" << EOT
+  cat >"${treeFilePath}" <<EOT
 {
   "rootNode": "filter",
   "nodes": {
@@ -256,35 +178,183 @@ then
   }
 }
 EOT
-else
-  DECISION_TREE_CONF="${TREE}"
-fi
-DECISION_TREE_OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/classified.vcf.gz
+}
 
-DECISION_TREE_ARGS=("-i" "${DECISION_TREE_INPUT}" "-c" "${DECISION_TREE_CONF}" "-o" "${DECISION_TREE_OUTPUT}")
-if [ "${FORCE}" == "1" ]
-then
-  DECISION_TREE_ARGS+=("-f")
-fi
-if [ -z "${TMPDIR+x}" ]; then
-	TMPDIR=/tmp
-fi
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 path to decision tree file (optional)
+classify() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local treeFilePath="${3}"
 
-module load "${MOD_VCF_DECISION_TREE}"
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar "${EBROOTVCFMINDECISIONMINTREE}"/vcf-decision-tree.jar "${DECISION_TREE_ARGS[@]}"
-module purge
+  module load "${MOD_VCF_DECISION_TREE}"
 
-# bcftools filter
-BCFTOOLS_FILTER_INPUT="${DECISION_TREE_OUTPUT}"
-BCFTOOLS_FILTER_OUTPUT="${OUTPUT}"
-BCFTOOLS_FILTER_ARGS=("--threads" "${CPU_CORES}" "${BCFTOOLS_FILTER_INPUT}")
+  if [ -z "${treeFilePath}" ]; then
+    treeFilePath="$(dirname "${outputFilePath}")"/decision-tree.json
+    createDefaultDecisionTree "${treeFilePath}"
+  fi
 
-module load "${MOD_BCF_TOOLS}"
-module load "${MOD_HTS_LIB}"
-if [[ "${BCFTOOLS_FILTER_OUTPUT}" == *.vcf.gz ]]
-then
-	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" | bgzip -c > "${BCFTOOLS_FILTER_OUTPUT}"
-else
-	bcftools filter -i'VIPC=="T"' "${BCFTOOLS_FILTER_ARGS[@]}" > "${BCFTOOLS_FILTER_OUTPUT}"
-fi
-module purge
+  local args=()
+  args+=("-Djava.io.tmpdir=${TMPDIR}")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "${EBROOTVCFMINDECISIONMINTREE}/vcf-decision-tree.jar")
+  args+=("-i" "${inputFilePath}")
+  args+=("-c" "${treeFilePath}")
+  args+=("-o" "${outputFilePath}")
+
+  java "${args[@]}"
+
+  module purge
+}
+
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 number of threads
+filter() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r threads="${3}"
+
+  module load "${MOD_BCF_TOOLS}"
+
+  local args=()
+  args+=("filter")
+  args+=("-i" "VIPC==\"T\"")
+  args+=("-o" "${outputFilePath}")
+  args+=("-O" "z")
+  args+=("--no-version")
+  args+=("--threads" "${threads}")
+  args+=("${inputFilePath}")
+
+  bcftools "${args[@]}"
+
+  module purge
+}
+
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 force
+#   $4 cpu cores
+#   $5 path to tree file
+validate() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r force="${3}"
+  local -r cpuCores="${4}"
+  local -r treeFilePath="${5}"
+
+  if ! validateInputPath "${inputFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if ! validateOutputPath "${outputFilePath}" "${force}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  #TODO validate cpu cores
+
+  if [[ -n "${treeFilePath}" ]] && [[ ! -f "${treeFilePath}" ]]; then
+    echo -e "tree ${treeFilePath} does not exist."
+    exit 1
+  fi
+}
+
+main() {
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:c:fk --long input:,output:,config:,force,keep -- "$@")
+  # shellcheck disable=SC2181
+  if [[ $? != 0 ]]; then
+    usage
+    exit 2
+  fi
+
+  local inputFilePath=""
+  local outputFilePath=""
+  local cfgFilePath=""
+  local force=0
+  local keep=0
+
+  eval set -- "$parsedArguments"
+  while :; do
+    case "$1" in
+    -i | --input)
+      inputFilePath=$(realpath "$2")
+      shift 2
+      ;;
+    -o | --output)
+      outputFilePath="$2"
+      shift 2
+      ;;
+    -c | --config)
+      cfgFilePath="$2"
+      shift 2
+      ;;
+    -f | --force)
+      force=1
+      shift
+      ;;
+    -k | --keep)
+      keep=1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      exit 2
+      ;;
+    esac
+  done
+
+  local cpuCores=4
+  local treeFilePath=""
+
+  if [[ -n "${cfgFilePath}" ]]; then
+    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+      cpuCores=${VIP_CFG_MAP["cpu_cores"]}
+    fi
+    if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
+      treeFilePath=${VIP_CFG_MAP["filter_tree"]}
+    fi
+  fi
+
+  if [[ -z "${outputFilePath}" ]]; then
+    outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_filter")"
+  fi
+
+  validate "${inputFilePath}" "${outputFilePath}" "${force}" "${cpuCores}" "${treeFilePath}"
+
+  local -r outputFilename="$(basename "${outputFilePath}")"
+  local -r outputDir="$(dirname "${outputFilePath}")"
+  if [[ -f "${outputFilePath}" ]]; then
+    if [[ "${force}" == "1" ]]; then
+      rm "${outputFilePath}"
+    fi
+  else
+    mkdir -p "${outputDir}"
+  fi
+
+  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  local -r workDir="${VIP_WORK_DIR}"
+
+  local currentInputFilePath="${inputFilePath}" currentOutputDir currentOutputFilePath
+
+  # step 1: classify
+  currentOutputDir="${workDir}/1_classify"
+  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+  mkdir -p "${currentOutputDir}"
+  classify "${currentInputFilePath}" "${currentOutputFilePath}" "${treeFilePath}"
+  currentInputFilePath="${currentOutputFilePath}"
+
+  # step 2: filter based on classification
+  filter "${currentInputFilePath}" "${outputFilePath}" "${cpuCores}"
+}
+
+main "${@}"

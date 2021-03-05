@@ -11,99 +11,188 @@
 #SBATCH --tmp=4gb
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
-if [ -n "$SLURM_JOB_ID" ]; then SCRIPT_DIR=$(dirname $(scontrol show job "$SLURM_JOBID" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)); else SCRIPT_DIR=$(dirname $(realpath "$0")); fi
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 # shellcheck source=utils/header.sh
 source "${SCRIPT_DIR}"/utils/header.sh
 # shellcheck source=utils/utils.sh
 source "${SCRIPT_DIR}"/utils/utils.sh
 
-INPUT=""
-INPUT_PROBANDS=""
-INPUT_PED=""
-INPUT_PHENO=""
-INPUT_MAX_RECORDS=""
-INPUT_MAX_SAMPLES=""
-INPUT_TEMPLATE=""
-OUTPUT=""
-FORCE=0
+usage() {
+  echo -e "usage: ${SCRIPT_NAME} -i <arg>
 
-usage()
-{
-  echo "usage: pipeline_report.sh -i <arg> -o <arg> [-b <arg>] [-p <arg>] [-t <arg>] [--max_records <arg>] [--max_samples <arg>] [--template <arg>] [-f]
+-i, --input      <arg>    required: Input VCF file (.vcf or .vcf.gz).
+-o, --output     <arg>    optional: Output VCF file (.vcf.gz).
+-b, --probands   <arg>    optional: Subjects being reported on (comma-separated VCF sample names).
+-p, --pedigree   <arg>    optional: Pedigree file (.ped).
+-t, --phenotypes <arg>    optional: Phenotypes for input samples.
+-s, --start      <arg>    optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
--i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
--o,  --output <arg>        required: Output report file (.html).
--b,  --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
--p,  --pedigree <arg>      optional: Pedigree file (.ped).
--t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
--f,  --force               optional: Override the output file if it already exists.
+-c, --config     <arg>    optional: Configuration file (.cfg)
+-f, --force               optional: Override the output file if it already exists.
+-k, --keep                optional: Keep intermediate files.
 
---max_records <arg>        optional: Maximum number of records in the report. Default: 100
---max_samples <arg>        optional: Maximum number of samples in the report. Default: 100
---template <arg>           optional: Html template to be used in the report.
-
-examples:
-  pipeline_report.sh -i in.vcf -o out.html
-  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0
-  pipeline_report.sh -i in.vcf.gz -o out.html -p in.ped
-  pipeline_report.sh -i in.vcf.gz -o out.html
-  pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123
-  pipeline_report.sh -i in.vcf.gz -o out.html -t HP:0000123;HP:0000234
-  pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123
-  pipeline_report.sh -i in.vcf.gz -o out.html -t sample0/HP:0000123,sample1/HP:0000234
-  pipeline_report.sh -i in.vcf.gz -o out.html -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --max_samples 10 --max_records 10 --template myTemplate.html -f"
+config:
+  report_max_records      maximum number of records in the report. Default: 100
+  report_max_samples      maximum number of samples in the report. Default: 100
+  report_template         HTML template to be used in the report."
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n pipeline -o i:o:b:p:t:f --long input:,output:,probands:,pedigree:,phenotypes:,args:,max_records:,max_samples:,template:,force -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
-	usage
-	exit 2
-fi
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 probands (optional)
+#   $4 path to pedigree file (optional)
+#   $5 phenotypes (optional)
+#   $6 maxRecords (optional)
+#   $7 maxSamples (optional)
+#   $8 path to template file (optional)
+report() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r probands="${3}"
+  local -r pedFilePath="${4}"
+  local -r phenotypes="${5}"
+  local -r maxRecords="${6}"
+  local -r maxSamples="${7}"
+  local -r templateFilePath="${8}"
 
-eval set -- "$PARSED_ARGUMENTS"
-while :
-do
-  case "$1" in
+  module load "${MOD_VCF_REPORT}"
+
+  args=()
+  args+=("-Djava.io.tmpdir=${TMPDIR}")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "${EBROOTVCFMINREPORT}/vcf-report.jar")
+  args+=("-i" "${inputFilePath}")
+  args+=("-o" "${outputFilePath}")
+  if [ -n "${probands}" ]; then
+    args+=("-pb" "${probands}")
+  fi
+  if [ -n "${pedFilePath}" ]; then
+    args+=("-pd" "${pedFilePath}")
+  fi
+  if [ -n "${phenotypes}" ]; then
+    args+=("-ph" "${phenotypes}")
+  fi
+  if [ -n "${maxRecords}" ]; then
+    args+=("-mr" "${maxRecords}")
+  fi
+  if [ -n "${maxSamples}" ]; then
+    args+=("-ms" "${maxSamples}")
+  fi
+  if [ -n "${templateFilePath}" ]; then
+    args+=("-t" "${templateFilePath}")
+  fi
+
+  java "${args[@]}"
+
+  module purge
+}
+
+# arguments:
+#   $1 path to input file
+#   $2 path to output file
+#   $3 probands (optional)
+#   $4 path to pedigree file (optional)
+#   $5 phenotypes (optional)
+#   $6 force
+#   $7 maxRecords (optional)
+#   $8 maxSamples (optional)
+#   $9 path to template file (optional)
+validate() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r probands="${3}"
+  local -r pedFilePath="${4}"
+  local -r phenotypes="${5}"
+  local -r force="${6}"
+  local -r maxRecords="${7}"
+  local -r maxSamples="${8}"
+  local -r templateFilePath="${9}"
+
+  if ! validateInputPath "${inputFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if ! validateOutputPath "${outputFilePath}" "${force}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if [[ -n "${pedFilePath}" ]] && [[ ! -f "${pedFilePath}" ]]; then
+    echo -e "pedigree ${pedFilePath} does not exist."
+    exit 1
+  fi
+
+  if [[ -n "${probands}" ]] && ! containsProbands "${probands}" "${inputFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  #TODO validate phenotypes
+  #TODO max records
+  #TODO max samples
+
+  if [[ -n "${templateFilePath}" ]] && [[ ! -f "${templateFilePath}" ]]; then
+    echo -e "template ${templateFilePath} does not exist."
+    exit 1
+  fi
+}
+
+main() {
+  local inputFilePath=""
+  local outputFilePath=""
+  local probands=""
+  local pedFilePath=""
+  local phenotypes=""
+  local cfgFilePath=""
+  local force=0
+  local keep=0
+
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:c:fk --long input:,output:,probands:,pedigree:,phenotypes:,config:,force,keep -- "$@")
+  # shellcheck disable=SC2181
+  if [[ $? != 0 ]]; then
+    usage
+    exit 2
+  fi
+
+  eval set -- "$parsedArguments"
+  while :; do
+    case "$1" in
     -i | --input)
-      INPUT=$(realpath "$2")
+      inputFilePath=$(realpath "$2")
       shift 2
       ;;
     -o | --output)
-      OUTPUT_ARG="$2"
-      OUTPUT_DIR_RELATIVE=$(dirname "$OUTPUT_ARG")
-      OUTPUT_DIR_ABSOLUTE=$(realpath "$OUTPUT_DIR_RELATIVE")
-      OUTPUT_FILE=$(basename "$OUTPUT_ARG")
-      OUTPUT="${OUTPUT_DIR_ABSOLUTE}"/"${OUTPUT_FILE}"
+      outputFilePath="$2"
       shift 2
       ;;
     -b | --probands)
-      INPUT_PROBANDS="$2"
+      probands="$2"
       shift 2
       ;;
     -p | --pedigree)
-      INPUT_PED=$(realpath "$2")
+      pedFilePath=$(realpath "$2")
       shift 2
       ;;
     -t | --phenotypes)
-      INPUT_PHENO="$2"
+      phenotypes="$2"
       shift 2
       ;;
-    --max_records)
-      INPUT_MAX_RECORDS="$2"
-      shift 2
-      ;;
-    --max_samples)
-      INPUT_MAX_SAMPLES="$2"
-      shift 2
-      ;;
-    --template)
-      INPUT_TEMPLATE="$2"
+    -c | --config)
+      cfgFilePath=$(realpath "$2")
       shift 2
       ;;
     -f | --force)
-      FORCE=1
+      force=1
+      shift
+      ;;
+    -k | --keep)
+      # reserved for future usage
+      # shellcheck disable=SC2034
+      keep=1
       shift
       ;;
     --)
@@ -112,77 +201,41 @@ do
       ;;
     *)
       usage
-	    exit 2
+      exit 2
       ;;
-  esac
-done
+    esac
+  done
 
-if [ -z "${INPUT}" ]
-then
-  echo -e "missing required option -i\n"
-	usage
-	exit 2
-fi
-if [ -z "${OUTPUT}" ]
-then
-  echo -e "missing required option -o\n"
-	usage
-	exit 2
-fi
+  local maxRecords=""
+  local maxSamples=""
+  local templateFilePath=""
 
-if [ ! -f "${INPUT}" ]
-then
-	echo -e "$INPUT does not exist.\n"
-	exit 2
-fi
-if [ -f "${OUTPUT}" ]
-then
-  if [ "${FORCE}" == "1" ]
-  then
-    rm "${OUTPUT}"
-  else
-    echo -e "${OUTPUT} already exists, use -f to overwrite.\n"
-    exit 2
+  if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${cfgFilePath}"
+    if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
+      maxRecords="${VIP_CFG_MAP["report_max_records"]}"
+    fi
+    if [[ -n "${VIP_CFG_MAP["report_max_samples"]+unset}" ]]; then
+      maxSamples="${VIP_CFG_MAP["report_max_samples"]}"
+    fi
+    if [[ -n "${VIP_CFG_MAP["report_template"]+unset}" ]]; then
+      templateFilePath="${VIP_CFG_MAP["report_template"]}"
+    fi
   fi
-fi
-if ! containsProbands "${INPUT_PROBANDS}" "${INPUT}"; then
-  exit 2
-fi
-if [ ! -z "${INPUT_PED}" ]
-then
-  if [ ! -f "${INPUT_PED}" ]
-  then
-    echo -e "${INPUT_PED} does not exist.\n"
-    exit 2
+
+  if [[ -z "${outputFilePath}" ]]; then
+    outputFilePath="${inputFilePath}.html"
   fi
-fi
 
-if [ -z "${TMPDIR+x}" ]; then
-	TMPDIR=/tmp
-fi
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
 
-module load "${MOD_VCF_REPORT}"
+  if [[ -f "${outputFilePath}" ]]; then
+    if [[ "${force}" == "1" ]]; then
+      rm "${outputFilePath}"
+    fi
+  fi
 
-REPORT_ARGS=("-i" "${INPUT}" "-o" "${OUTPUT}")
-if [ -n "${INPUT_PROBANDS}" ]; then
-	REPORT_ARGS+=("-pb" "${INPUT_PROBANDS}")
-fi
-if [ -n "${INPUT_PED}" ]; then
-	REPORT_ARGS+=("-pd" "${INPUT_PED}")
-fi
-if [ -n "${INPUT_PHENO}" ]; then
-	REPORT_ARGS+=("-ph" "${INPUT_PHENO}")
-fi
-if [ -n "${INPUT_MAX_RECORDS}" ]; then
-	REPORT_ARGS+=("-mr" "${INPUT_MAX_RECORDS}")
-fi
-if [ -n "${INPUT_MAX_SAMPLES}" ]; then
-	REPORT_ARGS+=("-ms" "${INPUT_MAX_SAMPLES}")
-fi
-if [ -n "${INPUT_TEMPLATE}" ]; then
-	REPORT_ARGS+=("-t" "${INPUT_TEMPLATE}")
-fi
+  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
+}
 
-java -Djava.io.tmpdir="${TMPDIR}" -XX:ParallelGCThreads=2 -jar ${EBROOTVCFMINREPORT}/vcf-report.jar "${REPORT_ARGS[@]}"
-
-module unload vcf-report
+main "${@}"

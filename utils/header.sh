@@ -1,6 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
+cleanup() {
+  rm -rf "${TMP_WORK_DIR}"
+}
+
+if [ -z "${TMPDIR+x}" ]; then
+  TMPDIR=/tmp
+fi
+
+if [ -z "${TMP_WORK_DIR+x}" ]; then
+  TMP_WORK_DIR=$(mktemp -d)
+  export TMP_WORK_DIR
+  trap cleanup EXIT
+fi
+
+declare -A VIP_CFG_MAP
+
 VIP_VERSION="1.8.2"
 
 MOD_BCF_TOOLS="BCFtools/1.11-GCCcore-7.3.0"
@@ -22,4 +38,7 @@ if ! module is-avail "${MOD_CADD}"; then
 fi
 
 # Exits if (the specific version of) a module is missing.
-for i in ${!MOD_*}; do if ! module is-avail ${!i}; then echo "missing module: ${!i}"; exit 1; fi; done
+for i in ${!MOD_*}; do if ! module is-avail ${!i}; then
+  echo -e "missing module: ${!i}"
+  exit 1
+fi; done
