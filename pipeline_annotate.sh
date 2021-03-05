@@ -53,6 +53,12 @@ get_unique_phenotypes() {
   done
 }
 
+join_arr() {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
 #######################################
 # Filter non-SV records without CAPICE score
 #
@@ -420,12 +426,17 @@ executeAnnotSv() {
 
   args=()
   args+=("-SVinputFile" "${inputFilePath}")
-  args+=("-outputFile" "${outputFilePath}")
+  args+=("-outputFile" "${outputFilePath}.tsv")
   args+=("-genomeBuild" "${assembly}")
   args+=("-typeOfAnnotation" "split")
-  #TODO fix phenotypes (see VIBE)
-  if [ -n "${phenotypes}" ]; then
-    args+=("-hpo" "${phenotypes}")
+
+  declare -A UNIQUE_PHENOTYPES
+  get_unique_phenotypes "${phenotypes}"
+
+  if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]
+  then
+    joined_phenotypes=$(join_arr , "${!UNIQUE_PHENOTYPES[@]}")
+    args+=("-hpo" "${joined_phenotypes}")
   fi
 
   ${EBROOTANNOTSV}/bin/AnnotSV "${args[@]}"
@@ -614,7 +625,6 @@ main() {
     currentOutputFilePath="${currentOutputDir}/${outputFilename}"
     mkdir -p "${currentOutputDir}"
     executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
-    currentInputFilePath="${currentOutputFilePath}"
   fi
 
   # step 5: execute VEP
