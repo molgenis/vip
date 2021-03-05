@@ -430,15 +430,16 @@ executeAnnotSv() {
   args+=("-genomeBuild" "${assembly}")
   args+=("-typeOfAnnotation" "split")
 
-  declare -A UNIQUE_PHENOTYPES
-  get_unique_phenotypes "${phenotypes}"
+  if [ -n "${phenotypes}" ]; then
+    declare -A UNIQUE_PHENOTYPES
+    get_unique_phenotypes "${phenotypes}"
 
-  if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]
-  then
-    joined_phenotypes=$(join_arr , "${!UNIQUE_PHENOTYPES[@]}")
-    args+=("-hpo" "${joined_phenotypes}")
+    if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]
+    then
+      joined_phenotypes=$(join_arr , "${!UNIQUE_PHENOTYPES[@]}")
+      args+=("-hpo" "${joined_phenotypes}")
+    fi
   fi
-
   ${EBROOTANNOTSV}/bin/AnnotSV "${args[@]}"
 
   module purge
