@@ -407,8 +407,7 @@ executeAnnotSv() {
   args+=("-genomeBuild" "${assembly}")
   args+=("-typeOfAnnotation" "split")
   #TODO fix phenotypes (see VIBE)
-  if [ -n "${phenotypes}" ]
-  then
+  if [ -n "${phenotypes}" ]; then
     args+=("-hpo" "${phenotypes}")
   fi
 
@@ -525,21 +524,21 @@ main() {
   local assembly=""
   local annVep=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
-    if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
-      assembly="${VIP_CFG_MAP["assembly"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
-      inputRefPath="${VIP_CFG_MAP["reference"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
-      cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
-      annVep="${VIP_CFG_MAP["annotate_vep"]}"
-    fi
+  fi
+  if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
+    assembly="${VIP_CFG_MAP["assembly"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
+    inputRefPath="${VIP_CFG_MAP["reference"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+    cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
+    annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
 
   if [[ -z "${outputFilePath}" ]]; then

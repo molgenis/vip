@@ -355,21 +355,21 @@ main() {
   local filterLowQual=""
   local filterReadDepth=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
-    if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
-      inputRefPath="${VIP_CFG_MAP["reference"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
-      cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["preprocess_filter_low_qual"]+unset}" ]]; then
-      filterLowQual="${VIP_CFG_MAP["preprocess_filter_low_qual"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["preprocess_filter_read_depth"]+unset}" ]]; then
-      filterReadDepth="${VIP_CFG_MAP["preprocess_filter_read_depth"]}"
-    fi
+  fi
+  if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
+    inputRefPath="${VIP_CFG_MAP["reference"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+    cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["preprocess_filter_low_qual"]+unset}" ]]; then
+    filterLowQual="${VIP_CFG_MAP["preprocess_filter_low_qual"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["preprocess_filter_read_depth"]+unset}" ]]; then
+    filterReadDepth="${VIP_CFG_MAP["preprocess_filter_read_depth"]}"
   fi
 
   if [[ -z "${outputFilePath}" ]]; then

@@ -316,15 +316,15 @@ main() {
   local cpuCores=""
   local treeFilePath=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
-    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
-      cpuCores=${VIP_CFG_MAP["cpu_cores"]}
-    fi
-    if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
-      treeFilePath=${VIP_CFG_MAP["filter_tree"]}
-    fi
+  fi
+  if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+    cpuCores=${VIP_CFG_MAP["cpu_cores"]}
+  fi
+  if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
+    treeFilePath=${VIP_CFG_MAP["filter_tree"]}
   fi
 
   if [[ -z "${outputFilePath}" ]]; then
