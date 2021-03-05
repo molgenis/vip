@@ -230,10 +230,13 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
 
-  if [[ -f "${outputFilePath}" ]]; then
-    if [[ "${force}" == "1" ]]; then
-      rm "${outputFilePath}"
-    fi
+  mkdir -p "$(dirname "${outputFilePath}")"
+  local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
+  local -r outputFilename="$(basename "${outputFilePath}")"
+  outputFilePath="${outputDir}/${outputFilename}"
+
+  if [[ -f "${outputFilePath}" ]] && [[ "${force}" == "1" ]]; then
+    rm "${outputFilePath}"
   fi
 
   report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
