@@ -521,11 +521,12 @@ main() {
   done
 
   local inputRefPath=""
-  local cpuCores=4
-  local assembly=GRCh37
+  local cpuCores=""
+  local assembly=""
   local annVep=""
 
   if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
     if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
       assembly="${VIP_CFG_MAP["assembly"]}"

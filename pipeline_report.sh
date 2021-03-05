@@ -211,6 +211,7 @@ main() {
   local templateFilePath=""
 
   if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
     if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
       maxRecords="${VIP_CFG_MAP["report_max_records"]}"

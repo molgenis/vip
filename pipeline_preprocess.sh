@@ -351,11 +351,12 @@ main() {
   done
 
   local inputRefPath=""
-  local cpuCores=4
-  local filterLowQual=1
-  local filterReadDepth=20
+  local cpuCores=""
+  local filterLowQual=""
+  local filterReadDepth=""
 
   if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
     if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
       inputRefPath="${VIP_CFG_MAP["reference"]}"

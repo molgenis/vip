@@ -216,9 +216,10 @@ main() {
     esac
   done
 
-  local cpuCores=4
+  local cpuCores=""
 
   if [[ -n "${cfgFilePath}" ]]; then
+    parseCfg "${SCRIPT_DIR}/config/default.cfg"
     parseCfg "${cfgFilePath}"
     if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
       cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
