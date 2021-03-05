@@ -210,17 +210,18 @@ main() {
   local maxSamples=""
   local templateFilePath=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
     parseCfg "${cfgFilePath}"
-    if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
-      maxRecords="${VIP_CFG_MAP["report_max_records"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["report_max_samples"]+unset}" ]]; then
-      maxSamples="${VIP_CFG_MAP["report_max_samples"]}"
-    fi
-    if [[ -n "${VIP_CFG_MAP["report_template"]+unset}" ]]; then
-      templateFilePath="${VIP_CFG_MAP["report_template"]}"
-    fi
+  fi
+  if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
+    maxRecords="${VIP_CFG_MAP["report_max_records"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["report_max_samples"]+unset}" ]]; then
+    maxSamples="${VIP_CFG_MAP["report_max_samples"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["report_template"]+unset}" ]]; then
+    templateFilePath="${VIP_CFG_MAP["report_template"]}"
   fi
 
   if [[ -z "${outputFilePath}" ]]; then

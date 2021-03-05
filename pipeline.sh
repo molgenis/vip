@@ -66,16 +66,16 @@ examples - phenotypes:
 #   $3 comma-separated proband identifiers (optional)
 #   $4 path to pedigree file (optional)
 #   $5 phenotypes (optional)
-#   $6 path to config file (optional)
-#   $7 force
+#   $6 force
+#   $7 cpu cores
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local -r probands="${3}"
   local -r pedFilePath="${4}"
   local -r phenotypes="${5}"
-  local -r cfgFilePath="${6}"
-  local -r force="${7}"
+  local -r force="${6}"
+  local -r cpuCores="${7}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -106,6 +106,8 @@ validate() {
     #TODO validate phenotypes
     :
   fi
+
+  #TODO validate cpu cores
 }
 
 # arguments:
@@ -425,20 +427,21 @@ main() {
     esac
   done
 
-  local cpuCores=4
+  local cpuCores=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
     parseCfg "${cfgFilePath}"
-     if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
-      cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
-    fi
+  fi
+  if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+    cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
   fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${force}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${cpuCores}"
 
   local -r outputFilename="$(basename "${outputFilePath}")"
   local -r outputDir="$(dirname "${outputFilePath}")"

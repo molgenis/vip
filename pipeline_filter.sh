@@ -313,16 +313,18 @@ main() {
     esac
   done
 
-  local cpuCores=4
+  local cpuCores=""
   local treeFilePath=""
 
+  parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
-    if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
-      cpuCores=${VIP_CFG_MAP["cpu_cores"]}
-    fi
-    if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
-      treeFilePath=${VIP_CFG_MAP["filter_tree"]}
-    fi
+    parseCfg "${cfgFilePath}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
+    cpuCores=${VIP_CFG_MAP["cpu_cores"]}
+  fi
+  if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
+    treeFilePath=${VIP_CFG_MAP["filter_tree"]}
   fi
 
   if [[ -z "${outputFilePath}" ]]; then
