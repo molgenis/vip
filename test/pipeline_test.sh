@@ -2,6 +2,7 @@
 INPUT='./test/data/test.vcf'
 PED='./test/data/test.ped'
 HPO='HP:0004383'
+CFG='./test/data/test.cfg'
 
 ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.vcf.gz.html'
