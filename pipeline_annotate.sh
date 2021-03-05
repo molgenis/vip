@@ -99,6 +99,8 @@ filterUnscoredCapiceRecords() {
 #   $5 path to reference sequence (optional)
 #   $6 cpu cores
 #   $7 annVep
+#   $8 vibeHdtPath
+#   $9 vibeHpoPath
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -107,6 +109,8 @@ validate() {
   local -r referencePath="${5}"
   local -r processes="${6}"
   local -r annVep="${7}"
+  local -r vibeHdtPath="${8}"
+  local -r vibeHpoPath="${9}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -127,6 +131,15 @@ validate() {
 
   #TODO validate cpu cores
   #TODO validate annVep
+
+  if [[ ! -f "${vibeHdtPath}" ]]; then
+    echo -e "VIBE hdt ${vibeHdtPath} does not exist."
+    exit 1
+  fi
+  if [[ ! -f "${vibeHpoPath}" ]]; then
+    echo -e "VIBE hpo ${vibeHpoPath} does not exist."
+    exit 1
+  fi
 }
 
 # arguments:
@@ -361,9 +374,13 @@ executeCapice() {
 # arguments:
 #   $1 phenotypes
 #   $2 path to output directory
+#   $3 path to vibe hdt
+#   $4 path to vibe hpo
 executeVibe() {
   local -r phenotypes="${1}"
   local -r outputDirPath="${2}"
+  local -r vibeHdtPath="${3}"
+  local -r vibeHpoPath="${4}"
 
   module load "${MOD_VIBE}"
 
@@ -377,8 +394,8 @@ executeVibe() {
     args+=("-Djava.io.tmpdir=${TMPDIR}")
     args+=("-XX:ParallelGCThreads=2")
     args+=("-jar" "${EBROOTVIBE}/vibe.jar")
-    args+=("-t" "/apps/data/VIBE/vibe-5.0.0-hdt/vibe-5.0.0.hdt")
-    args+=("-w" "/apps/data/VIBE/hp_2020-12-07.owl")
+    args+=("-t" "${vibeHdtPath}")
+    args+=("-w" "${vibeHpoPath}")
     args+=("-p" "$i")
     args+=("-l")
     args+=("-o" "${outputFilePath}")
@@ -522,6 +539,8 @@ main() {
   local inputRefPath=""
   local cpuCores=""
   local assembly=""
+  local vibeHdtPath=""
+  local vibeHpoPath=""
   local annVep=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -537,6 +556,12 @@ main() {
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vibe_hdt"]+unset}" ]]; then
+    vibeHdtPath="${VIP_CFG_MAP["annotate_vibe_hdt"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vibe_hpo"]+unset}" ]]; then
+    vibeHpoPath="${VIP_CFG_MAP["annotate_vibe_hpo"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -545,7 +570,7 @@ main() {
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_annotate")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}" "${annVep}"
+  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}" "${annVep}" "${vibeHdtPath}" "${vibeHpoPath}"
 
   local -r outputFilename="$(basename "${outputFilePath}")"
   local -r outputDir="$(dirname "${outputFilePath}")"
@@ -581,7 +606,7 @@ main() {
     currentOutputDir="${workDir}/3_vibe"
     currentOutputFilePath="${currentOutputDir}/${outputFilename}"
     mkdir -p "${currentOutputDir}"
-    executeVibe "${phenotypes}" "${currentOutputDir}"
+    executeVibe "${phenotypes}" "${currentOutputDir}" "${vibeHdtPath}" "${vibeHpoPath}"
   fi
 
   if containsStructuralVariants "${inputFilePath}"; then
