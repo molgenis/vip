@@ -31,6 +31,7 @@ usage() {
 -k, --keep                optional: Keep intermediate files.
 
 config:
+  annotate_vep_dir_cache  VEP cache directory
   annotate_vep            Variant Effect Predictor (VEP) options
   assembly                see pipeline.sh
   reference               see pipeline.sh
@@ -92,15 +93,44 @@ filterUnscoredCapiceRecords() {
 }
 
 # arguments:
+#   $1 vepDirCache
+validateVep() {
+  local -r vepDirCache="${1}"
+
+  if [[ -z "${vepDirCache}" ]]; then
+    echo -e "missing required annotate_vep_dir_cache config value."
+    return 1
+  fi
+  if [[ ! -d "${vepDirCache}" ]]; then
+    echo -e "VEP cache directory ${vepDirCache} does not exist."
+    exit 1
+  fi
+}
+
+# arguments:
+#   $1 vibeHdtPath
+#   $2 vibeHpoPath
+validateVibe() {
+  local -r vibeHdtPath="${1}"
+  local -r vibeHpoPath="${2}"
+
+  if [[ ! -f "${vibeHdtPath}" ]]; then
+    echo -e "VIBE hdt ${vibeHdtPath} does not exist."
+    exit 1
+  fi
+  if [[ ! -f "${vibeHpoPath}" ]]; then
+    echo -e "VIBE hpo ${vibeHpoPath} does not exist."
+    exit 1
+  fi
+}
+
+# arguments:
 #   $1 path to input file
 #   $2 path to output file
 #   $3 phenotypes (optional)
 #   $4 force
 #   $5 path to reference sequence (optional)
 #   $6 cpu cores
-#   $7 annVep
-#   $8 vibeHdtPath
-#   $9 vibeHpoPath
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -108,9 +138,6 @@ validate() {
   local -r force="${4}"
   local -r referencePath="${5}"
   local -r processes="${6}"
-  local -r annVep="${7}"
-  local -r vibeHdtPath="${8}"
-  local -r vibeHpoPath="${9}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -130,16 +157,6 @@ validate() {
   fi
 
   #TODO validate cpu cores
-  #TODO validate annVep
-
-  if [[ ! -f "${vibeHdtPath}" ]]; then
-    echo -e "VIBE hdt ${vibeHdtPath} does not exist."
-    exit 1
-  fi
-  if [[ ! -f "${vibeHpoPath}" ]]; then
-    echo -e "VIBE hpo ${vibeHpoPath} does not exist."
-    exit 1
-  fi
 }
 
 # arguments:
@@ -443,15 +460,17 @@ executeAnnotSv() {
 #   $2 path to output file
 #   $3 assembly
 #   $4 path to reference sequence (optional)
-#   $5 annVep
-#   $6 cpu cores
+#   $5 vepDirCache
+#   $6 annVep
+#   $7 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local -r assembly="${3}"
   local -r inputRefPath="${4}"
-  local -r annVep="${5}"
-  local -r cpuCores="${6}"
+  local -r vepDirCache="${5}"
+  local -r annVep="${6}"
+  local -r cpuCores="${7}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -462,7 +481,7 @@ executeVep() {
   args+=("--output_file" "${outputFilePath}" "--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--stats_file" "${outputFilePath}" "--stats_text")
-  args+=("--offline" "--cache" "--dir_cache" "/apps/data/Ensembl/VEP/100")
+  args+=("--offline" "--cache" "--dir_cache" "${vepDirCache}")
   args+=("--species" "homo_sapiens" "--assembly" "${assembly}")
   args+=("--symbol")
   args+=("--flag_pick_allele")
@@ -546,6 +565,7 @@ main() {
   local assembly=""
   local vibeHdtPath=""
   local vibeHpoPath=""
+  local vepDirCache=""
   local annVep=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -567,6 +587,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vibe_hpo"]+unset}" ]]; then
     vibeHpoPath="${VIP_CFG_MAP["annotate_vibe_hpo"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_dir_cache"]+unset}" ]]; then
+    vepDirCache="${VIP_CFG_MAP["annotate_vep_dir_cache"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -575,7 +598,9 @@ main() {
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_annotate")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}" "${annVep}" "${vibeHdtPath}" "${vibeHpoPath}"
+  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
+  validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
+  validateVep "${vepDirCache}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -622,7 +647,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
