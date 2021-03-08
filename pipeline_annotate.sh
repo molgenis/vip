@@ -31,13 +31,14 @@ usage() {
 -k, --keep                optional: Keep intermediate files.
 
 config:
-  annotate_vep_dir_cache      VEP: cache directory
-  annotate_vep_coding_only    VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0)
-  annotate_vep_no_intergenic  VEP: Do not include intergenic consequences in the output (0 or 1, default: 1)
-  annotate_vep                Variant Effect Predictor (VEP) options
-  assembly                    see pipeline.sh
-  reference                   see pipeline.sh
-  cpu_cores                   see pipeline.sh"
+  annotate_vep_dir_cache                  VEP: Cache directory.
+  annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
+  annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
+  annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
+  annotate_vep                            Variant Effect Predictor (VEP) options.
+  assembly                                see pipeline.sh.
+  reference                               see pipeline.sh.
+  cpu_cores                               see pipeline.sh."
 }
 
 get_unique_phenotypes() {
@@ -98,14 +99,16 @@ filterUnscoredCapiceRecords() {
 #   $1 vepDirCache
 #   $2 vepCodingOnly
 #   $3 vepNoIntergenic
+#   $4 vepPluginPreferredTranscriptFilePath
 validateVep() {
   local -r vepDirCache="${1}"
   local -r vepCodingOnly="${2}"
   local -r vepNoIntergenic="${3}"
+  local -r vepPluginPreferredTranscriptFilePath="${4}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
-    return 1
+    exit 1
   fi
   if [[ ! -d "${vepDirCache}" ]]; then
     echo -e "annotate_vep_dir_cache ${vepDirCache} does not exist."
@@ -114,7 +117,7 @@ validateVep() {
 
   if [[ -z "${vepCodingOnly}" ]]; then
     echo -e "missing required annotate_vep_coding_only config value."
-    return 1
+    exit 1
   fi
   if [[ "${vepCodingOnly}" != "0" ]] && [[ "${vepCodingOnly}" != "1" ]]; then
     echo -e "annotate_vep_coding_only ${vepCodingOnly} invalid (valid values: 0 or 1)."
@@ -123,10 +126,15 @@ validateVep() {
 
   if [[ -z "${vepNoIntergenic}" ]]; then
     echo -e "missing required annotate_vep_no_intergenic config value."
-    return 1
+    exit 1
   fi
   if [[ "${vepNoIntergenic}" != "0" ]] && [[ "${vepNoIntergenic}" != "1" ]]; then
     echo -e "annotate_vep_no_intergenic ${vepNoIntergenic} invalid (valid values: 0 or 1)."
+    exit 1
+  fi
+
+  if [[ -n "${vepPluginPreferredTranscriptFilePath}" ]] && [[ ! -f "${vepPluginPreferredTranscriptFilePath}" ]]; then
+    echo -e "annotate_vep_plugin_PreferredTranscript ${vepPluginPreferredTranscriptFilePath} does not exist."
     exit 1
   fi
 }
@@ -480,15 +488,16 @@ executeAnnotSv() {
 }
 
 # arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 assembly
-#   $4 path to reference sequence (optional)
-#   $5 vepDirCache
-#   $6 vepCodingOnly
-#   $7 vepNoIntergenic
-#   $8 annVep
-#   $9 cpu cores
+#   $1  path to input file
+#   $2  path to output file
+#   $3  assembly
+#   $4  path to reference sequence (optional)
+#   $5  vepDirCache
+#   $6  vepCodingOnly
+#   $7  vepNoIntergenic
+#   $8  vepPluginPreferredTranscriptFilePath
+#   $9  annVep
+#   $10 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -497,8 +506,9 @@ executeVep() {
   local -r vepDirCache="${5}"
   local -r vepCodingOnly="${6}"
   local -r vepNoIntergenic="${7}"
-  local -r annVep="${8}"
-  local -r cpuCores="${9}"
+  local -r vepPluginPreferredTranscriptFilePath="${8}"
+  local -r annVep="${9}"
+  local -r cpuCores="${10}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -531,6 +541,10 @@ executeVep() {
     args+=("--fasta" "${inputRefPath}" "--hgvs")
   fi
 
+  args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
+  if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
+    args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")
+  fi
   if [ -n "${annVep}" ]; then
     # shellcheck disable=SC2206
     args+=(${annVep})
@@ -601,6 +615,7 @@ main() {
   local vepDirCache=""
   local vepCodingOnly=""
   local vepNoIntergenic=""
+  local vepPluginPreferredTranscriptFilePath=""
   local annVep=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -631,6 +646,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_no_intergenic"]+unset}" ]]; then
     vepNoIntergenic="${VIP_CFG_MAP["annotate_vep_no_intergenic"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]+unset}" ]]; then
+    vepPluginPreferredTranscriptFilePath="${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -641,7 +659,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepNoIntergenic}" "${vepCodingOnly}"
+  validateVep "${vepDirCache}" "${vepNoIntergenic}" "${vepCodingOnly}" "${vepPluginPreferredTranscriptFilePath}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -688,7 +706,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepPluginPreferredTranscriptFilePath}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
