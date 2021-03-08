@@ -35,6 +35,7 @@ config:
   annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
   annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
   annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
+  annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files
   annotate_vep                            Variant Effect Predictor (VEP) options.
   assembly                                see pipeline.sh.
   reference                               see pipeline.sh.
@@ -100,11 +101,13 @@ filterUnscoredCapiceRecords() {
 #   $2 vepCodingOnly
 #   $3 vepNoIntergenic
 #   $4 vepPluginPreferredTranscriptFilePath
+#   $5 vepPluginSpliceAiFilePaths
 validateVep() {
   local -r vepDirCache="${1}"
   local -r vepCodingOnly="${2}"
   local -r vepNoIntergenic="${3}"
   local -r vepPluginPreferredTranscriptFilePath="${4}"
+  local -r vepPluginSpliceAiFilePaths="${5}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
@@ -136,6 +139,21 @@ validateVep() {
   if [[ -n "${vepPluginPreferredTranscriptFilePath}" ]] && [[ ! -f "${vepPluginPreferredTranscriptFilePath}" ]]; then
     echo -e "annotate_vep_plugin_PreferredTranscript ${vepPluginPreferredTranscriptFilePath} does not exist."
     exit 1
+  fi
+
+  if [[ -n "${vepPluginSpliceAiFilePaths}" ]]; then
+    local spliceAiFilePathsArr
+    IFS=',' read -ra spliceAiFilePathsArr <<<"${vepPluginSpliceAiFilePaths}"
+    if [[ "${#spliceAiFilePathsArr[@]}" != "2" ]]; then
+      echo -e "annotate_vep_plugin_SpliceAI contains ${#spliceAiFilePathsArr[@]} paths instead of two."
+      exit 1
+    fi
+    for i in "${spliceAiFilePathsArr[@]}"; do
+      if [[ ! -f "${i}" ]]; then
+        echo -e "annotate_vep_plugin_SpliceAI ${i} does not exist."
+        exit 1
+      fi
+    done
   fi
 }
 
@@ -496,8 +514,9 @@ executeAnnotSv() {
 #   $6  vepCodingOnly
 #   $7  vepNoIntergenic
 #   $8  vepPluginPreferredTranscriptFilePath
-#   $9  annVep
-#   $10 cpu cores
+#   $9  vepPluginSpliceAiFilePaths
+#   $10 annVep
+#   $11 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -507,8 +526,9 @@ executeVep() {
   local -r vepCodingOnly="${6}"
   local -r vepNoIntergenic="${7}"
   local -r vepPluginPreferredTranscriptFilePath="${8}"
-  local -r annVep="${9}"
-  local -r cpuCores="${10}"
+  local -r vepPluginSpliceAiFilePaths="${9}"
+  local -r annVep="${10}"
+  local -r cpuCores="${11}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -544,6 +564,11 @@ executeVep() {
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
   if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
     args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")
+  fi
+  if [ -n "${vepPluginSpliceAiFilePaths}" ]; then
+    local spliceAiFilePathsArr
+    IFS=',' read -ra spliceAiFilePathsArr <<<"${vepPluginSpliceAiFilePaths}"
+    args+=("--plugin" "SpliceAI,snv=${spliceAiFilePathsArr[0]},indel=${spliceAiFilePathsArr[1]}")
   fi
   if [ -n "${annVep}" ]; then
     # shellcheck disable=SC2206
@@ -616,6 +641,7 @@ main() {
   local vepCodingOnly=""
   local vepNoIntergenic=""
   local vepPluginPreferredTranscriptFilePath=""
+  local vepPluginSpliceAiFilePaths=""
   local annVep=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -649,6 +675,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]+unset}" ]]; then
     vepPluginPreferredTranscriptFilePath="${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_SpliceAI"]+unset}" ]]; then
+    vepPluginSpliceAiFilePaths="${VIP_CFG_MAP["annotate_vep_plugin_SpliceAI"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -659,7 +688,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepNoIntergenic}" "${vepCodingOnly}" "${vepPluginPreferredTranscriptFilePath}"
+  validateVep "${vepDirCache}" "${vepNoIntergenic}" "${vepCodingOnly}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -706,7 +735,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepPluginPreferredTranscriptFilePath}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
