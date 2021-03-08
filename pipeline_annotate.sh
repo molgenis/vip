@@ -31,11 +31,12 @@ usage() {
 -k, --keep                optional: Keep intermediate files.
 
 config:
-  annotate_vep_dir_cache  VEP cache directory
-  annotate_vep            Variant Effect Predictor (VEP) options
-  assembly                see pipeline.sh
-  reference               see pipeline.sh
-  cpu_cores               see pipeline.sh"
+  annotate_vep_dir_cache      VEP: cache directory
+  annotate_vep_no_intergenic  VEP: Do not include intergenic consequences in the output (0 or 1, default: 1)
+  annotate_vep                Variant Effect Predictor (VEP) options
+  assembly                    see pipeline.sh
+  reference                   see pipeline.sh
+  cpu_cores                   see pipeline.sh"
 }
 
 get_unique_phenotypes() {
@@ -94,15 +95,26 @@ filterUnscoredCapiceRecords() {
 
 # arguments:
 #   $1 vepDirCache
+#   $2 vepNoIntergenic
 validateVep() {
   local -r vepDirCache="${1}"
+  local -r vepNoIntergenic="${2}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
     return 1
   fi
   if [[ ! -d "${vepDirCache}" ]]; then
-    echo -e "VEP cache directory ${vepDirCache} does not exist."
+    echo -e "annotate_vep_dir_cache ${vepDirCache} does not exist."
+    exit 1
+  fi
+
+  if [[ -z "${vepNoIntergenic}" ]]; then
+    echo -e "missing required annotate_vep_no_intergenic config value."
+    return 1
+  fi
+  if [[ "${vepNoIntergenic}" != "0" ]] && [[ "${vepNoIntergenic}" != "1" ]]; then
+    echo -e "annotate_vep_no_intergenic ${vepNoIntergenic} invalid (valid values: 0 or 1)."
     exit 1
   fi
 }
@@ -461,16 +473,18 @@ executeAnnotSv() {
 #   $3 assembly
 #   $4 path to reference sequence (optional)
 #   $5 vepDirCache
-#   $6 annVep
-#   $7 cpu cores
+#   $6 vepNoIntergenic
+#   $7 annVep
+#   $8 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local -r assembly="${3}"
   local -r inputRefPath="${4}"
   local -r vepDirCache="${5}"
-  local -r annVep="${6}"
-  local -r cpuCores="${7}"
+  local -r vepNoIntergenic="${6}"
+  local -r annVep="${7}"
+  local -r cpuCores="${8}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -485,7 +499,9 @@ executeVep() {
   args+=("--species" "homo_sapiens" "--assembly" "${assembly}")
   args+=("--symbol")
   args+=("--flag_pick_allele")
-  args+=("--no_intergenic")
+  if [[ "${vepNoIntergenic}" == "1" ]]; then
+    args+=("--no_intergenic")
+  fi
   args+=("--af_gnomad" "--pubmed")
   args+=("--shift_3prime" "1")
   args+=("--allele_number")
@@ -566,6 +582,7 @@ main() {
   local vibeHdtPath=""
   local vibeHpoPath=""
   local vepDirCache=""
+  local vepNoIntergenic=""
   local annVep=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -590,6 +607,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_dir_cache"]+unset}" ]]; then
     vepDirCache="${VIP_CFG_MAP["annotate_vep_dir_cache"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_no_intergenic"]+unset}" ]]; then
+    vepNoIntergenic="${VIP_CFG_MAP["annotate_vep_no_intergenic"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -600,7 +620,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}"
+  validateVep "${vepDirCache}" "${vepNoIntergenic}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -647,7 +667,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepNoIntergenic}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
