@@ -527,10 +527,11 @@ executeAnnotSv() {
 #   $7  vepNoIntergenic
 #   $8  vepHpoGenPhenoFilePath
 #   $9  phenotypes (optional)
-#   $10  vepPluginPreferredTranscriptFilePath
-#   $11  vepPluginSpliceAiFilePaths
-#   $12 annVep
-#   $13 cpu cores
+#   $10 annotSvOutputFilePath (optional)
+#   $11 vepPluginPreferredTranscriptFilePath
+#   $12 vepPluginSpliceAiFilePaths
+#   $13 annVep
+#   $14 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -541,10 +542,11 @@ executeVep() {
   local -r vepNoIntergenic="${7}"
   local -r vepHpoGenPhenoFilePath="${8}"
   local -r phenotypes="${9}"
-  local -r vepPluginPreferredTranscriptFilePath="${10}"
-  local -r vepPluginSpliceAiFilePaths="${11}"
-  local -r annVep="${12}"
-  local -r cpuCores="${13}"
+  local -r annotSvOutputFilePath="${10}"
+  local -r vepPluginPreferredTranscriptFilePath="${11}"
+  local -r vepPluginSpliceAiFilePaths="${12}"
+  local -r annVep="${13}"
+  local -r cpuCores="${14}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -584,6 +586,9 @@ executeVep() {
     declare -A UNIQUE_PHENOTYPES
     get_unique_phenotypes "${phenotypes}"
     args+=("--plugin" "Hpo,${vepHpoGenPhenoFilePath},$(joinArr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+  fi
+  if [ -n "${annotSvOutputFilePath}" ]; then
+    args+=("--plugin" "AnnotSV,${annotSvOutputFilePath},AnnotSV_ranking;ranking_decision_criteria")
   fi
   if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
     args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")
@@ -753,16 +758,18 @@ main() {
     executeVibe "${phenotypes}" "${currentOutputDir}" "${vibeHdtPath}" "${vibeHpoPath}"
   fi
 
+  local annotSvOutputFilePath=""
   if containsStructuralVariants "${inputFilePath}"; then
     # step 4: annotate structural variants
     currentOutputDir="${workDir}/4_annotsv"
     currentOutputFilePath="${currentOutputDir}/${outputFilename}"
     mkdir -p "${currentOutputDir}"
-    executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}.tsv" "${assembly}" "${phenotypes}"
+    annotSvOutputFilePath="${currentOutputFilePath}.tsv"
+    executeAnnotSv "${currentInputFilePath}" "${annotSvOutputFilePath}" "${assembly}" "${phenotypes}"
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
