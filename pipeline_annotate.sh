@@ -423,11 +423,16 @@ executeAnnotSv() {
   args+=("-outputFile" "${outputFilePath}")
   args+=("-genomeBuild" "${assembly}")
   args+=("-typeOfAnnotation" "split")
-  #TODO fix phenotypes (see VIBE)
-  if [ -n "${phenotypes}" ]; then
-    args+=("-hpo" "${phenotypes}")
-  fi
 
+  if [ -n "${phenotypes}" ]; then
+    declare -A UNIQUE_PHENOTYPES
+    get_unique_phenotypes "${phenotypes}"
+
+    if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]; then
+      local joinedPhenotypes=$(joinArr "," "${!UNIQUE_PHENOTYPES[@]}")
+      args+=("-hpo" "${joinedPhenotypes}")
+    fi
+  fi
   ${EBROOTANNOTSV}/bin/AnnotSV "${args[@]}"
 
   module purge
@@ -613,8 +618,7 @@ main() {
     currentOutputDir="${workDir}/4_annotsv"
     currentOutputFilePath="${currentOutputDir}/${outputFilename}"
     mkdir -p "${currentOutputDir}"
-    executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${phenotypes}"
-    currentInputFilePath="${currentOutputFilePath}"
+    executeAnnotSv "${currentInputFilePath}" "${currentOutputFilePath}.tsv" "${assembly}" "${phenotypes}"
   fi
 
   # step 5: execute VEP
