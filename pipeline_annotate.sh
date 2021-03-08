@@ -34,6 +34,7 @@ config:
   annotate_vep_dir_cache                  VEP: Cache directory.
   annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
   annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
+  annotate_vep_plugin_Hpo                 VEP: Path to genes_to_phenotype.tsv (default ./resources/hpo_YYYYmmdd.tsv)
   annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
   annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files
   annotate_vep                            Variant Effect Predictor (VEP) options.
@@ -100,14 +101,16 @@ filterUnscoredCapiceRecords() {
 #   $1 vepDirCache
 #   $2 vepCodingOnly
 #   $3 vepNoIntergenic
-#   $4 vepPluginPreferredTranscriptFilePath
-#   $5 vepPluginSpliceAiFilePaths
+#   $4 vepHpoGenPhenoFilePath
+#   $5 vepPluginPreferredTranscriptFilePath
+#   $6 vepPluginSpliceAiFilePaths
 validateVep() {
   local -r vepDirCache="${1}"
   local -r vepCodingOnly="${2}"
   local -r vepNoIntergenic="${3}"
-  local -r vepPluginPreferredTranscriptFilePath="${4}"
-  local -r vepPluginSpliceAiFilePaths="${5}"
+  local -r vepHpoGenPhenoFilePath="${4}"
+  local -r vepPluginPreferredTranscriptFilePath="${5}"
+  local -r vepPluginSpliceAiFilePaths="${6}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
@@ -133,6 +136,15 @@ validateVep() {
   fi
   if [[ "${vepNoIntergenic}" != "0" ]] && [[ "${vepNoIntergenic}" != "1" ]]; then
     echo -e "annotate_vep_no_intergenic ${vepNoIntergenic} invalid (valid values: 0 or 1)."
+    exit 1
+  fi
+
+  if [[ -z "${vepHpoGenPhenoFilePath}" ]]; then
+    echo -e "missing required annotate_vep_plugin_Hpo config value."
+    exit 1
+  fi
+  if [[ ! -f "${vepHpoGenPhenoFilePath}" ]]; then
+    echo -e "annotate_vep_plugin_Hpo ${vepHpoGenPhenoFilePath} does not exist."
     exit 1
   fi
 
@@ -513,10 +525,12 @@ executeAnnotSv() {
 #   $5  vepDirCache
 #   $6  vepCodingOnly
 #   $7  vepNoIntergenic
-#   $8  vepPluginPreferredTranscriptFilePath
-#   $9  vepPluginSpliceAiFilePaths
-#   $10 annVep
-#   $11 cpu cores
+#   $8  vepHpoGenPhenoFilePath
+#   $9  phenotypes (optional)
+#   $10  vepPluginPreferredTranscriptFilePath
+#   $11  vepPluginSpliceAiFilePaths
+#   $12 annVep
+#   $13 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -525,10 +539,12 @@ executeVep() {
   local -r vepDirCache="${5}"
   local -r vepCodingOnly="${6}"
   local -r vepNoIntergenic="${7}"
-  local -r vepPluginPreferredTranscriptFilePath="${8}"
-  local -r vepPluginSpliceAiFilePaths="${9}"
-  local -r annVep="${10}"
-  local -r cpuCores="${11}"
+  local -r vepHpoGenPhenoFilePath="${8}"
+  local -r phenotypes="${9}"
+  local -r vepPluginPreferredTranscriptFilePath="${10}"
+  local -r vepPluginSpliceAiFilePaths="${11}"
+  local -r annVep="${12}"
+  local -r cpuCores="${13}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -541,6 +557,8 @@ executeVep() {
   args+=("--stats_file" "${outputFilePath}" "--stats_text")
   args+=("--offline" "--cache" "--dir_cache" "${vepDirCache}")
   args+=("--species" "homo_sapiens" "--assembly" "${assembly}")
+  args+=("--refseq" "--exclude_predicted")
+  args+=("--use_given_ref")
   args+=("--symbol")
   args+=("--flag_pick_allele")
   if [[ "${vepCodingOnly}" == "1" ]]; then
@@ -562,6 +580,11 @@ executeVep() {
   fi
 
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
+  if [ -n "${phenotypes}" ]; then
+    declare -A UNIQUE_PHENOTYPES
+    get_unique_phenotypes "${phenotypes}"
+    args+=("--plugin" "Hpo,${vepHpoGenPhenoFilePath},$(joinArr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+  fi
   if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
     args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")
   fi
@@ -640,6 +663,7 @@ main() {
   local vepDirCache=""
   local vepCodingOnly=""
   local vepNoIntergenic=""
+  local vepHpoGenPhenoFilePath="${SCRIPT_DIR}/resources/hpo_20210308.tsv"
   local vepPluginPreferredTranscriptFilePath=""
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
@@ -672,6 +696,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_no_intergenic"]+unset}" ]]; then
     vepNoIntergenic="${VIP_CFG_MAP["annotate_vep_no_intergenic"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_Hpo"]+unset}" ]]; then
+    vepHpoGenPhenoFilePath="${VIP_CFG_MAP["annotate_vep_plugin_Hpo"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]+unset}" ]]; then
     vepPluginPreferredTranscriptFilePath="${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]}"
   fi
@@ -688,7 +715,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepNoIntergenic}" "${vepCodingOnly}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
+  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -735,7 +762,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
