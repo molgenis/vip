@@ -428,8 +428,7 @@ executeAnnotSv() {
     declare -A UNIQUE_PHENOTYPES
     get_unique_phenotypes "${phenotypes}"
 
-    if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]
-    then
+    if [[ ${#UNIQUE_PHENOTYPES[@]} -gt 0 ]]; then
       local joinedPhenotypes=$(joinArr "," "${!UNIQUE_PHENOTYPES[@]}")
       args+=("-hpo" "${joinedPhenotypes}")
     fi
