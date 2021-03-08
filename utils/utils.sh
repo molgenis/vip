@@ -254,3 +254,16 @@ createOutputPathFromPostfix() {
     exit 1
   fi
 }
+
+#######################################
+# Creates string with specified separator from an array.
+#
+# Arguments:
+#   separator
+#   elements to be joined
+#######################################
+joinArr() {
+  local IFS="$1"
+  shift
+  echo -e "$*"
+}

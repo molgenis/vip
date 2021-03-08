@@ -83,11 +83,7 @@ removeInfoAnnotations() {
   infoKeys+=("INFO/JUNCTION_SOMATICSCORE")
   infoKeys+=("INFO/CONTIG")
 
-  local infoKeysStr
-  infoKeysStr=$(
-    IFS=","
-    echo -e "${infoKeys[*]}"
-  )
+  local infoKeysStr=$(joinArr "," "${infoKeys[*]}")
 
   local args=()
   args+=("annotate")
@@ -157,10 +153,7 @@ filterLowQualityRecords() {
       for i in "${PROBAND_NAMES[@]}"; do
         PROBAND_IDS+=("${SAMPLE_NAMES_MAP[$i]}")
       done
-      probandIdsStr=$(
-        IFS=","
-        echo -e "${PROBAND_IDS[*]}"
-      )
+      probandIdsStr=$(joinArr "," "${PROBAND_IDS[*]}")
     else
       probandIdsStr="*"
     fi
