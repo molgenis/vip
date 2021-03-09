@@ -267,3 +267,22 @@ joinArr() {
   shift
   echo -e "$*"
 }
+
+# arguments:
+#   $1 path to input file
+# returns:
+#    0 if input contains samples
+#    1 if input doesn't contain samples
+hasSamples() {
+  local -r inputFilePath="${1}"
+
+  module load "${MOD_BCF_TOOLS}"
+  local -r samples="$(bcftools query -l "${inputFilePath}")"
+  module purge
+
+  if [[ -n ${samples} ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
