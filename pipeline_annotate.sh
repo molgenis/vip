@@ -31,6 +31,7 @@ usage() {
 -k, --keep                optional: Keep intermediate files.
 
 config:
+  annotate_phenotype_matching             Phenotype matching algorithm (hpo or vibe, default: hpo)
   annotate_vep_dir_cache                  VEP: Cache directory.
   annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
   annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
@@ -199,14 +200,16 @@ validateVibe() {
 #   $3 phenotypes (optional)
 #   $4 force
 #   $5 path to reference sequence (optional)
-#   $6 cpu cores
+#   $6 phenotype matching
+#   $7 cpu cores
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local -r phenotypes="${3}"
   local -r force="${4}"
   local -r referencePath="${5}"
-  local -r processes="${6}"
+  local -r phenotypeMatching="${6}"
+  local -r processes="${7}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -226,6 +229,15 @@ validate() {
   fi
 
   #TODO validate cpu cores
+
+  if [[ -z "${phenotypeMatching}" ]]; then
+    echo -e "missing required annotate_phenotype_matching config value."
+    exit 1
+  fi
+  if [[ "${phenotypeMatching}" != "hpo" ]] && [[ "${phenotypeMatching}" != "vibe" ]]; then
+    echo -e "annotate_phenotype_matching ${phenotypeMatching} invalid (valid values: hpo or vibe)."
+    exit 1
+  fi
 }
 
 # arguments:
@@ -532,14 +544,16 @@ executeAnnotSv() {
 #   $5  vepDirCache
 #   $6  vepCodingOnly
 #   $7  vepNoIntergenic
-#   $8  vepHpoGenPhenoFilePath
-#   $9  vepPluginInheritanceFilePath
-#   $10 phenotypes (optional)
-#   $11 annotSvOutputFilePath (optional)
-#   $12 vepPluginPreferredTranscriptFilePath
-#   $13 vepPluginSpliceAiFilePaths
-#   $14 annVep
-#   $15 cpu cores
+#   $8  phenotypes (optional)
+#   $9  phenotypeMatching
+#   $10 vepHpoGenPhenoFilePath
+#   $11 vibeOutputDir (optional)
+#   $12 vepPluginInheritanceFilePath (optional)
+#   $13 annotSvOutputFilePath (optional)
+#   $14 vepPluginPreferredTranscriptFilePath (optional)
+#   $15 vepPluginSpliceAiFilePaths (optional)
+#   $16 annVep
+#   $17 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -548,14 +562,16 @@ executeVep() {
   local -r vepDirCache="${5}"
   local -r vepCodingOnly="${6}"
   local -r vepNoIntergenic="${7}"
-  local -r vepHpoGenPhenoFilePath="${8}"
-  local -r phenotypes="${9}"
-  local -r vepPluginInheritanceFilePath="${10}"
-  local -r annotSvOutputFilePath="${11}"
-  local -r vepPluginPreferredTranscriptFilePath="${12}"
-  local -r vepPluginSpliceAiFilePaths="${13}"
-  local -r annVep="${14}"
-  local -r cpuCores="${15}"
+  local -r phenotypes="${8}"
+  local -r phenotypeMatching="${9}"
+  local -r vepHpoGenPhenoFilePath="${10}"
+  local -r vibeOutputDir="${11}"
+  local -r vepPluginInheritanceFilePath="${12}"
+  local -r annotSvOutputFilePath="${13}"
+  local -r vepPluginPreferredTranscriptFilePath="${14}"
+  local -r vepPluginSpliceAiFilePaths="${15}"
+  local -r annVep="${16}"
+  local -r cpuCores="${17}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -594,7 +610,15 @@ executeVep() {
   if [ -n "${phenotypes}" ]; then
     declare -A UNIQUE_PHENOTYPES
     get_unique_phenotypes "${phenotypes}"
-    args+=("--plugin" "Hpo,${vepHpoGenPhenoFilePath},$(joinArr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+    if [[ "${phenotypeMatching}" == "hpo" ]]; then
+      args+=("--plugin" "Hpo,${vepHpoGenPhenoFilePath},$(joinArr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+    elif [[ "${phenotypeMatching}" == "vibe" ]]; then
+      local vibePluginArgs=()
+      for i in "${!UNIQUE_PHENOTYPES[@]}"; do
+        vibePluginArgs+=("${vibeOutputDir}/${i//[:]/_}.txt")
+      done
+      args+=("--plugin" "Vibe,$(joinArr ";" "${vibePluginArgs[@]}")")
+    fi
   fi
   if [ -n "${vepPluginInheritanceFilePath}" ]; then
     args+=("--plugin" "Inheritance,${vepPluginInheritanceFilePath}")
@@ -675,6 +699,7 @@ main() {
   local inputRefPath=""
   local cpuCores=""
   local assembly=""
+  local phenotypeMatching=""
   local vibeHdtPath=""
   local vibeHpoPath=""
   local vepDirCache=""
@@ -698,6 +723,9 @@ main() {
   fi
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
+  fi
+  if [[ -n "${VIP_CFG_MAP["annotate_phenotype_matching"]+unset}" ]]; then
+    phenotypeMatching="${VIP_CFG_MAP["annotate_phenotype_matching"]}"
   fi
   if [[ -n "${VIP_CFG_MAP["annotate_vibe_hdt"]+unset}" ]]; then
     vibeHdtPath="${VIP_CFG_MAP["annotate_vibe_hdt"]}"
@@ -734,7 +762,7 @@ main() {
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_annotate")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
+  validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${phenotypeMatching}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
   validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
 
@@ -767,11 +795,11 @@ main() {
   currentInputFilePath="${currentOutputFilePath}"
 
   # step 3: execute VIBE
-  if [ -n "${phenotypes}" ]; then
-    currentOutputDir="${workDir}/3_vibe"
-    currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-    mkdir -p "${currentOutputDir}"
-    executeVibe "${phenotypes}" "${currentOutputDir}" "${vibeHdtPath}" "${vibeHpoPath}"
+  local vibeOutputDir=""
+  if [[ -n "${phenotypes}" ]] && [[ "${phenotypeMatching}" == "vibe" ]]; then
+    vibeOutputDir="${workDir}/3_vibe"
+    mkdir -p "${vibeOutputDir}"
+    executeVibe "${phenotypes}" "${vibeOutputDir}" "${vibeHdtPath}" "${vibeHpoPath}"
   fi
 
   local annotSvOutputFilePath=""
@@ -785,7 +813,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
