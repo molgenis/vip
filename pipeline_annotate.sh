@@ -706,7 +706,7 @@ main() {
   local vepCodingOnly=""
   local vepNoIntergenic=""
   local vepHpoGenPhenoFilePath="${SCRIPT_DIR}/resources/hpo_20210308.tsv"
-  local vepPluginInheritanceFilePath=""
+  local vepPluginInheritanceFilePath="${SCRIPT_DIR}/resources/gene_inheritance_modes_20210309.tsv"
   local vepPluginPreferredTranscriptFilePath=""
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
