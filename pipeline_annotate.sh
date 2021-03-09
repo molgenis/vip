@@ -35,6 +35,7 @@ config:
   annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
   annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
   annotate_vep_plugin_Hpo                 VEP: Path to genes_to_phenotype.tsv (default ./resources/hpo_YYYYmmdd.tsv)
+  annotate_vep_plugin_Inheritance         VEP: Path to gene_inheritance_modes.tsv
   annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
   annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files
   annotate_vep                            Variant Effect Predictor (VEP) options.
@@ -102,15 +103,17 @@ filterUnscoredCapiceRecords() {
 #   $2 vepCodingOnly
 #   $3 vepNoIntergenic
 #   $4 vepHpoGenPhenoFilePath
-#   $5 vepPluginPreferredTranscriptFilePath
-#   $6 vepPluginSpliceAiFilePaths
+#   $5 vepPluginInheritanceFilePath
+#   $6 vepPluginPreferredTranscriptFilePath
+#   $7 vepPluginSpliceAiFilePaths
 validateVep() {
   local -r vepDirCache="${1}"
   local -r vepCodingOnly="${2}"
   local -r vepNoIntergenic="${3}"
   local -r vepHpoGenPhenoFilePath="${4}"
-  local -r vepPluginPreferredTranscriptFilePath="${5}"
-  local -r vepPluginSpliceAiFilePaths="${6}"
+  local -r vepPluginInheritanceFilePath="${5}"
+  local -r vepPluginPreferredTranscriptFilePath="${6}"
+  local -r vepPluginSpliceAiFilePaths="${7}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
@@ -148,6 +151,10 @@ validateVep() {
     exit 1
   fi
 
+  if [[ -n "${vepPluginInheritanceFilePath}" ]] && [[ ! -f "${vepPluginInheritanceFilePath}" ]]; then
+    echo -e "annotate_vep_plugin_Inheritance ${vepPluginInheritanceFilePath} does not exist."
+    exit 1
+  fi
   if [[ -n "${vepPluginPreferredTranscriptFilePath}" ]] && [[ ! -f "${vepPluginPreferredTranscriptFilePath}" ]]; then
     echo -e "annotate_vep_plugin_PreferredTranscript ${vepPluginPreferredTranscriptFilePath} does not exist."
     exit 1
@@ -526,12 +533,13 @@ executeAnnotSv() {
 #   $6  vepCodingOnly
 #   $7  vepNoIntergenic
 #   $8  vepHpoGenPhenoFilePath
-#   $9  phenotypes (optional)
-#   $10 annotSvOutputFilePath (optional)
-#   $11 vepPluginPreferredTranscriptFilePath
-#   $12 vepPluginSpliceAiFilePaths
-#   $13 annVep
-#   $14 cpu cores
+#   $9  vepPluginInheritanceFilePath
+#   $10 phenotypes (optional)
+#   $11 annotSvOutputFilePath (optional)
+#   $12 vepPluginPreferredTranscriptFilePath
+#   $13 vepPluginSpliceAiFilePaths
+#   $14 annVep
+#   $15 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -542,11 +550,12 @@ executeVep() {
   local -r vepNoIntergenic="${7}"
   local -r vepHpoGenPhenoFilePath="${8}"
   local -r phenotypes="${9}"
-  local -r annotSvOutputFilePath="${10}"
-  local -r vepPluginPreferredTranscriptFilePath="${11}"
-  local -r vepPluginSpliceAiFilePaths="${12}"
-  local -r annVep="${13}"
-  local -r cpuCores="${14}"
+  local -r vepPluginInheritanceFilePath="${10}"
+  local -r annotSvOutputFilePath="${11}"
+  local -r vepPluginPreferredTranscriptFilePath="${12}"
+  local -r vepPluginSpliceAiFilePaths="${13}"
+  local -r annVep="${14}"
+  local -r cpuCores="${15}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -586,6 +595,9 @@ executeVep() {
     declare -A UNIQUE_PHENOTYPES
     get_unique_phenotypes "${phenotypes}"
     args+=("--plugin" "Hpo,${vepHpoGenPhenoFilePath},$(joinArr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+  fi
+  if [ -n "${vepPluginInheritanceFilePath}" ]; then
+    args+=("--plugin" "Inheritance,${vepPluginInheritanceFilePath}")
   fi
   if [ -n "${annotSvOutputFilePath}" ]; then
     args+=("--plugin" "AnnotSV,${annotSvOutputFilePath},AnnotSV_ranking;ranking_decision_criteria")
@@ -669,6 +681,7 @@ main() {
   local vepCodingOnly=""
   local vepNoIntergenic=""
   local vepHpoGenPhenoFilePath="${SCRIPT_DIR}/resources/hpo_20210308.tsv"
+  local vepPluginInheritanceFilePath=""
   local vepPluginPreferredTranscriptFilePath=""
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
@@ -704,6 +717,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_Hpo"]+unset}" ]]; then
     vepHpoGenPhenoFilePath="${VIP_CFG_MAP["annotate_vep_plugin_Hpo"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_Inheritance"]+unset}" ]]; then
+    vepPluginInheritanceFilePath="${VIP_CFG_MAP["annotate_vep_plugin_Inheritance"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]+unset}" ]]; then
     vepPluginPreferredTranscriptFilePath="${VIP_CFG_MAP["annotate_vep_plugin_PreferredTranscript"]}"
   fi
@@ -720,7 +736,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
+  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -769,7 +785,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${phenotypes}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
