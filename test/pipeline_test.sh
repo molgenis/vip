@@ -1,14 +1,14 @@
 #!/bin/bash
 INPUT='./test/data/test.vcf'
 PED='./test/data/test.ped'
-HPO='HP:0004383'
+HPO='HP:0010442'
 CFG='./test/data/test.cfg'
 
 ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.vcf.gz.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
-EXPECTED_NR_OF_HEADERS=49
+EXPECTED_NR_OF_HEADERS=56
 LOG='./test/output/test_output.log'
 
 echo -e "Test started..."
@@ -43,6 +43,7 @@ sed -i '/^##contig/d' ${ACTUAL_VCF}
 sed -i '/^##fileDate/d' ${ACTUAL_VCF}
 sed -i '/^##VIP/d' ${ACTUAL_VCF}
 sed -i 's/"CAPICE pathogenicity prediction.*/"CAPICE pathogenicity prediction"/g' ${ACTUAL_VCF}
+sed -i '/^##Software/d' ${ACTUAL_VCF}
 
 VCF_DIFF=$(diff $ACTUAL_VCF $EXPECTED_VCF)
 if [ "$VCF_DIFF" != "" ]; then
