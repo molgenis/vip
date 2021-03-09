@@ -31,6 +31,8 @@ usage() {
 
 config:
   filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
+  filter_annotate_labels  annotate decision tree labels (0 or 1, default: 0).
+  filter_annotate_paths   annotate decision tree paths (0 or 1, default: 0).
   cpu_cores               see pipeline.sh"
 }
 
@@ -184,10 +186,14 @@ EOT
 #   $1 path to input file
 #   $2 path to output file
 #   $3 path to decision tree file (optional)
+#   $4 annotate labels
+#   $5 annotate paths
 classify() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local treeFilePath="${3}"
+  local -r annotateLabels="${4}"
+  local -r annotatePaths="${5}"
 
   module load "${MOD_VCF_DECISION_TREE}"
 
@@ -203,6 +209,12 @@ classify() {
   args+=("-i" "${inputFilePath}")
   args+=("-c" "${treeFilePath}")
   args+=("-o" "${outputFilePath}")
+  if [[ "${annotateLabels}" == "1" ]]; then
+    args+=("-l")
+  fi
+  if [[ "${annotatePaths}" == "1" ]]; then
+    args+=("-p")
+  fi
 
   java "${args[@]}"
 
@@ -240,12 +252,16 @@ filter() {
 #   $3 force
 #   $4 cpu cores
 #   $5 path to tree file
+#   $6 annotate labels
+#   $7 annotate paths
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
   local -r force="${3}"
   local -r cpuCores="${4}"
   local -r treeFilePath="${5}"
+  local -r annotateLabels="${6}"
+  local -r annotatePaths="${7}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -261,6 +277,15 @@ validate() {
 
   if [[ -n "${treeFilePath}" ]] && [[ ! -f "${treeFilePath}" ]]; then
     echo -e "tree ${treeFilePath} does not exist."
+    exit 1
+  fi
+
+  if [[ "${annotateLabels}" != "0" ]] && [[ "${annotateLabels}" != "1" ]]; then
+    echo -e "filter_annotate_labels ${annotateLabels} invalid (valid values: 0 or 1)."
+    exit 1
+  fi
+  if [[ "${annotatePaths}" != "0" ]] && [[ "${annotatePaths}" != "1" ]]; then
+    echo -e "filter_annotate_paths ${annotatePaths} invalid (valid values: 0 or 1)."
     exit 1
   fi
 }
@@ -315,6 +340,8 @@ main() {
 
   local cpuCores=""
   local treeFilePath=""
+  local annotateLabels=""
+  local annotatePaths=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
@@ -326,12 +353,18 @@ main() {
   if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
     treeFilePath=${VIP_CFG_MAP["filter_tree"]}
   fi
+  if [[ -n "${VIP_CFG_MAP["filter_annotate_labels"]+unset}" ]]; then
+    annotateLabels=${VIP_CFG_MAP["filter_annotate_labels"]}
+  fi
+  if [[ -n "${VIP_CFG_MAP["filter_annotate_paths"]+unset}" ]]; then
+    annotatePaths=${VIP_CFG_MAP["filter_annotate_paths"]}
+  fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_filter")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${force}" "${cpuCores}" "${treeFilePath}"
+  validate "${inputFilePath}" "${outputFilePath}" "${force}" "${cpuCores}" "${treeFilePath}" "${annotateLabels}" "${annotatePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -351,7 +384,7 @@ main() {
   currentOutputDir="${workDir}/1_classify"
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
-  classify "${currentInputFilePath}" "${currentOutputFilePath}" "${treeFilePath}"
+  classify "${currentInputFilePath}" "${currentOutputFilePath}" "${treeFilePath}" "${annotateLabels}" "${annotatePaths}"
   currentInputFilePath="${currentOutputFilePath}"
 
   # step 2: filter based on classification
