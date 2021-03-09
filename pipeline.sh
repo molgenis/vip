@@ -452,7 +452,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  initWorkDir "${outputFilePath}" "${keep}"
   local -r baseWorkDir="${VIP_WORK_DIR}"
 
   local currentInput="${inputFilePath}" currentOutput startTime elapsedTime
@@ -461,6 +461,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/1_preprocess"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     preprocess "${currentInput}" "${currentOutput}" "${probands}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -474,6 +475,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/2_annotate"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     annotate "${currentInput}" "${currentOutput}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -487,6 +489,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/3_filter"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     filter "${currentInput}" "${currentOutput}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -501,6 +504,7 @@ main() {
       startTime="${SECONDS}"
 
       VIP_WORK_DIR="${baseWorkDir}/4_inheritance"
+      removeWorkDir "${force}"
       currentOutput="${VIP_WORK_DIR}/${outputFilename}"
       inheritance "${currentInput}" "${currentOutput}" "${probands}" "${pedFilePath}" "${cfgFilePath}" "${force}" "${keep}"
       currentInput="${currentOutput}"
@@ -518,6 +522,7 @@ main() {
   currentInput="${currentOutput}"
 
   VIP_WORK_DIR="${baseWorkDir}/5_report"
+  removeWorkDir "${force}"
   local -r outputReportFilePath="${outputFilePath}.html"
   report "${currentInput}" "${outputReportFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
 

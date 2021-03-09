@@ -795,7 +795,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  initWorkDir "${outputFilePath}" "${keep}"
   local -r workDir="${VIP_WORK_DIR}"
 
   local currentInputFilePath="${inputFilePath}" currentOutputFilePath
