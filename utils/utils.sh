@@ -205,7 +205,7 @@ initWorkDir() {
 #    1 if path to input file is invalid
 validateInputPath() {
   local -r inputPath="${1}"
-  if [[ -z "${inputPath}" ]]; then
+  if [[ -z "${inputPath+unset}" ]]; then
     echo -e "missing required option -i."
     return 1
   fi
