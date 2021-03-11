@@ -32,6 +32,7 @@ usage() {
 -c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
 
 config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
@@ -333,7 +334,7 @@ report() {
 
 main() {
   local -r arguments="$(printf ' %q' "$@")"
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:s:c:fk --long help,input:,output:,probands:,pedigree:,phenotypes:,start:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:s:c:fkh --long input:,output:,probands:,pedigree:,phenotypes:,start:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -353,9 +354,9 @@ main() {
   eval set -- "${parsedArguments}"
   while :; do
     case "$1" in
-    --help)
+    -h | --help)
       usage
-      exit 1
+      exit 0
       shift
       ;;
     -i | --input)

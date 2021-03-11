@@ -28,6 +28,7 @@ usage() {
 -c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
 
 config:
   filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
@@ -291,7 +292,7 @@ validate() {
 }
 
 main() {
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:c:fk --long input:,output:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:c:fkh --long input:,output:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -307,6 +308,11 @@ main() {
   eval set -- "$parsedArguments"
   while :; do
     case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      shift
+      ;;
     -i | --input)
       inputFilePath=$(realpath "$2")
       shift 2
