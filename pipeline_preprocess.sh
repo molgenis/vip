@@ -37,8 +37,8 @@ usage() {
 config:
   preprocess_filter_low_qual    filter low quality records using filter status and read depth.
   preprocess_filter_read_depth  filter read depth threshold (default: 20)
-  reference                     see pipeline.sh
-  cpu_cores                     see pipeline.sh"
+  reference                     see 'bash pipeline.sh --help' for usage.
+  cpu_cores                     see 'bash pipeline.sh --help' for usage."
 }
 
 #######################################
@@ -348,6 +348,12 @@ main() {
       ;;
     esac
   done
+
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
 
   local inputRefPath=""
   local cpuCores=""

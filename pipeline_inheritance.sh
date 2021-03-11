@@ -33,7 +33,7 @@ usage() {
 -h, --help                optional: Print this message and exit.
 
 config:
-  cpu_cores               see pipeline.sh"
+  cpu_cores               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -221,6 +221,12 @@ main() {
       ;;
     esac
   done
+
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
 
   local cpuCores=""
 

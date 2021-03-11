@@ -34,7 +34,7 @@ config:
   filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
   filter_annotate_labels  annotate decision tree labels (0 or 1, default: 0).
   filter_annotate_paths   annotate decision tree paths (0 or 1, default: 0).
-  cpu_cores               see pipeline.sh"
+  cpu_cores               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -343,6 +343,12 @@ main() {
       ;;
     esac
   done
+
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
 
   local cpuCores=""
   local treeFilePath=""
