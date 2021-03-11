@@ -251,7 +251,7 @@ createOutputPathFromPostfix() {
   if [[ "${outputFilename}" =~ (.+)(\.(bcf|vcf(\.gz)?))$ ]]; then
     echo -e "${outputDir}/${BASH_REMATCH[1]}_${postfix}.vcf.gz"
   else
-    exit 1
+    return 1
   fi
 }
 
