@@ -349,6 +349,12 @@ main() {
     esac
   done
 
+  if [[ -z "${inputFilePath+unset}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
+
   local inputRefPath=""
   local cpuCores=""
   local filterLowQual=""
