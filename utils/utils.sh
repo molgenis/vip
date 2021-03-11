@@ -170,32 +170,34 @@ parseCfg() {
 #
 # arguments:
 #   $1 path to output file
-#   $2 whether to force overwrite intermediate outputs (0: false, 1: true)
-#   $3 whether to keep intermediate outputs (0: false, 1: true)
+#   $2 whether to keep intermediate outputs (0: false, 1: true)
 initWorkDir() {
   local -r outputFilePath="${1}"
-  local -r force="${2}"
-  local -r keep="${3}"
+  local -r keep="${2}"
 
   if [ -z "${VIP_WORK_DIR+x}" ]; then
     if [[ "${keep}" == "1" ]]; then
       VIP_WORK_DIR="$(dirname "${outputFilePath}")/$(basename "${outputFilePath}")_results"
-
-      if [[ -d "${VIP_WORK_DIR}" ]]; then
-        if [[ "${force}" == "1" ]]; then
-          rm -r "${VIP_WORK_DIR}"
-        else
-          echo -e "working directory ${VIP_WORK_DIR} already exists, use -f to overwrite."
-          exit 1
-        fi
-      else
-        mkdir -p "${VIP_WORK_DIR}"
-      fi
+      mkdir -p "${VIP_WORK_DIR}"
     else
       # shellcheck disable=SC2153
       VIP_WORK_DIR="${TMP_WORK_DIR}"
     fi
     export VIP_WORK_DIR
+  fi
+}
+
+# arguments:
+#   $1 whether to force overwrite intermediate outputs (0: false, 1: true)
+removeWorkDir() {
+  local -r force="${1}"
+
+  if [[ -d "${VIP_WORK_DIR}" ]]; then
+    if [[ "${force}" == "1" ]]; then
+      rm -r "${VIP_WORK_DIR}"
+    else
+      echo -e "working directory ${VIP_WORK_DIR} already exists, use -f to overwrite."
+    fi
   fi
 }
 
