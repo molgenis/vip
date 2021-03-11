@@ -286,16 +286,26 @@ executeVcfanno() {
   local -r confFilePath="${outputDir}/conf.toml"
   createVcfannoConfig "${confFilePath}"
 
-  module load "${MOD_VCF_ANNO}"
-  module load "${MOD_HTS_LIB}"
-
   local args=()
   args+=("-p" "${processes}")
   args+=("${confFilePath}")
   args+=("${inputFilePath}")
 
-  vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
-  module purge
+  if hasSamples "${inputFilePath}"; then
+    module load "${MOD_VCF_ANNO}"
+    module load "${MOD_HTS_LIB}"
+
+    vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
+
+    module purge
+  else
+    # workaround for https://github.com/brentp/vcfanno/issues/123
+    module load "${MOD_VCF_ANNO}"
+    module load "${MOD_HTS_LIB}"
+
+    vcfanno "${args[@]}" | cut -f 1-8 | bgzip >"${outputFilePath}"
+    module purge
+  fi
 }
 
 # arguments:
@@ -386,9 +396,6 @@ executeCapiceAnnotate() {
   local -r annotationFilePath="${3}"
   local -r processes="${4}"
 
-  module load "${MOD_VCF_ANNO}"
-  module load "${MOD_HTS_LIB}"
-
   local -r outputDir="$(dirname "${outputFilePath}")"
 
   local -r confFilePath="${outputDir}/conf.toml"
@@ -405,8 +412,21 @@ EOT
   args+=("${confFilePath}")
   args+=("${inputFilePath}")
 
-  vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
-  module purge
+  if hasSamples "${inputFilePath}"; then
+    module load "${MOD_VCF_ANNO}"
+    module load "${MOD_HTS_LIB}"
+
+    vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
+
+    module purge
+  else
+    # workaround for https://github.com/brentp/vcfanno/issues/123
+    module load "${MOD_VCF_ANNO}"
+    module load "${MOD_HTS_LIB}"
+
+    vcfanno "${args[@]}" | cut -f 1-8 | bgzip >"${outputFilePath}"
+    module purge
+  fi
 }
 
 # arguments:
