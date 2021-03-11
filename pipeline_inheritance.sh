@@ -222,7 +222,7 @@ main() {
     esac
   done
 
-  if [[ -z "${inputFilePath+unset}" ]]; then
+  if [[ -z "${inputFilePath}" ]]; then
     echo -e "missing required option -i or --input."
     echo -e "try '${SCRIPT_NAME} -h or --help' for more information."
     exit 1
