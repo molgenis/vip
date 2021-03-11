@@ -38,11 +38,11 @@ config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
   reference               reference sequence file
   cpu_cores               number of CPU cores
-  preprocess_*            see pipeline_preprocess.sh
-  annotate_*              see pipeline_annotate.sh
-  filter_*                see pipeline_filter.sh
-  inheritance_*           see pipeline_inheritance.sh
-  report_*                see pipeline_report.sh
+  preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
+  annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
+  filter_*                see 'bash pipeline_filter.sh --help' for usage.
+  inheritance_*           see 'bash pipeline_inheritance.sh --help' for usage.
+  report_*                see 'bash pipeline_report.sh --help' for usage.
 
 examples:
   ${SCRIPT_NAME} -i in.vcf

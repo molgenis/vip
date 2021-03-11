@@ -33,7 +33,7 @@ usage() {
 -h, --help                optional: Print this message and exit.
 
 config:
-  cpu_cores               see pipeline.sh"
+  cpu_cores               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:

@@ -41,9 +41,9 @@ config:
   annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
   annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files
   annotate_vep                            Variant Effect Predictor (VEP) options.
-  assembly                                see pipeline.sh.
-  reference                               see pipeline.sh.
-  cpu_cores                               see pipeline.sh."
+  assembly                                see 'bash pipeline.sh --help' for usage.
+  reference                               see 'bash pipeline.sh --help' for usage.
+  cpu_cores                               see 'bash pipeline.sh --help' for usage."
 }
 
 get_unique_phenotypes() {
