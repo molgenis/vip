@@ -151,7 +151,7 @@ main() {
   local force=0
   local keep=0
 
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:c:fk --long input:,output:,probands:,pedigree:,phenotypes:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:c:fkh --long input:,output:,probands:,pedigree:,phenotypes:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -161,6 +161,11 @@ main() {
   eval set -- "$parsedArguments"
   while :; do
     case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      shift
+      ;;
     -i | --input)
       inputFilePath=$(realpath "$2")
       shift 2

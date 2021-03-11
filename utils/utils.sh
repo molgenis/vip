@@ -207,7 +207,7 @@ removeWorkDir() {
 #    1 if path to input file is invalid
 validateInputPath() {
   local -r inputPath="${1}"
-  if [[ -z "${inputPath}" ]]; then
+  if [[ -z "${inputPath+unset}" ]]; then
     echo -e "missing required option -i."
     return 1
   fi
@@ -253,7 +253,7 @@ createOutputPathFromPostfix() {
   if [[ "${outputFilename}" =~ (.+)(\.(bcf|vcf(\.gz)?))$ ]]; then
     echo -e "${outputDir}/${BASH_REMATCH[1]}_${postfix}.vcf.gz"
   else
-    exit 1
+    return 1
   fi
 }
 
