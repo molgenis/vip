@@ -462,26 +462,32 @@ executeCapice() {
       mkdir -p "${currentOutputDir}"
       executeCadd "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${cpuCores}"
 
-      currentInputFilePath="${currentOutputFilePath}"
-      currentOutputDir="${outputDir}/3_capice_predict"
-      currentOutputFilePath="${currentOutputDir}/${outputFilename}.tsv"
-      mkdir -p "${currentOutputDir}"
-      executeCapicePredict "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
+      if [[ "$(zgrep -c -m 1 "^[^#]" "${currentOutputFilePath}")" -eq 0 ]]; then
+        echo -e "skipping CAPICE execution because there are no CADD scores ..."
+        cd "${outputDir}" || exit
+        ln -s "${currentInputFilePath}" "${outputFilename}"
+      else
+        currentInputFilePath="${currentOutputFilePath}"
+        currentOutputDir="${outputDir}/3_capice_predict"
+        currentOutputFilePath="${currentOutputDir}/${outputFilename}.tsv"
+        mkdir -p "${currentOutputDir}"
+        executeCapicePredict "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
 
-      currentInputFilePath="${currentOutputFilePath}"
-      currentOutputDir="${outputDir}/4_capice2vcf"
-      currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-      mkdir -p "${currentOutputDir}"
-      executeCapiceVcf "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
+        currentInputFilePath="${currentOutputFilePath}"
+        currentOutputDir="${outputDir}/4_capice2vcf"
+        currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+        mkdir -p "${currentOutputDir}"
+        executeCapiceVcf "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
 
-      annotationFilePath="${currentOutputFilePath}"
-      currentOutputDir="${outputDir}/5_vcfanno"
-      currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-      mkdir -p "${currentOutputDir}"
-      executeCapiceAnnotate "${inputFilePath}" "${currentOutputFilePath}" "${annotationFilePath}" "${cpuCores}"
+        annotationFilePath="${currentOutputFilePath}"
+        currentOutputDir="${outputDir}/5_vcfanno"
+        currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+        mkdir -p "${currentOutputDir}"
+        executeCapiceAnnotate "${inputFilePath}" "${currentOutputFilePath}" "${annotationFilePath}" "${cpuCores}"
 
-      cd "${outputDir}" || exit
-      ln -s "${currentOutputFilePath}" "${outputFilename}"
+        cd "${outputDir}" || exit
+        ln -s "${currentOutputFilePath}" "${outputFilename}"
+      fi
     fi
   else
     echo -e "Skipping capice for ${assembly}"
