@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vip
-#SBATCH --outputFilePath=vip.out
+#SBATCH --output=vip.out
 #SBATCH --error=vip.err
 #SBATCH --time=05:00:00
 #SBATCH --cpus-per-task=4
