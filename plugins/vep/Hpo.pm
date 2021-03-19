@@ -51,7 +51,7 @@ sub new {
     while (<FH>) {
         chomp; # avoid \n on last field
         @tokens = split(/\t/);
-        $hpo_id = $tokens[2];
+        $hpo_id = $tokens[1];
         if (exists($hpo_ids{$hpo_id})) {
             $entrez_gene_id = $tokens[0];
             push(@{$entrez_gene_ids{$entrez_gene_id}}, $hpo_id);

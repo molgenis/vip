@@ -32,12 +32,13 @@ usage() {
 -c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
 
 config:
   preprocess_filter_low_qual    filter low quality records using filter status and read depth.
   preprocess_filter_read_depth  filter read depth threshold (default: 20)
-  reference                     see pipeline.sh
-  cpu_cores                     see pipeline.sh"
+  reference                     see 'bash pipeline.sh --help' for usage.
+  cpu_cores                     see 'bash pipeline.sh --help' for usage."
 }
 
 #######################################
@@ -83,7 +84,7 @@ removeInfoAnnotations() {
   infoKeys+=("INFO/JUNCTION_SOMATICSCORE")
   infoKeys+=("INFO/CONTIG")
 
-  local infoKeysStr=$(joinArr "," "${infoKeys[*]}")
+  local -r infoKeysStr=$(joinArr "," "${infoKeys[@]}")
 
   local args=()
   args+=("annotate")
@@ -153,7 +154,7 @@ filterLowQualityRecords() {
       for i in "${PROBAND_NAMES[@]}"; do
         PROBAND_IDS+=("${SAMPLE_NAMES_MAP[$i]}")
       done
-      probandIdsStr=$(joinArr "," "${PROBAND_IDS[*]}")
+      probandIdsStr=$(joinArr "," "${PROBAND_IDS[@]}")
     else
       probandIdsStr="*"
     fi
@@ -291,7 +292,7 @@ validate() {
 }
 
 main() {
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:c:fk --long input:,output:,probands:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:c:fkh --long input:,output:,probands:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -308,6 +309,11 @@ main() {
   eval set -- "${parsedArguments}"
   while :; do
     case "$1" in
+   -h | --help)
+      usage
+      exit 0
+      shift
+      ;;
     -i | --input)
       inputFilePath=$(realpath "$2")
       shift 2
@@ -342,6 +348,12 @@ main() {
       ;;
     esac
   done
+
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
 
   local inputRefPath=""
   local cpuCores=""
@@ -380,7 +392,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  initWorkDir "${outputFilePath}" "${keep}"
   local -r workDir="${VIP_WORK_DIR}"
 
   local currentInputFilePath="${inputFilePath}" currentOutputDir currentOutputFilePath

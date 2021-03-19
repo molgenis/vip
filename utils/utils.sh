@@ -170,27 +170,15 @@ parseCfg() {
 #
 # arguments:
 #   $1 path to output file
-#   $2 whether to force overwrite intermediate outputs (0: false, 1: true)
-#   $3 whether to keep intermediate outputs (0: false, 1: true)
+#   $2 whether to keep intermediate outputs (0: false, 1: true)
 initWorkDir() {
   local -r outputFilePath="${1}"
-  local -r force="${2}"
-  local -r keep="${3}"
+  local -r keep="${2}"
 
   if [ -z "${VIP_WORK_DIR+x}" ]; then
     if [[ "${keep}" == "1" ]]; then
       VIP_WORK_DIR="$(dirname "${outputFilePath}")/$(basename "${outputFilePath}")_results"
-
-      if [[ -d "${VIP_WORK_DIR}" ]]; then
-        if [[ "${force}" == "1" ]]; then
-          rm -r "${VIP_WORK_DIR}"
-        else
-          echo -e "working directory ${VIP_WORK_DIR} already exists, use -f to overwrite."
-          exit 1
-        fi
-      else
-        mkdir -p "${VIP_WORK_DIR}"
-      fi
+      mkdir -p "${VIP_WORK_DIR}"
     else
       # shellcheck disable=SC2153
       VIP_WORK_DIR="${TMP_WORK_DIR}"
@@ -200,12 +188,26 @@ initWorkDir() {
 }
 
 # arguments:
+#   $1 whether to force overwrite intermediate outputs (0: false, 1: true)
+removeWorkDir() {
+  local -r force="${1}"
+
+  if [[ -d "${VIP_WORK_DIR}" ]]; then
+    if [[ "${force}" == "1" ]]; then
+      rm -r "${VIP_WORK_DIR}"
+    else
+      echo -e "working directory ${VIP_WORK_DIR} already exists, use -f to overwrite."
+    fi
+  fi
+}
+
+# arguments:
 #   $1 path to input file
 # returns:
 #    1 if path to input file is invalid
 validateInputPath() {
   local -r inputPath="${1}"
-  if [[ -z "${inputPath}" ]]; then
+  if [[ -z "${inputPath+unset}" ]]; then
     echo -e "missing required option -i."
     return 1
   fi
@@ -251,7 +253,7 @@ createOutputPathFromPostfix() {
   if [[ "${outputFilename}" =~ (.+)(\.(bcf|vcf(\.gz)?))$ ]]; then
     echo -e "${outputDir}/${BASH_REMATCH[1]}_${postfix}.vcf.gz"
   else
-    exit 1
+    return 1
   fi
 }
 
@@ -266,4 +268,23 @@ joinArr() {
   local IFS="$1"
   shift
   echo -e "$*"
+}
+
+# arguments:
+#   $1 path to input file
+# returns:
+#    0 if input contains samples
+#    1 if input doesn't contain samples
+hasSamples() {
+  local -r inputFilePath="${1}"
+
+  module load "${MOD_BCF_TOOLS}"
+  local -r samples="$(bcftools query -l "${inputFilePath}")"
+  module purge
+
+  if [[ -n ${samples} ]]; then
+    return 0
+  else
+    return 1
+  fi
 }

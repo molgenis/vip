@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vip
-#SBATCH --outputFilePath=vip.out
+#SBATCH --output=vip.out
 #SBATCH --error=vip.err
 #SBATCH --time=05:00:00
 #SBATCH --cpus-per-task=4
@@ -32,16 +32,17 @@ usage() {
 -c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
 
 config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
   reference               reference sequence file
   cpu_cores               number of CPU cores
-  preprocess_*            see pipeline_preprocess.sh
-  annotate_*              see pipeline_annotate.sh
-  filter_*                see pipeline_filter.sh
-  inheritance_*           see pipeline_inheritance.sh
-  report_*                see pipeline_report.sh
+  preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
+  annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
+  filter_*                see 'bash pipeline_filter.sh --help' for usage.
+  inheritance_*           see 'bash pipeline_inheritance.sh --help' for usage.
+  report_*                see 'bash pipeline_report.sh --help' for usage.
 
 examples:
   ${SCRIPT_NAME} -i in.vcf
@@ -333,7 +334,7 @@ report() {
 
 main() {
   local -r arguments="$(printf ' %q' "$@")"
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:s:c:fk --long help,input:,output:,probands:,pedigree:,phenotypes:,start:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:t:s:c:fkh --long input:,output:,probands:,pedigree:,phenotypes:,start:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -353,9 +354,9 @@ main() {
   eval set -- "${parsedArguments}"
   while :; do
     case "$1" in
-    --help)
+    -h | --help)
       usage
-      exit 1
+      exit 0
       shift
       ;;
     -i | --input)
@@ -427,6 +428,12 @@ main() {
     esac
   done
 
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
+
   local cpuCores=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -452,7 +459,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  initWorkDir "${outputFilePath}" "${keep}"
   local -r baseWorkDir="${VIP_WORK_DIR}"
 
   local currentInput="${inputFilePath}" currentOutput startTime elapsedTime
@@ -461,6 +468,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/1_preprocess"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     preprocess "${currentInput}" "${currentOutput}" "${probands}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -474,6 +482,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/2_annotate"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     annotate "${currentInput}" "${currentOutput}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -487,6 +496,7 @@ main() {
     startTime="${SECONDS}"
 
     VIP_WORK_DIR="${baseWorkDir}/3_filter"
+    removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
     filter "${currentInput}" "${currentOutput}" "${cfgFilePath}" "${force}" "${keep}"
     currentInput="${currentOutput}"
@@ -501,6 +511,7 @@ main() {
       startTime="${SECONDS}"
 
       VIP_WORK_DIR="${baseWorkDir}/4_inheritance"
+      removeWorkDir "${force}"
       currentOutput="${VIP_WORK_DIR}/${outputFilename}"
       inheritance "${currentInput}" "${currentOutput}" "${probands}" "${pedFilePath}" "${cfgFilePath}" "${force}" "${keep}"
       currentInput="${currentOutput}"
@@ -518,6 +529,7 @@ main() {
   currentInput="${currentOutput}"
 
   VIP_WORK_DIR="${baseWorkDir}/5_report"
+  removeWorkDir "${force}"
   local -r outputReportFilePath="${outputFilePath}.html"
   report "${currentInput}" "${outputReportFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
 

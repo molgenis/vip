@@ -30,9 +30,10 @@ usage() {
 -c, --config     <arg>    optional: Configuration file (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
 
 config:
-  cpu_cores               see pipeline.sh"
+  cpu_cores               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -167,7 +168,7 @@ main() {
   local force=0
   local keep=0
 
-  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:c:fk --long input:,output:,probands:,pedigree:,config:,force,keep -- "$@")
+  local -r parsedArguments=$(getopt -a -n pipeline -o i:o:b:p:c:fkh --long input:,output:,probands:,pedigree:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -177,6 +178,11 @@ main() {
   eval set -- "$parsedArguments"
   while :; do
     case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      shift
+      ;;
     -i | --input)
       inputFilePath=$(realpath "$2")
       shift 2
@@ -216,6 +222,12 @@ main() {
     esac
   done
 
+  if [[ -z "${inputFilePath}" ]]; then
+    echo -e "missing required option -i or --input."
+    echo -e "try bash '${SCRIPT_NAME} -h or --help' for more information."
+    exit 1
+  fi
+
   local cpuCores=""
 
   parseCfg "${SCRIPT_DIR}/config/default.cfg"
@@ -241,7 +253,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  initWorkDir "${outputFilePath}" "${force}" "${keep}"
+  initWorkDir "${outputFilePath}" "${keep}"
   local -r workDir="${VIP_WORK_DIR}"
 
   local currentInputFilePath="${inputFilePath}" currentOutputDir currentOutputFilePath
