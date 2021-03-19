@@ -57,7 +57,25 @@ createDefaultDecisionTree() {
         ]
       },
       "outcomeTrue": {
-        "nextNode": "mvl"
+        "nextNode": "structuralVariants"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_f"
+      },
+      "outcomeMissing": {
+        "nextNode": "structuralVariants"
+      }
+    },
+    "structuralVariants": {
+      "type": "BOOL",
+      "description": "CSQ annotation exists",
+      "query": {
+        "field": "INFO/CSQ/ASV_AnnotSV_ranking",
+        "operator": "in",
+        "value": ["3","4","5"]
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_t"
       },
       "outcomeFalse": {
         "nextNode": "exit_f"
