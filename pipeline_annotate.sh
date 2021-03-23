@@ -26,7 +26,7 @@ usage() {
 -o, --output     <arg>    optional: Output VCF file (.vcf.gz).
 -t, --phenotypes <arg>    optional: Phenotypes for input samples.
 
--c, --config     <arg>    optional: Configuration file (.cfg)
+-c, --config     <arg>    optional: Comma separated list of configuration files (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 -h, --help                optional: Print this message and exit.
@@ -706,7 +706,7 @@ main() {
       shift 2
       ;;
     -c | --config)
-      cfgFilePath=$(realpath "$2")
+      cfgFilePaths="$2"
       shift 2
       ;;
     -f | --force)
@@ -749,9 +749,9 @@ main() {
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
 
-  parseCfg "${SCRIPT_DIR}/config/default.cfg"
+  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${cfgFilePath}"
+    parseCfgs "${cfgFilePath}"
   fi
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
     assembly="${VIP_CFG_MAP["assembly"]}"

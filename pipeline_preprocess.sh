@@ -29,7 +29,7 @@ usage() {
 -o, --output <arg>        optional: Output VCF file (.vcf.gz).
 -b, --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
 
--c, --config     <arg>    optional: Configuration file (.cfg)
+-c, --config     <arg>    optional: Comma separated list of configuration files (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 -h, --help                optional: Print this message and exit.
@@ -302,7 +302,7 @@ main() {
   local inputFilePath=""
   local outputFilePath=""
   local probands=""
-  local cfgFilePath=""
+  local cfgFilePaths=""
   local force=0
   local keep=0
 
@@ -327,7 +327,7 @@ main() {
       shift 2
       ;;
     -c | --config)
-      cfgFilePath=$(realpath "$2")
+      cfgFilePaths="$2"
       shift 2
       ;;
     -f | --force)
@@ -360,9 +360,9 @@ main() {
   local filterLowQual=""
   local filterReadDepth=""
 
-  parseCfg "${SCRIPT_DIR}/config/default.cfg"
-  if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${cfgFilePath}"
+  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
+  if [[ -n "${cfgFilePaths}" ]]; then
+    parseCfgs "${cfgFilePaths}"
   fi
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
     inputRefPath="${VIP_CFG_MAP["reference"]}"

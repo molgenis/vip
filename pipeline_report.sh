@@ -29,7 +29,7 @@ usage() {
 -t, --phenotypes <arg>    optional: Phenotypes for input samples.
 -s, --start      <arg>    optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
--c, --config     <arg>    optional: Configuration file (.cfg)
+-c, --config     <arg>    optional: Comma separated list of configuration files (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 
@@ -147,7 +147,7 @@ main() {
   local probands=""
   local pedFilePath=""
   local phenotypes=""
-  local cfgFilePath=""
+  local cfgFilePaths=""
   local force=0
   local keep=0
 
@@ -187,7 +187,7 @@ main() {
       shift 2
       ;;
     -c | --config)
-      cfgFilePath=$(realpath "$2")
+      cfgFilePaths="$2"
       shift 2
       ;;
     -f | --force)
@@ -221,9 +221,9 @@ main() {
   local maxSamples=""
   local templateFilePath=""
 
-  parseCfg "${SCRIPT_DIR}/config/default.cfg"
-  if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${cfgFilePath}"
+  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
+  if [[ -n "${cfgFilePaths}" ]]; then
+    parseCfgs "${cfgFilePaths}"
   fi
   if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
     maxRecords="${VIP_CFG_MAP["report_max_records"]}"

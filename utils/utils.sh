@@ -166,6 +166,25 @@ parseCfg() {
   done <"${cfgPath}"
 }
 
+#######################################
+# Parses config files into associative array 'cfgArray'.
+#
+# Requirements:
+#   associative array 'VIP_CFG_MAP' exists
+# Arguments:
+#   comma separated path(s) to config file(s)
+# Returns:
+#   1 on config file parse failure
+#######################################
+parseCfgs() {
+  local cfgPaths=$1
+  IFS=',' read -ra cfgPathArr <<< "${cfgPaths}"
+  for cfgPathValue in "${cfgPathArr[@]}"; do
+    local cfgPath=$(realpath "$cfgPathValue")
+    parseCfg "${cfgPath}"
+  done
+}
+
 # exports VIP_WORK_DIR variable if it is unset
 #
 # arguments:
