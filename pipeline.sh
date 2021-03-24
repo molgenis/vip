@@ -29,7 +29,7 @@ usage() {
 -t, --phenotypes <arg>    optional: Phenotypes for input samples.
 -s, --start      <arg>    optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
--c, --config     <arg>    optional: Configuration file (.cfg)
+-c, --config     <arg>    optional: Comma separated list of configuration files (.cfg)
 -f, --force               optional: Override the output file if it already exists.
 -k, --keep                optional: Keep intermediate files.
 -h, --help                optional: Print this message and exit.
@@ -49,6 +49,7 @@ examples:
   ${SCRIPT_NAME} -i in.vcf.gz -o out.vcf.gz
   ${SCRIPT_NAME} -i in.vcf.gz -b sample0 -p in.ped -t HP:0000123 -s inheritance
   ${SCRIPT_NAME} -i in.vcf.gz -c config.cfg -f -k
+  ${SCRIPT_NAME} -i in.vcf.gz -c config1.cfg,config2.cfg -f -k
 
 examples - probands:
   ${SCRIPT_NAME} -i in.vcf.gz --probands sample0
@@ -347,7 +348,7 @@ main() {
   local pedFilePath=""
   local phenotypes=""
   local start=0
-  local cfgFilePath=""
+  local cfgFilePaths=""
   local force=0
   local keep=0
 
@@ -406,7 +407,7 @@ main() {
       shift 2
       ;;
     -c | --config)
-      cfgFilePath=$(realpath "$2")
+      cfgFilePaths="$2"
       shift 2
       ;;
     -f | --force)
@@ -436,10 +437,12 @@ main() {
 
   local cpuCores=""
 
-  parseCfg "${SCRIPT_DIR}/config/default.cfg"
-  if [[ -n "${cfgFilePath}" ]]; then
-    parseCfg "${cfgFilePath}"
+  local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
+  if [[ -n "${cfgFilePaths}" ]]; then
+    parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
+  parseCfgs "${parseCfgFilePaths}"
+
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
   fi
@@ -448,7 +451,7 @@ main() {
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip")"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${cpuCores}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePaths}" "${cpuCores}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -470,7 +473,7 @@ main() {
     VIP_WORK_DIR="${baseWorkDir}/1_preprocess"
     removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
-    preprocess "${currentInput}" "${currentOutput}" "${probands}" "${cfgFilePath}" "${force}" "${keep}"
+    preprocess "${currentInput}" "${currentOutput}" "${probands}" "${cfgFilePaths}" "${force}" "${keep}"
     currentInput="${currentOutput}"
 
     elapsedTime=$((SECONDS - startTime))
@@ -484,7 +487,7 @@ main() {
     VIP_WORK_DIR="${baseWorkDir}/2_annotate"
     removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
-    annotate "${currentInput}" "${currentOutput}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
+    annotate "${currentInput}" "${currentOutput}" "${phenotypes}" "${cfgFilePaths}" "${force}" "${keep}"
     currentInput="${currentOutput}"
 
     elapsedTime=$((SECONDS - startTime))
@@ -498,7 +501,7 @@ main() {
     VIP_WORK_DIR="${baseWorkDir}/3_filter"
     removeWorkDir "${force}"
     currentOutput="${VIP_WORK_DIR}/${outputFilename}"
-    filter "${currentInput}" "${currentOutput}" "${cfgFilePath}" "${force}" "${keep}"
+    filter "${currentInput}" "${currentOutput}" "${cfgFilePaths}" "${force}" "${keep}"
     currentInput="${currentOutput}"
 
     elapsedTime=$((SECONDS - startTime))
@@ -513,7 +516,7 @@ main() {
       VIP_WORK_DIR="${baseWorkDir}/4_inheritance"
       removeWorkDir "${force}"
       currentOutput="${VIP_WORK_DIR}/${outputFilename}"
-      inheritance "${currentInput}" "${currentOutput}" "${probands}" "${pedFilePath}" "${cfgFilePath}" "${force}" "${keep}"
+      inheritance "${currentInput}" "${currentOutput}" "${probands}" "${pedFilePath}" "${cfgFilePaths}" "${force}" "${keep}"
       currentInput="${currentOutput}"
 
       elapsedTime=$((SECONDS - startTime))
@@ -531,7 +534,7 @@ main() {
   VIP_WORK_DIR="${baseWorkDir}/5_report"
   removeWorkDir "${force}"
   local -r outputReportFilePath="${outputFilePath}.html"
-  report "${currentInput}" "${outputReportFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePath}" "${force}" "${keep}"
+  report "${currentInput}" "${outputReportFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${cfgFilePaths}" "${force}" "${keep}"
 
   elapsedTime=$((SECONDS - startTime))
   echo -e "step 5/5 reporting completed in $((elapsedTime / 60))m$((elapsedTime % 60))s"

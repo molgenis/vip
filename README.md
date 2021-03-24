@@ -2,37 +2,46 @@
 
 ## Usage
 ```
-usage: pipeline.sh -i <arg> -o <arg>
+usage: pipeline.sh -i <arg>
 
--i,  --input  <arg>        required: Input VCF file (.vcf or .vcf.gz).
--o,  --output <arg>        required: Output VCF file (.vcf or .vcf.gz).
--r,  --reference <arg>     optional: Reference sequence FASTA file (.fasta or .fasta.gz).
--a,  --assembly            optional: Assembly to be used (e.g. GRCh37). Default: GRCh37
--b,  --probands <arg>      optional: Subjects being reported on (comma-separated VCF sample names).
--p,  --pedigree <arg>      optional: Pedigree file (.ped).
--t,  --phenotypes <arg>    optional: Phenotypes for input samples (see examples).
--f,  --force               optional: Override the output file if it already exists.
--k,  --keep                optional: Keep intermediate files.
--s,  --start_from          optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
+-i, --input      <arg>    required: Input VCF file (.vcf or .vcf.gz).
+-o, --output     <arg>    optional: Output VCF file (.vcf.gz).
+-b, --probands   <arg>    optional: Subjects being reported on (comma-separated VCF sample names).
+-p, --pedigree   <arg>    optional: Pedigree file (.ped).
+-t, --phenotypes <arg>    optional: Phenotypes for input samples.
+-s, --start      <arg>    optional: Different starting point for the pipeline (annotate, filter, inheritance or report).
 
---ann_vep                  optional: Variant Effect Predictor (VEP) options.
---args_preprocess          optional: Additional preprocessing module arguments.
---args_report              optional: Additional report module options for --args.
---flt_tree                 optional: Decision tree file (.json) that applies classes 'F' and 'T'.
+-c, --config     <arg>    optional: Comma separated list of configuration files (.cfg)
+-f, --force               optional: Override the output file if it already exists.
+-k, --keep                optional: Keep intermediate files.
+-h, --help                optional: Print this message and exit.
+
+config:
+  assembly                allowed values: GRCh37, GRCh38 default: GRCh37
+  reference               reference sequence file
+  cpu_cores               number of CPU cores
+  preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
+  annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
+  filter_*                see 'bash pipeline_filter.sh --help' for usage.
+  inheritance_*           see 'bash pipeline_inheritance.sh --help' for usage.
+  report_*                see 'bash pipeline_report.sh --help' for usage.
 
 examples:
-  pipeline.sh -i in.vcf -o out.vcf
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -b sample0
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -p in.ped
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -a GRCh38
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t HP:0000123;HP:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -t sample0/HP:0000123,sample1/HP:0000234
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz --ann_vep "--refseq --exclude_predicted --use_given_ref"
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -s inheritance
-  pipeline.sh -i in.vcf.gz -o out.vcf.gz -r human_g1k_v37.fasta.gz -a GRCh37 -b sample0,sample1 -p in.ped -t sample0/HP:0000123;HP:0000234,sample1/HP:0000345 --ann_vep "--refseq --exclude_predicted --use_given_ref" --flt_tree custom_tree.json --args_report "--max_samples 10" --args_preprocess "--filter_read_depth -1" --start_from inheritance -f -k
+  pipeline.sh -i in.vcf
+  pipeline.sh -i in.vcf.gz -o out.vcf.gz
+  pipeline.sh -i in.vcf.gz -b sample0 -p in.ped -t HP:0000123 -s inheritance
+  pipeline.sh -i in.vcf.gz -c config.cfg -f -k
+  pipeline.sh -i in.vcf.gz -c config1.cfg,config2.cfg -f -k
+
+examples - probands:
+  pipeline.sh -i in.vcf.gz --probands sample0
+  pipeline.sh -i in.vcf.gz --probands sample0,sample1
+
+examples - phenotypes:
+  pipeline.sh -i in.vcf.gz --phenotypes HP:0000123
+  pipeline.sh -i in.vcf.gz --phenotypes HP:0000123;HP:0000234
+  pipeline.sh -i in.vcf.gz --phenotypes sample0/HP:0000123
+  pipeline.sh -i in.vcf.gz --phenotypes sample0/HP:0000123,sample1/HP:0000234
 ```
 
 ## Usage: modules
