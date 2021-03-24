@@ -348,7 +348,7 @@ main() {
   local pedFilePath=""
   local phenotypes=""
   local start=0
-  local cfgFilePath=""
+  local cfgFilePaths=""
   local force=0
   local keep=0
 
@@ -437,10 +437,12 @@ main() {
 
   local cpuCores=""
 
-  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
+  local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
-    parseCfgs "${cfgFilePaths}"
+    parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
+  parseCfgs "${parseCfgFilePaths}"
+
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"
   fi

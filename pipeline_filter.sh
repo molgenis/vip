@@ -355,10 +355,12 @@ main() {
   local annotateLabels=""
   local annotatePaths=""
 
-  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
+  local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
-    parseCfgs "${cfgFilePaths}"
+    parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
+  parseCfgs "${parseCfgFilePaths}"
+
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores=${VIP_CFG_MAP["cpu_cores"]}
   fi

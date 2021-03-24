@@ -360,10 +360,12 @@ main() {
   local filterLowQual=""
   local filterReadDepth=""
 
-  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
+  local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
-    parseCfgs "${cfgFilePaths}"
+    parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
+  parseCfgs "${parseCfgFilePaths}"
+
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
     inputRefPath="${VIP_CFG_MAP["reference"]}"
   fi

@@ -681,7 +681,7 @@ main() {
   local inputFilePath=""
   local outputFilePath=""
   local phenotypes=""
-  local cfgFilePath=""
+  local cfgFilePaths=""
   local force=0
   local keep=0
 
@@ -749,10 +749,12 @@ main() {
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
 
-  parseCfgs "${SCRIPT_DIR}/config/default.cfg"
-  if [[ -n "${cfgFilePath}" ]]; then
-    parseCfgs "${cfgFilePath}"
+  local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
+  if [[ -n "${cfgFilePaths}" ]]; then
+    parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
+  parseCfgs "${parseCfgFilePaths}"
+
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
     assembly="${VIP_CFG_MAP["assembly"]}"
   fi
