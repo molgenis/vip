@@ -179,8 +179,9 @@ parseCfg() {
 parseCfgs() {
   local cfgPaths=$1
   IFS=',' read -ra cfgPathArr <<< "${cfgPaths}"
+  local cfgPath
   for cfgPathValue in "${cfgPathArr[@]}"; do
-    local -r cfgPath=$(realpath "$cfgPathValue")
+    cfgPath=$(realpath "$cfgPathValue")
     parseCfg "${cfgPath}"
   done
 }
