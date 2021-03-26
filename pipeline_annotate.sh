@@ -39,9 +39,7 @@ config:
   annotate_vep_plugin_Hpo                 VEP: Path to genes_to_phenotype.tsv (default ./resources/hpo_YYYYmmdd.tsv)
   annotate_vep_plugin_Inheritance         VEP: Path to gene_inheritance_modes.tsv
   annotate_vep_plugin_PreferredTranscript VEP: Path to preferred transcript file for the PreferredTranscript plugin.
-  annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files.
-  annotate_vep_plugin_VKGL                VEP: Path to VKGL consensus file.
-  annotate_vep_plugin_VKGL_mode           VEP: VKGL plugin mode: 0=all, 1=consensus only.
+  annotate_vep_plugin_SpliceAI            VEP: Comma-separated paths to SpliceAI snv and indel files
   annotate_vep                            Variant Effect Predictor (VEP) options.
   assembly                                see 'bash pipeline.sh --help' for usage.
   reference                               see 'bash pipeline.sh --help' for usage.
@@ -118,7 +116,6 @@ validateVep() {
   local -r vepPluginInheritanceFilePath="${5}"
   local -r vepPluginPreferredTranscriptFilePath="${6}"
   local -r vepPluginSpliceAiFilePaths="${7}"
-  local -r vepPluginVKGLFilePath="${8}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
@@ -178,11 +175,6 @@ validateVep() {
         exit 1
       fi
     done
-  fi
-
-  if [[ -n "${vepPluginVKGLFilePath}" ]] && [[ ! -f "${vepPluginVKGLFilePath}" ]]; then
-    echo -e "annotate_vep_plugin_VKGL ${vepPluginVKGLFilePath} does not exist."
-    exit 1
   fi
 }
 
@@ -587,10 +579,8 @@ executeAnnotSv() {
 #   $13 annotSvOutputFilePath (optional)
 #   $14 vepPluginPreferredTranscriptFilePath (optional)
 #   $15 vepPluginSpliceAiFilePaths (optional)
-#   $16 vepPluginVKGLFilePath (optional)
-#   $17 vepPluginVKGLMode (optional)
-#   $18 annVep
-#   $19 cpu cores
+#   $16 annVep
+#   $17 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -607,10 +597,8 @@ executeVep() {
   local -r annotSvOutputFilePath="${13}"
   local -r vepPluginPreferredTranscriptFilePath="${14}"
   local -r vepPluginSpliceAiFilePaths="${15}"
-  local -r vepPluginVKGLFilePath="${16}"
-  local -r vepPluginVKGLMode="${17}"
-  local -r annVep="${18}"
-  local -r cpuCores="${19}"
+  local -r annVep="${16}"
+  local -r cpuCores="${17}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -667,9 +655,6 @@ executeVep() {
   fi
   if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
     args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")
-  fi
-  if [ -n "${vepPluginVKGLFilePath}" ]; then
-    args+=("--plugin" "VKGL,${vepPluginVKGLFilePath},${vepPluginVKGLMode}")
   fi
   if [ -n "${vepPluginSpliceAiFilePaths}" ]; then
     local spliceAiFilePathsArr
@@ -761,8 +746,6 @@ main() {
   local vepHpoGenPhenoFilePath="${SCRIPT_DIR}/resources/hpo_20210308.tsv"
   local vepPluginInheritanceFilePath="${SCRIPT_DIR}/resources/gene_inheritance_modes_20210309.tsv"
   local vepPluginPreferredTranscriptFilePath=""
-  local vepPluginVKGLFilePath=""
-  local vepPluginVKGLMode=""
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
 
@@ -811,12 +794,6 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_SpliceAI"]+unset}" ]]; then
     vepPluginSpliceAiFilePaths="${VIP_CFG_MAP["annotate_vep_plugin_SpliceAI"]}"
   fi
-  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_VKGL"]+unset}" ]]; then
-    vepPluginVKGLFilePath="${VIP_CFG_MAP["annotate_vep_plugin_VKGL"]}"
-  fi
-  if [[ -n "${VIP_CFG_MAP["annotate_vep_plugin_VKGL_mode"]+unset}" ]]; then
-    vepPluginVKGLMode="${VIP_CFG_MAP["annotate_vep_plugin_VKGL_mode"]}"
-  fi
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
@@ -827,7 +804,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${phenotypeMatching}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}"
+  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -876,7 +853,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginVKGLMode}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"
