@@ -1,4 +1,4 @@
-package Artefacts;
+package Artefact;
 
 use strict;
 use warnings;
@@ -7,10 +7,10 @@ use Bio::EnsEMBL::Variation::Utils::BaseVepPlugin;
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
 
 =head1 NAME
- Artefacts
+ Artefact
 =head1 SYNOPSIS
- mv Artefacts.pm ~/.vep/Plugins
- ./vep -i variations.vcf --plugin Artefacts,/FULL_PATH_TO_Artefacts_file
+ mv Artefact.pm ~/.vep/Plugins
+ ./vep -i variations.vcf --plugin Artefact,/FULL_PATH_TO_Artefacts_file
 
 =head1 DESCRIPTION
  Plugin to annotate if variants are considered artefacts.
