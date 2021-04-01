@@ -282,11 +282,6 @@ fields = ["CAP"]
 ops=["self"]
 names=["CAP"]
 
-[[annotation]]
-file="/apps/data/UMCG/MVL/${assembly}/Artefact_Totaal-Molecular_variants-2020-10-08_07-49-09_normalized.vcf.gz"
-fields = ["MVL"]
-ops=["self"]
-names=["MVLA"]
 EOT
 }
 
