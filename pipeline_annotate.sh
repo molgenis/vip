@@ -462,7 +462,7 @@ executeCapice() {
     if [[ "$(zgrep -c -m 1 "^[^#]" "${currentOutputFilePath}")" -eq 0 ]]; then
       echo -e "skipping CAPICE execution because all variants have precomputed scores ..."
       cd "${outputDir}" || exit
-      ln -s "${currentInputFilePath}" "${outputFilename}"
+      ln -s "${inputFilePath}" "${outputFilename}"
     else
       currentInputFilePath="${currentOutputFilePath}"
       currentOutputDir="${outputDir}/2_cadd"
@@ -473,7 +473,7 @@ executeCapice() {
       if [[ "$(zgrep -c -m 1 "^[^#]" "${currentOutputFilePath}")" -eq 0 ]]; then
         echo -e "skipping CAPICE execution because there are no CADD scores ..."
         cd "${outputDir}" || exit
-        ln -s "${currentInputFilePath}" "${outputFilename}"
+        ln -s "${inputFilePath}" "${outputFilename}"
       else
         currentInputFilePath="${currentOutputFilePath}"
         currentOutputDir="${outputDir}/3_capice_predict"
@@ -500,7 +500,7 @@ executeCapice() {
   else
     echo -e "Skipping capice for ${assembly}"
     cd "${outputDir}" || exit
-    ln -s "${currentInputFilePath}" "${outputFilename}"
+    ln -s "${inputFilePath}" "${outputFilename}"
   fi
 }
 
