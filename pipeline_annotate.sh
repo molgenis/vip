@@ -264,11 +264,6 @@ createVcfannoConfig() {
   local -r outputFilePath="${1}"
 
   cat >"${outputFilePath}" <<EOT
-[[annotation]]
-file="/apps/data/VKGL/${assembly}/vkgl_consensus_jan2021_normalized.vcf.gz"
-fields = ["VKGL_CL", "AMC", "EMC", "LUMC", "NKI", "RMMC", "UMCG", "UMCU", "VUMC"]
-ops=["self","self","self","self","self","self","self","self","self"]
-names=["VKGL", "VKGL_AMC", "VKGL_EMC", "VKGL_LUMC", "VKGL_NKI", "VKGL_RMMC", "VKGL_UMCG", "VKGL_UMCU", "VKGL_VUMC"]
 
 [[annotation]]
 file="/apps/data/CAPICE/${assembly}/capice_v1.0_indels.vcf.gz"
