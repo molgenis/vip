@@ -8,7 +8,7 @@ ACTUAL_VCF='./test/output/test_output.vcf'
 ACTUAL_HTML='./test/output/test_output.vcf.gz.html'
 EXPECTED_VCF='./test/data/expected.vcf'
 EXPECTED_HTML='./test/data/expected.html'
-EXPECTED_NR_OF_HEADERS=56
+EXPECTED_NR_OF_HEADERS=55
 LOG='./test/output/test_output.log'
 
 echo -e "Test started..."
