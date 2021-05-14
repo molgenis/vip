@@ -1,7 +1,7 @@
 =head1 LICENSE
 
 Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
-Copyright [2016-2020] EMBL-European Bioinformatics Institute
+Copyright [2016-2021] EMBL-European Bioinformatics Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ limitations under the License.
 =head1 DESCRIPTION
 
  A VEP plugin that retrieves pre-calculated annotations from SpliceAI.
- SpliceAI is a deep neural network, developed by Illumina, Inc 
+ SpliceAI is a deep neural network, developed by Illumina, Inc
  that predicts splice junctions from an arbitrary pre-mRNA transcript sequence.
 
- Delta score of a variant, defined as the maximum of (DS_AG, DS_AL, DS_DG, DS_DL), 
- ranges from 0 to 1 and can be interpreted as the probability of the variant being 
+ Delta score of a variant, defined as the maximum of (DS_AG, DS_AL, DS_DG, DS_DL),
+ ranges from 0 to 1 and can be interpreted as the probability of the variant being
  splice-altering. The author-suggested cutoffs are:
    0.2 (high recall)
    0.5 (recommended)
@@ -57,24 +57,33 @@ limitations under the License.
  (Option 2) Besides the pre-calculated scores, it can also be specified a score
  cutoff between 0 and 1.
 
- Output: 
- The output includes the gene symbol, delta scores (DS) and delta positions (DP)
- for acceptor gain (AG), acceptor loss (AL), donor gain (DG), and donor loss (DL).
+ Output:
+  The output includes the gene symbol, delta scores (DS) and delta positions (DP)
+  for acceptor gain (AG), acceptor loss (AL), donor gain (DG), and donor loss (DL).
 
- For tab and JSON the output contains one header 'SpliceAI_pred' with all
- the delta scores and positions. The format is:
+  For tab the output contains one header 'SpliceAI_pred' with all
+  the delta scores and positions. The format is:
    SYMBOL|DS_AG|DS_AL|DS_DG|DS_DL|DP_AG|DP_AL|DP_DG|DP_DL
 
- For VCF output the delta scores and positions are stored in different headers.
- The values are 'SpliceAI_pred_xx' being 'xx' the score/position.
+  For JSON the output is a hash with the following format:
+  "spliceai":
+    {"DP_DL":0,"DS_AL":0,"DP_AG":0,"DS_DL":0,"SYMBOL":"X","DS_AG":0,"DP_AL":0,"DP_DG":0,"DS_DG":0}
+
+  For VCF output the delta scores and positions are stored in different headers.
+  The values are 'SpliceAI_pred_xx' being 'xx' the score/position.
    Example: 'SpliceAI_pred_DS_AG' is the delta score for acceptor gain.
 
+  Gene matching:
+  If SpliceAI contains scores for multiple genes that overlap the same genomic location,
+  the plugin compares the gene from the SpliceAI file with the gene symbol from the input variant.
+  If none of the gene symbols match, the plugin does not return any scores.
+
  If plugin is run with option 2, the output also contains a flag: 'PASS' if delta score
- passes the cutoff, 'FAIL' otherwise. 
+ passes the cutoff, 'FAIL' otherwise.
 
  The following steps are necessary before running this plugin:
 
- The files with the annotations for all possible substitutions (snv), 1 base insertions 
+ The files with the annotations for all possible substitutions (snv), 1 base insertions
  and 1-4 base deletions (indel) within genes are available here:
  https://basespace.illumina.com/s/otSPW8hnhaZR
 
@@ -91,7 +100,6 @@ limitations under the License.
  indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz
  ./vep -i variations.vcf --plugin SpliceAI,snv=/path/to/spliceai_scores.raw.snv.hg38.vcf.gz,
  indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz,cutoff=0.5
-
 
 =cut
 
@@ -189,6 +197,9 @@ sub run {
   my $result_data = '';
   my $result_flag;
 
+  # Store all SpliceAI results
+  my %hash_aux;
+
   foreach my $data_value (@data) {
 
     my $ref_allele;
@@ -203,11 +214,11 @@ sub run {
 
       # convert to vcf format to compare the alt alleles
       my $vf_2 = Bio::EnsEMBL::Variation::VariationFeature->new
-        (-start => $start,
-         -end => $end,
-         -strand => $vf->{strand},
-         -allele_string => $new_allele_string
-        );
+          (-start => $start,
+              -end => $end,
+              -strand => $vf->{strand},
+              -allele_string => $new_allele_string
+          );
       my $convert_to_vcf = $vf_2->to_VCF_record;
       $ref_allele = ${$convert_to_vcf}[3];
       $alt_allele = ${$convert_to_vcf}[4];
@@ -218,33 +229,35 @@ sub run {
     }
 
     my $matches = get_matched_variant_alleles(
-      {
-        ref    => $ref_allele,
-        alts   => [$alt_allele],
-        pos    => $start,
-        strand => $vf->strand
-      },
-      {
-       ref  => $data_value->{ref},
-       alts => [$data_value->{alt}],
-       pos  => $data_value->{start},
-      }
+        {
+            ref    => $ref_allele,
+            alts   => [$alt_allele],
+            pos    => $start,
+            strand => $vf->strand
+        },
+        {
+            ref  => $data_value->{ref},
+            alts => [$data_value->{alt}],
+            pos  => $data_value->{start},
+        }
     );
     if (@$matches) {
 
       my %hash;
 
-      if($output_vcf) {
+      if($output_vcf || $self->{config}->{output_format} eq "json" || $self->{config}->{rest})  {
         my @data_values = split /\|/, $data_value->{result};
-        $hash{'SpliceAI_pred_SYMBOL'} = $data_values[0];
-        $hash{'SpliceAI_pred_DS_AG'} = $data_values[1];
-        $hash{'SpliceAI_pred_DS_AL'} = $data_values[2];
-        $hash{'SpliceAI_pred_DS_DG'} = $data_values[3];
-        $hash{'SpliceAI_pred_DS_DL'} = $data_values[4];
-        $hash{'SpliceAI_pred_DP_AG'} = $data_values[5];
-        $hash{'SpliceAI_pred_DP_AL'} = $data_values[6];
-        $hash{'SpliceAI_pred_DP_DG'} = $data_values[7];
-        $hash{'SpliceAI_pred_DP_DL'} = $data_values[8];
+        my $prefix ="";
+        $prefix = "SpliceAI_pred_" if $output_vcf;
+        $hash{$prefix. 'SYMBOL'} = $data_values[0];
+        $hash{$prefix. 'DS_AG'} = $data_values[1];
+        $hash{$prefix. 'DS_AL'} = $data_values[2];
+        $hash{$prefix. 'DS_DG'} = $data_values[3];
+        $hash{$prefix. 'DS_DL'} = $data_values[4];
+        $hash{$prefix. 'DP_AG'} = $data_values[5];
+        $hash{$prefix. 'DP_AL'} = $data_values[6];
+        $hash{$prefix. 'DP_DG'} = $data_values[7];
+        $hash{$prefix. 'DP_DL'} = $data_values[8];
       }
 
       else {
@@ -262,11 +275,29 @@ sub run {
         $hash{'SpliceAI_cutoff'} = $result_flag;
       }
 
-      return \%hash;
+      $hash_aux{$data_value->{gene}} = \%hash;
     }
   }
 
-  return {};
+  return {} unless(%hash_aux);
+
+  my $result = {};
+
+  my $n_genes = scalar keys %hash_aux;
+  if($n_genes == 1) {
+    # Get the only gene from the hash of results
+    my $key_gene = (keys %hash_aux)[0];
+    $result = ($self->{config}->{output_format} eq "json" || $self->{config}->{rest}) ?  {SpliceAI => $hash_aux{$key_gene}} : $hash_aux{$key_gene};
+  }
+  elsif($n_genes > 1) {
+    # Compare genes from SpliceAI with the variant gene symbol
+    my $gene_symbol = $tva->transcript->{_gene_symbol} || $tva->transcript->{_gene_hgnc};
+    if($hash_aux{$gene_symbol}) {
+      $result = ($self->{config}->{output_format} eq "json" || $self->{config}->{rest}) ?  {SpliceAI => $hash_aux{$gene_symbol}} : $hash_aux{$gene_symbol};
+    }
+  }
+
+  return $result;
 }
 
 # Parse data from SpliceAI file
@@ -276,9 +307,10 @@ sub parse_data {
   my ($chr, $start, $id, $ref, $alt, $qual, $filter, $info) = split /\t/, $line;
 
   $info =~ s/SpliceAI=//;
-  my @info_splited = split (qr/\|/,$info, 2);
+  my @info_splited = split (qr/\|/,$info, 3);
   my $allele = $info_splited[0];
-  my $data = $info_splited[1];
+  my $data = $info_splited[1] . "|" . $info_splited[2];
+  my $gene = $info_splited[1];
 
   my $max_score;
   if($self->{cutoff}){
@@ -288,13 +320,15 @@ sub parse_data {
   }
 
   return {
-    chr    => $chr,
-    start  => $start,
-    ref    => $ref,
-    alt    => $alt,
-    info   => $max_score,
-    result => $data,
+      chr    => $chr,
+      start  => $start,
+      ref    => $ref,
+      alt    => $alt,
+      info   => $max_score,
+      result => $data,
+      gene   => $gene,
   };
 }
 
 1;
+
