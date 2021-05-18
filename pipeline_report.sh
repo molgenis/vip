@@ -40,14 +40,15 @@ config:
 }
 
 # arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 probands (optional)
-#   $4 path to pedigree file (optional)
-#   $5 phenotypes (optional)
-#   $6 maxRecords (optional)
-#   $7 maxSamples (optional)
-#   $8 path to template file (optional)
+#   $1  path to input file
+#   $2  path to output file
+#   $3  probands (optional)
+#   $4  path to pedigree file (optional)
+#   $5  phenotypes (optional)
+#   $6  maxRecords (optional)
+#   $7  maxSamples (optional)
+#   $8  path to template file (optional)
+#   $9  path to reference sequence file (optional)
 report() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -57,6 +58,7 @@ report() {
   local -r maxRecords="${6}"
   local -r maxSamples="${7}"
   local -r templateFilePath="${8}"
+  local -r referenceFilePath="${9}"
 
   module load "${MOD_VCF_REPORT}"
 
@@ -84,6 +86,9 @@ report() {
   if [ -n "${templateFilePath}" ]; then
     args+=("-t" "${templateFilePath}")
   fi
+  if [ -n "${referenceFilePath}" ]; then
+    args+=("-r" "${referenceFilePath}")
+  fi
 
   java "${args[@]}"
 
@@ -91,15 +96,16 @@ report() {
 }
 
 # arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 probands (optional)
-#   $4 path to pedigree file (optional)
-#   $5 phenotypes (optional)
-#   $6 force
-#   $7 maxRecords (optional)
-#   $8 maxSamples (optional)
-#   $9 path to template file (optional)
+#   $1  path to input file
+#   $2  path to output file
+#   $3  probands (optional)
+#   $4  path to pedigree file (optional)
+#   $5  phenotypes (optional)
+#   $6  force
+#   $7  maxRecords (optional)
+#   $8  maxSamples (optional)
+#   $9  path to template file (optional)
+#   $10 path to reference sequence file (optional)
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -110,6 +116,7 @@ validate() {
   local -r maxRecords="${7}"
   local -r maxSamples="${8}"
   local -r templateFilePath="${9}"
+  local -r referenceFilePath="${10}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -137,6 +144,11 @@ validate() {
 
   if [[ -n "${templateFilePath}" ]] && [[ ! -f "${templateFilePath}" ]]; then
     echo -e "template ${templateFilePath} does not exist."
+    exit 1
+  fi
+
+  if ! validateReferencePath "${referenceFilePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
     exit 1
   fi
 }
@@ -217,6 +229,7 @@ main() {
     exit 1
   fi
 
+  local inputRefPath=""
   local maxRecords=""
   local maxSamples=""
   local templateFilePath=""
@@ -227,6 +240,9 @@ main() {
   fi
   parseCfgs "${parseCfgFilePaths}"
 
+  if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
+    inputRefPath="${VIP_CFG_MAP["reference"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["report_max_records"]+unset}" ]]; then
     maxRecords="${VIP_CFG_MAP["report_max_records"]}"
   fi
@@ -241,7 +257,7 @@ main() {
     outputFilePath="${inputFilePath}.html"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -252,7 +268,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}"
+  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}"
 }
 
 main "${@}"

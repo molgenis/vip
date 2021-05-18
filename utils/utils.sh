@@ -262,6 +262,37 @@ validateOutputPath() {
 }
 
 # arguments:
+#   $1 path to reference sequence file (.fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz).
+# returns:
+#    1 if path to reference sequence file is invalid
+validateReferencePath() {
+  local -r referencePath="${1}"
+  if [[ -z "${referencePath}" ]]; then
+    return 0
+  fi
+
+  if [[ ! -f "${referencePath}" ]]; then
+    echo -e "reference sequence file ${referencePath} does not exist."
+    return 1
+  fi
+
+  if ! [[ "${referencePath}" =~ (.+)(\.fasta\.gz|\.fna\.gz|\.ffn\.gz|\.faa\.gz|\.frn\.gz) ]]; then
+    echo -e "reference sequence file ${referencePath} is not a .fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz file."
+    return 1
+  fi
+
+  if [[ ! -f "${referencePath}.fai" ]]; then
+    echo -e "reference sequence file ${referencePath}.fai does not exist."
+    return 1
+  fi
+
+  if [[ ! -f "${referencePath}.gzi" ]]; then
+    echo -e "reference sequence file ${referencePath}.gzi does not exist."
+    return 1
+  fi
+}
+
+# arguments:
 #   $1 path to output file
 #   $2 postfix
 createOutputPathFromPostfix() {

@@ -285,8 +285,8 @@ validate() {
     exit 1
   fi
 
-  if [[ -n "${referencePath}" ]] && [[ ! -f "${referencePath}" ]]; then
-    echo -e "reference ${referencePath} does not exist."
+  if ! validateReferencePath "${referencePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
     exit 1
   fi
 }

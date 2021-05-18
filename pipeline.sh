@@ -36,7 +36,7 @@ usage() {
 
 config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
-  reference               reference sequence file
+  reference               reference sequence file (.fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz).
   cpu_cores               number of CPU cores
   preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
   annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
