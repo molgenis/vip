@@ -81,38 +81,13 @@ createDefaultDecisionTree() {
         "nextNode": "exit_f"
       },
       "outcomeMissing": {
-        "nextNode": "mvl"
-      }
-    },
-    "mvl": {
-      "type": "CATEGORICAL",
-      "description": "Managed Variant List classification",
-      "field": "INFO/VKGL_UMCG",
-      "outcomeMap": {
-        "P": {
-          "nextNode": "exit_t"
-        },
-        "LP": {
-          "nextNode": "exit_t"
-        },
-        "LB": {
-          "nextNode": "exit_f"
-        },
-        "B": {
-          "nextNode": "exit_f"
-        }
-      },
-      "outcomeMissing": {
-        "nextNode": "vkgl"
-      },
-      "outcomeDefault": {
         "nextNode": "vkgl"
       }
     },
     "vkgl": {
       "type": "CATEGORICAL",
       "description": "VKGL classification",
-      "field": "INFO/VKGL",
+      "field": "INFO/CSQ/VKGL_CL",
       "outcomeMap": {
         "P": {
           "nextNode": "exit_t"
