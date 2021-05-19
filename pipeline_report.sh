@@ -37,7 +37,9 @@ config:
   report_max_records      maximum number of records in the report. Default: 100
   report_max_samples      maximum number of samples in the report. Default: 100
   report_template         HTML template to be used in the report.
-  report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz)."
+  report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz). Default: UCSC NCBI RefSeq Curated for assembly GRCh37 or GRCh38
+  assembly                see 'bash pipeline.sh --help' for usage.
+  reference               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -246,6 +248,7 @@ main() {
     exit 1
   fi
 
+  local assembly=""
   local inputRefPath=""
   local maxRecords=""
   local maxSamples=""
@@ -258,6 +261,9 @@ main() {
   fi
   parseCfgs "${parseCfgFilePaths}"
 
+  if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
+    assembly="${VIP_CFG_MAP["assembly"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
     inputRefPath="${VIP_CFG_MAP["reference"]}"
   fi
@@ -272,6 +278,8 @@ main() {
   fi
   if [[ -n "${VIP_CFG_MAP["report_genes"]+unset}" ]]; then
     genesFilePath="${VIP_CFG_MAP["report_genes"]}"
+  elif [[ "${assembly}" == "GRCh37" ]] || [[ "${assembly}" == "GRCh38" ]]; then
+    genesFilePath="${SCRIPT_DIR}/resources/genes/${assembly}/ucsc_genes_ncbi_refseq_20210519.txt.gz"
   fi
 
   if [[ -z "${outputFilePath}" ]]; then
