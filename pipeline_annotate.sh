@@ -241,8 +241,8 @@ validate() {
 
   #TODO validate phenotypes
 
-  if [[ -n "${referencePath}" ]] && [[ ! -f "${referencePath}" ]]; then
-    echo -e "${referencePath} does not exist."
+  if ! validateReferencePath "${referencePath}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
     exit 1
   fi
 
