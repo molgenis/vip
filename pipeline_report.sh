@@ -238,9 +238,19 @@ validateSampleBamFilePaths() {
     return 0
   fi
 
-  # TODO validate that sample identifiers exist in input
-  # TODO validate that file is a .bam file
-  # TODO validate that .bam file index exists
+  IFS=',' read -ra sampleBamFilePathArr <<< "${sampleBamFilePaths}"
+  for sampleBamFilePathValue in "${sampleBamFilePathArr[@]}"; do
+    while IFS='=' read -r key value; do
+      if [[ -f "${value}" ]]; then
+        echo -e "bam file ${value} does not exist."
+        exit 1
+      fi
+      if [[ -f "${value}.bai" ]]; then
+        echo -e "bam file index ${value} does not exist."
+        exit 1
+      fi
+    done <<< "${sampleBamFilePathValue}"
+  done
 }
 
 main() {
