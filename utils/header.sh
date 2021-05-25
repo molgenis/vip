@@ -17,11 +17,12 @@ fi
 
 declare -A VIP_CFG_MAP
 
-VIP_VERSION="2.1.0"
+VIP_VERSION="2.2.0"
 
 MOD_BCF_TOOLS="BCFtools/1.11-GCCcore-7.3.0"
 MOD_CADD="CADD/v1.4-foss-2018b-minimal"
 MOD_CAPICE="CAPICE/v1.3.0-foss-2018b"
+MOD_GATK="GATK/4.1.4.1-Java-8-LTS"
 MOD_HTS_LIB="HTSlib/1.11-GCCcore-7.3.0"
 MOD_VCF_ANNO="vcfanno/v0.3.2"
 MOD_VCF_DECISION_TREE="vcf-decision-tree/v0.0.3-Java-11-LTS"

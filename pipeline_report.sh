@@ -37,6 +37,7 @@ config:
   report_max_records      maximum number of records in the report. Default: 100
   report_max_samples      maximum number of samples in the report. Default: 100
   report_template         HTML template to be used in the report.
+  report_bams             Alignment files for samples (e.g. sample0=/path/to/0/bam,sample1=/path/to/1/bam).
   report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz). Default: UCSC NCBI RefSeq Curated for assembly GRCh37 or GRCh38
   assembly                see 'bash pipeline.sh --help' for usage.
   reference               see 'bash pipeline.sh --help' for usage."
@@ -53,6 +54,7 @@ config:
 #   $8  path to template file (optional)
 #   $9  path to reference sequence file (optional)
 #   $10 path to genes file (optional)
+#   $11 alignment files for samples (optional)
 report() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -64,6 +66,7 @@ report() {
   local -r templateFilePath="${8}"
   local -r referenceFilePath="${9}"
   local -r genesFilePath="${10}"
+  local -r sampleBamFilePaths="${11}"
 
   module load "${MOD_VCF_REPORT}"
 
@@ -97,8 +100,54 @@ report() {
   if [ -n "${genesFilePath}" ]; then
     args+=("-g" "${genesFilePath}")
   fi
+  if [ -n "${sampleBamFilePaths}" ]; then
+    args+=("-b" "${sampleBamFilePaths}")
+  fi
 
   java "${args[@]}"
+
+  module purge
+}
+
+# arguments:
+#   $1  path to bam file
+#   $2  path to reference sequence file
+#   $3  path to vcf file
+#   $4  interval padding
+#   $5  path to output bam file
+realignBam() {
+  local -r bamFilePath="${1}"
+  local -r referenceFilePath="${2}"
+  local -r vcfFilePath="${3}"
+  local -r intervalPadding="${4}"
+  local -r outputBamFilePath="${5}"
+
+  local -r outputVcfFilePath="${TMPDIR}/$(mktemp XXXXXXXXXX.vcf.gz)"
+
+  if ! [[ -f "${vcfFilePath}.tbi" ]]; then
+    module load "${MOD_HTS_LIB}"
+    tabix -p vcf "${vcfFilePath}"
+    module purge
+  fi
+
+  module load "${MOD_GATK}"
+
+  local args=()
+  args+=("--java-options" "-Djava.io.tmpdir=${TMPDIR} -XX:ParallelGCThreads=2 -Xmx4g")
+  args+=("HaplotypeCaller")
+  args+=("--tmp-dir" "${TMPDIR}")
+  args+=("-R" "${referenceFilePath}")
+  args+=("-I" "${bamFilePath}")
+  args+=("-L" "${vcfFilePath}")
+  args+=("-ip" "${intervalPadding}")
+  args+=("--force-active")
+  args+=("--dont-trim-active-regions")
+  args+=("--disable-optimizations")
+  args+=("-O" "${outputVcfFilePath}")
+  args+=("-OVI" "false")
+  args+=("-bamout" "${outputBamFilePath}")
+
+  gatk "${args[@]}"
 
   module purge
 }
@@ -115,6 +164,7 @@ report() {
 #   $9  path to template file (optional)
 #   $10 path to reference sequence file (optional)
 #   $11 path to genes file (optional)
+#   $12 alignment files for samples (optional)
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -127,6 +177,7 @@ validate() {
   local -r templateFilePath="${9}"
   local -r referenceFilePath="${10}"
   local -r genesFilePath="${11}"
+  local -r sampleBamFilePaths="${12}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -170,6 +221,36 @@ validate() {
     echo -e "genes file ${genesFilePath} is not a .txt.gz file"
     exit 1
   fi
+
+  if ! validateSampleBamFilePaths "${inputFilePath}" "${sampleBamFilePaths}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+}
+
+# arguments:
+#   $1 path to input file
+#   $2 alignment files for samples (optional)
+validateSampleBamFilePaths() {
+  local -r inputFilePath="${1}"
+  local -r sampleBamFilePaths="${2}"
+  if [[ -z "${sampleBamFilePaths}" ]]; then
+    return 0
+  fi
+
+  IFS=',' read -ra sampleBamFilePathArr <<< "${sampleBamFilePaths}"
+  for sampleBamFilePathValue in "${sampleBamFilePathArr[@]}"; do
+    while IFS='=' read -r key value; do
+      if ! [[ -f "${value}" ]]; then
+        echo -e "bam file ${value} does not exist."
+        exit 1
+      fi
+      if ! [[ -f "${value}.bai" ]]; then
+        echo -e "bam file index ${value} does not exist."
+        exit 1
+      fi
+    done <<< "${sampleBamFilePathValue}"
+  done
 }
 
 main() {
@@ -226,8 +307,6 @@ main() {
       shift
       ;;
     -k | --keep)
-      # reserved for future usage
-      # shellcheck disable=SC2034
       keep=1
       shift
       ;;
@@ -254,6 +333,7 @@ main() {
   local maxSamples=""
   local templateFilePath=""
   local genesFilePath=""
+  local sampleBamFilePaths=""
 
   local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
@@ -281,23 +361,49 @@ main() {
   elif [[ "${assembly}" == "GRCh37" ]] || [[ "${assembly}" == "GRCh38" ]]; then
     genesFilePath="${SCRIPT_DIR}/resources/genes/${assembly}/ucsc_genes_ncbi_refseq_20210519.txt.gz"
   fi
+  if [[ -n "${VIP_CFG_MAP["report_bams"]+unset}" ]]; then
+    sampleBamFilePaths="${VIP_CFG_MAP["report_bams"]}"
+  fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="${inputFilePath}.html"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${sampleBamFilePaths}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
   local -r outputFilename="$(basename "${outputFilePath}")"
   outputFilePath="${outputDir}/${outputFilename}"
 
+  initWorkDir "${outputFilePath}" "${keep}"
+  local -r workDir="${VIP_WORK_DIR}"
+  mkdir -p "${workDir}"
+
+  # realign bam files
+  local realignedSampleBamFilePaths=""
+  if [[ -n "${sampleBamFilePaths}" ]] && [[ -n "${inputRefPath}" ]]; then
+    local realignedSampleBamFilePathArr=()
+
+    IFS=',' read -ra sampleBamFilePathArr <<< "${sampleBamFilePaths}"
+    local outputBamFile
+    for sampleBamFilePathValue in "${sampleBamFilePathArr[@]}"; do
+      while IFS='=' read -r key value; do
+        outputBamFile="${workDir}/$(basename "${value}")"
+        realignBam "${value}" "${inputRefPath}" "${inputFilePath}" "250" "${outputBamFile}"
+        mv "${outputBamFile/.bam/.bai}" "${outputBamFile}.bai"
+        realignedSampleBamFilePathArr+=("${key}=${outputBamFile}")
+      done <<< "${sampleBamFilePathValue}"
+    done
+
+    realignedSampleBamFilePaths=$(joinArr "," "${realignedSampleBamFilePathArr[@]}")
+  fi
+
   if [[ -f "${outputFilePath}" ]] && [[ "${force}" == "1" ]]; then
     rm "${outputFilePath}"
   fi
 
-  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}"
+  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${realignedSampleBamFilePaths}"
 }
 
 main "${@}"
