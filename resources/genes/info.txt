@@ -1,0 +1,16 @@
+1) Navigate to https://genome.ucsc.edu/cgi-bin/hgTables
+2) Enter form data:
+   clade: Mammal
+   genome: Human
+   assembly: Feb. 2009 (GRCh37/h19)
+   group: Genes and Gene Predictions
+   track: NCBI RefSeq
+   table: RefSeq Curated (ncbiRefSeqCurated)
+   region: genome
+   output format: all fields from selected table
+   output file: ucsc_genes_ncbi_refseq_yyyymmdd.txt.gz
+   file type returned: gzip compressed
+3) Select 'get output' and store downloaded file in GRCh37 folder
+4) Update form data:
+   assembly: Dec. 2013 (GRCh38/hg38)
+5) Select 'get output' and store downloaded file in GRCh38 folder

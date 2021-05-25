@@ -36,7 +36,10 @@ usage() {
 config:
   report_max_records      maximum number of records in the report. Default: 100
   report_max_samples      maximum number of samples in the report. Default: 100
-  report_template         HTML template to be used in the report."
+  report_template         HTML template to be used in the report.
+  report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz). Default: UCSC NCBI RefSeq Curated for assembly GRCh37 or GRCh38
+  assembly                see 'bash pipeline.sh --help' for usage.
+  reference               see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -49,6 +52,7 @@ config:
 #   $7  maxSamples (optional)
 #   $8  path to template file (optional)
 #   $9  path to reference sequence file (optional)
+#   $10 path to genes file (optional)
 report() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -59,6 +63,7 @@ report() {
   local -r maxSamples="${7}"
   local -r templateFilePath="${8}"
   local -r referenceFilePath="${9}"
+  local -r genesFilePath="${10}"
 
   module load "${MOD_VCF_REPORT}"
 
@@ -89,6 +94,9 @@ report() {
   if [ -n "${referenceFilePath}" ]; then
     args+=("-r" "${referenceFilePath}")
   fi
+  if [ -n "${genesFilePath}" ]; then
+    args+=("-g" "${genesFilePath}")
+  fi
 
   java "${args[@]}"
 
@@ -106,6 +114,7 @@ report() {
 #   $8  maxSamples (optional)
 #   $9  path to template file (optional)
 #   $10 path to reference sequence file (optional)
+#   $11 path to genes file (optional)
 validate() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -117,6 +126,7 @@ validate() {
   local -r maxSamples="${8}"
   local -r templateFilePath="${9}"
   local -r referenceFilePath="${10}"
+  local -r genesFilePath="${11}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -149,6 +159,15 @@ validate() {
 
   if ! validateReferencePath "${referenceFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if [[ -n "${genesFilePath}" ]] && [[ ! -f "${genesFilePath}" ]]; then
+    echo -e "genes file ${genesFilePath} does not exist."
+    exit 1
+  fi
+  if [[ -n "${genesFilePath}" ]] && ! [[ "${genesFilePath}" =~ (.+)(\.txt\.gz) ]]; then
+    echo -e "genes file ${genesFilePath} is not a .txt.gz file"
     exit 1
   fi
 }
@@ -229,10 +248,12 @@ main() {
     exit 1
   fi
 
+  local assembly=""
   local inputRefPath=""
   local maxRecords=""
   local maxSamples=""
   local templateFilePath=""
+  local genesFilePath=""
 
   local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
@@ -240,6 +261,9 @@ main() {
   fi
   parseCfgs "${parseCfgFilePaths}"
 
+  if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
+    assembly="${VIP_CFG_MAP["assembly"]}"
+  fi
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
     inputRefPath="${VIP_CFG_MAP["reference"]}"
   fi
@@ -252,12 +276,17 @@ main() {
   if [[ -n "${VIP_CFG_MAP["report_template"]+unset}" ]]; then
     templateFilePath="${VIP_CFG_MAP["report_template"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["report_genes"]+unset}" ]]; then
+    genesFilePath="${VIP_CFG_MAP["report_genes"]}"
+  elif [[ "${assembly}" == "GRCh37" ]] || [[ "${assembly}" == "GRCh38" ]]; then
+    genesFilePath="${SCRIPT_DIR}/resources/genes/${assembly}/ucsc_genes_ncbi_refseq_20210519.txt.gz"
+  fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="${inputFilePath}.html"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -268,7 +297,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}"
+  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}"
 }
 
 main "${@}"
