@@ -112,9 +112,6 @@ sub getFieldIndices{
         if ($headers[$idx] eq "Gene_name") {
             $self->{gene_idx} = $idx;
         }
-        if ($headers[$idx] eq "AnnotSV_type") {
-            $self->{type_idx} = $idx;
-        }
         for my $field (@fields) {
             if ($field eq $headers[$idx]) {
                 $indices{$field} = $idx;
@@ -145,8 +142,9 @@ sub run {
     }
     for my $line (@lines) {
         my @line = @{$line};
-        if ($line[$self->{type_idx}] eq "split") {
-            if ($line[$self->{gene_idx}] eq $symbol) {
+        my @genes = split(";", $line[$self->{gene_idx}]);
+        for my $gene (@genes) {
+            if ($gene eq $symbol) {
                 if ($line[$self->{chrom_idx}] eq $chrom
                     && $line[$self->{pos_idx}] == $pos
                     && $line[$self->{ref_idx}] eq $ref
