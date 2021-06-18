@@ -122,7 +122,7 @@ realignBam() {
   local -r intervalPadding="${4}"
   local -r outputBamFilePath="${5}"
 
-  local -r outputVcfFilePath="${TMPDIR}/$(mktemp XXXXXXXXXX.vcf.gz)"
+  local -r outputVcfFilePath="$(mktemp "${TMPDIR}/XXXXXXXXXX.vcf.gz")"
 
   if ! [[ -f "${vcfFilePath}.tbi" ]]; then
     module load "${MOD_HTS_LIB}"
