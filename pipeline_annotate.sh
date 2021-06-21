@@ -554,7 +554,7 @@ executeAnnotSv() {
   args+=("-SVinputFile" "${inputFilePath}")
   args+=("-outputFile" "${outputFilePath}")
   args+=("-genomeBuild" "${assembly}")
-  args+=("-typeOfAnnotation" "split")
+  args+=("-annotationMode" "full")
 
   if [ -n "${phenotypes}" ]; then
     declare -A UNIQUE_PHENOTYPES
@@ -664,7 +664,7 @@ executeVep() {
     args+=("--plugin" "Inheritance,${vepPluginInheritanceFilePath}")
   fi
   if [ -n "${annotSvOutputFilePath}" ]; then
-    args+=("--plugin" "AnnotSV,${annotSvOutputFilePath},AnnotSV_ranking;ranking_decision_criteria")
+    args+=("--plugin" "AnnotSV,${annotSvOutputFilePath},AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
   if [ -n "${vepPluginPreferredTranscriptFilePath}" ]; then
     args+=("--plugin" "PreferredTranscript,${vepPluginPreferredTranscriptFilePath}")

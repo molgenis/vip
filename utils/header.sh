@@ -17,7 +17,7 @@ fi
 
 declare -A VIP_CFG_MAP
 
-VIP_VERSION="2.3.0"
+VIP_VERSION="2.4.0"
 
 MOD_BCF_TOOLS="BCFtools/1.11-GCCcore-7.3.0"
 MOD_CADD="CADD/v1.4-foss-2018b-minimal"
@@ -31,7 +31,7 @@ MOD_VCF_REPORT="vcf-report/v2.4.0-Java-11-LTS"
 MOD_VEP="VEP/104.2-foss-2018b-Perl-5.28.0"
 MOD_VIBE="VIBE/5.0.3-Java-11-LTS"
 MOD_PYTHON_PLUS="PythonPlus/3.7.4-foss-2018b-v20.11.1"
-MOD_ANNOTSV="AnnotSV/v2.5-GCCcore-7.3.0"
+MOD_ANNOTSV="AnnotSV/v3.0.9-GCCcore-7.3.0"
 
 # Use non-minimal CADD module if the minimal module is not available
 if ! module is-avail "${MOD_CADD}"; then

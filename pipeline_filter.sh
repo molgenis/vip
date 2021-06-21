@@ -70,7 +70,7 @@ createDefaultDecisionTree() {
       "type": "BOOL",
       "description": "CSQ annotation exists",
       "query": {
-        "field": "INFO/CSQ/ASV_AnnotSV_ranking",
+        "field": "INFO/CSQ/ASV_ACMG_class",
         "operator": "in",
         "value": ["3","4","5"]
       },
