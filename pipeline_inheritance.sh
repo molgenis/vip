@@ -47,7 +47,7 @@ annotateGeneticModels() {
   local -r pedFilePath="${3}"
   local -r cpuCores="${4}"
 
-  module load "${MOD_PYTHON_PLUS}"
+  module load "${MOD_GENMOD}"
   module load "${MOD_HTS_LIB}"
 
   args=()
