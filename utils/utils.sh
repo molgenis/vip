@@ -51,9 +51,7 @@ containsProbands() {
 
   # get sample names from vcf
   local VCF_SAMPLE_NAMES=()
-  module load "${MOD_BCF_TOOLS}"
-  mapfile -t VCF_SAMPLE_NAMES < <(bcftools query -l "${VCF_PATH}")
-  module purge
+  mapfile -t VCF_SAMPLE_NAMES < <(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools query -l "${VCF_PATH}")
 
   # validate proband names
   for i in "${PROBAND_NAMES[@]}"; do
@@ -79,7 +77,7 @@ containsFormatDpHeader() {
   local VCF_PATH=$1
 
   local VCF_HEADER
-  VCF_HEADER=$(bcftools view -h "${VCF_PATH}")
+  VCF_HEADER=$(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools view -h "${VCF_PATH}")
 
   if [[ "${VCF_HEADER}" =~ .*ID=DP.* ]]; then
     return 0
@@ -100,10 +98,8 @@ containsFormatDpHeader() {
 containsStructuralVariants() {
   local VCF_PATH=$1
 
-  module load "${MOD_BCF_TOOLS}"
   local VCF_HEADER
-  VCF_HEADER=$(bcftools view -h "${VCF_PATH}")
-  module purge
+  VCF_HEADER=$(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools view -h "${VCF_PATH}")
 
   if [[ "${VCF_HEADER}" =~ .*ID=SVTYPE.* ]]; then
     return 0
@@ -124,10 +120,8 @@ containsStructuralVariants() {
 containsInheritanceModesGeneAnnotations() {
   local VCF_PATH=$1
 
-  module load "${MOD_BCF_TOOLS}"
   local VCF_HEADER
-  VCF_HEADER=$(bcftools view -h "${VCF_PATH}")
-  module purge
+  VCF_HEADER=$(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools view -h "${VCF_PATH}")
 
   if [[ "${VCF_HEADER}" =~ .*##InheritanceModesGene.* ]]; then
     return 0
@@ -343,9 +337,7 @@ joinArr() {
 hasSamples() {
   local -r inputFilePath="${1}"
 
-  module load "${MOD_BCF_TOOLS}"
-  local -r samples="$(bcftools query -l "${inputFilePath}")"
-  module purge
+  local -r samples="$(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools query -l "${inputFilePath}")"
 
   if [[ -n ${samples} ]]; then
     return 0

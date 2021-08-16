@@ -56,8 +56,6 @@ removeInfoAnnotations() {
   local outputVcf="$2"
   local threads="$3"
 
-  module load "${MOD_BCF_TOOLS}"
-
   # INFO keys to keep
   local infoKeys=()
   # from: https://github.com/Illumina/manta/blob/v1.6.0/docs/userGuide/README.md#vcf-info-fields
@@ -95,10 +93,8 @@ removeInfoAnnotations() {
   args+=("--threads" "${threads}")
   args+=("${inputVcf}")
 
-  bcftools "${args[@]}"
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
   echo -e "removing existing INFO annotations done"
-
-  module purge
 }
 
 #######################################
@@ -120,11 +116,9 @@ filterLowQualityRecords() {
   local outputVcf="$4"
   local threads="$5"
 
-  module load "${MOD_BCF_TOOLS}"
-
   # get sample names from vcf
   local sampleNames=()
-  mapfile -t sampleNames < <(bcftools query -l "${inputVcf}")
+  mapfile -t sampleNames < <(singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools query -l "${inputVcf}")
 
   local filter="(filter==\"PASS\" || filter==\".\")"
   if [ "${#sampleNames[*]}" == "0" ]; then
@@ -137,7 +131,7 @@ filterLowQualityRecords() {
     args+=("--threads" "${threads}")
     args+=("${inputVcf}")
 
-    bcftools "${args[@]}"
+    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
   else
     local probandIdsStr
     if [ -n "$probands" ]; then
@@ -187,7 +181,7 @@ filterLowQualityRecords() {
       argsExclude+=("--no-version")
       argsExclude+=("--threads" "${threads}")
 
-      bcftools "${args[@]}" | bcftools "${argsExclude[@]}"
+      singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}" | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${argsExclude[@]}"
     else
       filter+=" && ("
       filter+="GT[${probandIdsStr}]!=\"ref\" & GT[${probandIdsStr}]!=\"mis\""
@@ -202,12 +196,11 @@ filterLowQualityRecords() {
       args+=("--threads" "${threads}")
       args+=("${inputVcf}")
 
-      bcftools "${args[@]}"
+      singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
     fi
   fi
 
   echo -e "filtering low-quality records done"
-  module purge
 }
 
 #######################################
@@ -227,8 +220,6 @@ normalizeIndels() {
   local outputVcf="$3"
   local threads="$4"
 
-  module load "${MOD_BCF_TOOLS}"
-
   local args=()
   args+=("norm")
   # split multi-allelic sites into bi-allelic records (both SNPs and indels are merged separately into two records)
@@ -246,9 +237,8 @@ normalizeIndels() {
   args+=("--threads" "${threads}")
   args+=("${inputVcf}")
 
-  bcftools "${args[@]}"
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
   echo -e "normalizing done"
-  module purge
 }
 
 # arguments:
@@ -365,6 +355,10 @@ main() {
     parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
   parseCfgs "${parseCfgFilePaths}"
+
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
 
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then
     inputRefPath="${VIP_CFG_MAP["reference"]}"

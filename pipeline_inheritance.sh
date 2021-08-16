@@ -47,9 +47,6 @@ annotateGeneticModels() {
   local -r pedFilePath="${3}"
   local -r cpuCores="${4}"
 
-  module load "${MOD_GENMOD}"
-  module load "${MOD_HTS_LIB}"
-
   args=()
   args+=("models")
   args+=("${inputFilePath}")
@@ -57,10 +54,7 @@ annotateGeneticModels() {
   args+=("--vep")
   args+=("-p" "${cpuCores}")
   args+=("-r" "/apps/data/UMCG/non_penetrance/UMCG_non_penetrantie_genes_entrez_20210125.tsv")
-  genmod "${args[@]}" | bgzip >"${outputFilePath}"
-
-  module purge
-
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/Genmod.sif" genmod "${args[@]}" | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" bgzip >"${outputFilePath}"
 }
 
 # arguments:
@@ -74,12 +68,10 @@ matchInheritance() {
   local -r pedFilePath="${3}"
   local -r probands="${4}"
 
-  module load "${MOD_VCF_INHERITANCE_MATCHER}"
-
   args=()
   args+=("-Djava.io.tmpdir=${TMPDIR}")
   args+=("-XX:ParallelGCThreads=2")
-  args+=("-jar" "${EBROOTVCFMININHERITANCEMINMATCHER}/vcf-inheritance-matcher.jar")
+  args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
   args+=("-i" "${inputFilePath}")
   args+=("-pd" "${pedFilePath}")
   args+=("-o" "${outputFilePath}")
@@ -87,9 +79,7 @@ matchInheritance() {
     args+=("-pb" "${probands}")
   fi
 
-  java "${args[@]}"
-
-  module purge
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcf-inheritance-matcher.sif" java "${args[@]}"
 }
 
 # arguments:
@@ -101,8 +91,6 @@ removeAnnotations() {
   local -r outputFilePath="${2}"
   local -r cpuCores="${3}"
 
-  module load "${MOD_BCF_TOOLS}"
-
   args=()
   args+=("annotate")
   args+=("-x" "INFO/Compounds,INFO/GeneticModels,INFO/ModelScore")
@@ -113,10 +101,8 @@ removeAnnotations() {
   args+=("${inputFilePath}")
 
   echo 'removing INFO inheritance annotations ...'
-  bcftools "${args[@]}"
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
   echo 'removing INFO inheritance annotations done'
-
-  module purge
 }
 
 # arguments:
@@ -235,6 +221,10 @@ main() {
     parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
   parseCfgs "${parseCfgFilePaths}"
+
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"

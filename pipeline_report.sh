@@ -41,7 +41,8 @@ config:
   report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz). Default: UCSC NCBI RefSeq Curated for assembly GRCh37 or GRCh38
   filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
   assembly                see 'bash pipeline.sh --help' for usage.
-  reference               see 'bash pipeline.sh --help' for usage."
+  reference               see 'bash pipeline.sh --help' for usage.
+  singularity_image_dir   see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -70,12 +71,10 @@ report() {
   local -r sampleBamFilePaths="${11}"
   local -r filterTree="${12}"
 
-  module load "${MOD_VCF_REPORT}"
-
   args=()
   args+=("-Djava.io.tmpdir=${TMPDIR}")
   args+=("-XX:ParallelGCThreads=2")
-  args+=("-jar" "${EBROOTVCFMINREPORT}/vcf-report.jar")
+  args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("-i" "${inputFilePath}")
   args+=("-o" "${outputFilePath}")
   args+=("-dt" "${filterTree}")
@@ -106,9 +105,8 @@ report() {
   if [ -n "${sampleBamFilePaths}" ]; then
     args+=("-b" "${sampleBamFilePaths}")
   fi
-  java "${args[@]}"
 
-  module purge
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcf-report.sif" java "${args[@]}"
 }
 
 # arguments:
@@ -127,15 +125,14 @@ realignBam() {
   local -r outputVcfFilePath="$(mktemp "${TMPDIR}/XXXXXXXXXX.vcf.gz")"
 
   if ! [[ -f "${vcfFilePath}.tbi" ]]; then
-    module load "${MOD_HTS_LIB}"
-    tabix -p vcf "${vcfFilePath}"
-    module purge
+    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" tabix -p vcf "${vcfFilePath}"
   fi
 
-  module load "${MOD_GATK}"
-
   local args=()
-  args+=("--java-options" "-Djava.io.tmpdir=${TMPDIR} -XX:ParallelGCThreads=2 -Xmx4g")
+  args+=("-Djava.io.tmpdir=${TMPDIR}")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-Xmx4g")
+  args+=("-jar" "/opt/gatk/lib/gatk.jar")
   args+=("HaplotypeCaller")
   args+=("--tmp-dir" "${TMPDIR}")
   args+=("-R" "${referenceFilePath}")
@@ -143,13 +140,15 @@ realignBam() {
   args+=("-L" "${vcfFilePath}")
   args+=("-ip" "${intervalPadding}")
   args+=("--force-active")
-  args+=("--dont-trim-active-regions")
-  args+=("--disable-optimizations")
+  # todo: check why --dont-trim-active-regions doesn't exist anymore in gatk-4.2.2.0
+  #args+=("--dont-trim-active-regions")
+  # todo: workaround for https://github.com/broadinstitute/gatk/issues/7123
+  #args+=("--disable-optimizations")
   args+=("-O" "${outputVcfFilePath}")
   args+=("-OVI" "false")
   args+=("-bamout" "${outputBamFilePath}")
 
-  gatk "${args[@]}"
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/GATK.sif" java "${args[@]}"
 
   module purge
 }
@@ -349,6 +348,10 @@ main() {
     parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
   parseCfgs "${parseCfgFilePaths}"
+
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
 
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
     assembly="${VIP_CFG_MAP["assembly"]}"

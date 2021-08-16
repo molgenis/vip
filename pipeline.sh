@@ -38,6 +38,7 @@ config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
   reference               reference sequence file (.fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz).
   cpu_cores               number of CPU cores
+  singularity_image_dir   directory where the singularity images are stored
   preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
   annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
   filter_*                see 'bash pipeline_filter.sh --help' for usage.
@@ -132,9 +133,7 @@ annotatePipelineVersionAndCommand() {
   args+=("--threads" "${threads}")
   args+=("${inputFilePath}")
 
-  module load "${MOD_BCF_TOOLS}"
-  printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "${pipelineArgs}" | bcftools "${args[@]}"
-  module purge
+  printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "${pipelineArgs}" | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
 }
 
 # arguments:
@@ -442,6 +441,10 @@ main() {
     parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
   parseCfgs "${parseCfgFilePaths}"
+
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores="${VIP_CFG_MAP["cpu_cores"]}"

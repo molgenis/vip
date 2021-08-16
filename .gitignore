@@ -4,3 +4,6 @@
 # Ignores Intellij IDEA folder.
 .IDEA/
 /vip.iml
+
+# Singularity image folder.
+singularity/sif

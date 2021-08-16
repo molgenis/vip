@@ -37,6 +37,7 @@ config:
   cpu_cores               see 'bash pipeline.sh --help' for usage."
 }
 
+
 # arguments:
 #   $1 path to input file
 #   $2 path to output file
@@ -50,8 +51,6 @@ classify() {
   local -r annotateLabels="${4}"
   local -r annotatePaths="${5}"
 
-  module load "${MOD_VCF_DECISION_TREE}"
-
   if [ -z "${treeFilePath}" ]; then
     treeFilePath="${SCRIPT_DIR}/config/default_tree.json"
   fi
@@ -59,7 +58,7 @@ classify() {
   local args=()
   args+=("-Djava.io.tmpdir=${TMPDIR}")
   args+=("-XX:ParallelGCThreads=2")
-  args+=("-jar" "${EBROOTVCFMINDECISIONMINTREE}/vcf-decision-tree.jar")
+  args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("-i" "${inputFilePath}")
   args+=("-c" "${treeFilePath}")
   args+=("-o" "${outputFilePath}")
@@ -70,9 +69,7 @@ classify() {
     args+=("-p")
   fi
 
-  java "${args[@]}"
-
-  module purge
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcf-decision-tree.sif" java "${args[@]}"
 }
 
 # arguments:
@@ -84,8 +81,6 @@ filter() {
   local -r outputFilePath="${2}"
   local -r threads="${3}"
 
-  module load "${MOD_BCF_TOOLS}"
-
   local args=()
   args+=("filter")
   args+=("-i" "VIPC==\"T\"")
@@ -95,9 +90,7 @@ filter() {
   args+=("--threads" "${threads}")
   args+=("${inputFilePath}")
 
-  bcftools "${args[@]}"
-
-  module purge
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
 }
 
 # arguments:
@@ -213,6 +206,10 @@ main() {
     parseCfgFilePaths="${parseCfgFilePaths},${cfgFilePaths}"
   fi
   parseCfgs "${parseCfgFilePaths}"
+
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then
     cpuCores=${VIP_CFG_MAP["cpu_cores"]}

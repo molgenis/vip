@@ -1,0 +1,14 @@
+click==6.7
+configobj==5.0.6
+extract-vcf==0.5
+genmod==3.7.4
+iniconfig==1.1.1
+interval-tree==0.3.4
+intervaltree==3.1.0
+ped-parser==1.6.6
+pluggy==0.13.1
+py==1.10.0
+pytabix==0.1
+pytest==6.2.4
+sortedcontainers==2.4.0
+toml==0.10.2

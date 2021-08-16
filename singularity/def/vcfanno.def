@@ -1,0 +1,15 @@
+Bootstrap: localimage
+From: sif/build/alpine-scratch.sif
+
+%post
+    apk --no-cache add --virtual=.build-dependencies curl
+
+    curl -Ls -o /usr/local/bin/vcfanno https://github.com/brentp/vcfanno/releases/download/v0.3.2/vcfanno_linux64
+    echo "a3e52b72d960edfc5754c4865f168b4ad228ceebbf87f15424792b3737f54f60  /usr/local/bin/vcfanno" | sha256sum -c
+    chmod +x /usr/local/bin/vcfanno
+
+    apk --no-cache del .build-dependencies
+
+%help
+    vcfanno allows you to quickly annotate your VCF with any number of INFO fields from any number of VCFs or BED files. It uses a simple conf file to allow the user to specify the source annotation files and fields and how they will be added to the info of the query VCF.
+    
