@@ -262,6 +262,20 @@ validateOutputPath() {
 }
 
 # arguments:
+#   $1 path to filter tree file
+# returns:
+#    1 if path to filter tree file is invalid
+validateFilterTreePath() {
+  local -r filterTreePath="${1}"
+
+  if ! [[ "${filterTreePath}" =~ .*\.json ]]; then
+    echo -e "filter tree ${filterTreePath} is not a .json file."
+    return 1
+  fi
+
+}
+
+# arguments:
 #   $1 path to reference sequence file (.fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz).
 # returns:
 #    1 if path to reference sequence file is invalid
