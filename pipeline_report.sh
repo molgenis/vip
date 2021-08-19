@@ -39,6 +39,7 @@ config:
   report_template         HTML template to be used in the report.
   report_bams             Alignment files for samples (e.g. sample0=/path/to/0/bam,sample1=/path/to/1/bam).
   report_genes            Genes file, UCSC NCBI RefSeq format (.txt.gz). Default: UCSC NCBI RefSeq Curated for assembly GRCh37 or GRCh38
+  filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
   assembly                see 'bash pipeline.sh --help' for usage.
   reference               see 'bash pipeline.sh --help' for usage."
 }
@@ -67,6 +68,7 @@ report() {
   local -r referenceFilePath="${9}"
   local -r genesFilePath="${10}"
   local -r sampleBamFilePaths="${11}"
+  local -r filterTree="${12}"
 
   module load "${MOD_VCF_REPORT}"
 
@@ -76,6 +78,7 @@ report() {
   args+=("-jar" "${EBROOTVCFMINREPORT}/vcf-report.jar")
   args+=("-i" "${inputFilePath}")
   args+=("-o" "${outputFilePath}")
+  args+=("-dt" "${filterTree}")
   if [ -n "${probands}" ]; then
     args+=("-pb" "${probands}")
   fi
@@ -103,7 +106,6 @@ report() {
   if [ -n "${sampleBamFilePaths}" ]; then
     args+=("-b" "${sampleBamFilePaths}")
   fi
-
   java "${args[@]}"
 
   module purge
@@ -178,6 +180,7 @@ validate() {
   local -r referenceFilePath="${10}"
   local -r genesFilePath="${11}"
   local -r sampleBamFilePaths="${12}"
+  local -r filter_tree="${13}"
 
   if ! validateInputPath "${inputFilePath}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
@@ -223,6 +226,11 @@ validate() {
   fi
 
   if ! validateSampleBamFilePaths "${inputFilePath}" "${sampleBamFilePaths}"; then
+    echo -e "Try '${SCRIPT_NAME} --help' for more information."
+    exit 1
+  fi
+
+  if ! validateFilterTreePath "${filterTree}"; then
     echo -e "Try '${SCRIPT_NAME} --help' for more information."
     exit 1
   fi
@@ -334,6 +342,7 @@ main() {
   local templateFilePath=""
   local genesFilePath=""
   local sampleBamFilePaths=""
+  local filterTree=""
 
   local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
@@ -364,12 +373,17 @@ main() {
   if [[ -n "${VIP_CFG_MAP["report_bams"]+unset}" ]]; then
     sampleBamFilePaths="${VIP_CFG_MAP["report_bams"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["filter_tree"]+unset}" ]]; then
+    filterTree="${VIP_CFG_MAP["filter_tree"]}"
+  else
+    filterTree="${SCRIPT_DIR}/config/default_tree.json"
+  fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="${inputFilePath}.html"
   fi
 
-  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${sampleBamFilePaths}"
+  validate "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${force}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${sampleBamFilePaths}" "${filterTree}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -403,7 +417,7 @@ main() {
     rm "${outputFilePath}"
   fi
 
-  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${realignedSampleBamFilePaths}"
+  report "${inputFilePath}" "${outputFilePath}" "${probands}" "${pedFilePath}" "${phenotypes}" "${maxRecords}" "${maxSamples}" "${templateFilePath}" "${inputRefPath}" "${genesFilePath}" "${realignedSampleBamFilePaths}" "${filterTree}"
 }
 
 main "${@}"
