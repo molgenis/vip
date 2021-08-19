@@ -17,7 +17,7 @@ fi
 
 declare -A VIP_CFG_MAP
 
-VIP_VERSION="2.4.2"
+VIP_VERSION="2.4.3"
 
 MOD_BCF_TOOLS="BCFtools/1.11-GCCcore-7.3.0"
 MOD_CADD="CADD/v1.4-foss-2018b-minimal"
