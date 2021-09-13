@@ -108,12 +108,13 @@ sub map_consensus {
             $class_consensus = "VUS";
         }
         elsif ($src_consensus eq "(Likely) benign") {
-            my $classes_unique = uniq($classes);
-            $class_consensus = scalar @$classes_unique == 1 ? $classes_unique->[0] : "LB";
+            # WARNING: Failed to instantiate plugin VKGL: Can't use string ("1") as an ARRAY ref while "strict refs" in use at /groups/umcg-gdio/tmp01/projects/modular_ngs_pipeline/moon/v2.4.4-singularity/run5/vip/plugins/vep/VKGL.pm line 112, <FH> line 2.
+            my @classes_unique = uniq($classes);
+            $class_consensus = $#classes_unique == 0 ? $classes_unique[0] : "LB";
         }
         elsif ($src_consensus eq "(Likely) pathogenic") {
-            my $classes_unique = uniq($classes);
-            $class_consensus = scalar @$classes_unique == 1 ? $classes_unique->[0] : "LP";
+            my @classes_unique = uniq($classes);
+            $class_consensus = $#classes_unique == 0 ? $classes_unique[0] : "LP";
         }
         elsif ($src_consensus eq "Classified by one lab") {
             my @no_empty = grep {defined} @{$classes};
