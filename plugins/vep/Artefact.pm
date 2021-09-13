@@ -38,30 +38,58 @@ sub new {
         $self = $class->SUPER::new(@_);
         my $file = $self->params->[0];
         die("ERROR: input file not specified\n") unless $file;
-        readFile($file);
+        parse_file($file);
     }
     return $self;
 }
 
-sub readFile {
-    my @lines;
-    my @split;
+sub create_key {
+    my $chr = $_[0];
+    my $pos = $_[1];
+    my $ref = $_[2];
+    my $alt = $_[3];
+    return "${chr}_${pos}_${ref}_${alt}";
+}
 
-    open(FH, '<', @_) or die $!;
-    while (<FH>) {
-        chomp;
-        my @list = split(/\t/); ## Collect the elements of this line
-        for (my $i = 0; $i <= $#list; $i++) {
-            ## Ignore the 1st line (header)
-            if ($. != 1) {
-                @split = split(/\t/, $_);
-            }
+sub parse_file_header {
+    my @tokens = split /\t/, $_[0];
+
+    my $col_idx;
+    for my $i (0 .. $#tokens) {
+        if ($tokens[$i] eq "chrom") {
+            $col_idx->{idx_chr} = $i;
         }
-        if (@split) {
-            push @lines, [ @split ];
+        if ($tokens[$i] eq "pos") {
+            $col_idx->{idx_pos} = $i;
+        }
+        if ($tokens[$i] eq "ref") {
+            $col_idx->{idx_ref} = $i;
+        }
+        if ($tokens[$i] eq "alt") {
+            $col_idx->{idx_alt} = $i;
         }
     }
-    $self->{lines} = \@lines;
+    return $col_idx;
+}
+
+sub parse_file {
+    my %artefact_map;
+    open(FH, '<', @_) or die $!;
+
+    chomp(my $header = <FH>);
+    $header =~ s/\s*\z//;
+    my $col_idx = parse_file_header($header);
+
+    while (my $line = <FH>) {
+        $line =~ s/\s*\z//;
+        my @tokens = split /\t/, $line;
+
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}]);
+        $artefact_map{$key} = 1;
+    }
+    close FH;
+
+    $self->{artefact_map} = \%artefact_map;
 }
 
 sub run {
@@ -69,18 +97,13 @@ sub run {
 
     my $vf = $tva->base_variation_feature;
     my @vcf_line = @{$vf->{_line}};
-    my @lines = @{$self->{lines}};
+    my $chr = $vcf_line[0];
+    my $pos = $vcf_line[1];
+    my $ref = $vcf_line[3];
+    my $alt = $vcf_line[4];
+    my $key = create_key($chr, $pos, $ref, $alt);
 
-    my $result->{ARTEFACT} = undef;
-    for my $line (@lines) {
-        my @line = @{$line};
-        if ($line[1] eq $vcf_line[0]
-            && $line[2] == $vcf_line[1]
-            && $line[4] eq $vcf_line[3]
-            && $line[5] eq $vcf_line[4]) {
-            $result->{ARTEFACT} = 1;
-        }
-    }
+    my $result->{ARTEFACT} = $self->{artefact_map}->{$key};
     return $result;
 }
 
