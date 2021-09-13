@@ -58,152 +58,192 @@ sub new {
             $self->{consensus_only} = 0;
         }
         die("ERROR: input file not specified\n") unless $file;
-        readFile($file);
-        getFieldIndices($self->{headers});
+        parse_file($file);
     }
     return $self;
 }
 
-sub readFile {
-    my @headers;
-    my @lines;
-    my @split;
+sub create_key {
+    my $chr = $_[0];
+    my $pos = $_[1];
+    my $ref = $_[2];
+    my $alt = $_[3];
+    my $gene_symbol = $_[4];
+    return "${chr}_${pos}_${ref}_${alt}_${gene_symbol}";
+}
 
+sub map_class {
+    my $src_class = $_[0];
+    my $class;
+    if ($src_class eq "Benign" || $src_class eq "B") {
+        $class = "B";
+    }
+    elsif ($src_class eq "Likely benign" || $src_class eq "LB") {
+        $class = "LB";
+    }
+    elsif ($src_class eq "VUS" || $src_class eq "VUS") {
+        $class = "VUS";
+    }
+    elsif ($src_class eq "Likely pathogenic" || $src_class eq "LP") {
+        $class = "LP";
+    }
+    elsif ($src_class eq "Pathogenic" || $src_class eq "P") {
+        $class = "P";
+    }
+    return $class;
+}
+
+sub uniq {
+    my @no_empty = grep {defined} @{$_[0]};
+    do { my %seen; grep { !$seen{$_}++ } @no_empty };
+}
+
+sub map_consensus {
+    my $src_consensus = $_[0];
+    my $classes = $_[1];
+    my $class_consensus;
+
+    if (length $src_consensus && $src_consensus ne "No consensus" && $src_consensus ne "Opposite classifications") {
+        if ($src_consensus eq "VUS") {
+            $class_consensus = "VUS";
+        }
+        elsif ($src_consensus eq "(Likely) benign") {
+            my $classes_unique = uniq($classes);
+            $class_consensus = scalar @$classes_unique == 1 ? $classes_unique->[0] : "LB";
+        }
+        elsif ($src_consensus eq "(Likely) pathogenic") {
+            my $classes_unique = uniq($classes);
+            $class_consensus = scalar @$classes_unique == 1 ? $classes_unique->[0] : "LP";
+        }
+        elsif ($src_consensus eq "Classified by one lab") {
+            my @no_empty = grep {defined} @{$classes};
+            $class_consensus = $no_empty[0];
+        }
+    }
+
+    return $class_consensus;
+}
+
+sub parse_file_header {
+    my @tokens = split /\t/, $_[0];
+
+    my $col_idx;
+    for my $i (0 .. $#tokens) {
+        if ($tokens[$i] eq "chromosome") {
+            $col_idx->{idx_chr} = $i;
+        }
+        if ($tokens[$i] eq "start") {
+            $col_idx->{idx_pos} = $i;
+        }
+        if ($tokens[$i] eq "ref") {
+            $col_idx->{idx_ref} = $i;
+        }
+        if ($tokens[$i] eq "alt") {
+            $col_idx->{idx_alt} = $i;
+        }
+        if ($tokens[$i] eq "gene") {
+            $col_idx->{idx_gene_symbol} = $i;
+        }
+        if (!$self->{consensus_only}) {
+            if ($tokens[$i] eq "amc") {
+                $col_idx->{idx_class_amc} = $i;
+            }
+            if ($tokens[$i] eq "erasmus") {
+                $col_idx->{idx_class_erasmus} = $i;
+            }
+            if ($tokens[$i] eq "lumc") {
+                $col_idx->{idx_class_lumc} = $i;
+            }
+            if ($tokens[$i] eq "nki") {
+                $col_idx->{idx_class_nki} = $i;
+            }
+            if ($tokens[$i] eq "radboud_mumc") {
+                $col_idx->{idx_class_radboud_mumc} = $i;
+            }
+            if ($tokens[$i] eq "umcg") {
+                $col_idx->{idx_class_umcg} = $i;
+            }
+            if ($tokens[$i] eq "umcu") {
+                $col_idx->{idx_class_umcu} = $i;
+            }
+            if ($tokens[$i] eq "vumc") {
+                $col_idx->{idx_class_vumc} = $i;
+            }
+        }
+        if ($tokens[$i] eq "consensus_classification" || $tokens[$i] eq "classification") {
+            $col_idx->{idx_class} = $i;
+        }
+    }
+    return $col_idx;
+}
+
+sub parse_file {
+    my %classes_map;
     open(FH, '<', @_) or die $!;
-    while (<FH>) {
-        chomp;
-        my @list = split(/\t/); ## Collect the elements of this line
-        for (my $i = 0; $i <= $#list; $i++) {
-            ## If this is the 1st line, collect the names
-            if ($. == 1) {
-                my $header = $list[$i];
-                $header =~ tr/ /_/;
-                $headers[$i] = $header;
-            }
-            else {
-                @split = split(/\t/, $_);
-            }
-        }
-        if (@split) {
-            push @lines, [ @split ];
-        }
-    }
-    $self->{headers} = \@headers;
-    $self->{lines} = \@lines;
-}
 
-sub mapClassification {
-    my $input = $_[0];
-    my $output;
-    if ($input eq "Benign") {
-        $output = "B";
-    }
-    elsif ($input eq "Likely benign") {
-        $output = "LB";
-    }
-    elsif ($input eq "VUS") {
-        $output = "VUS";
-    }
-    elsif ($input eq "Likely pathogenic") {
-        $output = "LP";
-    }
-    elsif ($input eq "Pathogenic") {
-        $output = "P";
-    }
-    return $output;
-}
+    chomp(my $header = <FH>);
+    $header =~ s/\s*\z//;
+    my $col_idx = parse_file_header($header);
 
-sub mapConsensusClassification {
-    my @line = @{$_[0]};
-    my $consensus = $line[$self->{VKGL_CL_idx}];
-    my %classifications;
-    my $output = "";
-
-    if (length $consensus) {
-        if(length($self->{VKGL_AMC_idx})) {
-            my @a = ($self->{VKGL_AMC_idx}, $self->{VKGL_ERASMUS_idx}, $self->{VKGL_LUMC_idx}, $self->{VKGL_NKI_idx}, $self->{VKGL_RADBOUD_MUMC_idx}, $self->{VKGL_UMCG_idx}, $self->{VKGL_UMCU_idx}, $self->{VKGL_VUMC_idx});
-            for (@a) {
-                if (length($line[$_])) {
-                    $classifications{$line[$_]} = 1;
-                }
-            }
-            if ($consensus ne "No consensus" && $consensus ne "Opposite classifications") {
-                if ($consensus eq "VUS") {
-                    $output = "VUS";
-                }
-                elsif ($consensus eq "(Likely) pathogenic") {
-                    if (exists($classifications{"Likely pathogenic"})) {
-                        $output = "LP";
-                    }
-                    else {
-                        $output = "P";
-                    }
-                }
-                elsif ($consensus eq "(Likely) benign") {
-                    if (exists($classifications{"Likely benign"})) {
-                        $output = "LB";
-                    }
-                    else {
-                        $output = "B";
-                    }
-                }
-                elsif ($consensus eq "Classified by one lab") {
-                    $output = mapClassification((keys %classifications)[0]);
-                }
-            }
-        }
-        elsif ($consensus eq "LB" || $consensus eq "LP" || $consensus eq "VUS") {
-            $output = $consensus;
-        }
+    my $i = 0;
+    my $idx_class_amc;
+    my $idx_class_erasmus;
+    my $idx_class_lumc;
+    my $idx_class_nki;
+    my $idx_class_radboud_mumc;
+    my $idx_class_umcg;
+    my $idx_class_umcu;
+    my $idx_class_vumc;
+    if (!$self->{consensus_only}) {
+        $idx_class_amc = $i++;
+        $idx_class_erasmus = $i++;
+        $idx_class_lumc = $i++;
+        $idx_class_nki = $i++;
+        $idx_class_radboud_mumc = $i++;
+        $idx_class_umcg = $i++;
+        $idx_class_umcu = $i++;
+        $idx_class_vumc = $i++;
     }
-    return $output;
-}
+    my $idx_class = $i;
 
-sub getFieldIndices {
-    my @headers = @{$_[0]};
-    for my $idx (0 .. $#headers) {
-        if ($headers[$idx] eq "chromosome") {
-            $self->{chrom_idx} = $idx;
+    while (my $line = <FH>) {
+        $line =~ s/\s*\z//;
+        my @tokens = split /\t/, $line;
+
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene_symbol}]);
+
+        my @classes;
+
+        if (!$self->{consensus_only}) {
+            $classes[$idx_class_amc] = map_class($tokens[$col_idx->{idx_class_amc}]);
+            $classes[$idx_class_erasmus] = map_class($tokens[$col_idx->{idx_class_erasmus}]);
+            $classes[$idx_class_lumc] = map_class($tokens[$col_idx->{idx_class_lumc}]);
+            $classes[$idx_class_nki] = map_class($tokens[$col_idx->{idx_class_nki}]);
+            $classes[$idx_class_radboud_mumc] = map_class($tokens[$col_idx->{idx_class_radboud_mumc}]);
+            $classes[$idx_class_umcg] = map_class($tokens[$col_idx->{idx_class_umcg}]);
+            $classes[$idx_class_umcu] = map_class($tokens[$col_idx->{idx_class_umcu}]);
+            $classes[$idx_class_vumc] = map_class($tokens[$col_idx->{idx_class_vumc}]);
+            $classes[$idx_class] = map_consensus($tokens[$col_idx->{idx_class}], \@classes);
         }
-        if ($headers[$idx] eq "start") {
-            $self->{pos_idx} = $idx;
+        else {
+            $classes[$idx_class] = map_class($tokens[$col_idx->{idx_class}]);
         }
-        if ($headers[$idx] eq "ref") {
-            $self->{ref_idx} = $idx;
-        }
-        if ($headers[$idx] eq "alt") {
-            $self->{alt_idx} = $idx;
-        }
-        if ($headers[$idx] eq "gene") {
-            $self->{gene_idx} = $idx;
-        }
-        if ($headers[$idx] eq "amc") {
-            $self->{VKGL_AMC_idx} = $idx;
-        }
-        if ($headers[$idx] eq "erasmus") {
-            $self->{VKGL_ERASMUS_idx} = $idx;
-        }
-        if ($headers[$idx] eq "lumc") {
-            $self->{VKGL_LUMC_idx} = $idx;
-        }
-        if ($headers[$idx] eq "nki") {
-            $self->{VKGL_NKI_idx} = $idx;
-        }
-        if ($headers[$idx] eq "radboud_mumc") {
-            $self->{VKGL_RADBOUD_MUMC_idx} = $idx;
-        }
-        if ($headers[$idx] eq "umcg") {
-            $self->{VKGL_UMCG_idx} = $idx;
-        }
-        if ($headers[$idx] eq "umcu") {
-            $self->{VKGL_UMCU_idx} = $idx;
-        }
-        if ($headers[$idx] eq "vumc") {
-            $self->{VKGL_VUMC_idx} = $idx;
-        }
-        if ($headers[$idx] eq "consensus_classification" || $headers[$idx] eq "classification") {
-            $self->{VKGL_CL_idx} = $idx;
-        }
+
+        $classes_map{$key} = \@classes;
+    }
+    close FH;
+
+    $self->{classes_map} = \%classes_map;
+    $self->{idx_class} = $idx_class;
+    if (!$self->{consensus_only}) {
+        $self->{idx_class_amc} = $idx_class_amc;
+        $self->{idx_class_erasmus} = $idx_class_erasmus;
+        $self->{idx_class_lumc} = $idx_class_lumc;
+        $self->{idx_class_nki} = $idx_class_nki;
+        $self->{idx_class_radboud_mumc} = $idx_class_radboud_mumc;
+        $self->{idx_class_umcg} = $idx_class_umcg;
+        $self->{idx_class_umcu} = $idx_class_umcu;
+        $self->{idx_class_vumc} = $idx_class_vumc;
     }
 }
 
@@ -215,13 +255,11 @@ sub run {
 
     my $vf = $tva->base_variation_feature;
     my @vcf_line = @{$vf->{_line}};
-    my $chrom = $vcf_line[0];
+    my $chr = $vcf_line[0];
     my $pos = $vcf_line[1];
     my $ref = $vcf_line[3];
     my $alt = $vcf_line[4];
-    my $symbol = $transcript->{_gene_symbol} || $transcript->{_gene_hgnc};
-
-    my @lines = @{$self->{lines}};
+    my $gene_symbol = $transcript->{_gene_symbol} || $transcript->{_gene_hgnc};
 
     my $result = ();
     if (!$self->{consensus_only}) {
@@ -236,27 +274,22 @@ sub run {
     }
     $result->{VKGL_CL} = undef;
 
-    for my $line (@lines) {
-        my @line = @{$line};
-        if ($line[$self->{gene_idx}] eq $symbol) {
-            if ($line[$self->{chrom_idx}] eq $chrom
-                && $line[$self->{pos_idx}] == $pos
-                && $line[$self->{ref_idx}] eq $ref
-                && $line[$self->{alt_idx}] eq $alt) {
-                if (!$self->{consensus_only}) {
-                    $result->{VKGL_AMC} = mapClassification($line[$self->{VKGL_AMC_idx}]);
-                    $result->{VKGL_ERASMUS} = mapClassification($line[$self->{VKGL_ERASMUS_idx}]);
-                    $result->{VKGL_LUMC} = mapClassification($line[$self->{VKGL_LUMC_idx}]);
-                    $result->{VKGL_NKI} = mapClassification($line[$self->{VKGL_NKI_idx}]);
-                    $result->{VKGL_RADBOUD_MUMC} = mapClassification($line[$self->{VKGL_RADBOUD_MUMC_idx}]);
-                    $result->{VKGL_UMCG} = mapClassification($line[$self->{VKGL_UMCG_idx}]);
-                    $result->{VKGL_UMCU} = mapClassification($line[$self->{VKGL_UMCU_idx}]);
-                    $result->{VKGL_VUMC} = mapClassification($line[$self->{VKGL_VUMC_idx}]);
-                }
-                $result->{VKGL_CL} = mapConsensusClassification(\@line);
-            }
+    my $key = create_key($chr, $pos, $ref, $alt, $gene_symbol);
+    my $classes = $self->{classes_map}->{$key};
+    if (defined $classes) {
+        $result->{VKGL_CL} = $classes->[$self->{idx_class}];
+        if (!$self->{consensus_only}) {
+            $result->{VKGL_AMC} = $classes->[$self->{idx_class_amc}];
+            $result->{VKGL_ERASMUS} = $classes->[$self->{idx_class_erasmus}];
+            $result->{VKGL_LUMC} = $classes->[$self->{idx_class_lumc}];
+            $result->{VKGL_NKI} = $classes->[$self->{idx_class_nki}];
+            $result->{VKGL_RADBOUD_MUMC} = $classes->[$self->{idx_class_radboud_mumc}];
+            $result->{VKGL_UMCG} = $classes->[$self->{idx_class_umcg}];
+            $result->{VKGL_UMCU} = $classes->[$self->{idx_class_umcu}];
+            $result->{VKGL_VUMC} = $classes->[$self->{idx_class_vumc}];
         }
     }
+
     return $result;
 }
 
