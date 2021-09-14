@@ -140,8 +140,6 @@ realignBam() {
   args+=("-L" "${vcfFilePath}")
   args+=("-ip" "${intervalPadding}")
   args+=("--force-active")
-  # todo: check why --dont-trim-active-regions doesn't exist anymore in gatk-4.2.2.0
-  #args+=("--dont-trim-active-regions")
   # todo: workaround for https://github.com/broadinstitute/gatk/issues/7123
   #args+=("--disable-optimizations")
   args+=("-O" "${outputVcfFilePath}")
