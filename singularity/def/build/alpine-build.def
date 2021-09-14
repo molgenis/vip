@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: sif/build/alpine-scratch.sif
+
+%help
+        Singularity container running Alpine Linux with additional build tools
+
+%post
+        apk --no-cache add curl build-base

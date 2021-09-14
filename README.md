@@ -1,5 +1,12 @@
 # Variant Interpretation Pipeline
 
+## Requirements
+- Any modern Linux distribution
+- Singularity (see [admin guide](https://sylabs.io/guides/latest/admin-guide/))
+
+## Installation
+Run `cd singularity; sudo bash build.sh` to build singularity images.
+
 ## Usage
 ```
 usage: pipeline.sh -i <arg>

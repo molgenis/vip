@@ -65,44 +65,6 @@ get_unique_phenotypes() {
   done
 }
 
-#######################################
-# Filter non-SV records without CAPICE score
-#
-# Arguments:
-#   path to input VCF file
-#   path to output VCF file
-#   number of worker threads
-#######################################
-filterUnscoredCapiceRecords() {
-  echo -e "filtering records without CAPICE score ..."
-
-  local -r inputVcf="$1"
-  local -r outputVcf="$2"
-  local -r threads="$3"
-
-  local filter
-  if containsStructuralVariants "${inputVcf}"; then
-    filter="(CAP=\".\" && SVTYPE=\".\")"
-  else
-    filter="CAP=\".\""
-  fi
-
-  local args=()
-  args+=("filter")
-  args+=("-i" "${filter}")
-  args+=("-o" "${outputVcf}")
-  args+=("-O" "z")
-  args+=("--no-version")
-  args+=("--threads" "${threads}")
-  args+=("${inputVcf}")
-
-  module load "${MOD_BCF_TOOLS}"
-  bcftools "${args[@]}"
-  module purge
-
-  echo -e "filtering records without CAPICE score done"
-}
-
 # arguments:
 #   $1 vepDirCache
 #   $2 vepCodingOnly
@@ -300,206 +262,10 @@ executeVcfanno() {
   args+=("${inputFilePath}")
 
   if hasSamples "${inputFilePath}"; then
-    module load "${MOD_VCF_ANNO}"
-    module load "${MOD_HTS_LIB}"
-
-    vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
-
-    module purge
+    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcfanno.sif" vcfanno "${args[@]}" | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" bgzip >"${outputFilePath}"
   else
     # workaround for https://github.com/brentp/vcfanno/issues/123
-    module load "${MOD_VCF_ANNO}"
-    module load "${MOD_HTS_LIB}"
-
-    vcfanno "${args[@]}" | cut -f 1-8 | bgzip >"${outputFilePath}"
-    module purge
-  fi
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 assembly
-#   $4 cpu cores
-executeCadd() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r assembly="${3}"
-  local -r cpuCores="${4}"
-
-  module load "${MOD_HTS_LIB}"
-
-  local -r outputDir="$(dirname "${outputFilePath}")"
-
-  # strip headers from input vcf for CADD
-  local -r headerlessInputFilePath="${outputDir}/headerless_$(basename "${inputFilePath}")"
-  gunzip -c "${inputFilePath}" | sed '/^#/d' | bgzip >"${headerlessInputFilePath}"
-  module purge
-
-  # do not log usage information (which is logged to stderr instead of stdout)
-  module load "${MOD_CADD}" 2>/dev/null
-
-  args=()
-  args+=("-a")
-  args+=("-g" "${assembly}")
-  args+=("-o" "${outputFilePath}")
-  args+=("-c" "${cpuCores}")
-  args+=("-s" "${headerlessInputFilePath}")
-  args+=("-t" "${TMPDIR}")
-
-  CADD.sh "${args[@]}"
-  module purge
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 assembly
-executeCapicePredict() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r assembly="${3}"
-
-  module load "${MOD_CAPICE}"
-
-  args=()
-  args+=("${EBROOTCAPICE}/CAPICE_scripts/model_inference.py")
-  args+=("--input_path" "${inputFilePath}")
-  args+=("--model_path" "${EBROOTCAPICE}/CAPICE_model/${assembly}/xgb_booster.pickle.dat")
-  args+=("--prediction_savepath" "${outputFilePath}")
-  # only log stderr
-  python "${args[@]}" 1>/dev/null
-  module purge
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-executeCapiceVcf() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-
-  module load "${MOD_CAPICE}"
-
-  args=()
-  args+=("-Djava.io.tmpdir=${TMPDIR}")
-  args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx1g")
-  args+=("-jar" "${EBROOTCAPICE}/capice2vcf.jar")
-  args+=("-i" "${inputFilePath}")
-  args+=("-o" "${outputFilePath}")
-
-  java "${args[@]}"
-  module purge
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 path to annotation file
-#   $4 processes
-executeCapiceAnnotate() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r annotationFilePath="${3}"
-  local -r processes="${4}"
-
-  local -r outputDir="$(dirname "${outputFilePath}")"
-
-  local -r confFilePath="${outputDir}/conf.toml"
-  cat >"${confFilePath}" <<EOT
-[[annotation]]
-file="${annotationFilePath}"
-fields = ["CAP"]
-ops=["self"]
-names=["CAP"]
-EOT
-
-  args=()
-  args+=("-p" "${processes}")
-  args+=("${confFilePath}")
-  args+=("${inputFilePath}")
-
-  if hasSamples "${inputFilePath}"; then
-    module load "${MOD_VCF_ANNO}"
-    module load "${MOD_HTS_LIB}"
-
-    vcfanno "${args[@]}" | bgzip >"${outputFilePath}"
-
-    module purge
-  else
-    # workaround for https://github.com/brentp/vcfanno/issues/123
-    module load "${MOD_VCF_ANNO}"
-    module load "${MOD_HTS_LIB}"
-
-    vcfanno "${args[@]}" | cut -f 1-8 | bgzip >"${outputFilePath}"
-    module purge
-  fi
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 assembly
-#   $4 cpu cores
-executeCapice() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r assembly="${3}"
-  local -r cpuCores="${4}"
-
-  local -r outputDir="$(dirname "${outputFilePath}")"
-  local -r outputFilename="$(basename "${outputFilePath}")"
-
-  local currentInputFilePath="${inputFilePath}"
-  local currentOutputDir="${outputDir}/1_filter_unscored"
-  local currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-  mkdir -p "${currentOutputDir}"
-  filterUnscoredCapiceRecords "${currentInputFilePath}" "${currentOutputFilePath}" "${cpuCores}"
-
-  if [[ "${assembly}" == GRCh37 ]]; then
-    if [[ "$(zgrep -c -m 1 "^[^#]" "${currentOutputFilePath}")" -eq 0 ]]; then
-      echo -e "skipping CAPICE execution because all variants have precomputed scores ..."
-      cd "${outputDir}" || exit
-      ln -s "${inputFilePath}" "${outputFilename}"
-    else
-      currentInputFilePath="${currentOutputFilePath}"
-      currentOutputDir="${outputDir}/2_cadd"
-      currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-      mkdir -p "${currentOutputDir}"
-      executeCadd "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${cpuCores}"
-
-      if [[ "$(zgrep -c -m 1 "^[^#]" "${currentOutputFilePath}")" -eq 0 ]]; then
-        echo -e "skipping CAPICE execution because there are no CADD scores ..."
-        cd "${outputDir}" || exit
-        ln -s "${inputFilePath}" "${outputFilename}"
-      else
-        currentInputFilePath="${currentOutputFilePath}"
-        currentOutputDir="${outputDir}/3_capice_predict"
-        currentOutputFilePath="${currentOutputDir}/${outputFilename}.tsv"
-        mkdir -p "${currentOutputDir}"
-        executeCapicePredict "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
-
-        currentInputFilePath="${currentOutputFilePath}"
-        currentOutputDir="${outputDir}/4_capice2vcf"
-        currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-        mkdir -p "${currentOutputDir}"
-        executeCapiceVcf "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
-
-        annotationFilePath="${currentOutputFilePath}"
-        currentOutputDir="${outputDir}/5_vcfanno"
-        currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-        mkdir -p "${currentOutputDir}"
-        executeCapiceAnnotate "${inputFilePath}" "${currentOutputFilePath}" "${annotationFilePath}" "${cpuCores}"
-
-        cd "${outputDir}" || exit
-        ln -s "${currentOutputFilePath}" "${outputFilename}"
-      fi
-    fi
-  else
-    echo -e "Skipping capice for ${assembly}"
-    cd "${outputDir}" || exit
-    ln -s "${inputFilePath}" "${outputFilename}"
+    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcfanno.sif" vcfanno "${args[@]}" | cut -f 1-8 | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" bgzip >"${outputFilePath}"
   fi
 }
 
@@ -514,8 +280,6 @@ executeVibe() {
   local -r vibeHdtPath="${3}"
   local -r vibeHpoPath="${4}"
 
-  module load "${MOD_VIBE}"
-
   declare -A UNIQUE_PHENOTYPES
   get_unique_phenotypes "${phenotypes}"
 
@@ -525,17 +289,16 @@ executeVibe() {
     args=()
     args+=("-Djava.io.tmpdir=${TMPDIR}")
     args+=("-XX:ParallelGCThreads=2")
-    args+=("-jar" "${EBROOTVIBE}/vibe.jar")
+    args+=("-jar" "/opt/vibe/lib/vibe.jar")
     args+=("-t" "${vibeHdtPath}")
     args+=("-w" "${vibeHpoPath}")
     args+=("-p" "$i")
     args+=("-l")
     args+=("-o" "${outputFilePath}")
-    java "${args[@]}"
+    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/VIBE.sif" java "${args[@]}"
 
     echo -e "#HPO=$i\n$(cat "${outputFilePath}")" >"${outputFilePath}"
   done
-  module purge
 }
 
 # arguments:
@@ -548,13 +311,13 @@ executeAnnotSv() {
   local -r assembly="${3}"
   local -r phenotypes="${4}"
 
-  module load "${MOD_ANNOTSV}"
-
   args=()
   args+=("-SVinputFile" "${inputFilePath}")
   args+=("-outputFile" "${outputFilePath}")
   args+=("-genomeBuild" "${assembly}")
   args+=("-annotationMode" "full")
+  #FIXME: if we keep the annotations dir apart from the image, then make this path configurable
+  args+=("-annotationsDir" "/apps/software/AnnotSV/v3.0.9-GCCcore-7.3.0/share/AnnotSV")
 
   if [ -n "${phenotypes}" ]; then
     declare -A UNIQUE_PHENOTYPES
@@ -565,9 +328,7 @@ executeAnnotSv() {
       args+=("-hpo" "${joinedPhenotypes}")
     fi
   fi
-  ${EBROOTANNOTSV}/bin/AnnotSV "${args[@]}"
-
-  module purge
+  singularity run --bind /apps,/groups "${singularityImageDir}/AnnotSV.sif" "${args[@]}"
 }
 
 # arguments:
@@ -616,7 +377,6 @@ executeVep() {
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
 
-  module load "${MOD_VEP}"
   args=()
   args+=("--input_file" "${inputFilePath}" "--format" "vcf")
   args+=("--output_file" "${outputFilePath}" "--vcf")
@@ -685,8 +445,7 @@ executeVep() {
     args+=(${annVep})
   fi
 
-  vep "${args[@]}"
-  module purge
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/VEP.sif" vep "${args[@]}"
 }
 
 main() {
@@ -777,6 +536,10 @@ main() {
   fi
   parseCfgs "${parseCfgFilePaths}"
 
+  if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
+    singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  fi
+
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then
     assembly="${VIP_CFG_MAP["assembly"]}"
   fi
@@ -856,13 +619,6 @@ main() {
   currentOutputFilePath="${currentOutputDir}/${outputFilename}"
   mkdir -p "${currentOutputDir}"
   executeVcfanno "${currentInputFilePath}" "${currentOutputFilePath}" "${cpuCores}"
-  currentInputFilePath="${currentOutputFilePath}"
-
-  # step 2: annotate input with CAPICE
-  currentOutputDir="${workDir}/2_capice"
-  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-  mkdir -p "${currentOutputDir}"
-  executeCapice "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}" "${cpuCores}"
   currentInputFilePath="${currentOutputFilePath}"
 
   # step 3: execute VIBE
