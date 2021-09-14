@@ -46,7 +46,8 @@ config:
   annotate_vep                            Variant Effect Predictor (VEP) options.
   assembly                                see 'bash pipeline.sh --help' for usage.
   reference                               see 'bash pipeline.sh --help' for usage.
-  cpu_cores                               see 'bash pipeline.sh --help' for usage."
+  cpu_cores                               see 'bash pipeline.sh --help' for usage.
+  singularity_image_dir                   see 'bash pipeline.sh --help' for usage."
 }
 
 get_unique_phenotypes() {
@@ -538,6 +539,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then

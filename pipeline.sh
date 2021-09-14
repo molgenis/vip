@@ -38,7 +38,7 @@ config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
   reference               reference sequence file (.fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz).
   cpu_cores               number of CPU cores
-  singularity_image_dir   directory where the singularity images are stored
+  singularity_image_dir   directory where the singularity images are stored.
   preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
   annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
   filter_*                see 'bash pipeline_filter.sh --help' for usage.
@@ -444,6 +444,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then

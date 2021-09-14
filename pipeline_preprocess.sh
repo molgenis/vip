@@ -38,7 +38,8 @@ config:
   preprocess_filter_low_qual    filter low quality records using filter status and read depth.
   preprocess_filter_read_depth  filter read depth threshold (default: 20)
   reference                     see 'bash pipeline.sh --help' for usage.
-  cpu_cores                     see 'bash pipeline.sh --help' for usage."
+  cpu_cores                     see 'bash pipeline.sh --help' for usage.
+  singularity_image_dir         see 'bash pipeline.sh --help' for usage."
 }
 
 #######################################
@@ -358,6 +359,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["reference"]+unset}" ]]; then

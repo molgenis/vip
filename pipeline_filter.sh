@@ -34,7 +34,8 @@ config:
   filter_tree             decision tree file (.json) that applies classes 'F' and 'T'.
   filter_annotate_labels  annotate decision tree labels (0 or 1, default: 0).
   filter_annotate_paths   annotate decision tree paths (0 or 1, default: 0).
-  cpu_cores               see 'bash pipeline.sh --help' for usage."
+  cpu_cores               see 'bash pipeline.sh --help' for usage.
+  singularity_image_dir   see 'bash pipeline.sh --help' for usage."
 }
 
 
@@ -209,6 +210,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then

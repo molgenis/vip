@@ -349,6 +349,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["assembly"]+unset}" ]]; then

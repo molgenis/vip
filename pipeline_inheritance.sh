@@ -33,7 +33,8 @@ usage() {
 -h, --help                optional: Print this message and exit.
 
 config:
-  cpu_cores               see 'bash pipeline.sh --help' for usage."
+  cpu_cores               see 'bash pipeline.sh --help' for usage.
+  singularity_image_dir   see 'bash pipeline.sh --help' for usage."
 }
 
 # arguments:
@@ -224,6 +225,8 @@ main() {
 
   if [[ -n "${VIP_CFG_MAP["singularity_image_dir"]+unset}" ]]; then
     singularityImageDir="${VIP_CFG_MAP["singularity_image_dir"]}"
+  else
+    singularityImageDir="${SCRIPT_DIR}/singularity/sif"
   fi
 
   if [[ -n "${VIP_CFG_MAP["cpu_cores"]+unset}" ]]; then

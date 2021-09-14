@@ -27,6 +27,7 @@ config:
   assembly                allowed values: GRCh37, GRCh38 default: GRCh37
   reference               reference sequence file
   cpu_cores               number of CPU cores
+  singularity_image_dir   directory where the singularity images are stored.
   preprocess_*            see 'bash pipeline_preprocess.sh --help' for usage.
   annotate_*              see 'bash pipeline_annotate.sh --help' for usage.
   filter_*                see 'bash pipeline_filter.sh --help' for usage.
