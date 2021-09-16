@@ -1,0 +1,21 @@
+Bootstrap: localimage
+From: sif/build/Python.sif
+
+%post
+    # install
+    apk update
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing --virtual=.build-dependencies git py3-pip build-base cmake zlib-dev bzip2-dev xz-dev libdeflate-dev
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-setuptools py3-pandas py3-scipy py3-scikit-learn libgomp zlib libbz2 xz-libs libdeflate
+    pip install pysam==0.16.0.1 xgboost==1.4.2
+    
+    # download
+    git clone -b feat/caddless-sietsmarj https://github.com/molgenis/capice --depth 1
+    
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/* /downloads
+
+%help
+    CAPICE is a computational method for predicting the pathogenicity of SNVs and InDels.
+    
+
