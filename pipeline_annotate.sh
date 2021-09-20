@@ -523,7 +523,7 @@ main() {
   local vepCodingOnly=""
   local vepNoIntergenic=""
   local vepHpoGenPhenoFilePath="${SCRIPT_DIR}/resources/hpo_20210920.tsv"
-  local vepPluginInheritanceFilePath="${SCRIPT_DIR}/resources/gene_inheritance_modes_20210309.tsv"
+  local vepPluginInheritanceFilePath="${SCRIPT_DIR}/resources/gene_inheritance_modes_20210920.tsv"
   local vepPluginPreferredTranscriptFilePath=""
   local vepPluginVKGLFilePath=""
   local vepPluginVKGLMode=""
