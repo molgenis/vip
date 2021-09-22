@@ -15,8 +15,6 @@ Run `cd singularity && sudo bash build.sh` to build singularity images.
 Run `vagrant up && vagrant ssh` to start and login to the vagrant container.
 From here, run `cd /vagrant/singularity/ && sudo bash build.sh` to build the singularity images.
 
-When done, you can exit the container through `exit` and then close it using `vagrant halt`.
-
 ## Usage
 ```
 usage: pipeline.sh -i <arg>
@@ -63,7 +61,9 @@ examples - phenotypes:
 ```
 
 ### MacOS
-Note that Vagrant only syncs the current folder. If using data that is stored elsewhere,
+When done, you can exit the Vagrant VM through `exit` and then shut it down with `vagrant halt`.
+
+Note that Vagrant only syncs the current folder. When using data stored elsewhere,
 be sure to adjust `config.vm.synced_folder` in the `Vagrantfile`.
 
 ## Usage: modules
