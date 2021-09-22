@@ -3,9 +3,19 @@
 ## Requirements
 - Any modern Linux distribution
 - Singularity (see [admin guide](https://sylabs.io/guides/latest/admin-guide/))
+- \[Windows\] [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/) (f.e. running Ubuntu)
+- \[MacOS\] [Vagrant](https://www.vagrantup.com/)
+- \[MacOS\] [VirtualBox](https://www.virtualbox.org/) (used by Vagrant)
 
 ## Installation
-Run `cd singularity; sudo bash build.sh` to build singularity images.
+### Linux/Windows (running WSL)
+Run `cd singularity && sudo bash build.sh` to build singularity images.
+
+### MacOS
+Run `vagrant up && vagrant ssh` to start and login to the vagrant container.
+From here, run `cd /vagrant/singularity/ && sudo bash build.sh` to build the singularity images.
+
+When done, you can exit the container through `exit` and then close it using `vagrant halt`.
 
 ## Usage
 ```
@@ -51,6 +61,10 @@ examples - phenotypes:
   pipeline.sh -i in.vcf.gz --phenotypes sample0/HP:0000123
   pipeline.sh -i in.vcf.gz --phenotypes sample0/HP:0000123,sample1/HP:0000234
 ```
+
+### MacOS
+Note that Vagrant only syncs the current folder. If using data that is stored elsewhere,
+be sure to adjust `config.vm.synced_folder` in the `Vagrantfile`.
 
 ## Usage: modules
 Pipeline modules can be used separately, run one of the following scripts for usage information:
