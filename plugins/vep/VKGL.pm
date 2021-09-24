@@ -142,7 +142,7 @@ sub parse_file_header {
         if ($tokens[$i] eq "alt") {
             $col_idx->{idx_alt} = $i;
         }
-        if ($tokens[$i] eq "gene_id") {
+        if ($tokens[$i] eq "gene_id_entrez_gene") {
             $col_idx->{idx_gene_id} = $i;
         }
         if (!$self->{consensus_only}) {
