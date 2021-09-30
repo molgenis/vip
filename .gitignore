@@ -5,8 +5,20 @@
 .IDEA/
 /vip.iml
 
-# Singularity image folder.
-singularity/sif
+# Singularity images build folder.
+/images
+/utils/singularity/sif
+
+# Installed resource folders.
+/resources
+!/resources/decision_tree.json
+!/resources/vep/plugins
+
+# test
+/test/.nextflow
+/test/output
+/test/nextflow.config
+/test/test_wrapper.sh
 
 # Vagrant folder.
-.vagrant/
+/.vagrant/
