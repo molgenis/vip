@@ -1,0 +1,45 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.14.2.sif
+
+%help
+    VEP (Variant Effect Predictor) predicts the functional effects of genomic variants.
+
+%post
+    version_major=104
+    version_minor=3
+
+    apk update
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing perl perl-dbi zlib libbz2 xz-libs libdeflate
+    apk add --virtual=.build-dependencies -X http://dl-cdn.alpinelinux.org/alpine/edge/testing curl git build-base zlib-dev bzip2-dev xz-dev perl-module-build perl-dev perl-app-cpanminus wget libdeflate-dev
+
+    curl -Ls -o ensembl-vep.tar.gz "https://github.com/Ensembl/ensembl-vep/archive/refs/tags/release/${version_major}.${version_minor}.tar.gz"
+    echo "4e6c7af5162ebb2a463f78366aab0b40dc4de05884f83e50e3f4198384dfaa68  ensembl-vep.tar.gz" | sha256sum -c
+
+    curl -Ls -o ensembl-xs.tar.gz https://github.com/Ensembl/ensembl-xs/archive/refs/tags/2.3.2.tar.gz
+    echo "aafc59568cd1042259196575e99cdfeef9c0fb7966e5f915cfaf38c70885ffa5  ensembl-xs.tar.gz" | sha256sum -c
+
+    # install
+    cpanm https://cpan.metacpan.org/authors/id/E/ET/ETHER/Try-Tiny-0.30.tar.gz
+    cpanm https://cpan.metacpan.org/authors/id/I/IS/ISHIGAKI/JSON-4.03.tar.gz
+    cpanm https://cpan.metacpan.org/authors/id/S/SL/SLOYD/Set-IntervalTree-0.12.tar.gz
+    cpanm https://cpan.metacpan.org/authors/id/N/NW/NWCLARK/PerlIO-gzip-0.20.tar.gz
+
+    tar xf ensembl-vep.tar.gz -C /usr/share
+    TARGET_DIR="/usr/share/ensembl-vep-release-${version_major}.${version_minor}"
+    (
+       cd "${TARGET_DIR}"
+       perl INSTALL.pl --AUTO a -n
+    )
+    echo "export PATH=\"$PATH:${TARGET_DIR}:${TARGET_DIR}/htslib\"" >> "${SINGULARITY_ENVIRONMENT}"
+
+    tar xf ensembl-xs.tar.gz
+    (
+       cd ensembl-xs-2.3.2
+       perl Makefile.PL
+       make
+       make install
+    )
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/* ensembl-xs.tar.gz ensembl-vep.tar.gz

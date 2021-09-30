@@ -5,8 +5,9 @@
 .IDEA/
 /vip.iml
 
-# Singularity image folder.
-singularity/sif
+# Singularity image folders.
+images
+utils/singularity/sif
 
 # Vagrant folder.
 .vagrant/
