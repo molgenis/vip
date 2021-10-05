@@ -669,8 +669,12 @@ main() {
   # step 5: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginVKGLMode}" "${vepPluginArtefactFilePath}" "${annVep}" "${cpuCores}"
 
+  currentInputFilePath="${outputFilePath}"
   # step 6: execute CAPICE live scoring
-  executeCapice "${outputFilePath}" "${assembly}"
+  currentOutputDir="${workDir}/6_capice"
+  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
+  mkdir -p "${currentOutputDir}"
+  executeCapice "${currentInputFilePath}" "${currentOutputFilePath}" "${assembly}"
 }
 
 main "${@}"
