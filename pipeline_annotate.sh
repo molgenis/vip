@@ -449,6 +449,30 @@ executeVep() {
   singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/VEP.sif" vep "${args[@]}"
 }
 
+# arguments:
+#   $1  path to input file
+#   $2  path to output file
+#   $3  assembly
+executeCapice() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r assembly="${3}"
+
+  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Allele\t%Consequence\t%IMPACT\t%SYMBOL\t%Gene\t%Feature_type\t%Feature\t%BIOTYPE\t%EXON\t%INTRON\t%HGVSc\t%HGVSp\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%Codons\t%Existing_variation\t%ALLELE_NUM\t%DISTANCE\t%STRAND\t%FLAGS\t%PICK\t%SYMBOL_SOURCE\t%HGNC_ID\t%REFSEQ_MATCH\t%REFSEQ_OFFSET\t%gnomAD_AF\t%gnomAD_AFR_AF\t%gnomAD_AMR_AF\t%gnomAD_ASJ_AF\t%gnomAD_EAS_AF\t%gnomAD_FIN_AF\t%gnomAD_NFE_AF\t%gnomAD_OTH_AF\t%gnomAD_SAS_AF\t%CLIN_SIG\t%SOMATIC\t%PHENO\t%PUBMED\t%CHECK_REF\t%HPO\t%InheritanceModesGene\t%VKGL_CL"
+
+  local args=()
+  args+=("+split-vep")
+  # Output per transcript/allele consequences on a new line rather than as comma-separated fields on a single line
+  args+=("-d")
+  args+=("-f" "${format}")
+  args+=("-o" "${outputFilePath}")
+  args+=("${inputFilePath}")
+
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
+
+  singularity exec --bind "/apps,/groups,${TMPDIR},/home/umcg-dhendriksen/git/capice:/mycapice" "/home/umcg-dhendriksen/git/vip/singularity/CAPICE.sif" python /mycapice/capice.py -i "${outputFilePath}" -o "capice_${outputFilePath}"
+}
+
 main() {
   local -r parsedArguments=$(getopt -a -n pipeline -o i:o:t:c:fkh --long input:,output:,phenotypes:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
@@ -644,6 +668,9 @@ main() {
 
   # step 5: execute VEP
   executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginVKGLMode}" "${vepPluginArtefactFilePath}" "${annVep}" "${cpuCores}"
+
+  # step 6: execute CAPICE live scoring
+  executeCapice "${outputFilePath}" "${assembly}"
 }
 
 main "${@}"
