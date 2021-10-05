@@ -56,10 +56,10 @@ sub parse_file_header {
 
     my $col_idx;
     for my $i (0 .. $#tokens) {
-        if ($tokens[$i] eq "chrom") {
+        if ($tokens[$i] eq "chromosome") {
             $col_idx->{idx_chr} = $i;
         }
-        if ($tokens[$i] eq "pos") {
+        if ($tokens[$i] eq "start") {
             $col_idx->{idx_pos} = $i;
         }
         if ($tokens[$i] eq "ref") {

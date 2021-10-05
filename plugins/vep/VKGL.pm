@@ -68,8 +68,8 @@ sub create_key {
     my $pos = $_[1];
     my $ref = $_[2];
     my $alt = $_[3];
-    my $gene_symbol = $_[4];
-    return "${chr}_${pos}_${ref}_${alt}_${gene_symbol}";
+    my $gene_id = $_[4];
+    return "${chr}_${pos}_${ref}_${alt}_${gene_id}";
 }
 
 sub map_class {
@@ -142,8 +142,8 @@ sub parse_file_header {
         if ($tokens[$i] eq "alt") {
             $col_idx->{idx_alt} = $i;
         }
-        if ($tokens[$i] eq "gene") {
-            $col_idx->{idx_gene_symbol} = $i;
+        if ($tokens[$i] eq "gene_id_entrez_gene") {
+            $col_idx->{idx_gene_id} = $i;
         }
         if (!$self->{consensus_only}) {
             if ($tokens[$i] eq "amc") {
@@ -211,7 +211,7 @@ sub parse_file {
         $line =~ s/\s*\z//;
         my @tokens = split /\t/, $line;
 
-        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene_symbol}]);
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene_id}]);
 
         my @classes;
 
@@ -260,7 +260,7 @@ sub run {
     my $pos = $vcf_line[1];
     my $ref = $vcf_line[3];
     my $alt = $vcf_line[4];
-    my $gene_symbol = $transcript->{_gene_symbol} || $transcript->{_gene_hgnc};
+    my $gene_id = $transcript->{_gene_stable_id};
 
     my $result = ();
     if (!$self->{consensus_only}) {
@@ -275,7 +275,7 @@ sub run {
     }
     $result->{VKGL_CL} = undef;
 
-    my $key = create_key($chr, $pos, $ref, $alt, $gene_symbol);
+    my $key = create_key($chr, $pos, $ref, $alt, $gene_id);
     my $classes = $self->{classes_map}->{$key};
     if (defined $classes) {
         $result->{VKGL_CL} = $classes->[$self->{idx_class}];

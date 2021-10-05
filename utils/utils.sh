@@ -162,6 +162,9 @@ parseCfg() {
 
 #######################################
 # Parses config files into associative array 'cfgArray'.
+# Renders template values using config values. example config:
+#   assembly=GRCh37
+#   reference=/path/${assembly}.fa.gz
 #
 # Requirements:
 #   associative array 'VIP_CFG_MAP' exists
@@ -177,6 +180,14 @@ parseCfgs() {
   for cfgPathValue in "${cfgPathArr[@]}"; do
     cfgPath=$(realpath "$cfgPathValue")
     parseCfg "${cfgPath}"
+  done
+
+  # render template values:
+  for key in "${!VIP_CFG_MAP[@]}"
+    do
+      while [[ "${VIP_CFG_MAP[$key]}" =~ (.*)\$\{(.*?)\}(.*) ]]; do
+        VIP_CFG_MAP[$key]="${BASH_REMATCH[1]}${VIP_CFG_MAP[${BASH_REMATCH[2]}]}${BASH_REMATCH[3]}"
+      done
   done
 }
 

@@ -3,9 +3,24 @@
 ## Requirements
 - Any modern Linux distribution
 - Singularity (see [admin guide](https://sylabs.io/guides/latest/admin-guide/))
+- \[Windows\] [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/) (f.e. running Ubuntu)
+- \[MacOS\] [Vagrant](https://www.vagrantup.com/)
+- \[MacOS\] [VirtualBox](https://www.virtualbox.org/) (used by Vagrant)
 
 ## Installation
-Run `cd singularity; sudo bash build.sh` to build singularity images.
+**IMPORTANT:** The `pipeline.sh` (and related) scripts assume several directories being present such as `/apps`. These is currently not configured in the `Vagrantfile` and would require additional configuration in WSL as well.
+
+### Linux/Windows (running WSL)
+Run `cd singularity && sudo bash build.sh` to build singularity images.
+
+### MacOS
+Run `vagrant up && vagrant ssh` to start and login to the vagrant container.
+From here, run `cd /vagrant/singularity/ && sudo bash build.sh` to build the singularity images.
+
+When done, you can exit the Vagrant VM through `exit` and then shut it down with `vagrant halt`.
+
+Note that Vagrant only syncs the current folder. When using data stored elsewhere,
+be sure to adjust `config.vm.synced_folder` in the `Vagrantfile`.
 
 ## Usage
 ```

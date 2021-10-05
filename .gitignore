@@ -7,3 +7,6 @@
 
 # Singularity image folder.
 singularity/sif
+
+# Vagrant folder.
+.vagrant/
