@@ -409,7 +409,7 @@ executeVep() {
   fi
 
   # arguments required by CAPICE
-  args+=("--regulatory" "--sift b" "--polyphen b" "--domains" "--canonical" "--total_length")
+  args+=("--regulatory" "--sift" "b" "--polyphen" "b" "--domains" "--canonical" "--total_length")
 
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
   if [ -n "${phenotypes}" ]; then
