@@ -462,20 +462,28 @@ executeCapice() {
   local -r outputFilePath="${2}"
   local -r assembly="${3}"
 
-  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Allele\t%Consequence\t%IMPACT\t%SYMBOL\t%Gene\t%Feature_type\t%Feature\t%BIOTYPE\t%EXON\t%INTRON\t%HGVSc\t%HGVSp\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%Codons\t%Existing_variation\t%ALLELE_NUM\t%DISTANCE\t%STRAND\t%FLAGS\t%PICK\t%SYMBOL_SOURCE\t%HGNC_ID\t%REFSEQ_MATCH\t%REFSEQ_OFFSET\t%gnomAD_AF\t%gnomAD_AFR_AF\t%gnomAD_AMR_AF\t%gnomAD_ASJ_AF\t%gnomAD_EAS_AF\t%gnomAD_FIN_AF\t%gnomAD_NFE_AF\t%gnomAD_OTH_AF\t%gnomAD_SAS_AF\t%CLIN_SIG\t%SOMATIC\t%PHENO\t%PUBMED\t%CHECK_REF\t%HPO\t%InheritanceModesGene\t%VKGL_CL"
+  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Allele\t%Consequence\t%IMPACT\t%SYMBOL\t%Gene\t%Feature_type\t%Feature\t%BIOTYPE\t%EXON\t%INTRON\t%HGVSc\t%HGVSp\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%Codons\t%Existing_variation\t%ALLELE_NUM\t%DISTANCE\t%STRAND\t%FLAGS\t%PICK\t%SYMBOL_SOURCE\t%HGNC_ID\t%REFSEQ_MATCH\t%REFSEQ_OFFSET\t%gnomAD_AF\t%gnomAD_AFR_AF\t%gnomAD_AMR_AF\t%gnomAD_ASJ_AF\t%gnomAD_EAS_AF\t%gnomAD_FIN_AF\t%gnomAD_NFE_AF\t%gnomAD_OTH_AF\t%gnomAD_SAS_AF\t%CLIN_SIG\t%SOMATIC\t%PHENO\t%PUBMED\t%CHECK_REF\t%InheritanceModesGene\t%VKGL_CL"
+
+  local -r tmpOutputPath="$(dirname "${outputFilePath}")/split.tsv"
 
   local args=()
   args+=("+split-vep")
   # Output per transcript/allele consequences on a new line rather than as comma-separated fields on a single line
   args+=("-d")
   args+=("-f" "${format}")
-  args+=("-o" "${outputFilePath}")
+  args+=("-o" "${tmpOutputPath}")
   args+=("${inputFilePath}")
 
   singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
 
-  singularity exec --bind "/apps,/groups,${TMPDIR},/home/umcg-dhendriksen/git/capice:/mycapice" "/home/umcg-dhendriksen/git/vip/singularity/CAPICE.sif" python /mycapice/capice.py -i "${outputFilePath}" -o "capice_${outputFilePath}"
+  local -r tmpOutputPath2="$(dirname "${outputFilePath}")/split2.tsv"
+  echo -e "##VEP=104.1" > "${tmpOutputPath2}"
+  echo -e "${format}" >> "${tmpOutputPath2}"
+  cat "${tmpOutputPath}" >> "${tmpOutputPath2}"
+
+  singularity exec --bind "/apps,/groups,${TMPDIR},/home/umcg-dhendriksen/git/capice:/mycapice" "/home/umcg-dhendriksen/git/vip/singularity/CAPICE.sif" python /mycapice/capice.py -i "${tmpOutputPath2}" -o "$(dirname "${outputFilePath}")/test.tsv" -vv
 }
+
 
 main() {
   local -r parsedArguments=$(getopt -a -n pipeline -o i:o:t:c:fkh --long input:,output:,phenotypes:,force,keep,help -- "$@")

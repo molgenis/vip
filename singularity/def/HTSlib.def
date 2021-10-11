@@ -26,7 +26,7 @@ Stage: final
     /usr/local/bin/tabix
 
 %post
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing zlib libbz2 xz-libs libdeflate
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing zlib libbz2 xz-libs libdeflate bash
 
 %help
     HTSlib is an implementation of a unified C library for accessing common file formats, such as SAM, CRAM and VCF. Includes the tabix indexer and the bgzip compression utility.
