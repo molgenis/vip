@@ -378,6 +378,7 @@ executeVep() {
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
 
+  # vep --regulatory --sift b --polyphen b --domains --canonical --total_length
   args=()
   args+=("--input_file" "${inputFilePath}" "--format" "vcf")
   args+=("--output_file" "${outputFilePath}" "--vcf")
@@ -406,6 +407,9 @@ executeVep() {
   if [ -n "${inputRefPath}" ]; then
     args+=("--fasta" "${inputRefPath}" "--hgvs")
   fi
+
+  # arguments required by CAPICE
+  args+=("--regulatory" "--sift b" "--polyphen b" "--domains" "--canonical" "--total_length")
 
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
   if [ -n "${phenotypes}" ]; then
