@@ -425,7 +425,7 @@ executeVep() {
   fi
 
   # arguments required by CAPICE
-  args+=("--regulatory" "--sift" "b" "--polyphen" "b" "--domains" "--canonical" "--total_length")
+  args+=("--regulatory" "--sift" "b" "--polyphen" "b" "--domains" "--total_length")
 
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
   if [ -n "${phenotypes}" ]; then
@@ -478,8 +478,7 @@ executeCapice() {
   local -r outputFilePath="${2}"
   local -r assembly="${3}"
 
-  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Allele\t%Consequence\t%IMPACT\t%SYMBOL\t%Gene\t%Feature_type\t%Feature\t%BIOTYPE\t%EXON\t%INTRON\t%HGVSc\t%HGVSp\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%Codons\t%Existing_variation\t%ALLELE_NUM\t%DISTANCE\t%STRAND\t%FLAGS\t%PICK\t%SYMBOL_SOURCE\t%HGNC_ID\t%REFSEQ_MATCH\t%REFSEQ_OFFSET\t%gnomAD_AF\t%gnomAD_AFR_AF\t%gnomAD_AMR_AF\t%gnomAD_ASJ_AF\t%gnomAD_EAS_AF\t%gnomAD_FIN_AF\t%gnomAD_NFE_AF\t%gnomAD_OTH_AF\t%gnomAD_SAS_AF\t%CLIN_SIG\t%SOMATIC\t%PHENO\t%PUBMED\t%CHECK_REF\t%InheritanceModesGene\t%VKGL_CL\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE"
-
+  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%HGNC_ID\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
   local -r tmpOutputPath="$(dirname "${outputFilePath}")/split.tsv"
 
   local args=()
