@@ -35,6 +35,7 @@ config:
   annotate_phenotype_matching             Phenotype matching algorithm (hpo or vibe, default: hpo)
   annotate_vep_dir_cache                  VEP: Cache directory.
   annotate_vep_coding_only                VEP: Only return consequences that fall in the coding regions of transcripts (0 or 1, default: 0).
+  annotate_vep_custom_gnomAD_<assembly>   VEP: Path to gnomAD.vcf.gz annotations file per assembly.
   annotate_vep_no_intergenic              VEP: Do not include intergenic consequences in the output (0 or 1, default: 1).
   annotate_vep_plugin_Hpo                 VEP: Path to genes_to_phenotype.tsv (default ./resources/hpo_YYYYmmdd.tsv)
   annotate_vep_plugin_Inheritance         VEP: Path to gene_inheritance_modes.tsv
@@ -67,15 +68,16 @@ get_unique_phenotypes() {
 }
 
 # arguments:
-#   $1 vepDirCache
-#   $2 vepCodingOnly
-#   $3 vepNoIntergenic
-#   $4 vepHpoGenPhenoFilePath
-#   $5 vepPluginInheritanceFilePath
-#   $6 vepPluginPreferredTranscriptFilePath
-#   $7 vepPluginSpliceAiFilePaths
-#   $8 vepPluginVKGLFilePath
-#   $9 vepPluginArtefactFilePath
+#   $1  vepDirCache
+#   $2  vepCodingOnly
+#   $3  vepNoIntergenic
+#   $4  vepHpoGenPhenoFilePath
+#   $5  vepPluginInheritanceFilePath
+#   $6  vepPluginPreferredTranscriptFilePath
+#   $7  vepPluginSpliceAiFilePaths
+#   $8  vepPluginVKGLFilePath
+#   $9  vepPluginArtefactFilePath
+#   $10 gnomAdFilePath
 validateVep() {
   local -r vepDirCache="${1}"
   local -r vepCodingOnly="${2}"
@@ -86,6 +88,7 @@ validateVep() {
   local -r vepPluginSpliceAiFilePaths="${7}"
   local -r vepPluginVKGLFilePath="${8}"
   local -r vepPluginArtefactFilePath="${9}"
+  local -r gnomAdFilePath="${10}"
 
   if [[ -z "${vepDirCache}" ]]; then
     echo -e "missing required annotate_vep_dir_cache config value."
@@ -156,6 +159,11 @@ validateVep() {
     echo -e "annotate_vep_plugin_VKGL ${vepPluginArtefactFilePath} does not exist."
     exit 1
   fi
+
+  if [[ -n "${gnomAdFilePath}" ]] && [[ ! -f "${gnomAdFilePath}" ]]; then
+      echo -e "gnomAD ${gnomAdFilePath} does not exist."
+      exit 1
+    fi
 }
 
 # arguments:
@@ -351,8 +359,9 @@ executeAnnotSv() {
 #   $16 vepPluginVKGLFilePath (optional)
 #   $17 vepPluginVKGLMode (optional)
 #   $18 vepPluginArtefactFilePath (optional)
-#   $19 annVep
-#   $20 cpu cores
+#   $19 gnomAdFilePath (optional)
+#   $20 annVep
+#   $21 cpu cores
 executeVep() {
   local -r inputFilePath="${1}"
   local -r outputFilePath="${2}"
@@ -372,8 +381,9 @@ executeVep() {
   local -r vepPluginVKGLFilePath="${16}"
   local -r vepPluginVKGLMode="${17}"
   local -r vepPluginArtefactFilePath="${18}"
-  local -r annVep="${19}"
-  local -r cpuCores="${20}"
+  local -r gnomAdFilePath="${19}"
+  local -r annVep="${20}"
+  local -r cpuCores="${21}"
 
   local -r outputDir="$(dirname "${outputFilePath}")"
   mkdir -p "${outputDir}"
@@ -395,7 +405,7 @@ executeVep() {
   if [[ "${vepNoIntergenic}" == "1" ]]; then
     args+=("--no_intergenic")
   fi
-  args+=("--af_gnomad" "--pubmed")
+  args+=("--pubmed")
   args+=("--shift_3prime" "1")
   args+=("--allele_number")
   args+=("--numbers")
@@ -405,6 +415,13 @@ executeVep() {
 
   if [ -n "${inputRefPath}" ]; then
     args+=("--fasta" "${inputRefPath}" "--hgvs")
+  fi
+
+  if [ -n "${gnomAdFilePath}" ]; then
+    args+=("--custom" "${gnomAdFilePath},gnomAD,vcf,exact,0,AF")
+  else
+    # fallback to gnomAD annotations in the VEP database
+    args+=("--af_gnomad")
   fi
 
   args+=("--dir_plugins" "${SCRIPT_DIR}/plugins/vep")
@@ -530,6 +547,7 @@ main() {
   local vepPluginArtefactFilePath=""
   local vepPluginSpliceAiFilePaths=""
   local annVep=""
+  local gnomAdFilePath=""
 
   local parseCfgFilePaths="${SCRIPT_DIR}/config/default.cfg"
   if [[ -n "${cfgFilePaths}" ]]; then
@@ -594,6 +612,9 @@ main() {
   if [[ -n "${VIP_CFG_MAP["annotate_vep"]+unset}" ]]; then
     annVep="${VIP_CFG_MAP["annotate_vep"]}"
   fi
+  if [[ -n "${VIP_CFG_MAP["annotate_vep_custom_gnomAD_${assembly}"]+unset}" ]]; then
+    gnomAdFilePath="${VIP_CFG_MAP["annotate_vep_custom_gnomAD_${assembly}"]}"
+  fi
 
   if [[ -z "${outputFilePath}" ]]; then
     outputFilePath="$(createOutputPathFromPostfix "${inputFilePath}" "vip_annotate")"
@@ -601,7 +622,7 @@ main() {
 
   validate "${inputFilePath}" "${outputFilePath}" "${phenotypes}" "${force}" "${inputRefPath}" "${phenotypeMatching}" "${cpuCores}"
   validateVibe "${vibeHdtPath}" "${vibeHpoPath}"
-  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginArtefactFilePath}"
+  validateVep "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${vepHpoGenPhenoFilePath}" "${vepPluginInheritanceFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginArtefactFilePath}" "${gnomAdFilePath}"
 
   mkdir -p "$(dirname "${outputFilePath}")"
   local -r outputDir="$(realpath "$(dirname "${outputFilePath}")")"
@@ -643,7 +664,7 @@ main() {
   fi
 
   # step 5: execute VEP
-  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginVKGLMode}" "${vepPluginArtefactFilePath}" "${annVep}" "${cpuCores}"
+  executeVep "${currentInputFilePath}" "${outputFilePath}" "${assembly}" "${inputRefPath}" "${vepDirCache}" "${vepCodingOnly}" "${vepNoIntergenic}" "${phenotypes}" "${phenotypeMatching}" "${vepHpoGenPhenoFilePath}" "${vibeOutputDir}" "${vepPluginInheritanceFilePath}" "${annotSvOutputFilePath}" "${vepPluginPreferredTranscriptFilePath}" "${vepPluginSpliceAiFilePaths}" "${vepPluginVKGLFilePath}" "${vepPluginVKGLMode}" "${vepPluginArtefactFilePath}" "${gnomAdFilePath}" "${annVep}" "${cpuCores}"
 }
 
 main "${@}"

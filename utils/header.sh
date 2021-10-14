@@ -17,4 +17,4 @@ fi
 
 declare -A VIP_CFG_MAP
 
-VIP_VERSION="3.2.0"
+VIP_VERSION="3.3.0"
