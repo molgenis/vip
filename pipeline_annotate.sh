@@ -497,7 +497,7 @@ executeCapice() {
   echo -e "${format}" >> "${tmpOutputPath2}"
   cat "${tmpOutputPath}" >> "${tmpOutputPath2}"
 
-  singularity exec --bind "/apps,/groups,${TMPDIR},/home/umcg-dhendriksen/git/capice:/mycapice" "/home/umcg-dhendriksen/git/vip/singularity/CAPICE.sif" python /mycapice/capice.py -i "${tmpOutputPath2}" -o "$(dirname "${outputFilePath}")/test.tsv" -vv
+  singularity exec --bind "/apps,/groups,${TMPDIR},/home/umcg-dhendriksen/git/capice:/mycapice" "/home/umcg-dhendriksen/git/vip/singularity/CAPICE.sif" python /mycapice/capice.py -i "${tmpOutputPath2}" -m /mycapice/CAPICE_model/GRCh37/POC/xgb_booster_poc.pickle.dat -o "$(dirname "${outputFilePath}")/test.tsv" -vv
 }
 
 
