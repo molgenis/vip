@@ -83,7 +83,6 @@ main() {
   images+=("HTSlib" "BCFtools")
   images+=("GATK" "vcf-decision-tree" "vcf-inheritance-matcher" "vcf-report" "VIBE")
   images+=("Genmod")
-  images+=("vcfanno")
   images+=("AnnotSV")
   images+=("VEP")
 

@@ -230,55 +230,6 @@ validate() {
 }
 
 # arguments:
-#   $1 path to output file
-createVcfannoConfig() {
-  local -r outputFilePath="${1}"
-
-  cat >"${outputFilePath}" <<EOT
-
-[[annotation]]
-file="/apps/data/CAPICE/${assembly}/capice_v1.0_indels.vcf.gz"
-fields = ["CAP"]
-ops=["self"]
-names=["CAP"]
-
-[[annotation]]
-file="/apps/data/CAPICE/${assembly}/capice_v1.0_snvs.vcf.gz"
-fields = ["CAP"]
-ops=["self"]
-names=["CAP"]
-
-EOT
-}
-
-# arguments:
-#   $1 path to input file
-#   $2 path to output file
-#   $3 processes
-executeVcfanno() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r processes="${3}"
-
-  local -r outputDir="$(dirname "${outputFilePath}")"
-
-  local -r confFilePath="${outputDir}/conf.toml"
-  createVcfannoConfig "${confFilePath}"
-
-  local args=()
-  args+=("-p" "${processes}")
-  args+=("${confFilePath}")
-  args+=("${inputFilePath}")
-
-  if hasSamples "${inputFilePath}"; then
-    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcfanno.sif" vcfanno "${args[@]}" | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" bgzip >"${outputFilePath}"
-  else
-    # workaround for https://github.com/brentp/vcfanno/issues/123
-    singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/vcfanno.sif" vcfanno "${args[@]}" | cut -f 1-8 | singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/HTSlib.sif" bgzip >"${outputFilePath}"
-  fi
-}
-
-# arguments:
 #   $1 phenotypes
 #   $2 path to output directory
 #   $3 path to vibe hdt
@@ -671,13 +622,6 @@ main() {
   local -r workDir="${VIP_WORK_DIR}"
 
   local currentInputFilePath="${inputFilePath}" currentOutputFilePath
-
-  # step 1: annotate input with vcfanno
-  currentOutputDir="${workDir}/1_vcfanno"
-  currentOutputFilePath="${currentOutputDir}/${outputFilename}"
-  mkdir -p "${currentOutputDir}"
-  executeVcfanno "${currentInputFilePath}" "${currentOutputFilePath}" "${cpuCores}"
-  currentInputFilePath="${currentOutputFilePath}"
 
   # step 3: execute VIBE
   local vibeOutputDir=""
