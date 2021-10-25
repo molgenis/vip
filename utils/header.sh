@@ -15,6 +15,16 @@ if [ -z "${TMP_WORK_DIR+x}" ]; then
   trap cleanup EXIT
 fi
 
+if [ -z "${SINGULARITY_TMPDIR+x}" ]; then
+  SINGULARITY_TMPDIR="${TMPDIR}"
+  export SINGULARITY_TMPDIR
+fi
+
+if [ -z "${SINGULARITY_CACHEDIR+x}" ]; then
+  SINGULARITY_CACHEDIR="${TMPDIR}"
+  export SINGULARITY_CACHEDIR
+fi
+
 declare -A VIP_CFG_MAP
 
-VIP_VERSION="3.3.0"
+VIP_VERSION="3.3.1"
