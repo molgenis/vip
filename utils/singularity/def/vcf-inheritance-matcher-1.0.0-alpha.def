@@ -16,7 +16,7 @@ From: sif/build/openjdk-11.sif
 
     mkdir -p /opt/vcf-inheritance-matcher/lib
     curl -Ls -o /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
-    echo "5463fcec3a7df56dc1e9caf485ac7b91c87c8814cc7083a1f50d91be5305c74c  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
+    echo "4a40d977d4cca4c881698adf18b45f69698e321f1b66610953ad9896a94a010f  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
