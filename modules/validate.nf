@@ -7,8 +7,11 @@ def validateInput() {
     println("parameter 'input' value '" + params.input + "' does not exist")
     System.exit(1)
   }
-  if( !params.input.endsWith(".vcf.gz") ) {
-    println("parameter 'input' value '" + params.input + "' is not a .vcf.gz file")
+  if( !params.input.endsWith(".vcf") &&
+      !params.input.endsWith(".vcf.gz") &&
+      !params.input.endsWith(".bcf") &&
+      !params.input.endsWith(".bcf.gz") ) {
+    println("parameter 'input' value '" + params.input + "' is not a .vcf, .vcf.gz, .bcf or .bcf.gz file")
     System.exit(1)
   }
 }
