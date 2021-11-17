@@ -5,9 +5,14 @@
 .IDEA/
 /vip.iml
 
-# Singularity image folders.
+# Singularity images build folder.
 images
 utils/singularity/sif
+
+# Installed resource folders.
+resources
+!resources/decision_tree.json
+!resources/plugins
 
 # Vagrant folder.
 .vagrant/
