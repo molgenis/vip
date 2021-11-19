@@ -51,7 +51,7 @@ sub get_header_info {
     my $self = Inheritance->new;
     my $result;
     $result->{InheritanceModesGene} = "List of inheritance modes for the gene";
-    $result->{IncompletePenetrance} = "Boolean indication if the gene is known for imcomplete penetrance.";
+    $result->{IncompletePenetrance} = "Boolean indicating if the gene is known for incomplete penetrance.";
     if ($self->{include_pheno}) {
         $result->{InheritanceModesPheno} = "List of inheritance modes for provided HPO terms";
     }
