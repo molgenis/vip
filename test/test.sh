@@ -70,11 +70,58 @@ test_snv () {
   nextflow "${args[@]}" > /dev/null 2>&1
 }
 
+test_snv_proband () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband.vcf")
+  args+=("--probands" "PROBAND0")
+  args+=("--outputDir" "${OUTPUT_DIR}")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  nextflow "${args[@]}" > /dev/null 2>&1
+}
+
+test_snv_proband_trio () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
+  args+=("--probands" "PROBAND0")
+  args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
+  args+=("--outputDir" "${OUTPUT_DIR}")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  nextflow "${args[@]}" > /dev/null 2>&1
+}
+
 test_sv () {
   local args=()
   args+=("-log" "${OUTPUT_LOG}")
   args+=("run")
   args+=("--input" "${TEST_RESOURCES_DIR}/sv.vcf")
+  args+=("--outputDir" "${OUTPUT_DIR}")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  nextflow "${args[@]}" > /dev/null 2>&1
+}
+
+test_lp () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lp.vcf.gz")
+  args+=("--outputDir" "${OUTPUT_DIR}")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  nextflow "${args[@]}" > /dev/null 2>&1
+}
+
+test_lb () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lb.bcf.gz")
   args+=("--outputDir" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
@@ -89,9 +136,29 @@ run_tests () {
   test_snv
   after_each
 
+  TEST_ID="test_snv_proband"
+  before_each
+  test_snv_proband
+  after_each
+
+  TEST_ID="test_snv_proband_trio"
+  before_each
+  test_snv_proband_trio
+  after_each
+
   TEST_ID="test_sv"
   before_each
   test_sv
+  after_each
+
+  TEST_ID="test_lp"
+  before_each
+  test_lp
+  after_each
+
+  TEST_ID="test_lb"
+  before_each
+  test_lb
   after_each
 
   after_all

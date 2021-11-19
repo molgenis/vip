@@ -6,19 +6,19 @@
 /vip.iml
 
 # Singularity images build folder.
-images
-utils/singularity/sif
+/images
+/utils/singularity/sif
 
 # Installed resource folders.
-resources
-!resources/decision_tree.json
-!resources/plugins
+/resources
+!/resources/decision_tree.json
+!/resources/plugins
 
 # test
-test/.nextflow
-test/output
-test/nextflow.config
-test/test_wrapper.sh
+/test/.nextflow
+/test/output
+/test/nextflow.config
+/test/test_wrapper.sh
 
 # Vagrant folder.
-.vagrant/
+/.vagrant/

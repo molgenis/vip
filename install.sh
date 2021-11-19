@@ -12,7 +12,11 @@ download_resources () {
   local files=()
   files+=("hpo_20210920.tsv")
   files+=("inheritance_20210920.tsv")
+  files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
+  files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
   files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
+  files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz")
+  files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz.csi")
   files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
 
   for file in "${files[@]}"; do
