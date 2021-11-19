@@ -8,6 +8,7 @@ process report {
   shell:
     vcfOutputPath = "${id}.vcf.gz"
     reportPath = "${id}.html"
+    refSeqPath = params[params.assembly].reference
     template 'report.sh'
 }
 

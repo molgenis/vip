@@ -5,6 +5,7 @@ process preprocess {
     tuple val(id), val(order), path(vcfPreprocessedPath)
   shell:
     vcfPreprocessedPath = "${id}_chunk${order}_preprocessed.vcf.gz"
+    refSeqPath = params[params.assembly].reference
     template 'preprocess.sh'
 }
 
@@ -18,6 +19,6 @@ process preprocess_publish {
   output:
     tuple val(id), path(vcfMergedPath), path("${vcfMergedPath}.csi")
   shell:
-      vcfMergedPath = "${id}_preprocessed.vcf.gz"
-      template 'merge.sh'
+    vcfMergedPath = "${id}_preprocessed.vcf.gz"
+    template 'merge.sh'
 }

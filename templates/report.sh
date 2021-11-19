@@ -37,7 +37,7 @@ realign () {
   args+=("-jar" "/opt/gatk/lib/gatk.jar")
   args+=("HaplotypeCaller")
   args+=("--tmp-dir" "${tmp_dir}")
-  args+=("-R" "!{params.reference}")
+  args+=("-R" "!{refSeqPath}")
   args+=("-I" "${input_bam}")
   args+=("-L" "!{vcfPath}")
   args+=("-ip" "250")
@@ -66,7 +66,7 @@ report () {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("--input" "!{vcfOutputPath}")
-  args+=("--reference" "!{params.reference}")
+  args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
   if [ -n "!{params.probands}" ]; then
     args+=("--probands" "!{params.probands}")

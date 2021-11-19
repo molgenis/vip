@@ -71,7 +71,7 @@ vep () {
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
-  args+=("--fasta" "!{params.reference}")
+  args+=("--fasta" "!{refSeqPath}")
   args+=("--hgvs")
   args+=("--offline")
   args+=("--cache")

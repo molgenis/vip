@@ -5,6 +5,7 @@ process annotate {
     tuple val(id), val(order), path(vcfAnnotatedPath)
   shell:
     vcfAnnotatedPath = "${id}_chunk${order}_annotated.vcf.gz"
+    refSeqPath = params[params.assembly].reference
     template 'annotate.sh'
 }
 

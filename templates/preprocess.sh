@@ -6,7 +6,7 @@ norm () {
   args+=("--multiallelics" "-both")
   # warn when incorrect or missing REF allele is encountered or when alternate allele is non-ACGTN (e.g. structural variant)
   args+=("--check-ref" "w")
-  args+=("--fasta-ref" "!{params.reference}")
+  args+=("--fasta-ref" "!{refSeqPath}")
   args+=("--output-type" "z")
   args+=("--output" "!{vcfPreprocessedPath}")
   args+=("--no-version")

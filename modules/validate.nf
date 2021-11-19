@@ -23,29 +23,42 @@ def validateOutput() {
   }
 }
 
+def validateAssembly() {
+  if( !params.containsKey('assembly') ) {
+    println("missing required parameter 'assembly'")
+    System.exit(1)
+  }
+  if( !params.assembly.equals("GRCh37") && !params.assembly.equals("GRCh38") ) {
+    println("parameter 'assembly' value '" + params.assembly + "' must be 'GRCh37' or 'GRCh38'")
+    System.exit(1)
+  }
+}
+
 def validateReference() {
-  if( !params.containsKey('reference') ) {
-    println("missing required parameter 'reference'")
+  def param =  params.assembly + ".reference"
+  if( !params[params.assembly].containsKey('reference') ) {
+    println("missing required parameter '" + param + "'")
     System.exit(1)
   }
-  if( !file(params.reference).exists() ) {
-    println("parameter 'reference' value '" + params.reference + "' does not exist")
+  def refSeqPath = params[params.assembly].reference
+  if( !file(refSeqPath).exists() ) {
+    println("parameter '" + param + "' value '" + refSeqPath + "' does not exist")
     System.exit(1)
   }
-  if( !params.reference.endsWith(".fasta.gz") &&
-      !params.reference.endsWith(".fna.gz") &&
-      !params.reference.endsWith(".ffn.gz") &&
-      !params.reference.endsWith(".faa.gz") &&
-      !params.reference.endsWith(".frn.gz") ) {
-    println("parameter 'reference' value '" + params.reference + "' is not a .fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz file")
+  if( !refSeqPath.endsWith(".fasta.gz") &&
+      !refSeqPath.endsWith(".fna.gz") &&
+      !refSeqPath.endsWith(".ffn.gz") &&
+      !refSeqPath.endsWith(".faa.gz") &&
+      !refSeqPath.endsWith(".frn.gz") ) {
+    println("parameter '" + param + "' value '" + refSeqPath + "' is not a .fasta.gz, .fna.gz, .ffn.gz, .faa.gz or .frn.gz file")
     System.exit(1)
   }
-  if( !file(params.reference + ".fai").exists() ) {
-    println("parameter 'reference' value '" + params.reference + ".fai' does not exist")
+  if( !file(refSeqPath + ".fai").exists() ) {
+    println("parameter '" + param + "' value '" + params.reference + ".fai' does not exist")
     System.exit(1)
   }
-  if( !file(params.reference + ".gzi").exists() ) {
-    println("parameter 'reference' value '" + params.reference + ".gzi' does not exist")
+  if( !file(refSeqPath + ".gzi").exists() ) {
+    println("parameter '" + param + "' value '" + params.reference + ".gzi' does not exist")
     System.exit(1)
   }
   // TODO: add .dict check
@@ -65,6 +78,7 @@ def validateAnnotate() {
 def validate() {
   validateInput()
   validateOutput()
+  validateAssembly()
   validateReference()
   validateAnnotate()
 }
