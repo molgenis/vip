@@ -7,7 +7,7 @@ abort() {
    exit 1
 }
 
-NXF_VERSION="21.04.3"
+NXF_VERSION="21.10.4"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
