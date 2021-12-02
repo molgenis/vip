@@ -1,0 +1,34 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.14.3.sif
+Stage: build
+
+%post
+    version_major=1
+    version_minor=14
+
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
+
+    # download
+    curl -Ls -o "htslib-${version_major}.${version_minor}.tar.bz2" "https://github.com/samtools/htslib/releases/download/${version_major}.${version_minor}/htslib-${version_major}.${version_minor}.tar.bz2"
+    echo "ed221b8f52f4812f810eebe0cc56cd8355a5c9d21c62d142ac05ad0da147935f  htslib-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+
+    # install
+    tar -xf "htslib-${version_major}.${version_minor}.tar.bz2"
+    cd "htslib-${version_major}.${version_minor}"
+    ./configure --disable-libcurl --disable-gcs --disable-s3
+    make
+    make install
+
+Bootstrap: localimage
+From: sif/build/alpine-3.14.3.sif
+Stage: final
+
+%files from build
+    /usr/local/bin/bgzip
+    /usr/local/bin/tabix
+
+%post
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing zlib libbz2 xz-libs libdeflate
+
+%help
+    HTSlib is an implementation of a unified C library for accessing common file formats, such as SAM, CRAM and VCF. Includes the tabix indexer and the bgzip compression utility.

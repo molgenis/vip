@@ -1,0 +1,9 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##ALT=<ID=DEL,Description="Deletion">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##contig=<ID=17,length=81195210,assembly=b37>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+17	14093499	.	T	<DEL>	PASS	.	SVTYPE=DEL;END=15486000;SVLEN=1392501

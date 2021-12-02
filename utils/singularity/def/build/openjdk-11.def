@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.14.3.sif
+
+%help
+	Singularity container running Oracle OpenJDK 11 (JRE headless) on Alpine Linux
+
+%post
+	apk --no-cache add openjdk11-jre-headless

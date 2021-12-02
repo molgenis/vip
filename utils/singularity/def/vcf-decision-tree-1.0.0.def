@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: sif/build/openjdk-11.sif
+
+%help
+    Command-line application to generate a report for any VCF (Variant Call Format) file based on a report template.
+    Usage: java -jar /opt/vcf-decision-tree/lib/vcf-decision-tree.jar
+
+%post
+    version_major=1
+    version_minor=0
+    version_patch=0
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/vcf-decision-tree/lib
+    curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
+    echo "90bd1872c9199d8edb502565511b81fc44c1589a7ddd0fe3c699e133dfff23c3  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
