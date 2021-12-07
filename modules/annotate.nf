@@ -7,6 +7,7 @@ process annotate {
     vcfAnnotatedPath = "${id}_chunk${order}_annotated.vcf.gz"
     refSeqPath = params[params.assembly + "_reference"]
     vepCustomGnomAdPath = params[params.assembly + "_annotate_vep_custom_gnomad"]
+    vepPluginArtefact = params[params.assembly + "_annotate_vep_plugin_artefact"]
     vepPluginSpliceAiIndelPath = params[params.assembly + "_annotate_vep_plugin_spliceai_indel"]
     vepPluginSpliceAiSnvPath = params[params.assembly + "_annotate_vep_plugin_spliceai_snv"]
     vepPluginVkglPath = params[params.assembly + "_annotate_vep_plugin_vkgl"]

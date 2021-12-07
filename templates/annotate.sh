@@ -93,8 +93,8 @@ vep () {
   args+=("--allow_non_variant")
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
-  if [ -n "!{params.annotate_vep_plugin_artefact}" ]; then
-    args+=("--plugin" "Artefact,!{params.annotate_vep_plugin_artefact}")
+  if [ -n "!{vepPluginArtefact}" ]; then
+    args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
   if [ -n "!{params.phenotypes}" ]; then
     args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
