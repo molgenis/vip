@@ -61,6 +61,10 @@ annot_sv () {
     args+=("-hpo" "$(join_arr "," "${!UNIQUE_PHENOTYPES[@]}")")
   fi
   !{singularity_annotsv} AnnotSV "${args[@]}"
+  if [ ! -f "!{vcfPath}.tsv" ]; then
+    echo -e "AnnotSV error: failed to produce output" 1>&2
+    exit 1
+  fi
 }
 
 vep () {
