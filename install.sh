@@ -1,28 +1,52 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_NAME="$(basename "$0")"
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
+usage() {
+  echo -e "usage: ${SCRIPT_NAME} [-a <arg>]
+  -a, --assembly   <arg>    Allowed values: GRCh37, GRCh38, ALL (default).
+  -h, --help                Print this message and exit."
+}
+
+validate() {
+  local -r assembly="${1}"
+  if [ "${assembly}" != "ALL" ] && [ "${assembly}" != "GRCh37" ] && [ "${assembly}" != "GRCh38" ]; then
+    echo -e "invalid assembly value '${assembly}'. valid values are ALL, GRCh37, GRCh38."
+    exit 1
+  fi
+}
+
 download_resources_molgenis () {
+  local -r assembly="${1}"
+
   local files=()
   files+=("hpo_20210920.tsv")
   files+=("inheritance_20211119.tsv")
-  files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
-  files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
-  files+=("GRCh37/human_g1k_v37.dict")
-  files+=("GRCh37/human_g1k_v37.fasta.gz")
-  files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
-  files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
-  files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
-  files+=("GRCh37/vkgl_public_consensus_sep2021.tsv")
-  files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz")
-  files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz.csi")
-  files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
-  files+=("GRCh38/vkgl_public_consensus_sep2021.tsv")
-  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
-  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
-  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh37/human_g1k_v37.dict")
+    files+=("GRCh37/human_g1k_v37.fasta.gz")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
+    files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
+    files+=("GRCh37/vkgl_public_consensus_sep2021.tsv")
+  fi
+
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz")
+    files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
+    files+=("GRCh38/vkgl_public_consensus_sep2021.tsv")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+  fi
+
   for file in "${files[@]}"; do
     if [ ! -f "${download_dir}/${file}" ]; then
       echo -e "downloading from download.molgeniscloud.org: ${file} ..."
@@ -34,13 +58,19 @@ download_resources_molgenis () {
 }
 
 download_resources_vep () {
+  local -r assembly="${1}"
+
   local -r vep_dir="${SCRIPT_DIR}/resources/vep/cache"
   if [ ! -d "${vep_dir}" ]; then
     mkdir -p "${vep_dir}"
 
     local vep_files=()
-    vep_files+=("homo_sapiens_refseq_vep_104_GRCh37.tar.gz")
-    vep_files+=("homo_sapiens_refseq_vep_104_GRCh38.tar.gz")
+    if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_104_GRCh37.tar.gz")
+    fi
+    if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_104_GRCh38.tar.gz")
+    fi
 
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
@@ -75,13 +105,20 @@ download_resources_annotsv () {
 }
 
 download_resources () {
+  local -r assembly="${1}"
+
   local -r download_dir="${SCRIPT_DIR}/resources"
   mkdir -p "${download_dir}"
-  mkdir -p "${download_dir}/GRCh37"
-  mkdir -p "${download_dir}/GRCh38"
 
-  download_resources_molgenis
-  download_resources_vep
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    mkdir -p "${download_dir}/GRCh37"
+  fi
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    mkdir -p "${download_dir}/GRCh38"
+  fi
+
+  download_resources_molgenis "${assembly}"
+  download_resources_vep "${assembly}"
   download_resources_annotsv
 }
 
@@ -109,8 +146,44 @@ download_images () {
 }
 
 main () {
+  local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
+    # shellcheck disable=SC2181
+    if [[ $? != 0 ]]; then
+      usage
+      exit 2
+    fi
+
+  local assembly="ALL"
+
+  eval set -- "${args}"
+  while :; do
+    case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      shift
+      ;;
+    -a | --assembly)
+      assembly="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      exit 2
+      ;;
+    esac
+  done
+
+  validate "${assembly}"
+
+  echo -e "installing ..."
   download_images
-  download_resources
+  download_resources "${assembly}"
+  echo -e "installing done"
 }
 
 main "${@}"
