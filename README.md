@@ -10,6 +10,12 @@
 git clone https://github.com/molgenis/vip
 bash vip/install.sh
 ```
+### Assembly
+By default, the installation script downloads resources for the GRCh37 and GRCh38 assemblies.
+Use `--assembly` to download recourses for a specific assembly:  
+```
+bash vip/install.sh --assembly GRCh38
+```
 
 ### Optional
 - [SpliceAI](https://basespace.illumina.com/s/otSPW8hnhaZR) (free for academic and not-for-profit use)
