@@ -211,26 +211,32 @@ sub parse_file {
         $line =~ s/\s*\z//;
         my @tokens = split /\t/, $line;
 
-        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene_id}]);
+        my $gene_id = $tokens[$col_idx->{idx_gene_id}];
+        if(defined $gene_id) {
+            my $chr = $tokens[$col_idx->{idx_chr}];
+            my $pos = $tokens[$col_idx->{idx_pos}];
+            my $ref = $tokens[$col_idx->{idx_ref}];
+            my $alt = $tokens[$col_idx->{idx_alt}];
+            my $key = create_key($chr, $pos, $ref, $alt, $gene_id);
 
-        my @classes;
+            my @classes;
 
-        if (!$self->{consensus_only}) {
-            $classes[$idx_class_amc] = map_class($tokens[$col_idx->{idx_class_amc}]);
-            $classes[$idx_class_erasmus] = map_class($tokens[$col_idx->{idx_class_erasmus}]);
-            $classes[$idx_class_lumc] = map_class($tokens[$col_idx->{idx_class_lumc}]);
-            $classes[$idx_class_nki] = map_class($tokens[$col_idx->{idx_class_nki}]);
-            $classes[$idx_class_radboud_mumc] = map_class($tokens[$col_idx->{idx_class_radboud_mumc}]);
-            $classes[$idx_class_umcg] = map_class($tokens[$col_idx->{idx_class_umcg}]);
-            $classes[$idx_class_umcu] = map_class($tokens[$col_idx->{idx_class_umcu}]);
-            $classes[$idx_class_vumc] = map_class($tokens[$col_idx->{idx_class_vumc}]);
-            $classes[$idx_class] = map_consensus($tokens[$col_idx->{idx_class}], \@classes);
+            if (!$self->{consensus_only}) {
+                $classes[$idx_class_amc] = map_class($tokens[$col_idx->{idx_class_amc}]);
+                $classes[$idx_class_erasmus] = map_class($tokens[$col_idx->{idx_class_erasmus}]);
+                $classes[$idx_class_lumc] = map_class($tokens[$col_idx->{idx_class_lumc}]);
+                $classes[$idx_class_nki] = map_class($tokens[$col_idx->{idx_class_nki}]);
+                $classes[$idx_class_radboud_mumc] = map_class($tokens[$col_idx->{idx_class_radboud_mumc}]);
+                $classes[$idx_class_umcg] = map_class($tokens[$col_idx->{idx_class_umcg}]);
+                $classes[$idx_class_umcu] = map_class($tokens[$col_idx->{idx_class_umcu}]);
+                $classes[$idx_class_vumc] = map_class($tokens[$col_idx->{idx_class_vumc}]);
+                $classes[$idx_class] = map_consensus($tokens[$col_idx->{idx_class}], \@classes);
+            }
+            else {
+                $classes[$idx_class] = map_class($tokens[$col_idx->{idx_class}]);
+            }
+            $classes_map{$key} = \@classes;
         }
-        else {
-            $classes[$idx_class] = map_class($tokens[$col_idx->{idx_class}]);
-        }
-
-        $classes_map{$key} = \@classes;
     }
     close FH;
 
