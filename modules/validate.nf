@@ -62,7 +62,6 @@ def validateReference() {
     println("parameter '" + param + "' value '" + params.reference + ".gzi' does not exist")
     System.exit(1)
   }
-  // TODO: add .dict check
 }
 
 def validateAnnotate() {
