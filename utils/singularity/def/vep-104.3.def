@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/htslib-1.14.sif
+From: sif/build/alpine-3.14.3.sif
 
 %help
     VEP (Variant Effect Predictor) predicts the functional effects of genomic variants.
