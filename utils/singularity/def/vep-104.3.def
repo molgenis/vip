@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/htslib-1.14.sif
+From: sif/build/alpine-3.14.3.sif
 
 %help
     VEP (Variant Effect Predictor) predicts the functional effects of genomic variants.
@@ -9,8 +9,8 @@ From: sif/build/htslib-1.14.sif
     version_minor=3
 
     apk update
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing perl perl-dbi
-    apk add --virtual=.build-dependencies -X http://dl-cdn.alpinelinux.org/alpine/edge/testing curl git build-base zlib-dev bzip2-dev xz-dev perl-module-build perl-dev perl-app-cpanminus wget libdeflate-dev
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community perl perl-dbi
+    apk add --virtual=.build-dependencies -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl git build-base zlib-dev bzip2-dev xz-dev perl-module-build perl-dev perl-app-cpanminus wget libdeflate-dev
 
     curl -Ls -o ensembl-vep.tar.gz "https://github.com/Ensembl/ensembl-vep/archive/refs/tags/release/${version_major}.${version_minor}.tar.gz"
     echo "4e6c7af5162ebb2a463f78366aab0b40dc4de05884f83e50e3f4198384dfaa68  ensembl-vep.tar.gz" | sha256sum -c
