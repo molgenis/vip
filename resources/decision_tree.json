@@ -12,12 +12,103 @@
         ]
       },
       "outcomeTrue": {
-        "nextNode": "gnomad"
+        "nextNode": "spliceAI"
       },
       "outcomeFalse": {
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
+        "nextNode": "spliceAI"
+      }
+    },
+    "spliceAI": {
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/SpliceAI_pred_DS_AG",
+        "INFO/CSQ/SpliceAI_pred_DS_AL",
+        "INFO/CSQ/SpliceAI_pred_DS_DG",
+        "INFO/CSQ/SpliceAI_pred_DS_DL"],
+      "outcomes": [
+        {
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AG",
+              "operator": ">",
+              "value": 0.42
+            },{
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AL",
+              "operator": ">",
+              "value": 0.42
+            },{
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DG",
+              "operator": ">",
+              "value": 0.42
+            },{
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DL",
+              "operator": ">",
+              "value": 0.42
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "vkgl"
+      },
+      "outcomeMissing": {
+        "nextNode": "vkgl"
+      }
+    },
+    "vkgl": {
+      "type": "CATEGORICAL",
+      "description": "VKGL classification",
+      "field": "INFO/CSQ/VKGL_CL",
+      "outcomeMap": {
+        "P": {
+          "nextNode": "exit_p"
+        },
+        "LP": {
+          "nextNode": "exit_lp"
+        },
+        "LB": {
+          "nextNode": "exit_lb"
+        },
+        "B": {
+          "nextNode": "exit_b"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "annotSV"
+      },
+      "outcomeDefault": {
+        "nextNode": "annotSV"
+      }
+    },
+    "annotSV": {
+      "type": "CATEGORICAL",
+      "description": "VKGL classification",
+      "field": "INFO/CSQ/ASV_ACMG_class",
+      "outcomeMap": {
+        "5": {
+          "nextNode": "exit_p"
+        },
+        "4": {
+          "nextNode": "exit_lp"
+        },
+        "2": {
+          "nextNode": "exit_lb"
+        },
+        "1": {
+          "nextNode": "exit_b"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "gnomad"
+      },
+      "outcomeDefault": {
         "nextNode": "gnomad"
       }
     },
@@ -34,6 +125,84 @@
       },
       "outcomeFalse": {
         "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "sift"
+      }
+    },
+    "clinvar": {
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/CLIN_SIG"
+      ],
+      "outcomes": [
+        {
+          "queries": [
+            {
+              "field": "INFO/CSQ/CLIN_SIG",
+              "operator": "contains_any",
+              "value": [
+                "conflicting_interpretations_of_pathogenicity", "conflicting_data_from_submitters"
+              ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "sift"
+          },
+          "queries": [
+            {
+              "field": "INFO/CSQ/CLIN_SIG",
+              "operator": "contains",
+              "value": [
+                "LB"
+              ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          },
+          "queries": [
+            {
+              "field": "INFO/CSQ/CLIN_SIG",
+              "operator": "contains",
+              "value": [
+                "B"
+              ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_b"
+          },
+          "queries": [
+            {
+              "field": "INFO/CSQ/CLIN_SIG",
+              "operator": "contains",
+              "value": [
+                "LP"
+              ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "queries": [
+            {
+              "field": "INFO/CSQ/CLIN_SIG",
+              "operator": "contains",
+              "value": [
+                "P"
+              ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_p"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "sift"
       },
       "outcomeMissing": {
         "nextNode": "sift"
