@@ -142,13 +142,16 @@
               "field": "INFO/CSQ/CLIN_SIG",
               "operator": "contains_any",
               "value": [
-                "conflicting_interpretations_of_pathogenicity", "conflicting_data_from_submitters"
+                "conflicting_interpretations_of_pathogenicity",
+                "conflicting_data_from_submitters"
               ]
             }
           ],
           "outcomeTrue": {
             "nextNode": "sift"
-          },
+          }
+        },
+        {
           "queries": [
             {
               "field": "INFO/CSQ/CLIN_SIG",
@@ -160,7 +163,9 @@
           ],
           "outcomeTrue": {
             "nextNode": "exit_lb"
-          },
+          }
+        },
+        {
           "queries": [
             {
               "field": "INFO/CSQ/CLIN_SIG",
@@ -172,7 +177,9 @@
           ],
           "outcomeTrue": {
             "nextNode": "exit_b"
-          },
+          }
+        },
+        {
           "queries": [
             {
               "field": "INFO/CSQ/CLIN_SIG",
