@@ -79,7 +79,6 @@ main() {
   images=()
   images+=("build/alpine-3.14.3") #deprecated
   images+=("build/alpine-3.15.0")
-  images+=("build/openjdk-11") #deprecated
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
   images+=("gatk-4.2.2.0" "vcf-decision-tree-2.0.0" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.0.1")

@@ -3,7 +3,7 @@ From: sif/bcftools-1.14.sif
 Stage: build
 
 Bootstrap: localimage
-From: sif/build/openjdk-11.sif
+From: sif/build/openjdk-17.sif
 
 %help
     AnnotSV: Annotation and Ranking of Human Structural Variations
