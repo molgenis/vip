@@ -82,7 +82,7 @@ main() {
   images+=("build/openjdk-11") #deprecated
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
-  images+=("gatk-4.2.2.0" "vcf-decision-tree-1.0.1" "vcf-inheritance-matcher-1.0.0" "vcf-report-3.0.1")
+  images+=("gatk-4.2.2.0" "vcf-decision-tree-2.0.0" "vcf-inheritance-matcher-1.0.0" "vcf-report-3.0.1")
   images+=("annotsv-3.0.9")
   images+=("vep-104.3")
 
