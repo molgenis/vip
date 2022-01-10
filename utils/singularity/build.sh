@@ -77,7 +77,6 @@ main() {
   mkdir -p "${outputDir}/build"
 
   images=()
-  images+=("build/alpine-3.14.3") #deprecated
   images+=("build/alpine-3.15.0")
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
