@@ -66,15 +66,15 @@ download_resources_vep () {
 
     local vep_files=()
     if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_104_GRCh37.tar.gz")
+      vep_files+=("homo_sapiens_refseq_vep_105_GRCh37.tar.gz")
     fi
     if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_104_GRCh38.tar.gz")
+      vep_files+=("homo_sapiens_refseq_vep_105_GRCh38.tar.gz")
     fi
 
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
-      wget --quiet --continue "http://ftp.ensembl.org/pub/release-104/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
+      wget --quiet --continue "http://ftp.ensembl.org/pub/release-105/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
   else
     echo -e "skipping download vep cache: already exists"
