@@ -22,7 +22,7 @@ bash vip/install.sh --assembly GRCh38
 
 ## Usage
 ```
-NXF_VER="21.04.3" nextflow run vip/main.nf \
+NXF_VER="21.10.6" nextflow run vip/main.nf \
   --assembly <GRCh37 or GRCh38> \
   --input <path> \
   --output <path>
