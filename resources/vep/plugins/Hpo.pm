@@ -10,10 +10,10 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
  Hpo
 =head1 SYNOPSIS
  mv Hpo.pm ~/.vep/Plugins
- ./vep -i variations.vcf --plugin Hpo,/FULL_PATH_TO_GENES_TO_PHENOTYPE_FILE/genes_to_phenotype.txt,HP:0000275\;HP:0000276
+ ./vep -i variations.vcf --plugin Hpo,/FULL_PATH_TO_GENES_TO_PHENOTYPE_FILE/genes_to_phenotype.tsv,HP:0000275\;HP:0000276
 =head1 DESCRIPTION
  Plugin to annotate consequences with HPO flag based on given HPO identifiers.
- 'genes_to_phenotype.txt' can be downloaded through https://hpo.jax.org/.
+ See `utils/create_hpo.sh` in the VIP repo on how to generate the genes_to_phenotype.tsv input file.
 =cut
 
 sub version {
