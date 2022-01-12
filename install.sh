@@ -22,7 +22,7 @@ download_resources_molgenis () {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20210920.tsv")
+  files+=("hpo_20220112.tsv")
   files+=("inheritance_20211119.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
