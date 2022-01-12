@@ -112,6 +112,7 @@ test_snv_proband_trio () {
   args+=("--assembly" "GRCh37")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
   args+=("--probands" "PROBAND0")
+  args+=("--phenotypes" "HP:0001250;HP:0001166")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
