@@ -6,7 +6,7 @@ From: sif/build/openjdk-17.sif
     Usage: java -jar /opt/gatk/lib/gatk.jar
 
 %post
-    version=4.2.2.0
+    version=4.2.4.1
 
     # install
     apk update
@@ -15,7 +15,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/gatk/lib
     curl -Ls -o gatk.zip "https://github.com/broadinstitute/gatk/releases/download/${version}/gatk-${version}.zip"
-    echo "ddd902441d1874493796566159288e9df178714ac18216ba05092136db1497fd  gatk.zip" | sha256sum -c
+    echo "2dc007f534cca1e29253864601e480ce24ce376b4b2bbd7a491571f9ecedc2e2  gatk.zip" | sha256sum -c
     unzip -p gatk.zip "gatk-${version}/gatk-package-${version}-local.jar" > /opt/gatk/lib/gatk.jar
 
     # cleanup
