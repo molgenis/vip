@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-wget https://github.com/molgenis/vip-inheritance/releases/download/v1.0.0/genemap-mapper.jar
+wget https://github.com/molgenis/vip-inheritance/releases/download/v3.0.0/genemap-mapper.jar
 wget http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
 wget https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
 

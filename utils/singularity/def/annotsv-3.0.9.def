@@ -3,7 +3,7 @@ From: sif/bcftools-1.14.sif
 Stage: build
 
 Bootstrap: localimage
-From: sif/build/openjdk-11.sif
+From: sif/build/openjdk-17.sif
 
 %help
     AnnotSV: Annotation and Ranking of Human Structural Variations
@@ -18,8 +18,8 @@ From: sif/build/openjdk-11.sif
     version_patch=9
 
     apk update
-    apk add curl zlib libbz2 xz tcl bash iproute2
-    apk add --virtual=.build-dependencies build-base
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
+    apk add --virtual=.build-dependencies build-base curl
 
     # bedtools
     curl -Ls -o /usr/local/bin/bedtools https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
