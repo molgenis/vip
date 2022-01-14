@@ -171,6 +171,7 @@ test_lp () {
   args+=("--assembly" "GRCh37")
   args+=("--input" "${TEST_RESOURCES_DIR}/lp.vcf.gz")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
   if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
@@ -189,6 +190,7 @@ test_lb () {
   args+=("--assembly" "GRCh37")
   args+=("--input" "${TEST_RESOURCES_DIR}/lb.bcf.gz")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
   if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
