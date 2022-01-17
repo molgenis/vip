@@ -12,13 +12,13 @@
         ]
       },
       "outcomeTrue": {
-        "nextNode": "spliceAI"
+        "nextNode": "vkgl"
       },
       "outcomeFalse": {
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "spliceAI"
+        "nextNode": "vkgl"
       }
     },
     "spliceAI": {
@@ -56,10 +56,10 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "vkgl"
+        "nextNode": "annotSV"
       },
       "outcomeMissing": {
-        "nextNode": "vkgl"
+        "nextNode": "annotSV"
       }
     },
     "vkgl": {
@@ -81,10 +81,10 @@
         }
       },
       "outcomeMissing": {
-        "nextNode": "annotSV"
+        "nextNode": "clinVar"
       },
       "outcomeDefault": {
-        "nextNode": "annotSV"
+        "nextNode": "clinVar"
       }
     },
     "annotSV": {
@@ -106,10 +106,10 @@
         }
       },
       "outcomeMissing": {
-        "nextNode": "gnomad"
+        "nextNode": "impact"
       },
       "outcomeDefault": {
-        "nextNode": "gnomad"
+        "nextNode": "impact"
       }
     },
     "gnomad": {
@@ -121,16 +121,34 @@
         "value": 0.02
       },
       "outcomeTrue": {
-        "nextNode": "sift"
+        "nextNode": "effect"
       },
       "outcomeFalse": {
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "sift"
+        "nextNode": "effect"
       }
     },
-    "clinvar": {
+    "effect": {
+      "type": "BOOL",
+      "description": "Consequence contains 'missense'",
+      "query": {
+        "field": "INFO/CSQ/Consequence",
+        "operator": "contains",
+        "value": "missense_variant"
+      },
+      "outcomeTrue": {
+        "nextNode": "sift"
+      },
+      "outcomeFalse": {
+        "nextNode": "spliceAI"
+      },
+      "outcomeMissing": {
+        "nextNode": "spliceAI"
+      }
+    },
+    "clinVar": {
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/CLIN_SIG"
@@ -143,12 +161,12 @@
               "operator": "contains_any",
               "value": [
                 "conflicting_interpretations_of_pathogenicity",
-                "conflicting_data_from_submitters"
-              ]
-            }
+                "conflicting_data_from_submitters",
+                "uncertain_significance"
+              ]}
           ],
           "outcomeTrue": {
-            "nextNode": "sift"
+            "nextNode": "gnomad"
           }
         },
         {
@@ -157,7 +175,7 @@
               "field": "INFO/CSQ/CLIN_SIG",
               "operator": "contains",
               "value": [
-                "LB"
+                "LB", "B"
               ]
             }
           ],
@@ -171,63 +189,34 @@
               "field": "INFO/CSQ/CLIN_SIG",
               "operator": "contains",
               "value": [
-                "B"
-              ]
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_b"
-          }
-        },
-        {
-          "queries": [
-            {
-              "field": "INFO/CSQ/CLIN_SIG",
-              "operator": "contains",
-              "value": [
-                "LP"
+                "LP", "P"
               ]
             }
           ],
           "outcomeTrue": {
             "nextNode": "exit_lp"
           }
-        },
-        {
-          "queries": [
-            {
-              "field": "INFO/CSQ/CLIN_SIG",
-              "operator": "contains",
-              "value": [
-                "P"
-              ]
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_p"
-          }
         }
       ],
       "outcomeDefault": {
-        "nextNode": "sift"
+        "nextNode": "gnomad"
       },
       "outcomeMissing": {
-        "nextNode": "sift"
+        "nextNode": "gnomad"
       }
     },
     "sift": {
-      "type": "CATEGORICAL",
       "description": "SIFT qualitative prediction",
-      "field": "INFO/CSQ/SIFT",
-      "outcomeMap": {
-        "deleterious": {
-          "nextNode": "polyphen"
-        },
-        "tolerated": {
-          "nextNode": "exit_lb"
-        }
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/SIFT",
+        "operator": "<",
+        "value": 0.05
       },
-      "outcomeDefault": {
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
         "nextNode": "polyphen"
       },
       "outcomeMissing": {
@@ -235,22 +224,55 @@
       }
     },
     "polyphen": {
-      "type": "CATEGORICAL",
       "description": "PolyPhen qualitative prediction",
-      "field": "INFO/CSQ/PolyPhen",
-      "outcomeMap": {
-        "probably_damaging": {
-          "nextNode": "exit_lp"
+      "type": "BOOL_MULTI",
+      "fields": ["INFO/CSQ/PolyPhen"],
+      "outcomes": [
+        {
+          "queries": [
+            {
+              "field": "INFO/CSQ/PolyPhen",
+              "operator": "<",
+              "value": 0.15
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
         },
-        "possibly_damaging": {
-          "nextNode": "exit_vus"
+        {
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "INFO/CSQ/PolyPhen",
+              "operator": ">",
+              "value": 0.15
+            },
+            {
+              "field": "INFO/CSQ/PolyPhen",
+              "operator": "<",
+              "value": 0.85
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_vus"
+          }
         },
-        "benign": {
-          "nextNode": "exit_b"
-        },
-        "unknown": {
-          "nextNode": "impact"
+        {
+          "queries": [
+            {
+              "field": "INFO/CSQ/PolyPhen",
+              "operator": ">",
+              "value": 0.85
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
         }
+      ],
+      "outcomeDefault": {
+        "nextNode": "impact"
       },
       "outcomeMissing": {
         "nextNode": "impact"
