@@ -91,6 +91,7 @@ vep () {
   args+=("--polyphen" "p")
   args+=("--regulatory")
   args+=("--domains")
+  args+=("--total_length")
   args+=("--pubmed")
   args+=("--shift_3prime" "1")
   args+=("--allele_number")
