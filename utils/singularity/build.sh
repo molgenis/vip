@@ -81,7 +81,7 @@ main() {
   images+=("build/htslib-1.14")
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
-  images+=("gatk-4.2.4.1" "vcf-decision-tree-2.0.0" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.0.1")
+  images+=("gatk-4.2.4.1" "vcf-decision-tree-2.0.1" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.0.1")
   images+=("annotsv-3.0.9")
   images+=("vep-105.0")
 
