@@ -89,6 +89,8 @@ vep () {
   args+=("--flag_pick_allele")
   args+=("--sift" "p")
   args+=("--polyphen" "p")
+  args+=("--regulatory")
+  args+=("--domains")
   args+=("--pubmed")
   args+=("--shift_3prime" "1")
   args+=("--allele_number")
