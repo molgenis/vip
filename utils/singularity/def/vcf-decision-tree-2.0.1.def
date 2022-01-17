@@ -8,7 +8,7 @@ From: sif/build/openjdk-17.sif
 %post
     version_major=2
     version_minor=0
-    version_patch=0
+    version_patch=1
 
     # install
     apk update
