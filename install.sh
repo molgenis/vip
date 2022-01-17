@@ -22,7 +22,7 @@ download_resources_molgenis () {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20210920.tsv")
+  files+=("hpo_20220112.tsv")
   files+=("inheritance_20211119.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -66,15 +66,15 @@ download_resources_vep () {
 
     local vep_files=()
     if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_104_GRCh37.tar.gz")
+      vep_files+=("homo_sapiens_refseq_vep_105_GRCh37.tar.gz")
     fi
     if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_104_GRCh38.tar.gz")
+      vep_files+=("homo_sapiens_refseq_vep_105_GRCh38.tar.gz")
     fi
 
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
-      wget --quiet --continue "http://ftp.ensembl.org/pub/release-104/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
+      wget --quiet --continue "http://ftp.ensembl.org/pub/release-105/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
   else
     echo -e "skipping download vep cache: already exists"
@@ -129,11 +129,11 @@ download_images () {
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
-  files+=("gatk-4.2.2.0.sif")
-  files+=("vcf-decision-tree-1.0.1.sif")
-  files+=("vcf-inheritance-matcher-1.0.0.sif")
-  files+=("vcf-report-2.5.2.sif")
-  files+=("vep-104.3.sif")
+  files+=("gatk-4.2.4.1.sif")
+  files+=("vcf-decision-tree-2.0.0.sif")
+  files+=("vcf-inheritance-matcher-2.0.0.sif")
+  files+=("vcf-report-3.0.1.sif")
+  files+=("vep-105.0.sif")
 
   for file in "${files[@]}"; do
     if [ ! -f "${download_dir}/${file}" ]; then

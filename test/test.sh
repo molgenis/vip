@@ -7,7 +7,7 @@ abort() {
    exit 1
 }
 
-NXF_VERSION="21.10.4"
+NXF_VERSION="21.10.6"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
@@ -112,6 +112,7 @@ test_snv_proband_trio () {
   args+=("--assembly" "GRCh37")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
   args+=("--probands" "PROBAND0")
+  args+=("--phenotypes" "HP:0001250;HP:0001166")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
