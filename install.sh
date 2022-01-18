@@ -132,7 +132,7 @@ download_images () {
   files+=("gatk-4.2.4.1.sif")
   files+=("vcf-decision-tree-2.0.2.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
-  files+=("vcf-report-3.0.1.sif")
+  files+=("vcf-report-3.1.0.sif")
   files+=("vep-105.0.sif")
 
   for file in "${files[@]}"; do
