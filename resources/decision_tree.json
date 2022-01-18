@@ -173,9 +173,9 @@
           "queries": [
             {
               "field": "INFO/CSQ/CLIN_SIG",
-              "operator": "contains",
+              "operator": "contains_any",
               "value": [
-                "LB", "B"
+                "likely_benign", "benign"
               ]
             }
           ],
@@ -187,9 +187,9 @@
           "queries": [
             {
               "field": "INFO/CSQ/CLIN_SIG",
-              "operator": "contains",
+              "operator": "contains_any",
               "value": [
-                "LP", "P"
+                "likely_pathogenic", "pathogenic"
               ]
             }
           ],
