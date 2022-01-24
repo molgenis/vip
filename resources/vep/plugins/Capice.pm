@@ -21,13 +21,13 @@ sub version {
 }
 
 sub feature_types {
-    return [ 'Transcript' ];
+    return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 sub get_header_info {
     return {
         CAPICE_SC => "CAPICE score",
-        CAPICE_CL => "CAPICE suggested classification"
+        CAPICE_CL => "CAPICE classification"
     };
 }
 
@@ -50,8 +50,9 @@ sub create_key {
     my $ref = $_[2];
     my $alt = $_[3];
     my $gene = $_[4];
-    my $transcript = $_[5];
-    return "${chr}_${pos}_${ref}_${alt}_${gene}_${transcript}";
+    my $source = $_[5];
+    my $transcript = $_[6];
+    return "${chr}_${pos}_${ref}_${alt}_${gene}_${source}_${transcript}";
 }
 
 sub parse_file_header {
@@ -81,7 +82,7 @@ sub parse_file_header {
             $col_idx->{idx_source} = $i;
         }
         if ($tokens[$i] eq "score") {
-            $col_idx->{idx_score} = $i;
+            $col_idx->{idx_score} = "$i";
         }
         if ($tokens[$i] eq "suggested_class") {
             $col_idx->{idx_class} = $i;
@@ -102,11 +103,11 @@ sub parse_file {
         $line =~ s/\s*\z//;
         my @tokens = split /\t/, $line;
 
-        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene}], $tokens[$col_idx->{idx_transcript}]);
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene}], $tokens[$col_idx->{idx_source}], $tokens[$col_idx->{idx_transcript}]);
 
         my %values;
-        $values{score} = $tokens[$col_idx->{idx_score}];
-        $values{classification} = $tokens[$col_idx->{idx_class}];
+        $values{s} = $tokens[$col_idx->{idx_score}];
+        $values{c} = $tokens[$col_idx->{idx_class}];
         $capice_map{$key} = \%values;
     }
     close FH;
@@ -117,18 +118,29 @@ sub parse_file {
 sub run {
     my ($self, $tva) = @_;
 
-    my $bvfoa = $tva->base_variation_feature;
-    my @vcf_line = @{$bvfoa->{_line}};
+    my $bvf = $tva->base_variation_feature;
+    my @vcf_line = @{$bvf->{_line}};
     my $chr = $vcf_line[0];
     my $pos = $vcf_line[1];
     my $ref = $vcf_line[3];
     my $alt = $vcf_line[4];
 
-    return {} unless ($tva->transcript->{_gene_symbol_source} eq "EntrezGene");
+    my $source = "";
+    my $gene = "";
+    my $transcript_id = "";
 
-    my $gene = $tva->transcript->{_gene_stable_id};
-    my $transcript_id = $tva->transcript->{stable_id};
-    my $key = create_key($chr, $pos, $ref, $alt,$gene,$transcript_id);
+    if ($tva->can("transcript")) {
+        $source = $tva->transcript->{_gene_symbol_source};
+        return {} unless ($source eq "EntrezGene");
+
+        $gene = $tva->transcript->{_gene_stable_id};
+    }
+
+    if($tva->feature) {
+        $transcript_id = $tva->feature->stable_id;
+    }
+
+    my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$transcript_id);
 
     my $result = ();
     $result->{CAPICE_SC} = undef;
@@ -136,11 +148,9 @@ sub run {
     my $value = $self->{capice_map}{$key};
     if($value) {
         my %value_map = %{$value};
-        $result->{CAPICE_SC} = $value_map{score};
-        $result->{CAPICE_CL} = $value_map{classification};
+        $result->{CAPICE_SC} = $value_map{s};
+        $result->{CAPICE_CL} = $value_map{c};
     }
-
     return $result;
 }
-
 1;
