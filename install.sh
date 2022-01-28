@@ -34,6 +34,7 @@ download_resources_molgenis () {
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh37/vkgl_public_consensus_sep2021.tsv")
+    files+=("GRCh37/capice_model_v3.0.0rc2.pickle.dat")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -45,6 +46,7 @@ download_resources_molgenis () {
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/capice_model_v3.0.0rc2.pickle.dat")
   fi
 
   for file in "${files[@]}"; do
