@@ -133,4 +133,28 @@ if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; th
   annot_sv
 fi
 
+executeCapice() {
+  local -r inputFilePath="${1}"
+  local -r outputFilePath="${2}"
+  local -r assembly="${3}"
+  local -r capice_version = "3.0.0rc2"
+
+  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%HGNC_ID\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON\n"
+  local -r tmpOutputPath="$(dirname "${outputFilePath}")/tmp.tsv"
+  args+=("-d")
+    args+=("-f" "${format}")
+    args+=("-o" "${tmpOutputPath}")
+    args+=("${inputFilePath}")
+
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
+
+  local -r tmpOutputPath2="$(dirname "${outputFilePath}")/capice_input.tsv"
+  echo -e "##VEP=105" > "${tmpOutputPath2}"
+  echo -e "${format}" >> "${tmpOutputPath2}"
+
+  cat "${tmpOutputPath}" >> "${tmpOutputPath2}"
+
+  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/capice-${capice_version}.sif" python capice -vv predict -i "${tmpOutputPath2}" -m "${assembly}/capice_model_v${capice_version}.pickle.dat" -o "$(dirname "${outputFilePath}")/capice_output.tsv"
+  }
+
 vep
