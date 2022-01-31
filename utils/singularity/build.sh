@@ -84,7 +84,7 @@ main() {
   images+=("gatk-4.2.4.1" "vcf-decision-tree-2.0.2" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.1.0")
   images+=("annotsv-3.0.9")
   images+=("vep-105.0")
-  images+=("capice-3.0.0rc1")
+  images+=("capice-3.0.0rc2")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
