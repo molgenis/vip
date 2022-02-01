@@ -115,7 +115,7 @@ vep () {
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
   fi
   if [ -n "!{vepCustomGnomAdPath}" ]; then
-    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF")
+    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
   fi
   if [ -f "!{vcfPath}.tsv" ]; then
     args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")

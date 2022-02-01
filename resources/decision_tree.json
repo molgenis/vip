@@ -27,7 +27,8 @@
         "INFO/CSQ/SpliceAI_pred_DS_AG",
         "INFO/CSQ/SpliceAI_pred_DS_AL",
         "INFO/CSQ/SpliceAI_pred_DS_DG",
-        "INFO/CSQ/SpliceAI_pred_DS_DL"],
+        "INFO/CSQ/SpliceAI_pred_DS_DL"
+      ],
       "outcomes": [
         {
           "operator": "OR",
@@ -36,15 +37,18 @@
               "field": "INFO/CSQ/SpliceAI_pred_DS_AG",
               "operator": ">",
               "value": 0.42
-            },{
+            },
+            {
               "field": "INFO/CSQ/SpliceAI_pred_DS_AL",
               "operator": ">",
               "value": 0.42
-            },{
+            },
+            {
               "field": "INFO/CSQ/SpliceAI_pred_DS_DG",
               "operator": ">",
               "value": 0.42
-            },{
+            },
+            {
               "field": "INFO/CSQ/SpliceAI_pred_DS_DL",
               "operator": ">",
               "value": 0.42
@@ -113,18 +117,34 @@
       }
     },
     "gnomad": {
-      "type": "BOOL",
-      "description": "gnomAD_AF < 0.02",
-      "query": {
-        "field": "INFO/CSQ/gnomAD_AF",
-        "operator": "<",
-        "value": 0.02
-      },
-      "outcomeTrue": {
+      "type": "BOOL_MULTI",
+      "description": "gnomAD_AF < 0.02 && gnomAD_HN < 5",
+      "fields": [
+        "INFO/CSQ/gnomAD_AF",
+        "INFO/CSQ/gnomAD_HN"
+      ],
+      "outcomes": [
+        {
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_AF",
+              "operator": ">=",
+              "value": 0.02
+            },
+            {
+              "field": "INFO/CSQ/gnomAD_HN",
+              "operator": ">=",
+              "value": 5
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        }
+      ],
+      "outcomeDefault": {
         "nextNode": "effect"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
         "nextNode": "effect"
@@ -163,7 +183,8 @@
                 "conflicting_interpretations_of_pathogenicity",
                 "conflicting_data_from_submitters",
                 "uncertain_significance"
-              ]}
+              ]
+            }
           ],
           "outcomeTrue": {
             "nextNode": "gnomad"
@@ -175,7 +196,8 @@
               "field": "INFO/CSQ/CLIN_SIG",
               "operator": "contains_any",
               "value": [
-                "likely_benign", "benign"
+                "likely_benign",
+                "benign"
               ]
             }
           ],
@@ -189,7 +211,8 @@
               "field": "INFO/CSQ/CLIN_SIG",
               "operator": "contains_any",
               "value": [
-                "likely_pathogenic", "pathogenic"
+                "likely_pathogenic",
+                "pathogenic"
               ]
             }
           ],
@@ -226,7 +249,9 @@
     "polyphen": {
       "description": "PolyPhen qualitative prediction",
       "type": "BOOL_MULTI",
-      "fields": ["INFO/CSQ/PolyPhen"],
+      "fields": [
+        "INFO/CSQ/PolyPhen"
+      ],
       "outcomes": [
         {
           "queries": [
