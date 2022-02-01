@@ -71,7 +71,7 @@ vep () {
   local args=()
   args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfAnnotatedPath}")
+  args+=("--output_file" "!{vcfPath}.annotated.vcf.gz")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -124,6 +124,36 @@ vep () {
   !{singularity_vep} vep "${args[@]}"
 }
 
+capice () {
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
+  local bcftools_args=()
+  bcftools_args+=("+split-vep")
+  bcftools_args+=("-d")
+  bcftools_args+=("-f" "${header}\n")
+  bcftools_args+=("-o" "!{vcfPath}.capice.tsv.tmp")
+  bcftools_args+=("!{vcfPath}.annotated.vcf.gz")
+
+  !{singularity_bcftools} capice "${bcftools_args[@]}"
+
+  echo -e "${header}" | cat - "!{vcfPath}.capice.tsv.tmp" > "!{vcfPath}.capice.tsv" && rm "!{vcfPath}.capice.tsv.tmp"
+
+  local args=()
+  args+=("predict")
+  args+=("--input" "!{vcfPath}.capice.tsv}")
+  args+=("--output" "!{vcfPath}.capice.vcf.gz")
+  args+=("--model" "!{capiceModelPath}")
+
+  !{singularity_capice} capice "${args[@]}"
+  if [ ! -f "!{vcfPath}.capice.vcf.gz" ]; then
+    echo -e "Capice error: failed to produce output" 1>&2
+    exit 1
+  fi
+
+  local vep_args=()
+  vep_args+=("--input_file", "!{vcfPath}.capice.vcf.gz")
+  vep_args+=("--plugin" "Capice,!{vcfAnnotatedPath}")
+}
+
 if [ -n "!{params.phenotypes}" ]; then
   declare -A UNIQUE_PHENOTYPES
   get_unique_phenotypes "!{params.phenotypes}"
@@ -133,28 +163,5 @@ if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; th
   annot_sv
 fi
 
-executeCapice() {
-  local -r inputFilePath="${1}"
-  local -r outputFilePath="${2}"
-  local -r assembly="${3}"
-  local -r capice_version = "3.0.0rc2"
-
-  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%HGNC_ID\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON\n"
-  local -r tmpOutputPath="$(dirname "${outputFilePath}")/tmp.tsv"
-  args+=("-d")
-    args+=("-f" "${format}")
-    args+=("-o" "${tmpOutputPath}")
-    args+=("${inputFilePath}")
-
-  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/BCFtools.sif" bcftools "${args[@]}"
-
-  local -r tmpOutputPath2="$(dirname "${outputFilePath}")/capice_input.tsv"
-  echo -e "##VEP=105" > "${tmpOutputPath2}"
-  echo -e "${format}" >> "${tmpOutputPath2}"
-
-  cat "${tmpOutputPath}" >> "${tmpOutputPath2}"
-
-  singularity exec --bind "/apps,/groups,${TMPDIR}" "${singularityImageDir}/capice-${capice_version}.sif" python capice -vv predict -i "${tmpOutputPath2}" -m "${assembly}/capice_model_v${capice_version}.pickle.dat" -o "$(dirname "${outputFilePath}")/capice_output.tsv"
-  }
-
 vep
+capice
