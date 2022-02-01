@@ -37,8 +37,8 @@ download_resources_molgenis () {
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh38/vkgl_public_consensus_sep2021.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
@@ -130,7 +130,7 @@ download_images () {
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
   files+=("gatk-4.2.4.1.sif")
-  files+=("vcf-decision-tree-2.0.2.sif")
+  files+=("vcf-decision-tree-2.1.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
   files+=("vcf-report-3.1.0.sif")
   files+=("vep-105.0.sif")

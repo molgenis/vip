@@ -20,11 +20,10 @@ download() {
 
         for chromosome in "${chromosomes[@]}"
         do
-		download_file="gnomad.genomes.v3.1.1.sites.${chromosome}.vcf.bgz"
-                output_path="${output_dir}/gnomad.genomes.v3.1.1.sites.${chromosome}.vcf.bgz"
+		download_file="gnomad.genomes.v3.1.2.sites.${chromosome}.vcf.bgz"
+                output_path="${output_dir}/gnomad.genomes.v3.1.2.sites.${chromosome}.vcf.bgz"
                 if [[ ! -f "${output_path}" ]]; then
-			wget -c https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.1/vcf/genomes/gnomad.genomes.v3.1.1.sites.chr1.vcf.bgz
-                        wget -c https://storage.googleapis.com/gcp-public-data--gnomad/release/2.1.1/vcf/genomes/${download_file} -O "${output_path}"
+                        wget -c https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/${download_file} -O "${output_path}"
                 else
                         echo "  skipping download '${download_file}' because file already exists"
                 fi
@@ -40,17 +39,22 @@ process() {
 	local input_path=""
 	local output_path=""
 
+  local -r rename_path="${output_dir}/rename.txt"
+	if [[ ! -f "${rename_path}" ]]; then
+		echo -e "INFO/nhomalt HN\n" > "${rename_path}"
+	fi
+
 	output_files=()
 	for chromosome in "${chromosomes[@]}"
 	do
 		echo "  processing chromosome ${chromosome} ..."
 
-		input_path="${input_dir}/gnomad.genomes.v3.1.1.sites.${chromosome}.vcf.bgz"
-		output_path="${output_dir}/gnomad.genomes.v3.1.1.sites.${chromosome}.stripped.vcf.gz"
+		input_path="${input_dir}/gnomad.genomes.v3.1.2.sites.${chromosome}.vcf.bgz"
+		output_path="${output_dir}/gnomad.genomes.v3.1.2.sites.${chromosome}.stripped.vcf.gz"
 			
 		if [[ ! -f "${output_path}" ]]; then
 			${BCFTOOLS_CMD} filter --no-version -i "(filter==\"PASS\" || filter==\".\")" -Ou "${input_path}" | \
-			${BCFTOOLS_CMD} annotate --no-version -x ID,QUAL,FILTER,^INFO/AF -Oz --threads "${THREADS}" -o "${output_path}"
+			${BCFTOOLS_CMD} annotate --no-version -x ID,QUAL,FILTER,^INFO/AF,INFO/nhomalt --rename-annots "${rename_path}" -Oz --threads "${THREADS}" -o "${output_path}"
 			${BCFTOOLS_CMD} index "${output_path}"
 		else
 			echo "    skip stripping for '${chromosome}' because file already exists"
@@ -60,7 +64,7 @@ process() {
 		echo "  processing chromosome ${chromosome} done"
 	done
 
-	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.genomes.v3.1.1.sites.stripped.vcf.gz"
+	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz"
 	if [[ ! -f "${total_output_path}" ]]; then
 		${BCFTOOLS_CMD} concat --no-version -Ov "${output_files[@]}" | ${BGZIP_CMD} -l 9 -@ "${THREADS}" > "${total_output_path}"
 		${BCFTOOLS_CMD} index "${total_output_path}"
