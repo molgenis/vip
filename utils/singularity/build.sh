@@ -78,7 +78,6 @@ main() {
 
   images=()
   images+=("build/alpine-3.15.0")
-  images+=("build/htslib-1.14")
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
   images+=("gatk-4.2.4.1" "vcf-decision-tree-2.1.0" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.1.0")
