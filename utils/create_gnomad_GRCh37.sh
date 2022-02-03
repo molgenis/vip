@@ -52,7 +52,7 @@ process() {
 	local -r rename_revert_path="${output_dir}/rename_revert.txt"
 
 	if [[ ! -f "${rename_path}" ]]; then
-		echo -e "INFO/AC GAC\nINFO/AN GAN\n" > "${rename_path}"
+		echo -e "INFO/AC GAC\nINFO/AN GAN\nINFO/nhomalt HN\n" > "${rename_path}"
 	fi
 	if [[ ! -f "${rename_revert_path}" ]]; then
 		echo -e "INFO/GAC AC\nINFO/GAN AN\n" > "${rename_revert_path}"
@@ -80,7 +80,7 @@ process() {
 				else 
 					# workaround: rename fields because of https://github.com/samtools/bcftools/issues/1394
 					${BCFTOOLS_CMD} filter --no-version -i "(filter==\"PASS\" || filter==\".\")" -Ou "${input_path}" | \
-					${BCFTOOLS_CMD} annotate --no-version -x ID,QUAL,FILTER,^INFO/AC,INFO/AN --rename-annots "${rename_path}" -Oz --threads "${THREADS}" -o "${output_path}"
+					${BCFTOOLS_CMD} annotate --no-version -x ID,QUAL,FILTER,^INFO/AC,INFO/AN,INFO/nhomalt --rename-annots "${rename_path}" -Oz --threads "${THREADS}" -o "${output_path}"
 				fi
 				${BCFTOOLS_CMD} index "${output_path}"
 			else
@@ -98,12 +98,12 @@ process() {
 				${BCFTOOLS_CMD} merge --no-version -m none -i GAC:sum,GAN:sum "${input_path_exomes}" "${input_path_genomes}" -Ou | \
 				${BCFTOOLS_CMD} annotate --no-version --rename-annots "${rename_revert_path}" -Ou | \
 				${BCFTOOLS_CMD} +fill-tags --no-version -Ou -- -t AF | \
-				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF -Oz --threads "${THREADS}" -o "${output_path}"
+				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF,INFO/HN -Oz --threads "${THREADS}" -o "${output_path}"
 			else
 				# workaround: undo rename fields
                         	${BCFTOOLS_CMD} annotate --no-version --rename-annots "${rename_revert_path}" -Ou "${input_path_exomes}" | \
 				${BCFTOOLS_CMD} +fill-tags --no-version -Ou -- -t AF | \
-				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF -Oz --threads "${THREADS}" -o "${output_path}"
+				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF,INFO/HN -Oz --threads "${THREADS}" -o "${output_path}"
 			fi
 			${BCFTOOLS_CMD} index "${output_path}"
 		else
