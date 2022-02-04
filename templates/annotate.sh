@@ -143,7 +143,7 @@ capice () {
   args+=("--output" "!{vcfPath}.capice.vcf.gz")
   args+=("--model" "!{capiceModelPath}")
 
-  !{singularity_capice} capice "${args[@]}"
+  !{singularity_capice} cagit commit -C HEAD@{1}pice "${args[@]}"
   if [ ! -f "!{vcfPath}.capice.vcf.gz" ]; then
     echo -e "Capice error: failed to produce output" 1>&2
     exit 1
