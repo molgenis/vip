@@ -11,7 +11,7 @@ From: sif/build/openjdk-17.sif
     # install
     apk update
     # libc6-compat: resolve WARN NativeLibraryLoader
-    apk add libgomp libc6-compat
+    apk add libgomp gcompat
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/gatk/lib
