@@ -129,7 +129,7 @@ download_images () {
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
-  files+=("gatk-4.2.4.1.sif")
+  files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-2.1.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
   files+=("vcf-report-3.1.0.sif")
