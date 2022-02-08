@@ -68,10 +68,11 @@ annot_sv () {
 }
 
 vep () {
+  local vcfPath="!{vcfPath}"
   local args=()
   args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfPath}.annotated.vcf.gz")
+  args+=("--output_file" "${vcfPath%%.*}_annotated.vcf.gz")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -125,33 +126,37 @@ vep () {
 }
 
 capice () {
+  local vcfPath="!{vcfPath}"
   local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
   local bcftools_args=()
   bcftools_args+=("+split-vep")
   bcftools_args+=("-d")
   bcftools_args+=("-f" "${header}\n")
-  bcftools_args+=("-o" "!{vcfPath}.capice.tsv.tmp")
-  bcftools_args+=("!{vcfPath}.annotated.vcf.gz")
+  bcftools_args+=("-o" "${vcfPath%%.*}_prepared.tsv.tmp")
+  bcftools_args+=("${vcfPath%%.*}_annotated.vcf.gz")
 
   !{singularity_bcftools} bcftools "${bcftools_args[@]}"
 
-  echo -e "${header}" | cat - "!{vcfPath}.capice.tsv.tmp" > "!{vcfPath}.capice.tsv" && rm "!{vcfPath}.capice.tsv.tmp"
+  echo -e "${header}" | cat - "${vcfPath%%.*}_prepared.tsv.tmp" > "${vcfPath%%.*}_prepared.tsv" && rm "${vcfPath%%.*}_prepared.tsv.tmp"
 
   local args=()
   args+=("predict")
-  args+=("--input" "!{vcfPath}.capice.tsv}")
-  args+=("--output" "!{vcfPath}.capice.vcf.gz")
+  args+=("--input" "${vcfPath%%.*}_prepared.tsv")
+  args+=("--output" "${vcfPath%%.*}_capice.tsv.gz")
   args+=("--model" "!{capiceModelPath}")
 
-  !{singularity_capice} cagit commit -C HEAD@{1}pice "${args[@]}"
-  if [ ! -f "!{vcfPath}.capice.vcf.gz" ]; then
+  !{singularity_capice} capice "${args[@]}"
+  if [ ! -f "${vcfPath%%.*}_capice.tsv.gz" ]; then
     echo -e "Capice error: failed to produce output" 1>&2
     exit 1
   fi
 
   local vep_args=()
-  vep_args+=("--input_file", "!{vcfPath}.capice.vcf.gz")
-  vep_args+=("--plugin" "Capice,!{vcfAnnotatedPath}")
+  vep_args+=("--input_file", "${vcfPath%%.*}_annotated.vcf.gz")
+  vep_args+=("--output_file" "!{vcfAnnotatedPath}")
+  vep_args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  vep_args+=("--plugin" "Capice,${vcfPath%%.*}_capice.tsv.gz")
+  !{singularity_vep} vep "${vep_args[@]}"
 }
 
 if [ -n "!{params.phenotypes}" ]; then
