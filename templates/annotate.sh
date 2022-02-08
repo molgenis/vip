@@ -70,9 +70,9 @@ annot_sv () {
 vep () {
   local vcfPath="!{vcfPath}"
   local args=()
-  args+=("--input_file" "!{vcfPath}")
+  args+=("--input_file" "${vcfPath%%.*}_prepared.vcf.gz")
   args+=("--format" "vcf")
-  args+=("--output_file" "${vcfPath%%.*}_annotated.vcf.gz")
+  args+=("--output_file" "!{vcfAnnotatedPath}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -102,6 +102,8 @@ vep () {
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--plugin" "Capice,${vcfPath%%.*}_capice.tsv.gz")
+
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
@@ -127,13 +129,52 @@ vep () {
 
 capice () {
   local vcfPath="!{vcfPath}"
+  local vep_args=()
+  vep_args+=("--input_file" "${vcfPath}")
+  vep_args+=("--format" "vcf")
+  vep_args+=("--output_file" "${vcfPath%%.*}_prepared.vcf.gz")
+  vep_args+=("--vcf")
+  vep_args+=("--compress_output" "gzip")
+  vep_args+=("--regulatory")
+  vep_args+=("--sift" "s")
+  vep_args+=("--polyphen" "s")
+  vep_args+=("--domains")
+  vep_args+=("--numbers")
+  vep_args+=("--canonical")
+  vep_args+=("--symbol")
+  vep_args+=("--shift_3prime" "1")
+  vep_args+=("--allele_number")
+  vep_args+=("--no_stats")
+  vep_args+=("--offline")
+  vep_args+=("--cache")
+  vep_args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  vep_args+=("--species" "homo_sapiens")
+  vep_args+=("--assembly" "!{params.assembly}")
+  vep_args+=("--refseq")
+  vep_args+=("--use_given_ref")
+  vep_args+=("--exclude_predicted")
+  vep_args+=("--flag_pick_allele")
+  vep_args+=("--fork" "!{task.cpus}")
+  vep_args+=("--af_gnomad")
+  vep_args+=("--pubmed")
+  vep_args+=("--dont_skip")
+  vep_args+=("--allow_non_variant")
+
+  !{singularity_vep} vep "${vep_args[@]}"
+
+  # vep --input_file <path to your input file> --format vcf --output_file <path to your output file> --vcf
+      #--compress_output gzip --regulatory --sift s --polyphen s --domains --numbers --canonical --symbol --shift_3prime 1
+      #--allele_number --no_stats --offline --cache --dir_cache </path/to/cache/105> --species "homo_sapiens"
+      #--assembly <GRCh37 or GRCh38> --refseq --use_given_ref --exclude_predicted --use_given_ref --flag_pick_allele --force_overwrite
+      #--fork 4 --af_gnomad --pubmed --dont_skip --allow_non_variant
+
   local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
   local bcftools_args=()
   bcftools_args+=("+split-vep")
   bcftools_args+=("-d")
   bcftools_args+=("-f" "${header}\n")
   bcftools_args+=("-o" "${vcfPath%%.*}_prepared.tsv.tmp")
-  bcftools_args+=("${vcfPath%%.*}_annotated.vcf.gz")
+  bcftools_args+=("${vcfPath%%.*}_prepared.vcf.gz")
 
   !{singularity_bcftools} bcftools "${bcftools_args[@]}"
 
@@ -150,24 +191,6 @@ capice () {
     echo -e "Capice error: failed to produce output" 1>&2
     exit 1
   fi
-
-  local vep_args=()
-  vep_args+=("--input_file" "${vcfPath%%.*}_annotated.vcf.gz")
-  vep_args+=("--format" "vcf")
-  vep_args+=("--output_file" "!{vcfAnnotatedPath}")
-  vep_args+=("--vcf")
-  vep_args+=("--compress_output" "bgzip")
-  vep_args+=("--fasta" "!{refSeqPath}")
-  vep_args+=("--offline")
-  vep_args+=("--cache")
-  vep_args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
-  vep_args+=("--species" "homo_sapiens")
-  vep_args+=("--assembly" "!{params.assembly}")
-  vep_args+=("--refseq")
-  vep_args+=("--allele_number")
-  vep_args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
-  vep_args+=("--plugin" "Capice,${vcfPath%%.*}_capice.tsv.gz")
-  !{singularity_vep} vep "${vep_args[@]}"
 }
 
 if [ -n "!{params.phenotypes}" ]; then
@@ -179,5 +202,5 @@ if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; th
   annot_sv
 fi
 
-vep
 capice
+vep
