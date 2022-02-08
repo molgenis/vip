@@ -152,8 +152,19 @@ capice () {
   fi
 
   local vep_args=()
-  vep_args+=("--input_file", "${vcfPath%%.*}_annotated.vcf.gz")
+  vep_args+=("--input_file" "${vcfPath%%.*}_annotated.vcf.gz")
+  vep_args+=("--format" "vcf")
   vep_args+=("--output_file" "!{vcfAnnotatedPath}")
+  vep_args+=("--vcf")
+  vep_args+=("--compress_output" "bgzip")
+  vep_args+=("--fasta" "!{refSeqPath}")
+  vep_args+=("--offline")
+  vep_args+=("--cache")
+  vep_args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  vep_args+=("--species" "homo_sapiens")
+  vep_args+=("--assembly" "!{params.assembly}")
+  vep_args+=("--refseq")
+  vep_args+=("--allele_number")
   vep_args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
   vep_args+=("--plugin" "Capice,${vcfPath%%.*}_capice.tsv.gz")
   !{singularity_vep} vep "${vep_args[@]}"
