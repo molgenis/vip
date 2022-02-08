@@ -33,14 +33,14 @@ download_resources_molgenis () {
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
-    files+=("GRCh37/vkgl_public_consensus_sep2021.tsv")
+    files+=("GRCh37/vkgl_public_consensus_dec2021.tsv")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
-    files+=("GRCh38/vkgl_public_consensus_sep2021.tsv")
+    files+=("GRCh38/vkgl_public_consensus_dec2021.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
