@@ -25,9 +25,10 @@ Stage: final
 
 %files from build
     /usr/local/bin/bcftools
+    /usr/local/libexec/bcftools/split-vep.so
 
 %post
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
 
 %help
-    BCFtools - utilities for variant calling and manipulating VCFs and BCFs.
+    BCFtools - utilities for variant calling and manipulating VCFs and BCFs
