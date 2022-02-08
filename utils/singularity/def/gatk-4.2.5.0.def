@@ -6,16 +6,17 @@ From: sif/build/openjdk-17.sif
     Usage: java -jar /opt/gatk/lib/gatk.jar
 
 %post
-    version=4.2.4.1
+    version=4.2.5.0
 
     # install
     apk update
-    apk add libgomp
+    # libc6-compat: resolve WARN NativeLibraryLoader
+    apk add libgomp gcompat
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/gatk/lib
     curl -Ls -o gatk.zip "https://github.com/broadinstitute/gatk/releases/download/${version}/gatk-${version}.zip"
-    echo "2dc007f534cca1e29253864601e480ce24ce376b4b2bbd7a491571f9ecedc2e2  gatk.zip" | sha256sum -c
+    echo "203f17868f0a73a8322d2f8bd568b9f7b4bb81e36d37db5b6a142d8050ef049f  gatk.zip" | sha256sum -c
     unzip -p gatk.zip "gatk-${version}/gatk-package-${version}-local.jar" > /opt/gatk/lib/gatk.jar
 
     # cleanup
