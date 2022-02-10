@@ -85,10 +85,10 @@
         }
       },
       "outcomeMissing": {
-        "nextNode": "clinVar"
+        "nextNode": "capice"
       },
       "outcomeDefault": {
-        "nextNode": "clinVar"
+        "nextNode": "capice"
       }
     },
     "annotSV": {
@@ -148,6 +148,24 @@
       },
       "outcomeMissing": {
         "nextNode": "effect"
+      }
+    },
+    "capice": {
+      "type": "BOOL",
+      "description": "Consequence contains 'missense'",
+      "query": {
+        "field": "INFO/CSQ/CAPICE",
+        "operator": "<",
+        "value": 0.15
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeFalse": {
+        "nextNode": "clinVar"
+      },
+      "outcomeMissing": {
+        "nextNode": "clinVar"
       }
     },
     "effect": {
