@@ -12,6 +12,7 @@ process annotate {
     vepPluginSpliceAiSnvPath = params[params.assembly + "_annotate_vep_plugin_spliceai_snv"]
     vepPluginVkglPath = params[params.assembly + "_annotate_vep_plugin_vkgl"]
     capiceModelPath = params[params.assembly + "_annotate_capice_model"]
+    capiceFile = params["{id}_chunk${order}_capice"]
 
     template 'annotate.sh'
 }

@@ -36,7 +36,7 @@ get_unique_phenotypes() {
 #   0 if the VCF file contains structural variants
 #   1 if the VCF file doesn't contain structural variants
 #######################################
-contains_sv () {
+contains_sv() {
   local -r vcf_path="${1}"
 
   local vcf_header
@@ -49,7 +49,7 @@ contains_sv () {
   fi
 }
 
-annot_sv () {
+annot_sv() {
   local args=()
   args+=("-SVinputFile" "!{vcfPath}")
   args+=("-outputDir" ".")
@@ -67,10 +67,77 @@ annot_sv () {
   fi
 }
 
-vep () {
+capice_vep() {
+  local vep_args=()
+  vep_args+=("--input_file" "${vcfPath}")
+  vep_args+=("--format" "vcf")
+  vep_args+=("--output_file" "!{capiceFile}_prepared.vcf.gz")
+  vep_args+=("--vcf")
+  vep_args+=("--compress_output" "gzip")
+  vep_args+=("--regulatory")
+  vep_args+=("--sift" "s")
+  vep_args+=("--polyphen" "s")
+  vep_args+=("--domains")
+  vep_args+=("--numbers")
+  vep_args+=("--canonical")
+  vep_args+=("--symbol")
+  vep_args+=("--shift_3prime" "1")
+  vep_args+=("--allele_number")
+  vep_args+=("--no_stats")
+  vep_args+=("--offline")
+  vep_args+=("--cache")
+  vep_args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  vep_args+=("--species" "homo_sapiens")
+  vep_args+=("--assembly" "!{params.assembly}")
+  vep_args+=("--refseq")
+  vep_args+=("--use_given_ref")
+  vep_args+=("--exclude_predicted")
+  vep_args+=("--flag_pick_allele")
+  vep_args+=("--fork" "!{task.cpus}")
+  vep_args+=("--dont_skip")
+  vep_args+=("--allow_non_variant")
+
+  !{singularity_vep} vep "${vep_args[@]}"
+
+  if [ ! -f "!{capiceFile}_prepared.vcf.gz" ]; then
+    echo -e "VEP error: failed to create capice input" 1>&2
+    exit 1
+  fi
+}
+
+capice_bcftools() {
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
+  local bcftools_args=()
+  bcftools_args+=("+split-vep")
+  bcftools_args+=("-d")
+  bcftools_args+=("-f" "${header}\n")
+  bcftools_args+=("-o" "!{capiceFile}_prepared.tsv.tmp")
+  bcftools_args+=("!{capiceFile}_prepared.vcf.gz")
+
+  !{singularity_bcftools} bcftools "${bcftools_args[@]}"
+
+  echo -e "${header}" | cat - "!{capiceFile}_prepared.tsv.tmp" >"!{capiceFile}_prepared.tsv" && rm "!{capiceFile}_prepared.tsv.tmp"
+
+}
+
+capice_predict() {
+  local args=()
+  args+=("predict")
+  args+=("--input" "!{capiceFile}_prepared.tsv")
+  args+=("--output" "!{capiceFile}_scores.tsv.gz")
+  args+=("--model" "!{capiceModelPath}")
+
+  !{singularity_capice} capice "${args[@]}"
+  if [ ! -f "!{capiceFile}_scores.tsv.gz" ]; then
+    echo -e "Capice error: failed to produce output" 1>&2
+    exit 1
+  fi
+}
+
+vep() {
   local vcfPath="!{vcfPath}"
   local args=()
-  args+=("--input_file" "${vcfPath%%.*}_prepared.vcf.gz")
+  args+=("--input_file" "!{capiceFile}_prepared.vcf.gz")
   args+=("--format" "vcf")
   args+=("--output_file" "!{vcfAnnotatedPath}")
   args+=("--vcf")
@@ -102,7 +169,7 @@ vep () {
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
-  args+=("--plugin" "Capice,${vcfPath%%.*}_capice.tsv.gz")
+  args+=("--plugin" "Capice,!{capiceFile}_scores.tsv.gz")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
@@ -127,72 +194,6 @@ vep () {
   !{singularity_vep} vep "${args[@]}"
 }
 
-capice () {
-  local vcfPath="!{vcfPath}"
-  local vep_args=()
-  vep_args+=("--input_file" "${vcfPath}")
-  vep_args+=("--format" "vcf")
-  vep_args+=("--output_file" "${vcfPath%%.*}_prepared.vcf.gz")
-  vep_args+=("--vcf")
-  vep_args+=("--compress_output" "gzip")
-  vep_args+=("--regulatory")
-  vep_args+=("--sift" "s")
-  vep_args+=("--polyphen" "s")
-  vep_args+=("--domains")
-  vep_args+=("--numbers")
-  vep_args+=("--canonical")
-  vep_args+=("--symbol")
-  vep_args+=("--shift_3prime" "1")
-  vep_args+=("--allele_number")
-  vep_args+=("--no_stats")
-  vep_args+=("--offline")
-  vep_args+=("--cache")
-  vep_args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
-  vep_args+=("--species" "homo_sapiens")
-  vep_args+=("--assembly" "!{params.assembly}")
-  vep_args+=("--refseq")
-  vep_args+=("--use_given_ref")
-  vep_args+=("--exclude_predicted")
-  vep_args+=("--flag_pick_allele")
-  vep_args+=("--fork" "!{task.cpus}")
-  vep_args+=("--af_gnomad")
-  vep_args+=("--pubmed")
-  vep_args+=("--dont_skip")
-  vep_args+=("--allow_non_variant")
-
-  !{singularity_vep} vep "${vep_args[@]}"
-
-  # vep --input_file <path to your input file> --format vcf --output_file <path to your output file> --vcf
-      #--compress_output gzip --regulatory --sift s --polyphen s --domains --numbers --canonical --symbol --shift_3prime 1
-      #--allele_number --no_stats --offline --cache --dir_cache </path/to/cache/105> --species "homo_sapiens"
-      #--assembly <GRCh37 or GRCh38> --refseq --use_given_ref --exclude_predicted --use_given_ref --flag_pick_allele --force_overwrite
-      #--fork 4 --af_gnomad --pubmed --dont_skip --allow_non_variant
-
-  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
-  local bcftools_args=()
-  bcftools_args+=("+split-vep")
-  bcftools_args+=("-d")
-  bcftools_args+=("-f" "${header}\n")
-  bcftools_args+=("-o" "${vcfPath%%.*}_prepared.tsv.tmp")
-  bcftools_args+=("${vcfPath%%.*}_prepared.vcf.gz")
-
-  !{singularity_bcftools} bcftools "${bcftools_args[@]}"
-
-  echo -e "${header}" | cat - "${vcfPath%%.*}_prepared.tsv.tmp" > "${vcfPath%%.*}_prepared.tsv" && rm "${vcfPath%%.*}_prepared.tsv.tmp"
-
-  local args=()
-  args+=("predict")
-  args+=("--input" "${vcfPath%%.*}_prepared.tsv")
-  args+=("--output" "${vcfPath%%.*}_capice.tsv.gz")
-  args+=("--model" "!{capiceModelPath}")
-
-  !{singularity_capice} capice "${args[@]}"
-  if [ ! -f "${vcfPath%%.*}_capice.tsv.gz" ]; then
-    echo -e "Capice error: failed to produce output" 1>&2
-    exit 1
-  fi
-}
-
 if [ -n "!{params.phenotypes}" ]; then
   declare -A UNIQUE_PHENOTYPES
   get_unique_phenotypes "!{params.phenotypes}"
@@ -202,5 +203,7 @@ if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; th
   annot_sv
 fi
 
-capice
+capice_vep
+capice_bcftools
+capice_predict
 vep
