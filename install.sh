@@ -18,7 +18,7 @@ validate() {
   fi
 }
 
-download_resources_molgenis () {
+download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
@@ -41,7 +41,7 @@ download_resources_molgenis () {
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
-    files+=("GRCh38/vkgl_public_consensus_sep2021.tsv")
+    files+=("GRCh38/vkgl_public_consensus_dec_2021.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
@@ -58,7 +58,7 @@ download_resources_molgenis () {
   done
 }
 
-download_resources_vep () {
+download_resources_vep() {
   local -r assembly="${1}"
 
   local -r vep_dir="${SCRIPT_DIR}/resources/vep/cache"
@@ -82,7 +82,7 @@ download_resources_vep () {
   fi
 }
 
-download_resources_annotsv () {
+download_resources_annotsv() {
   local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
@@ -105,7 +105,7 @@ download_resources_annotsv () {
   fi
 }
 
-download_resources () {
+download_resources() {
   local -r assembly="${1}"
 
   local -r download_dir="${SCRIPT_DIR}/resources"
@@ -123,7 +123,7 @@ download_resources () {
   download_resources_annotsv
 }
 
-download_images () {
+download_images() {
   local -r download_dir="${SCRIPT_DIR}/images"
   mkdir -p "${download_dir}"
 
@@ -131,7 +131,6 @@ download_images () {
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-3.0.0rc2.sif")
-  files+=("gatk-4.2.4.1.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-2.1.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
@@ -148,13 +147,13 @@ download_images () {
   done
 }
 
-main () {
+main() {
   local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
-    # shellcheck disable=SC2181
-    if [[ $? != 0 ]]; then
-      usage
-      exit 2
-    fi
+  # shellcheck disable=SC2181
+  if [[ $? != 0 ]]; then
+    usage
+    exit 2
+  fi
 
   local assembly="ALL"
 
