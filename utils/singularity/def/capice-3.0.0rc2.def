@@ -10,6 +10,9 @@ From: ubuntu:20.04
 
     python3 -m pip install capice==3.0.0rc2
 
+    # cleanup
+    apt-get clean
+
 %help
     CAPICE is a computational method for predicting the pathogenicity of SNVs and InDels.
 
