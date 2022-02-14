@@ -77,7 +77,7 @@ capice_vep() {
   local args=()
   args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{capiceFile}_prepared.vcf.gz")
+  args+=("--output_file" "!{vcfCapiceAnnotatedPath}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -107,43 +107,45 @@ capice_vep() {
 
   !{singularity_vep} vep "${args[@]}"
 
-  if [ ! -f "!{capiceFile}_prepared.vcf.gz" ]; then
+  if [ ! -f "!{vcfCapiceAnnotatedPath}" ]; then
     echo -e "VEP error: failed to create capice input" 1>&2
     exit 1
   fi
 }
 
 capice_bcftools() {
-  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
+  local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
+
   local args=()
   args+=("+split-vep")
   args+=("-d")
   args+=("-f" "${header}\n")
-  args+=("-o" "!{capiceFile}_prepared.tsv.tmp")
-  args+=("!{capiceFile}_prepared.vcf.gz")
+  args+=("-o" "${capiceInputPathHeaderless}")
+  args+=("!{vcfCapiceAnnotatedPath}")
 
   !{singularity_bcftools} bcftools "${args[@]}"
 
-  echo -e "${header}" | cat - "!{capiceFile}_prepared.tsv.tmp" >"!{capiceFile}_prepared.tsv" && rm "!{capiceFile}_prepared.tsv.tmp"
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
+  echo -e "${header}" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
 }
 
 capice_predict() {
   local args=()
   args+=("predict")
-  args+=("--input" "!{capiceFile}_prepared.tsv")
-  args+=("--output" "!{capiceFile}_scores.tsv.gz")
+  args+=("--input" "!{capiceInputPath}")
+  args+=("--output" "!{capiceOutputPath}")
   args+=("--model" "!{capiceModelPath}")
 
   !{singularity_capice} capice "${args[@]}"
-  if [ ! -f "!{capiceFile}_scores.tsv.gz" ]; then
-    echo -e "Capice error: failed to produce output" 1>&2
+  if [ ! -f "!{capiceOutputPath}" ]; then
+    echo -e "CAPICE error: failed to produce output" 1>&2
     exit 1
   fi
 }
 
 vep() {
   local args=()
-  args+=("--input_file" "!{capiceFile}_prepared.vcf.gz")
+  args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
   args+=("--output_file" "!{vcfAnnotatedPath}")
   args+=("--vcf")
@@ -176,7 +178,7 @@ vep() {
   args+=("--hgvs")
   args+=("--pubmed")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
-  args+=("--plugin" "Capice,!{capiceFile}_scores.tsv.gz")
+  args+=("--plugin" "Capice,!{capiceOutputPath}")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
