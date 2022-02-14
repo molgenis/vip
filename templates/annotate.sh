@@ -79,29 +79,39 @@ capice_vep() {
   args+=("--format" "vcf")
   args+=("--output_file" "!{capiceFile}_prepared.vcf.gz")
   args+=("--vcf")
-  args+=("--compress_output" "gzip")
-  args+=("--regulatory")
-  args+=("--sift" "s")
-  args+=("--polyphen" "s")
-  args+=("--domains")
-  args+=("--numbers")
-  args+=("--canonical")
-  args+=("--symbol")
-  args+=("--shift_3prime" "1")
-  args+=("--allele_number")
+  args+=("--compress_output" "bgzip")
   args+=("--no_stats")
+  args+=("--fasta" "!{refSeqPath}")
   args+=("--offline")
   args+=("--cache")
   args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
   args+=("--species" "homo_sapiens")
   args+=("--assembly" "!{params.assembly}")
   args+=("--refseq")
-  args+=("--use_given_ref")
   args+=("--exclude_predicted")
+  args+=("--use_given_ref")
+  args+=("--symbol")
   args+=("--flag_pick_allele")
-  args+=("--fork" "!{task.cpus}")
+  args+=("--sift" "s")
+  args+=("--polyphen" "s")
+  args+=("--regulatory")
+  args+=("--domains")
+  args+=("--total_length")
+  args+=("--shift_3prime" "1")
+  args+=("--allele_number")
+  args+=("--numbers")
   args+=("--dont_skip")
   args+=("--allow_non_variant")
+  args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
+  args+=("--fork" "!{task.cpus}")
+
+  args+=("--canonical")
+
+
+
+
+
+
 
   !{singularity_vep} vep "${args[@]}"
 
@@ -140,7 +150,6 @@ capice_predict() {
 }
 
 vep() {
-  local vcfPath="!{vcfPath}"
   local args=()
   args+=("--input_file" "!{capiceFile}_prepared.vcf.gz")
   args+=("--format" "vcf")
@@ -149,7 +158,6 @@ vep() {
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
   args+=("--fasta" "!{refSeqPath}")
-  args+=("--hgvs")
   args+=("--offline")
   args+=("--cache")
   args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
@@ -173,6 +181,8 @@ vep() {
   args+=("--allow_non_variant")
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
+  args+=("--hgvs")
+  args+=("--pubmed")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
   args+=("--plugin" "Capice,!{capiceFile}_scores.tsv.gz")
 
