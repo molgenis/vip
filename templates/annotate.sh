@@ -75,7 +75,7 @@ capice() {
 
 capice_vep() {
   local args=()
-  args+=("--input_file" "${vcfPath}")
+  args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
   args+=("--output_file" "!{capiceFile}_prepared.vcf.gz")
   args+=("--vcf")
@@ -104,14 +104,6 @@ capice_vep() {
   args+=("--allow_non_variant")
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
-
-  args+=("--canonical")
-
-
-
-
-
-
 
   !{singularity_vep} vep "${args[@]}"
 
