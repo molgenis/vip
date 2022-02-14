@@ -152,7 +152,7 @@
     },
     "capice": {
       "type": "BOOL",
-      "description": "Consequence contains 'missense'",
+      "description": "CAPICE score < 0.15",
       "query": {
         "field": "INFO/CSQ/CAPICE",
         "operator": "<",
