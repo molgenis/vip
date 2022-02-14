@@ -132,7 +132,7 @@ download_images() {
   files+=("bcftools-1.14.sif")
   files+=("capice-3.0.0rc2.sif")
   files+=("gatk-4.2.5.0.sif")
-  files+=("vcf-decision-tree-2.1.0.sif")
+  files+=("vcf-decision-tree-2.2.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
   files+=("vcf-report-3.1.0.sif")
   files+=("vep-105.0.sif")
