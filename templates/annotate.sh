@@ -114,6 +114,7 @@ capice_vep() {
 }
 
 capice_bcftools() {
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
   local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
 
   local args=()
@@ -125,7 +126,6 @@ capice_bcftools() {
 
   !{singularity_bcftools} bcftools "${args[@]}"
 
-  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
   echo -e "${header}" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
 }
 
