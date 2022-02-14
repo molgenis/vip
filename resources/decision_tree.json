@@ -154,7 +154,7 @@
       "type": "BOOL",
       "description": "CAPICE score < 0.15",
       "query": {
-        "field": "INFO/CSQ/CAPICE",
+        "field": "INFO/CSQ/CAPICE_SC",
         "operator": "<",
         "value": 0.15
       },
