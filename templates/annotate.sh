@@ -176,6 +176,7 @@ vep() {
   args+=("--hgvs")
   args+=("--pubmed")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,!{capiceOutputPath}")
 
   if [ -n "!{vepPluginArtefact}" ]; then
@@ -185,9 +186,6 @@ vep() {
     args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
   fi
   args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
-  if [ -n "!{vepPluginSpliceAiSnvPath}" ] && [ -n "!{vepPluginSpliceAiIndelPath}" ]; then
-    args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  fi
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
   fi

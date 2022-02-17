@@ -3,7 +3,7 @@
 ## Requirements
 - [Nextflow](https://www.nextflow.io/)
 - [Singularity](https://sylabs.io/singularity/)
-- 100GB disk space
+- 300GB disk space
 
 ## Installation
 ```
@@ -16,9 +16,6 @@ Use `--assembly` to download recourses for a specific assembly:
 ```
 bash vip/install.sh --assembly GRCh38
 ```
-
-### Optional
-- [SpliceAI](https://basespace.illumina.com/s/otSPW8hnhaZR) (free for academic and not-for-profit use)
 
 ## Usage
 ```
@@ -33,6 +30,7 @@ See [nextflow.config](https://github.com/molgenis/vip/blob/master/nextflow.confi
 Some tools and resources have licenses that restrict their usage: 
 - [AnnotSV](https://lbgi.fr/AnnotSV/) (GPL-3.0 License)
 - [gnomAD](https://gnomad.broadinstitute.org/) (CC0 1.0 license)
+- [SpliceAI](https://basespace.illumina.com/s/otSPW8hnhaZR) (free for academic and not-for-profit use)
 - [VKGL](https://vkgl.molgeniscloud.org/) (CC BY-NC-SA 4.0 license)
 
 Update [nextflow.config](https://github.com/molgenis/vip/blob/master/nextflow.config) to prevent their usage.
