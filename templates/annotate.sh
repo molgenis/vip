@@ -94,8 +94,6 @@ capice_vep() {
   args+=("--flag_pick_allele")
   args+=("--sift" "s")
   args+=("--polyphen" "s")
-  args+=("--regulatory")
-  args+=("--domains")
   args+=("--total_length")
   args+=("--shift_3prime" "1")
   args+=("--allele_number")
@@ -114,7 +112,7 @@ capice_vep() {
 }
 
 capice_bcftools() {
-  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%DOMAINS\t%MOTIF_NAME\t%HIGH_INF_POS\t%MOTIF_SCORE_CHANGE\t%EXON\t%INTRON"
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%Feature_type\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%EXON\t%INTRON\t%SpliceAI_pred_DP_AG\t%SpliceAI_pred_DP_AL\t%SpliceAI_pred_DP_DG\t%SpliceAI_pred_DP_DL\t%SpliceAI_pred_DS_AG\t%SpliceAI_pred_DS_AL\t%SpliceAI_pred_DS_DG\t%SpliceAI_pred_DS_DL"
   local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
 
   local args=()
@@ -164,8 +162,6 @@ vep() {
   args+=("--flag_pick_allele")
   args+=("--sift" "s")
   args+=("--polyphen" "s")
-  args+=("--regulatory")
-  args+=("--domains")
   args+=("--total_length")
   args+=("--pubmed")
   args+=("--shift_3prime" "1")
