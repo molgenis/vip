@@ -102,6 +102,8 @@ capice_vep() {
   args+=("--allow_non_variant")
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
+  args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
 
   !{singularity_vep} vep "${args[@]}"
 
