@@ -34,7 +34,7 @@ download_resources_molgenis() {
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh37/vkgl_public_consensus_dec2021.tsv")
-    files+=("GRCh37/capice_model_v3.0.0rc2.pickle.dat")
+    files+=("GRCh37/capice_model_v3.0.0rc4.pickle.dat")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -130,7 +130,7 @@ download_images() {
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
-  files+=("capice-3.0.0rc2.sif")
+  files+=("capice-3.0.0rc4.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-2.2.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
