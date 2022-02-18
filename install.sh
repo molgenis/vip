@@ -142,7 +142,7 @@ download_images() {
   files+=("capice-3.0.0.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-2.2.0.sif")
-  files+=("vcf-inheritance-matcher-2.0.0.sif")
+  files+=("vcf-inheritance-matcher-2.0.1.sif")
   files+=("vcf-report-3.1.0.sif")
   files+=("vep-105.0.sif")
 
