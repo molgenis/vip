@@ -38,7 +38,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh37/vkgl_public_consensus_dec2021.tsv")
-    files+=("GRCh37/capice_model_v3.0.0rc4.pickle.dat")
+    files+=("GRCh37/capice_model_v3.0.0.pickle.dat")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
