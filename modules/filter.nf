@@ -5,6 +5,7 @@ process filter {
     tuple val(id), val(order), path(vcfFilteredPath)
   shell:
     vcfFilteredPath = "${id}_chunk${order}_filtered.vcf.gz"
+    vcfSplittedPath = "${id}_chunk${order}_splitted.vcf.gz"
     template 'filter.sh'
 }
 
