@@ -26,6 +26,7 @@ download_resources_molgenis() {
   files+=("inheritance_20211119.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
     files+=("GRCh37/human_g1k_v37.dict")
@@ -38,17 +39,17 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh37/vkgl_public_consensus_dec2021.tsv")
-    files+=("GRCh37/capice_model_v3.0.0.pickle.dat")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    files+=("GRCh38/capice_model_v3.0.0-v1.pickle.dat")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
-    files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
+    files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh38/vkgl_public_consensus_dec_2021.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
