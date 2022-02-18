@@ -178,7 +178,7 @@ test_lp () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2440 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2455 ]; then
     return 1
   fi
 }
@@ -197,7 +197,7 @@ test_lb () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 778 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 793 ]; then
     return 1
   fi
 }

@@ -36,7 +36,7 @@ get_unique_phenotypes() {
 #   0 if the VCF file contains structural variants
 #   1 if the VCF file doesn't contain structural variants
 #######################################
-contains_sv () {
+contains_sv() {
   local -r vcf_path="${1}"
 
   local vcf_header
@@ -49,7 +49,7 @@ contains_sv () {
   fi
 }
 
-annot_sv () {
+annot_sv() {
   local args=()
   args+=("-SVinputFile" "!{vcfPath}")
   args+=("-outputDir" ".")
@@ -67,16 +67,21 @@ annot_sv () {
   fi
 }
 
-vep () {
+capice() {
+  capice_vep
+  capice_bcftools
+  capice_predict
+}
+
+capice_vep() {
   local args=()
   args+=("--input_file" "!{vcfPath}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfAnnotatedPath}")
+  args+=("--output_file" "!{vcfCapiceAnnotatedPath}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
   args+=("--fasta" "!{refSeqPath}")
-  args+=("--hgvs")
   args+=("--offline")
   args+=("--cache")
   args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
@@ -89,8 +94,76 @@ vep () {
   args+=("--flag_pick_allele")
   args+=("--sift" "s")
   args+=("--polyphen" "s")
-  args+=("--regulatory")
-  args+=("--domains")
+  args+=("--total_length")
+  args+=("--shift_3prime" "1")
+  args+=("--allele_number")
+  args+=("--numbers")
+  args+=("--dont_skip")
+  args+=("--allow_non_variant")
+  args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
+  args+=("--fork" "!{task.cpus}")
+  args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+
+  !{singularity_vep} vep "${args[@]}"
+
+  if [ ! -f "!{vcfCapiceAnnotatedPath}" ]; then
+    echo -e "VEP error: failed to create capice input" 1>&2
+    exit 1
+  fi
+}
+
+capice_bcftools() {
+  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%Feature_type\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%EXON\t%INTRON\t%SpliceAI_pred_DP_AG\t%SpliceAI_pred_DP_AL\t%SpliceAI_pred_DP_DG\t%SpliceAI_pred_DP_DL\t%SpliceAI_pred_DS_AG\t%SpliceAI_pred_DS_AL\t%SpliceAI_pred_DS_DG\t%SpliceAI_pred_DS_DL"
+  local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
+
+  local args=()
+  args+=("+split-vep")
+  args+=("-d")
+  args+=("-f" "${header}\n")
+  args+=("-o" "${capiceInputPathHeaderless}")
+  args+=("!{vcfCapiceAnnotatedPath}")
+
+  !{singularity_bcftools} bcftools "${args[@]}"
+
+  echo -e "${header}" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
+}
+
+capice_predict() {
+  local args=()
+  args+=("predict")
+  args+=("--input" "!{capiceInputPath}")
+  args+=("--output" "!{capiceOutputPath}")
+  args+=("--model" "!{capiceModelPath}")
+
+  !{singularity_capice} capice "${args[@]}"
+  if [ ! -f "!{capiceOutputPath}" ]; then
+    echo -e "CAPICE error: failed to produce output" 1>&2
+    exit 1
+  fi
+}
+
+vep() {
+  local args=()
+  args+=("--input_file" "!{vcfPath}")
+  args+=("--format" "vcf")
+  args+=("--output_file" "!{vcfAnnotatedPath}")
+  args+=("--vcf")
+  args+=("--compress_output" "bgzip")
+  args+=("--no_stats")
+  args+=("--fasta" "!{refSeqPath}")
+  args+=("--offline")
+  args+=("--cache")
+  args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  args+=("--species" "homo_sapiens")
+  args+=("--assembly" "!{params.assembly}")
+  args+=("--refseq")
+  args+=("--exclude_predicted")
+  args+=("--use_given_ref")
+  args+=("--symbol")
+  args+=("--flag_pick_allele")
+  args+=("--sift" "s")
+  args+=("--polyphen" "s")
   args+=("--total_length")
   args+=("--pubmed")
   args+=("--shift_3prime" "1")
@@ -100,7 +173,12 @@ vep () {
   args+=("--allow_non_variant")
   args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
+  args+=("--hgvs")
+  args+=("--pubmed")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  args+=("--plugin" "Capice,!{capiceOutputPath}")
+
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
@@ -108,9 +186,6 @@ vep () {
     args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
   fi
   args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
-  if [ -n "!{vepPluginSpliceAiSnvPath}" ] && [ -n "!{vepPluginSpliceAiIndelPath}" ]; then
-    args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  fi
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
   fi
@@ -133,4 +208,5 @@ if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; th
   annot_sv
 fi
 
+capice
 vep

@@ -18,7 +18,7 @@ validate() {
   fi
 }
 
-download_resources_molgenis () {
+download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
@@ -26,19 +26,29 @@ download_resources_molgenis () {
   files+=("inheritance_20211119.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
     files+=("GRCh37/human_g1k_v37.dict")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
+    files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz")
+    files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
+    files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
+    files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh37/vkgl_public_consensus_dec2021.tsv")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    files+=("GRCh38/capice_model_v3.0.0-v1.pickle.dat")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
+    files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
+    files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
+    files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/ucsc_genes_ncbi_refseq_20210519.txt.gz")
     files+=("GRCh38/vkgl_public_consensus_dec2021.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
@@ -57,7 +67,7 @@ download_resources_molgenis () {
   done
 }
 
-download_resources_vep () {
+download_resources_vep() {
   local -r assembly="${1}"
 
   local -r vep_dir="${SCRIPT_DIR}/resources/vep/cache"
@@ -81,7 +91,7 @@ download_resources_vep () {
   fi
 }
 
-download_resources_annotsv () {
+download_resources_annotsv() {
   local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
@@ -104,7 +114,7 @@ download_resources_annotsv () {
   fi
 }
 
-download_resources () {
+download_resources() {
   local -r assembly="${1}"
 
   local -r download_dir="${SCRIPT_DIR}/resources"
@@ -122,13 +132,14 @@ download_resources () {
   download_resources_annotsv
 }
 
-download_images () {
+download_images() {
   local -r download_dir="${SCRIPT_DIR}/images"
   mkdir -p "${download_dir}"
 
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
+  files+=("capice-3.0.0.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-2.2.0.sif")
   files+=("vcf-inheritance-matcher-2.0.0.sif")
@@ -145,13 +156,13 @@ download_images () {
   done
 }
 
-main () {
+main() {
   local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
-    # shellcheck disable=SC2181
-    if [[ $? != 0 ]]; then
-      usage
-      exit 2
-    fi
+  # shellcheck disable=SC2181
+  if [[ $? != 0 ]]; then
+    usage
+    exit 2
+  fi
 
   local assembly="ALL"
 
