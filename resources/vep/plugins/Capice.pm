@@ -56,6 +56,24 @@ sub create_key {
     return "${chr}_${pos}_${ref}_${alt}_${gene}_${source}_${feature_type}_${feature}";
 }
 
+sub getFeatureType {
+    my $tva = $_[0];
+    my $feature_type = "";
+    if($tva->isa('Bio::EnsEMBL::Variation::TranscriptVariationAllele')) {
+        $feature_type = "Transcript";
+    }
+    elsif($tva->isa('Bio::EnsEMBL::Variation::RegulatoryFeatureVariationAllele')) {
+        $feature_type = "RegulatoryFeature";
+    }
+    elsif($tva->isa('Bio::EnsEMBL::Variation::MotifFeatureVariationAllele')) {
+        $feature_type = "MotifFeature";
+    }
+    elsif($tva->isa('Bio::EnsEMBL::Variation::IntergenicVariationAllele')) {
+        $feature_type = "Intergenic";
+    }
+    return $feature_type;
+}
+
 sub parse_file_header {
     my @tokens = split /\t/, $_[0];
 
@@ -144,7 +162,9 @@ sub run {
         $transcript_id = $tva->feature->stable_id;
     }
 
-    my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$transcript_id);
+    my $feature_type = getFeatureType($tva);
+
+    my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$feature_type,$transcript_id);
 
     my $result = ();
     $result->{CAPICE_SC} = undef;
