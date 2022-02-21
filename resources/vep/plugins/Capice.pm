@@ -49,10 +49,10 @@ sub create_key {
     my $pos = $_[1];
     my $ref = $_[2];
     my $alt = $_[3];
-    my $gene = $_[4];
-    my $source = $_[5];
-    my $feature_type = $_[6];
-    my $feature = $_[7];
+    my $gene = $_[4]?$_[4]:"";
+    my $source = $_[5]?$_[5]:"";
+    my $feature_type = $_[6]?$_[6]:"";
+    my $feature = $_[7]?$_[7]:"";
     return "${chr}_${pos}_${ref}_${alt}_${gene}_${source}_${feature_type}_${feature}";
 }
 
