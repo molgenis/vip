@@ -8,6 +8,7 @@ include { annotate; annotate_publish } from './modules/annotate'
 include { classify; classify_publish } from './modules/classify'
 include { filter; filter_publish } from './modules/filter'
 include { inheritance; inheritance_publish } from './modules/inheritance'
+include { filter_inheritance; filter_inheritance_publish } from './modules/filterInheritance'
 include { report } from './modules/report'
 
 workflow {
@@ -116,7 +117,25 @@ workflow {
       | set { inheritanced_ch }
 
   inheritanced_ch.mix(inheritance_ch.skip) \
+        | branch {
+            take: params.start <= 5 && params.pedigree != "" && params.filter_inheritance == true
+            skip: true
+          }
+      | set { filter_inheritance_ch }
+
+  // stage #5: inheritance filtering
+  filter_inheritance_ch.take \
+      | filter_inheritance
+      | multiMap { it -> done: publish: it }
+      | set { filtered_inheritance_ch }
+
+  filtered_inheritance_ch.done.mix(filter_inheritance_ch.skip) \
       | set { report_ch }
+
+  filtered_inheritance_ch.publish \
+      | groupTuple \
+      | map { it -> sort(it) } \
+      | filter_inheritance_publish
 
   // stage #5: reporting
   report_ch \
