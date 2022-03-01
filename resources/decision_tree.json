@@ -15,7 +15,7 @@
         "nextNode": "vkgl"
       },
       "outcomeFalse": {
-        "nextNode": "exit_f"
+        "nextNode": "exit_lq"
       },
       "outcomeMissing": {
         "nextNode": "vkgl"
@@ -325,10 +325,10 @@
         "nextNode": "exit_vus"
       }
     },
-    "exit_f": {
-      "description": "Variants to be filtered e.g. because of non 'PASS' FILTER state.",
+    "exit_lq": {
+      "description": "Low quality variants.",
       "type": "LEAF",
-      "class": "F"
+      "class": "LQ"
     },
     "exit_b": {
       "type": "LEAF",
