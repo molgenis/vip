@@ -183,6 +183,25 @@ test_lp () {
   fi
 }
 
+test_lp_b38 () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--assembly" "GRCh38")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lp_b38.vcf.gz")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2452 ]; then
+    return 1
+  fi
+}
+
 test_lb () {
   local args=()
   args+=("-log" "${OUTPUT_LOG}")
@@ -198,6 +217,25 @@ test_lb () {
   fi
 
   if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 793 ]; then
+    return 1
+  fi
+}
+
+test_lb_b38 () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--assembly" "GRCh38")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lb_b38.bcf.gz")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 683 ]; then
     return 1
   fi
 }
@@ -235,9 +273,19 @@ run_tests () {
   test_lp
   after_each
 
+  TEST_ID="test_lp_b38"
+  before_each
+  test_lp_b38
+  after_each
+
   TEST_ID="test_lb"
   before_each
   test_lb
+  after_each
+
+  TEST_ID="test_lb_b38"
+  before_each
+  test_lb_b38
   after_each
 
   after_all
