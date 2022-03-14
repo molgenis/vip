@@ -1,23 +1,12 @@
 #!/bin/bash
 filter () {
-  local args_split=()
-  args_split+=("+split-vep")
-  args_split+=("-c" "VIPC")
-  args_split+=("--output" "!{vcfSplittedPath}")
-  args_split+=("!{vcfPath}")
+  args+=("-i" "!{vcfPath}")
+  args+=("-f" "VIPC in !{params.filter_classes}")
+  if [ "!{params.filter_consequences}" = true ]; then
+    args+=("--only_matched")
+  fi
 
-  !{singularity_bcftools} bcftools "${args_split[@]}"
-
-  local args=()
-  args+=("filter")
-  args+=("--include" "!{params.filter_classes.split(',').collect(it -> "VIPC[*]==\\\"" + it + "\\\"").join('||')}")
-  args+=("--output" "!{vcfFilteredPath}")
-  args+=("--output-type" "z")
-  args+=("--no-version")
-  args+=("--threads" "!{task.cpus}")
-  args+=("!{vcfSplittedPath}")
-
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{singularity_vep} filter_vep "${args[@]}"  | !{singularity_vep} bgzip -c > "!{vcfFilteredPath}"
 }
 
 filter
