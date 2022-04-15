@@ -80,7 +80,7 @@ main() {
   images+=("build/alpine-3.15.0")
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
-  images+=("gatk-4.2.5.0" "vcf-decision-tree-3.0.0-beta1" "vcf-inheritance-matcher-2.0.0" "vcf-report-3.1.0")
+  images+=("gatk-4.2.5.0" "vcf-decision-tree-3.0.0" "vcf-inheritance-matcher-2.0.1" "vcf-report-3.1.0")
   images+=("annotsv-3.0.9")
   images+=("vep-105.0")
   images+=("capice-3.0.0")
