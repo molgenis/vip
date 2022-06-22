@@ -192,6 +192,9 @@ vep() {
   if [ -n "!{vepCustomGnomAdPath}" ]; then
     args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
   fi
+  if [ -n "!{vepCustomClinVarPath}" ]; then
+      args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNREVSTAT")
+  fi
   if [ -f "!{vcfPath}.tsv" ]; then
     args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
