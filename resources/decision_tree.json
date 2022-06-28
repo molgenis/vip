@@ -171,18 +171,17 @@
     "clinVar": {
       "type": "BOOL_MULTI",
       "fields": [
-        "INFO/CSQ/CLIN_SIG"
+        "INFO/CSQ/clinVar_CLNSIG"
       ],
       "outcomes": [
         {
           "queries": [
             {
-              "field": "INFO/CSQ/CLIN_SIG",
+              "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
               "value": [
-                "conflicting_interpretations_of_pathogenicity",
-                "conflicting_data_from_submitters",
-                "uncertain_significance"
+                "Conflicting_interpretations_of_pathogenicity",
+                "Uncertain_significance"
               ]
             }
           ],
@@ -193,11 +192,11 @@
         {
           "queries": [
             {
-              "field": "INFO/CSQ/CLIN_SIG",
+              "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
               "value": [
-                "likely_benign",
-                "benign"
+                "Likely_benign",
+                "Benign"
               ]
             }
           ],
@@ -208,11 +207,11 @@
         {
           "queries": [
             {
-              "field": "INFO/CSQ/CLIN_SIG",
+              "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
               "value": [
-                "likely_pathogenic",
-                "pathogenic"
+                "Likely_pathogenic",
+                "Pathogenic"
               ]
             }
           ],
