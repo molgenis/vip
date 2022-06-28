@@ -27,6 +27,8 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")
+    files+=("GRCh37/clinvar_20220620.vcf.gz")
+    files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
     files+=("GRCh37/human_g1k_v37.dict")
@@ -43,6 +45,8 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v3.0.0-v1.pickle.dat")
+    files+=("GRCh38/clinvar_20220620.vcf.gz")
+    files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
@@ -141,7 +145,7 @@ download_images() {
   files+=("bcftools-1.14.sif")
   files+=("capice-3.0.0.sif")
   files+=("gatk-4.2.5.0.sif")
-  files+=("vcf-decision-tree-3.0.0.sif")
+  files+=("vcf-decision-tree-3.1.0.sif")
   files+=("vcf-inheritance-matcher-2.0.1.sif")
   files+=("vcf-report-4.0.0.sif")
   files+=("vep-105.0.sif")
