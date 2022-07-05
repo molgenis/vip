@@ -5,7 +5,7 @@ else
   tmp_dir="${TMPDIR}"
 fi
 
-classify () {
+classify_samples () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${tmp_dir}\"")
   args+=("-XX:ParallelGCThreads=2")
@@ -24,4 +24,4 @@ classify () {
   !{singularity_vcfdecisiontree} java "${args[@]}"
 }
 
-classify
+classify_samples
