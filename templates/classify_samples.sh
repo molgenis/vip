@@ -11,9 +11,14 @@ classify () {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcfPath}")
+  args+=("--mode" "sample")
   args+=("--config" "!{params.classify_samples_decision_tree}")
-  args+=("--labels" "!{params.classify_samples_annotate_labels}")
-  args+=("--path" "!{params.classify_samples_annotate_path}")
+  if [ !{params.classify_samples_annotate_labels} -eq 1 ]; then
+    args+=("--labels")
+  fi
+  if [ !{params.classify_samples_annotate_path} -eq 1 ]; then
+    args+=("--path")
+  fi
   args+=("--output" "!{vcfSamplesClassifiedPath}")
 
   !{singularity_vcfdecisiontree} java "${args[@]}"

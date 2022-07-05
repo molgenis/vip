@@ -2,10 +2,10 @@ process filter_samples {
   input:
     tuple val(id), val(order), path(vcfPath)
   output:
-    tuple val(id), val(order), path(vcfFilteredPath)
+    tuple val(id), val(order), path(vcfFilteredSamplesPath)
   shell:
-    vcfFilteredPath = "${id}_chunk${order}_samples_filtered.vcf.gz"
-    vcfSplittedPath = "${id}_chunk${order}_samples_splitted.vcf.gz"
+    vcfFilteredSamplesPath = "${id}_chunk${order}_samples_filtered.vcf.gz"
+    vcfSplittedSamplesPath = "${id}_chunk${order}_samples_splitted.vcf.gz"
     template 'filter_samples.sh'
 }
 

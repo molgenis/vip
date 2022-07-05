@@ -2,7 +2,7 @@
 filter_samples () {
   local args=()
   args+=("filter")
-  args+=("--include" "!{params.filter_samples_classes.split(',').collect(it -> "VIPC_S==\\\"" + it + "\\\"").join('||')}")
+  args+=("--include" "!{params.filter_samples_classes.split(',').collect(it -> "INFO/VIPC_S==\\\"" + it + "\\\"").join('||')}")
   args+=("--output" "!{vcfFilteredSamplesPath}")
   args+=("--output-type" "z")
   args+=("--no-version")

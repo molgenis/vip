@@ -119,7 +119,7 @@ workflow {
 
   inheritanced_ch.mix(inheritance_ch.skip) \
         | branch {
-            take: params.start <= 5 && params.pedigree != "" && params.filter_inheritance == true
+            take: params.start <= 5
             skip: true
           }
       | set { classify_samples_ch }
@@ -132,25 +132,26 @@ workflow {
 
   classified_samples_ch.done.mix(classify_samples_ch.skip) \
       | branch {
-          take: params.start <= 6
+          take: params.start <= 6 && params.filter_samples == true
           skip: true
         }
       | set { filter_samples_ch }
 
+  classified_samples_ch.publish \
+      | groupTuple \
+      | map { it -> sort(it) } \
+      | classify_samples_publish
+
   // stage #6: filtering
   filter_samples_ch.take \
-      | filter
+      | filter_samples
       | multiMap { it -> done: publish: it }
       | set { filtered_samples_ch }
 
   filtered_samples_ch.done.mix(filter_samples_ch.skip) \
-      | branch {
-          take: params.start <= 7 && params.filter_samples != true
-          skip: true
-        }
       | set { report_ch }
 
-  filtered_ch.publish \
+  filtered_samples_ch.publish \
       | groupTuple \
       | map { it -> sort(it) } \
       | filter_samples_publish
