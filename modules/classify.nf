@@ -2,9 +2,9 @@ process classify {
   input:
     tuple val(id), val(order), path(vcfPath)
   output:
-    tuple val(id), val(order), path(vcfClassifiedPath)
+    tuple val(id), val(order), path(vcfSamplesClassifiedPath)
   shell:
-    vcfClassifiedPath = "${id}_chunk${order}_classified.vcf.gz"
+    vcfSamplesClassifiedPath = "${id}_chunk${order}_classified.vcf.gz"
     template 'classify.sh'
 }
 

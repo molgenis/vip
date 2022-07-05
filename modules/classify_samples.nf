@@ -1,14 +1,14 @@
-process filter_inheritance {
+process classify_samples {
   input:
     tuple val(id), val(order), path(vcfPath)
   output:
-    tuple val(id), val(order), path(vcfFilteredPath)
+    tuple val(id), val(order), path(vcfClassifiedPath)
   shell:
-    vcfFilteredPath = "${id}_chunk${order}_inheritance_filtered.vcf.gz"
-    template 'filterInheritance.sh'
+    vcfClassifiedPath = "${id}_chunk${order}_samples_classified.vcf.gz"
+    template 'classify_samples.sh'
 }
 
-process filter_inheritance_publish {
+process classify_samples_publish {
   publishDir "$params.output/intermediates", mode: 'copy'
 
   when: "$params.keep" == true
@@ -18,6 +18,6 @@ process filter_inheritance_publish {
   output:
     tuple val(id), path(vcfMergedPath), path("${vcfMergedPath}.csi")
   shell:
-    vcfMergedPath = "${id}_inheritance_filtered.vcf.gz"
+    vcfMergedPath = "${id}_samples_classified.vcf.gz"
     template 'merge.sh'
 }
