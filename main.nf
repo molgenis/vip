@@ -122,7 +122,7 @@ workflow {
             take: params.start <= 5 && params.pedigree != "" && params.filter_inheritance == true
             skip: true
           }
-      | set { filter_inheritance_ch }
+      | set { classify_samples_ch }
 
   // stage #5: classification
   classify_samples_ch.take \
