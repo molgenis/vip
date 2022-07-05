@@ -37,42 +37,6 @@
         "nextNode": "depth"
       }
     },
-    "depth": {
-      "type": "BOOL",
-      "description": "Depth",
-      "query": {
-        "field": "FORMAT/DP",
-        "operator": ">=",
-        "value": 20
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_k"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_r"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_k"
-      }
-    },
-    "genotype_quality": {
-      "type": "BOOL",
-      "description": "Genotype quality",
-      "query": {
-        "field": "FORMAT/GQ",
-        "operator": ">=",
-        "value": 20
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_k"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_r"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_k"
-      }
-    },
     "exit_k": {
       "type": "LEAF",
       "class": "K"
