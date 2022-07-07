@@ -75,7 +75,7 @@ download_resources_vep() {
   local -r assembly="${1}"
 
   local -r vep_dir="${SCRIPT_DIR}/resources/vep/cache"
-  if [ ! -d "${vep_dir}" ]; then
+  if [ ! -d "${vep_dir}/resources/vep/cache/homo_sapiens_refseq/105_${assembly}" ]; then
     mkdir -p "${vep_dir}"
 
     local vep_files=()
