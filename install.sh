@@ -96,7 +96,7 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.0.9"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
