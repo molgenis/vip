@@ -8,7 +8,7 @@ From: sif/build/openjdk-17.sif
 %post
     version_major=4
     version_minor=1
-    version_patch=1
+    version_patch=2
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/vcf-report/lib
     curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
-    echo "e7448108fd119c5d2ab8369787709343ddfd05ed34c7e32ff66d1662ab892485  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+    echo "3c97282f0e1b0389b2a3153a71d64ea2708f73ecf008557052ffc10af9a43dda  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
