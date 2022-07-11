@@ -121,6 +121,28 @@ test_snv_proband_trio () {
     return 1
   fi
 
+  if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband_trio.vcf.gz" | grep -vc "^#")" -eq 3 ]; then
+    return 1
+  fi
+}
+
+test_snv_proband_trio_sample_filtering () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--assembly" "GRCh37")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
+  args+=("--probands" "PROBAND0")
+  args+=("--phenotypes" "HP:0001250;HP:0001166")
+  args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--filter_samples")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
   if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband_trio.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
     return 1
   fi

@@ -39,7 +39,7 @@
     },
     "depth": {
       "type": "BOOL",
-      "description": "Depth",
+      "description": "Read Depth",
       "query": {
         "field": "FORMAT/DP",
         "operator": ">=",
