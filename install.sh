@@ -75,31 +75,39 @@ download_resources_vep() {
   local -r assembly="${1}"
 
   local -r vep_dir="${SCRIPT_DIR}/resources/vep/cache"
-  if [ ! -d "${vep_dir}" ]; then
-    mkdir -p "${vep_dir}"
 
-    local vep_files=()
-    if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+  mkdir -p "${vep_dir}"
+
+  local vep_files=()
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh37" ]; then
       vep_files+=("homo_sapiens_refseq_vep_105_GRCh37.tar.gz")
+    else
+      echo -e "skipping download vep cache for GRCh37: already exists"
     fi
-    if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+  fi
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh38" ]; then
       vep_files+=("homo_sapiens_refseq_vep_105_GRCh38.tar.gz")
+    else
+      echo -e "skipping download vep cache for GRCh38: already exists"
     fi
+  fi
 
+  if [ ${#vep_files[@]} != 0 ]; then
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
       wget --quiet --continue "http://ftp.ensembl.org/pub/release-105/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
-  else
-    echo -e "skipping download vep cache: already exists"
   fi
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.0.9"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.0.9.tar.gz ..."
     wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.0.9.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
@@ -109,7 +117,9 @@ download_resources_annotsv() {
   if [ ! -d "${annotsv_exomiser_dir}" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
+    echo -e "downloading from www.lbgi.fr: 2007_hg19.tar.gz ..."
     wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2007_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
+    echo -e "downloading from data.monarchinitiative.org: 2007_phenotype.zip ..."
     wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2007_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
     unzip -qq "${annotsv_exomiser_dir}/2007_phenotype.zip" -d "${annotsv_exomiser_dir}"
     rm "${annotsv_exomiser_dir}/2007_phenotype.zip"
@@ -147,7 +157,7 @@ download_images() {
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-3.2.1.sif")
   files+=("vcf-inheritance-matcher-2.0.1.sif")
-  files+=("vcf-report-4.1.0.sif")
+  files+=("vcf-report-4.1.2.sif")
   files+=("vep-105.0.sif")
   files+=("picard-2.26.11.sif")
 
