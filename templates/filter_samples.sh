@@ -1,9 +1,9 @@
 #!/bin/bash
-filter () {
+filter_samples () {
   local args=()
   args+=("filter")
-  args+=("--include" "FMT/VIM=1 | FMT/VID=1")
-  args+=("--output" "!{vcfFilteredPath}")
+  args+=("--include" "!{params.filter_samples_classes.split(',').collect(it -> "INFO/VIPC_S==\\\"" + it + "\\\"").join('||')}")
+  args+=("--output" "!{vcfFilteredSamplesPath}")
   args+=("--output-type" "z")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
@@ -12,4 +12,4 @@ filter () {
   !{singularity_bcftools} bcftools "${args[@]}"
 }
 
-filter
+filter_samples

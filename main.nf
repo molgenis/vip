@@ -8,7 +8,8 @@ include { annotate; annotate_publish } from './modules/annotate'
 include { classify; classify_publish } from './modules/classify'
 include { filter; filter_publish } from './modules/filter'
 include { inheritance; inheritance_publish } from './modules/inheritance'
-include { filter_inheritance; filter_inheritance_publish } from './modules/filterInheritance'
+include { classify_samples; classify_samples_publish } from './modules/classify_samples'
+include { filter_samples; filter_samples_publish } from './modules/filter_samples'
 include { report } from './modules/report'
 
 workflow {
@@ -118,26 +119,44 @@ workflow {
 
   inheritanced_ch.mix(inheritance_ch.skip) \
         | branch {
-            take: params.start <= 5 && params.pedigree != "" && params.filter_inheritance == true
+            take: params.start <= 5
             skip: true
           }
-      | set { filter_inheritance_ch }
+      | set { classify_samples_ch }
 
-  // stage #5: inheritance filtering
-  filter_inheritance_ch.take \
-      | filter_inheritance
+  // stage #5: classification
+  classify_samples_ch.take \
+      | classify_samples
       | multiMap { it -> done: publish: it }
-      | set { filtered_inheritance_ch }
+      | set { classified_samples_ch }
 
-  filtered_inheritance_ch.done.mix(filter_inheritance_ch.skip) \
-      | set { report_ch }
+  classified_samples_ch.done.mix(classify_samples_ch.skip) \
+      | branch {
+          take: params.start <= 6 && params.filter_samples == true
+          skip: true
+        }
+      | set { filter_samples_ch }
 
-  filtered_inheritance_ch.publish \
+  classified_samples_ch.publish \
       | groupTuple \
       | map { it -> sort(it) } \
-      | filter_inheritance_publish
+      | classify_samples_publish
 
-  // stage #5: reporting
+  // stage #6: filtering
+  filter_samples_ch.take \
+      | filter_samples
+      | multiMap { it -> done: publish: it }
+      | set { filtered_samples_ch }
+
+  filtered_samples_ch.done.mix(filter_samples_ch.skip) \
+      | set { report_ch }
+
+  filtered_samples_ch.publish \
+      | groupTuple \
+      | map { it -> sort(it) } \
+      | filter_samples_publish
+
+  // stage #7: reporting
   report_ch \
     | groupTuple \
     | map { it -> sort(it) } \

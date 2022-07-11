@@ -1,0 +1,85 @@
+{
+  "rootNode": "inheritance",
+  "nodes": {
+    "inheritance": {
+      "type": "BOOL",
+      "description": "Inheritance match",
+      "query": {
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "denovo"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_r"
+      },
+      "outcomeMissing": {
+        "nextNode": "denovo"
+      }
+    },
+    "denovo": {
+      "type": "BOOL",
+      "description": "Inheritance Denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "depth"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_r"
+      },
+      "outcomeMissing": {
+        "nextNode": "depth"
+      }
+    },
+    "depth": {
+      "type": "BOOL",
+      "description": "Read Depth",
+      "query": {
+        "field": "FORMAT/DP",
+        "operator": ">=",
+        "value": 20
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_k"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_r"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_k"
+      }
+    },
+    "genotype_quality": {
+      "type": "BOOL",
+      "description": "Genotype quality",
+      "query": {
+        "field": "FORMAT/GQ",
+        "operator": ">=",
+        "value": 20
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_k"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_r"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_k"
+      }
+    },
+    "exit_k": {
+      "type": "LEAF",
+      "class": "K"
+    },
+    "exit_r": {
+      "type": "LEAF",
+      "class": "R"
+    }
+  }
+}
