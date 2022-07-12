@@ -23,7 +23,7 @@ download_resources_molgenis() {
 
   local files=()
   files+=("hpo_20220712.tsv")
-  files+=("inheritance_20211119.tsv")
+  files+=("inheritance_20220712.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")

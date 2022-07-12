@@ -1,12 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
-wget https://github.com/molgenis/vip-inheritance/releases/download/v3.0.0/genemap-mapper.jar
-wget http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
-wget https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-# create dummy genemap2.txt
-geneMapFilePath="genemap2.txt"
+main() {
+  echo -e "downloading ..."
+  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.0.0.sif
+  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/resources/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
+  wget --quiet --continue http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
+  wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
+  echo -e "downloading done"
+
+  # create dummy genemap2.txt
+  local geneMapFilePath="genemap2.txt"
   cat >"${geneMapFilePath}" <<EOT
 # header line 1
 # header line 2
@@ -14,6 +20,20 @@ geneMapFilePath="genemap2.txt"
 # Chromosome	Genomic	Position	Start	Genomic	Position	End	Cyto	Location	Computed	Cyto	Location	MIM Number	Gene Symbols	Gene Name	Approved Symbol	Entrez Gene ID	Ensembl Gene ID	Comments	Phenotypes	Mouse Gene Symbol/ID
 EOT
 
-module load Java
-java -jar genemap-mapper.jar -i genemap2.txt -h phenotype.hpoa -c CGD.txt.gz -o inheritance_$(date '+%Y%m%d').tsv -f
-module purge
+  local outputPath="inheritance_$(date '+%Y%m%d').tsv"
+
+  local args=()
+  args+=("-jar" "/opt/vcf-inheritance/lib/genemap-mapper.jar")
+  args+=("-i" "genemap2.txt")
+  args+=("-h" "phenotype.hpoa")
+  args+=("--incomplete_penetrance" "incomplete_penetrantie_genes_entrez_20210125.tsv")
+  args+=("-c" "CGD.txt.gz")
+  args+=("-o" "${outputPath}")
+  args+=("-f")
+
+  echo -e "creating ${outputPath} ..."
+  SINGULARITY_BIND="${SCRIPT_DIR}" singularity exec vcf-inheritance-3.0.0.sif java "${args[@]}"
+  echo -e "creating ${outputPath} done"
+}
+
+main "${@}"
