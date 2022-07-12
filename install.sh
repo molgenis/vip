@@ -22,8 +22,8 @@ download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20220112.tsv")
-  files+=("inheritance_20211119.tsv")
+  files+=("hpo_20220712.tsv")
+  files+=("inheritance_20220712.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")
@@ -153,7 +153,7 @@ download_images() {
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
-  files+=("capice-3.0.0.sif")
+  files+=("capice-3.2.0.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("vcf-decision-tree-3.2.1.sif")
   files+=("vcf-inheritance-matcher-2.0.1.sif")
