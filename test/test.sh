@@ -282,7 +282,7 @@ run_tests () {
 
   TEST_ID="test_snv_proband_trio_sample_filtering"
   before_each
-  test_snv_proband_trio
+  test_snv_proband_trio_sample_filtering
   after_each
 
   TEST_ID="test_snv_proband_trio_b38"
