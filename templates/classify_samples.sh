@@ -19,6 +19,9 @@ classify_samples () {
   if [ !{params.classify_samples_annotate_path} -eq 1 ]; then
     args+=("--path")
   fi
+  if [ -n "!{params.probands}" ]; then
+    args+=("--probands" "!{params.probands}")
+  fi
   args+=("--output" "!{vcfSamplesClassifiedPath}")
 
   !{singularity_vcfdecisiontree} java "${args[@]}"
