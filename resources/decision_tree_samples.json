@@ -10,13 +10,13 @@
         "value": 1
       },
       "outcomeTrue": {
-        "nextNode": "denovo"
+        "nextNode": "depth"
       },
       "outcomeFalse": {
-        "nextNode": "exit_r"
+        "nextNode": "denovo"
       },
       "outcomeMissing": {
-        "nextNode": "denovo"
+        "nextNode": "depth"
       }
     },
     "denovo": {
