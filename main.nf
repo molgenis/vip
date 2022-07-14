@@ -132,7 +132,7 @@ workflow {
 
   classified_samples_ch.done.mix(classify_samples_ch.skip) \
       | branch {
-          take: params.start <= 6 && params.filter_samples == true
+          take: params.start <= 6 && params.filter_samples == 1
           skip: true
         }
       | set { filter_samples_ch }
