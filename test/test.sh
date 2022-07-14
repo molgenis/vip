@@ -136,8 +136,7 @@ test_snv_proband_trio_sample_filtering () {
   args+=("--phenotypes" "HP:0001250;HP:0001166")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--filter_samples")
-  args+=("--classify_samples_annotate_path")
+  args+=("--filter_samples" 1)
   args+=("${SCRIPT_DIR}/../main.nf")
 
   if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
