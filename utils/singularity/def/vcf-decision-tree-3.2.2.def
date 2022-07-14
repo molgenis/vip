@@ -8,7 +8,7 @@ From: sif/build/openjdk-17.sif
 %post
     version_major=3
     version_minor=2
-    version_patch=1
+    version_patch=2
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/vcf-decision-tree/lib
     curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
-    echo "5c8a007340132673b4579c3030366e68b87d9b034c7298dbf37f1cf9ce6bfaae  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
+    echo "dd629f4608a03a569558d261bdcb1eff0a63e0a49f8f4f2aeec455b7eec83924  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
