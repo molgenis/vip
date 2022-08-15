@@ -159,7 +159,6 @@ download_images() {
   files+=("vcf-inheritance-matcher-2.0.1.sif")
   files+=("vcf-report-4.1.2.sif")
   files+=("vep-105.0.sif")
-  files+=("picard-2.26.11.sif")
 
   for file in "${files[@]}"; do
     if [ ! -f "${download_dir}/${file}" ]; then

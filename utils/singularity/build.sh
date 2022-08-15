@@ -84,7 +84,6 @@ main() {
   images+=("annotsv-3.0.9")
   images+=("vep-105.0")
   images+=("capice-3.0.0")
-  images+=("picard-2.26.11")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
