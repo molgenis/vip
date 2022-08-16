@@ -178,6 +178,7 @@ vep() {
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,!{capiceOutputPath}")
+  args+=("--plugin" "UTRannotator")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
