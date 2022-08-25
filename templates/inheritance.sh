@@ -1,13 +1,8 @@
 #!/bin/bash
-if [ -z "${TMPDIR}" ]; then
-  tmp_dir="$(mktemp -d)"
-else
-  tmp_dir="${TMPDIR}"
-fi
 
 inheritance () {
   local args=()
-  args+=("-Djava.io.tmpdir=\"${tmp_dir}\"")
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
   args+=("--input" "!{vcfPath}")

@@ -1,13 +1,8 @@
 #!/bin/bash
-if [ -z "${TMPDIR}" ]; then
-  tmp_dir="$(mktemp -d)"
-else
-  tmp_dir="${TMPDIR}"
-fi
 
 classify_samples () {
   local args=()
-  args+=("-Djava.io.tmpdir=\"${tmp_dir}\"")
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcfPath}")
