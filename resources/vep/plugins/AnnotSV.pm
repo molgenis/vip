@@ -26,7 +26,7 @@ sub variant_feature_types {
 }
 
 sub feature_types {
-    return [ 'Feature', 'Intergenic' ];
+    return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 sub get_header_info {
