@@ -143,6 +143,28 @@ sub run {
     for my $line (@lines) {
         my @line = @{$line};
         my @genes = split(";", $line[$self->{gene_idx}]);
+        if(!@genes && !(length $symbol)){
+            if ($line[$self->{chrom_idx}] eq $chrom
+                && $line[$self->{pos_idx}] == $pos
+                && $line[$self->{ref_idx}] eq $ref
+                && $line[$self->{alt_idx}] eq $alt) {
+                foreach my $key (keys %indices) {
+                    my $val = $line[$indices{$key}];
+                    if (length $val) {
+                        # escape characters with special meaning using VCFv4.3 percent encoding
+                        $val =~ s/%/%25/g; # must be first
+                        $val =~ s/:/%3A/g;
+                        $val =~ s/;/%3B/g;
+                        $val =~ s/=/%3D/g;
+                        $val =~ s/,/%2C/g;
+                        $val =~ s/\r/%0D/g;
+                        $val =~ s/\n/%0A/g;
+                        $val =~ s/\t/%09/g;
+                    }
+                    $result->{$self->{prefix} . $key} = $val;
+                }
+            }
+        }
         for my $gene (@genes) {
             if ($gene eq $symbol) {
                 if ($line[$self->{chrom_idx}] eq $chrom
