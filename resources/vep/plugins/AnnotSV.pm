@@ -159,6 +159,7 @@ sub mapAnnotations{
 sub run {
     my ($self, $bvfoa) = @_;
     my $result = ();
+    my $annotations;
 
     my $svf = $bvfoa->base_variation_feature;
     my @vcf_line = @{$svf->{_line}};
@@ -177,13 +178,19 @@ sub run {
     for my $line (@lines) {
         my @line = @{$line};
         my @genes = split(";", $line[$self->{gene_idx}]);
-        if (!@genes && $symbol eq "") {
-            $result = mapAnnotations(\@line, \@vcf_line, \%indices);
+        if ($symbol eq "") {
+            $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
+            if($annotations){
+                $result = $annotations;
+            }
         }
         else {
             for my $gene (@genes) {
                 if ($gene eq $symbol) {
-                    $result = mapAnnotations(\@line, \@vcf_line, \%indices);
+                    $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
+                    if($annotations){
+                        $result = $annotations;
+                    }
                 }
             }
         }
