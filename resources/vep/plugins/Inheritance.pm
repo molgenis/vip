@@ -50,10 +50,10 @@ sub variant_feature_types {
 sub get_header_info {
     my $self = Inheritance->new;
     my $result;
-    $result->{InheritanceModesGene} = "List of inheritance modes for the gene";
-    $result->{IncompletePenetrance} = "Boolean indicating if the gene is known for incomplete penetrance.";
+    $result->{InheritanceModesGene} = "List of inheritance modes for the gene, based on  '" . $self->params->[0] . "' ";
+    $result->{IncompletePenetrance} = "Boolean indicating if the gene is known for incomplete penetrance, based on  '" . $self->params->[0] . "' .";
     if ($self->{include_pheno}) {
-        $result->{InheritanceModesPheno} = "List of inheritance modes for provided HPO terms";
+        $result->{InheritanceModesPheno} = "List of inheritance modes for provided HPO terms, based on  '" . $self->params->[0] . "' ";
     }
     return $result;
 }
