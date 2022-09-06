@@ -1,9 +1,4 @@
 #!/bin/bash
-if [ -z "${TMPDIR}" ]; then
-  tmp_dir="$(mktemp -d)"
-else
-  tmp_dir="${TMPDIR}"
-fi
 
 # creates string with specified separator from an array.
 #
@@ -32,11 +27,11 @@ realign () {
   local -r output_bam="${2}"
 
   local args=()
-  args+=("-Djava.io.tmpdir=\"${tmp_dir}\"")
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/gatk/lib/gatk.jar")
   args+=("HaplotypeCaller")
-  args+=("--tmp-dir" "${tmp_dir}")
+  args+=("--tmp-dir" "${TMPDIR}")
   args+=("-R" "!{refSeqPath}")
   args+=("-I" "${input_bam}")
   args+=("-L" "!{vcfPath}")
@@ -62,7 +57,7 @@ index () {
 
 report () {
   local args=()
-  args+=("-Djava.io.tmpdir=\"${tmp_dir}\"")
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("--input" "!{vcfOutputPath}")

@@ -155,9 +155,9 @@ download_images() {
   files+=("bcftools-1.14.sif")
   files+=("capice-3.2.0.sif")
   files+=("gatk-4.2.5.0.sif")
-  files+=("vcf-decision-tree-3.2.3.sif")
+  files+=("vcf-decision-tree-3.3.1.sif")
   files+=("vcf-inheritance-matcher-2.0.1.sif")
-  files+=("vcf-report-4.1.2.sif")
+  files+=("vcf-report-4.1.3.sif")
   files+=("vep-105.0.sif")
 
   for file in "${files[@]}"; do

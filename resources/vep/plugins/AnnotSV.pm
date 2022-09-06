@@ -26,7 +26,7 @@ sub variant_feature_types {
 }
 
 sub feature_types {
-    return [ 'Feature', 'Intergenic' ];
+    return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 sub get_header_info {
@@ -122,17 +122,52 @@ sub getFieldIndices{
     $self->{fields} = \@fields;
 }
 
-sub run {
-    my ($self, $bvfoa) = @_;
-    my $result = ();
+sub mapAnnotations{
+    my $result;
+    my @line = @{$_[0]};
+    my @vcf_line = @{$_[1]};
+    my %indices = %{$_[2]};
 
-    my $svf = $bvfoa->base_variation_feature;
-    my @vcf_line = @{$svf->{_line}};
     my $chrom = $vcf_line[0];
     my $pos = $vcf_line[1];
     my $ref = $vcf_line[3];
     my $alt = $vcf_line[4];
-    my $symbol = $bvfoa->transcript->{_gene_symbol} || $bvfoa->transcript->{_gene_hgnc};
+
+    if ($line[$self->{chrom_idx}] eq $chrom
+        && $line[$self->{pos_idx}] == $pos
+        && $line[$self->{ref_idx}] eq $ref
+        && $line[$self->{alt_idx}] eq $alt) {
+        foreach my $key (keys %indices) {
+            my $val = $line[$indices{$key}];
+            if (length $val) {
+                # escape characters with special meaning using VCFv4.3 percent encoding
+                $val =~ s/%/%25/g; # must be first
+                $val =~ s/:/%3A/g;
+                $val =~ s/;/%3B/g;
+                $val =~ s/=/%3D/g;
+                $val =~ s/,/%2C/g;
+                $val =~ s/\r/%0D/g;
+                $val =~ s/\n/%0A/g;
+                $val =~ s/\t/%09/g;
+            }
+            $result->{$self->{prefix} . $key} = $val;
+        }
+    }
+    return $result;
+}
+
+sub run {
+    my ($self, $bvfoa) = @_;
+    my $result = ();
+    my $annotations;
+
+    my $svf = $bvfoa->base_variation_feature;
+    my @vcf_line = @{$svf->{_line}};
+    my $symbol = "";
+
+    if ($bvfoa->can("transcript")) {
+        $symbol = $bvfoa->transcript->{_gene_symbol} || $bvfoa->transcript->{_gene_hgnc};
+    }
 
     my @lines = @{$self->{lines}};
     my %indices = %{$self->{indices}};
@@ -143,26 +178,18 @@ sub run {
     for my $line (@lines) {
         my @line = @{$line};
         my @genes = split(";", $line[$self->{gene_idx}]);
-        for my $gene (@genes) {
-            if ($gene eq $symbol) {
-                if ($line[$self->{chrom_idx}] eq $chrom
-                    && $line[$self->{pos_idx}] == $pos
-                    && $line[$self->{ref_idx}] eq $ref
-                    && $line[$self->{alt_idx}] eq $alt) {
-                    foreach my $key (keys %indices) {
-                        my $val = $line[$indices{$key}];
-                        if (length $val) {
-                            # escape characters with special meaning using VCFv4.3 percent encoding
-                            $val =~ s/%/%25/g; # must be first
-                            $val =~ s/:/%3A/g;
-                            $val =~ s/;/%3B/g;
-                            $val =~ s/=/%3D/g;
-                            $val =~ s/,/%2C/g;
-                            $val =~ s/\r/%0D/g;
-                            $val =~ s/\n/%0A/g;
-                            $val =~ s/\t/%09/g;
-                        }
-                        $result->{$self->{prefix} . $key} = $val;
+        if ($symbol eq "") {
+            $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
+            if($annotations){
+                $result = $annotations;
+            }
+        }
+        else {
+            for my $gene (@genes) {
+                if ($gene eq $symbol) {
+                    $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
+                    if($annotations){
+                        $result = $annotations;
                     }
                 }
             }
