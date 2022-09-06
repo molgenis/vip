@@ -179,6 +179,7 @@ vep() {
   args+=("--plugin" "Grantham")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,!{capiceOutputPath}")
+  args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
