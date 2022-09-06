@@ -78,7 +78,7 @@
           "nextNode": "exit_lp"
         },
         "LB": {
-          "nextNode": "exit_lb"
+          "nextNode": "lb_utr5"
         },
         "B": {
           "nextNode": "exit_b"
@@ -103,7 +103,7 @@
           "nextNode": "exit_lp"
         },
         "2": {
-          "nextNode": "exit_lb"
+          "nextNode": "lb_utr5"
         },
         "1": {
           "nextNode": "exit_b"
@@ -139,7 +139,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_lb"
+            "nextNode": "lb_utr5"
           }
         }
       ],
@@ -201,7 +201,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_lb"
+            "nextNode": "lb_utr5"
           }
         },
         {
@@ -261,7 +261,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_lb"
+            "nextNode": "lb_utr5"
           }
         },
         {
@@ -308,10 +308,10 @@
       "field": "INFO/CSQ/IMPACT",
       "outcomeMap": {
         "MODIFIER": {
-          "nextNode": "exit_lb"
+          "nextNode": "lb_utr5"
         },
         "LOW": {
-          "nextNode": "exit_lb"
+          "nextNode": "lb_utr5"
         },
         "MODERATE": {
           "nextNode": "exit_vus"
@@ -322,6 +322,17 @@
       },
       "outcomeMissing": {
         "nextNode": "exit_vus"
+      }
+    },
+    "lb_utr5": {
+      "type": "EXISTS",
+      "description": "Mark variants that have a five_prime_UTR_variant_consequence annotation as VUS",
+      "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
+      "outcomeTrue": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
       }
     },
     "exit_lq": {
