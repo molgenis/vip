@@ -86,6 +86,20 @@ test_snv () {
   fi
 }
 
+test_corner_cases () {
+  local args=()
+  args+=("-log" "${OUTPUT_LOG}")
+  args+=("run")
+  args+=("--assembly" "GRCh37")
+  args+=("--input" "${TEST_RESOURCES_DIR}/corner_cases.vcf")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("${SCRIPT_DIR}/../main.nf")
+
+  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+}
+
 test_snv_proband () {
   local args=()
   args+=("-log" "${OUTPUT_LOG}")
@@ -268,6 +282,11 @@ run_tests () {
   TEST_ID="test_snv"
   before_each
   test_snv
+  after_each
+
+  TEST_ID="test_corner_cases"
+  before_each
+  test_corner_cases
   after_each
 
   TEST_ID="test_snv_proband"
