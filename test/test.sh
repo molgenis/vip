@@ -286,7 +286,7 @@ run_tests () {
 
   TEST_ID="test_corner_cases"
   before_each
-  test_snv
+  test_corner_cases
   after_each
 
   TEST_ID="test_snv_proband"
