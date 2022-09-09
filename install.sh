@@ -80,15 +80,15 @@ download_resources_vep() {
 
   local vep_files=()
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_105_GRCh37.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh37" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_107_GRCh37.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh37: already exists"
     fi
   fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh38" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_105_GRCh38.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh38" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_107_GRCh38.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh38: already exists"
     fi
