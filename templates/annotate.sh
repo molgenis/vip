@@ -197,6 +197,9 @@ vep() {
   if [ -n "!{vepCustomClinVarPath}" ]; then
       args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
   fi
+  if [ -n "!{vepCustomPhyloPPath}" ]; then
+    args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  fi
   if [ -f "!{vcfPath}.tsv" ]; then
     args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
