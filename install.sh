@@ -97,7 +97,7 @@ download_resources_vep() {
   if [ ${#vep_files[@]} != 0 ]; then
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
-      wget --quiet --continue "http://ftp.ensembl.org/pub/release-105/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
+      wget --quiet --continue "http://ftp.ensembl.org/pub/release-107/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
   fi
 }
