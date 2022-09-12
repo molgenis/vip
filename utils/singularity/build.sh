@@ -82,7 +82,6 @@ main() {
   images+=("bcftools-1.14")
   images+=("gatk-4.2.5.0" "vcf-decision-tree-3.3.1" "vcf-inheritance-matcher-2.0.2" "vcf-report-4.1.3")
   images+=("annotsv-3.0.9")
-  images+=("vep-105.0")
   images+=("capice-3.0.0")
 
   for i in "${!images[@]}"; do
@@ -90,6 +89,10 @@ main() {
     singularity build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
     echo "---Done building ${images[$i]}---"
   done
+
+  echo "---Building vep-107.0---"
+  singularity build "${outputDir}/vep-107.0.sif" docker://ensemblorg/ensembl-vep:release_107.0 | tee "${outputDir}/build.log"
+  echo "---Done building vep-107.0---"
 }
 
 main "${@}"

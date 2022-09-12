@@ -180,6 +180,7 @@ vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,!{capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")

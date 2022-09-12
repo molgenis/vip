@@ -31,6 +31,7 @@ download_resources_molgenis() {
     files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
@@ -49,6 +50,7 @@ download_resources_molgenis() {
     files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/hg38.phyloP100way.bw")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
@@ -80,15 +82,15 @@ download_resources_vep() {
 
   local vep_files=()
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_105_GRCh37.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh37" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_107_GRCh37.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh37: already exists"
     fi
   fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/105_GRCh38" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_105_GRCh38.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh38" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_107_GRCh38.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh38: already exists"
     fi
@@ -97,7 +99,7 @@ download_resources_vep() {
   if [ ${#vep_files[@]} != 0 ]; then
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
-      wget --quiet --continue "http://ftp.ensembl.org/pub/release-105/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
+      wget --quiet --continue "http://ftp.ensembl.org/pub/release-107/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
   fi
 }
@@ -158,7 +160,7 @@ download_images() {
   files+=("vcf-decision-tree-3.3.1.sif")
   files+=("vcf-inheritance-matcher-2.0.2.sif")
   files+=("vcf-report-4.1.3.sif")
-  files+=("vep-105.0.sif")
+  files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
     if [ ! -f "${download_dir}/${file}" ]; then

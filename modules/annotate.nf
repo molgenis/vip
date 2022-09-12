@@ -8,6 +8,7 @@ process annotate {
     refSeqPath = params[params.assembly + "_reference"]
     vepCustomGnomAdPath = params[params.assembly + "_annotate_vep_custom_gnomad"]
     vepCustomClinVarPath = params[params.assembly + "_annotate_vep_custom_clinvar"]
+    vepCustomPhyloPPath = params[params.assembly + "_annotate_vep_custom_phylop"]
     vepPluginArtefact = params[params.assembly + "_annotate_vep_plugin_artefact"]
     vepPluginSpliceAiIndelPath = params[params.assembly + "_annotate_vep_plugin_spliceai_indel"]
     vepPluginSpliceAiSnvPath = params[params.assembly + "_annotate_vep_plugin_spliceai_snv"]
