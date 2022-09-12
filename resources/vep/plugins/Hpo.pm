@@ -26,7 +26,7 @@ sub feature_types {
 
 sub get_header_info {
     return {
-        HPO => "List of HPO terms for the gene",
+        HPO => "List of HPO terms for the gene, based on  '" . $self->params->[0] . "' ",
     };
 }
 sub new {

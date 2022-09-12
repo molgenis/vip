@@ -26,7 +26,7 @@ sub feature_types {
 
 sub get_header_info {
     return {
-        ARTEFACT => "Flags all transcripts of an artefact as such"
+        ARTEFACT => "Flags all transcripts of an artefact as such, based on  '" . $self->params->[0] . "' "
     };
 }
 

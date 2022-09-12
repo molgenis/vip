@@ -29,7 +29,7 @@ sub get_header_info {
     my $self = VKGL->new;
 
     my $result;
-
+    $result->{VKGL} = "file:" . $self->params->[0] . "'";
     $result->{VKGL_CL} = "VKGL consensus variant classification.";
     if (!$self->{consensus_only}) {
         $result->{VKGL_AMC} = "VKGL AMC variant classification.";
