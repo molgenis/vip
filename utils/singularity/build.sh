@@ -82,7 +82,7 @@ main() {
   images+=("bcftools-1.14")
   images+=("gatk-4.2.5.0" "vcf-decision-tree-3.3.1" "vcf-inheritance-matcher-2.0.2" "vcf-report-4.1.4")
   images+=("annotsv-3.0.9")
-  images+=("capice-3.0.0")
+  images+=("capice-3.2.0")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
