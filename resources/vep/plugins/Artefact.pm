@@ -25,6 +25,7 @@ sub feature_types {
 }
 
 sub get_header_info {
+    my $self = Artefact->new;
     return {
         ARTEFACT => "Flags all transcripts of an artefact as such, based on  '" . $self->params->[0] . "' "
     };
