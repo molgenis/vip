@@ -119,6 +119,8 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 
 my $output_vcf;
 
+my $self;
+
 sub new {
   if (!(defined $self)) {
     my $class = shift;

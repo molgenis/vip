@@ -30,6 +30,9 @@ sub get_header_info {
         HPO => "List of HPO terms for the gene, based on  '" . $self->params->[0] . "' ",
     };
 }
+
+my $self;
+
 sub new {
     if (!(defined $self)) {
         my $class = shift;

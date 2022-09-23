@@ -60,6 +60,8 @@ my @grantham_matrix = qw(
 
 my @AAs = qw(A R N D C Q E G H I L K M F P S T W Y V);
 
+my $self;
+
 sub new {
     if (!(defined $self)) {
         my $class = shift;
