@@ -31,35 +31,37 @@ sub get_header_info {
     };
 }
 sub new {
-    my $class = shift;
-    my $self = $class->SUPER::new(@_);
+    if (!(defined $self)) {
+        my $class = shift;
+        my $self = $class->SUPER::new(@_);
 
-    my $file = $self->params->[0];
-    die("ERROR: input file not specified\n") unless $file;
+        my $file = $self->params->[0];
+        die("ERROR: input file not specified\n") unless $file;
 
-    my $hpo_ids_arg = $self->params->[1];
-    die("ERROR: input HPO identifier(s) not specified\n") unless $hpo_ids_arg;
-    my %hpo_ids = map {$_ => 1} split(';', $hpo_ids_arg);
+        my $hpo_ids_arg = $self->params->[1];
+        die("ERROR: input HPO identifier(s) not specified\n") unless $hpo_ids_arg;
+        my %hpo_ids = map {$_ => 1} split(';', $hpo_ids_arg);
 
-    open(FH, '<', $file) or die $!;
+        open(FH, '<', $file) or die $!;
 
-    my @tokens;
-    my $hpo_id;
-    my $entrez_gene_id;
-    my %entrez_gene_ids;
+        my @tokens;
+        my $hpo_id;
+        my $entrez_gene_id;
+        my %entrez_gene_ids;
 
-    <FH>; # skip header
-    while (<FH>) {
-        chomp; # avoid \n on last field
-        @tokens = split(/\t/);
-        $hpo_id = $tokens[1];
-        if (exists($hpo_ids{$hpo_id})) {
-            $entrez_gene_id = $tokens[0];
-            push(@{$entrez_gene_ids{$entrez_gene_id}}, $hpo_id);
+        <FH>; # skip header
+        while (<FH>) {
+            chomp; # avoid \n on last field
+            @tokens = split(/\t/);
+            $hpo_id = $tokens[1];
+            if (exists($hpo_ids{$hpo_id})) {
+                $entrez_gene_id = $tokens[0];
+                push(@{$entrez_gene_ids{$entrez_gene_id}}, $hpo_id);
+            }
         }
-    }
 
-    $self->{entrez_gene_ids} = \%entrez_gene_ids;
+        $self->{entrez_gene_ids} = \%entrez_gene_ids;
+    }
     return $self;
 }
 

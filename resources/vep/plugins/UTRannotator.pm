@@ -45,32 +45,33 @@ sub feature_types {
     }
 
 	sub new {
-        my $class = shift;
-        my $self = $class->SUPER::new(@_);
-        my $file = $self->params->[0];
+		if (!(defined $self)) {
+			my $class = shift;
+			my $self = $class->SUPER::new(@_);
+			my $file = $self->params->[0];
 
-        if ($file)
-        {
-        open my $fh, "<", $file or die $!;
-        my %uORF_evidence;
+			if ($file) {
+				open my $fh, "<", $file or die $!;
+				my %uORF_evidence;
 
-        while (<$fh>) {
-            chomp;
-            my ($chr, $pos, $gene, $strand, $type, $stop_pos) = split /\t/;
+				while (<$fh>) {
+					chomp;
+					my ($chr, $pos, $gene, $strand, $type, $stop_pos) = split /\t/;
 
-            my $key = $chr . ":" . $pos; # chr has 'chr' proceeding
-            $uORF_evidence{$key} = 1;
-        }
+					my $key = $chr . ":" . $pos; # chr has 'chr' proceeding
+					$uORF_evidence{$key} = 1;
+				}
 
-        close $fh;
+				close $fh;
 
-        $self->{uORF_evidence} = \%uORF_evidence;
-        }else{
-         printf "Warning: small ORF file not found. For human, you could use our curated list of uORFs(from sorf.org) at the repository: 'uORF_starts_ends_GRCh37_PUBLIC.txt' for GRCh37 or 'uORF_starts_ends_GRCh38_PUBLIC.txt' for GRCh38\n";
-        }
-
-  return $self;
-}
+				$self->{uORF_evidence} = \%uORF_evidence;
+			}
+			else {
+				printf "Warning: small ORF file not found. For human, you could use our curated list of uORFs(from sorf.org) at the repository: 'uORF_starts_ends_GRCh37_PUBLIC.txt' for GRCh37 or 'uORF_starts_ends_GRCh38_PUBLIC.txt' for GRCh38\n";
+			}
+		}
+		return $self;
+	}
 
     sub get_header_info {
 

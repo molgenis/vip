@@ -120,32 +120,33 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 my $output_vcf;
 
 sub new {
-  my $class = shift;
+  if (!(defined $self)) {
+    my $class = shift;
 
-  my $self = $class->SUPER::new(@_);
+    my $self = $class->SUPER::new(@_);
 
-  $self->expand_left(0);
-  $self->expand_right(0);
+    $self->expand_left(0);
+    $self->expand_right(0);
 
-  my $param_hash = $self->params_to_hash();
+    my $param_hash = $self->params_to_hash();
 
-  die("ERROR: SpliceAI files not provided or not found!\n") unless defined($param_hash->{snv}) && defined($param_hash->{indel}) && -e $param_hash->{snv} && -e $param_hash->{indel};
+    die("ERROR: SpliceAI files not provided or not found!\n") unless defined($param_hash->{snv}) && defined($param_hash->{indel}) && -e $param_hash->{snv} && -e $param_hash->{indel};
 
-  $self->add_file($param_hash->{snv});
-  $self->add_file($param_hash->{indel});
+    $self->add_file($param_hash->{snv});
+    $self->add_file($param_hash->{indel});
 
-  if(defined($param_hash->{cutoff})) {
-    my $cutoff = $param_hash->{cutoff};
-    if($cutoff < 0 || $cutoff > 1) {
-      die("ERROR: Cutoff score must be between 0 and 1!\n");
+    if (defined($param_hash->{cutoff})) {
+      my $cutoff = $param_hash->{cutoff};
+      if ($cutoff < 0 || $cutoff > 1) {
+        die("ERROR: Cutoff score must be between 0 and 1!\n");
+      }
+      $self->{cutoff} = $cutoff;
     }
-    $self->{cutoff} = $cutoff;
-  }
 
-  if($self->{config}->{output_format} eq "vcf") {
-    $output_vcf = 1;
+    if ($self->{config}->{output_format} eq "vcf") {
+      $output_vcf = 1;
+    }
   }
-
   return $self;
 }
 
