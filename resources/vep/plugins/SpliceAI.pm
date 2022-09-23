@@ -125,7 +125,7 @@ sub new {
   if (!(defined $self)) {
     my $class = shift;
 
-    my $self = $class->SUPER::new(@_);
+    $self = $class->SUPER::new(@_);
 
     $self->expand_left(0);
     $self->expand_right(0);

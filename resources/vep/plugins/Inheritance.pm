@@ -47,8 +47,10 @@ sub variant_feature_types {
     return ['VariationFeature'];
 }
 
+my $self;
+
 sub get_header_info {
-    my $self = Inheritance->new;
+    $self = Inheritance->new;
     my $result;
     $result->{InheritanceModesGene} = "List of inheritance modes for the gene, based on  '" . $self->params->[0] . "' ";
     $result->{IncompletePenetrance} = "Boolean indicating if the gene is known for incomplete penetrance, based on  '" . $self->params->[0] . "' .";
@@ -57,8 +59,6 @@ sub get_header_info {
     }
     return $result;
 }
-
-my $self;
 
 sub new {
     if (!(defined $self)) {

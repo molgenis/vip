@@ -49,7 +49,7 @@ my $self;
 sub new {
 	if (!(defined $self)) {
 		my $class = shift;
-		my $self = $class->SUPER::new(@_);
+		$self = $class->SUPER::new(@_);
 		my $file = $self->params->[0];
 
 		if ($file) {

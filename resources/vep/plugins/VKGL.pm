@@ -25,8 +25,10 @@ sub feature_types {
     return [ 'Transcript' ];
 }
 
+my $self;
+
 sub get_header_info {
-    my $self = VKGL->new;
+    $self = VKGL->new;
 
     my $result;
     $result->{VKGL} = "file:" . $self->params->[0] . "'";
@@ -43,8 +45,6 @@ sub get_header_info {
     }
     return $result;
 }
-
-my $self;
 
 sub new {
     if (!(defined $self)) {

@@ -66,7 +66,7 @@ sub new {
     if (!(defined $self)) {
         my $class = shift;
 
-        my $self = $class->SUPER::new(@_);
+        $self = $class->SUPER::new(@_);
 
         # construct a hash representing the matrix for quick lookups
 

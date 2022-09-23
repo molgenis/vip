@@ -24,19 +24,19 @@ sub feature_types {
     return [ 'Transcript' ];
 }
 
+my $self;
+
 sub get_header_info {
-    my $self = Hpo->new;
+    $self = Hpo->new;
     return {
         HPO => "List of HPO terms for the gene, based on  '" . $self->params->[0] . "' ",
     };
 }
 
-my $self;
-
 sub new {
     if (!(defined $self)) {
         my $class = shift;
-        my $self = $class->SUPER::new(@_);
+        $self = $class->SUPER::new(@_);
 
         my $file = $self->params->[0];
         die("ERROR: input file not specified\n") unless $file;
