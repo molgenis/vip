@@ -60,21 +60,24 @@ my @grantham_matrix = qw(
 
 my @AAs = qw(A R N D C Q E G H I L K M F P S T W Y V);
 
+my $self;
+
 sub new {
-    my $class = shift;
+    if (!(defined $self)) {
+        my $class = shift;
 
-    my $self = $class->SUPER::new(@_);
+        $self = $class->SUPER::new(@_);
 
-    # construct a hash representing the matrix for quick lookups
+        # construct a hash representing the matrix for quick lookups
 
-    my $num = @AAs;
+        my $num = @AAs;
 
-    for (my $i = 0; $i < $num; $i++) {
-        for (my $j = 0; $j < $num; $j++) {
-            $self->{matrix}->{$AAs[$i]}->{$AAs[$j]} = $grantham_matrix[($i * $num) + $j];
+        for (my $i = 0; $i < $num; $i++) {
+            for (my $j = 0; $j < $num; $j++) {
+                $self->{matrix}->{$AAs[$i]}->{$AAs[$j]} = $grantham_matrix[($i * $num) + $j];
+            }
         }
     }
-
     return $self;
 }
 

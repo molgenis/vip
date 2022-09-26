@@ -29,8 +29,10 @@ sub feature_types {
     return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
+my $self;
+
 sub get_header_info {
-    my $self = AnnotSV->new;
+    $self = AnnotSV->new;
     my $result;
     my @fields = @{$self->{fields}};
     for (@fields) {
@@ -38,8 +40,6 @@ sub get_header_info {
     }
     return $result;
 }
-
-my $self;
 
 sub new {
     if (!(defined $self)) {

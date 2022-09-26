@@ -24,13 +24,14 @@ sub feature_types {
     return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
+my $self;
+
 sub get_header_info {
+    $self = Artefact->new;
     return {
         ARTEFACT => "Flags all transcripts of an artefact as such, based on  '" . $self->params->[0] . "' "
     };
 }
-
-my $self;
 
 sub new {
     if (!(defined $self)) {
