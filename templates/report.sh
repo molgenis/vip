@@ -22,6 +22,25 @@ index_tbi () {
   !{singularity_bcftools} bcftools "${args[@]}"
 }
 
+bam2cram () {
+  local -r input_bam="${1}"
+  local -r output_cram="${2}"
+
+  local args=()
+  args+=("view")
+  args+=("--cram")
+  args+=("--output" "${output_cram}")
+  args+=("--reference" "!{refSeqPath}")
+  args+=("--output-fmt-option" "level=9")
+  args+=("--output-fmt-option" "archive")
+  args+=("--write-index")
+  args+=("--no-PG")
+  args+=("--threads" "!{task.cpus}")
+  args+=("${input_bam}")
+
+  !{singularity_samtools} samtools "${args[@]}"
+}
+
 realign () {
   local -r input_bam="${1}"
   local -r output_bam="${2}"
@@ -88,7 +107,7 @@ report () {
     args+=("--template" "!{params.report_template}")
   fi
   if [ -n "!{params.report_bams}" ]; then
-    args+=("--bam" "$(join_arr "," "${realigned_bams[@]}")")
+    args+=("--cram" "$(join_arr "," "${realigned_crams[@]}")")
   fi
 
   !{singularity_vcfreport} java "${args[@]}"
@@ -97,15 +116,18 @@ report () {
 index_tbi
 
 if [ -n "!{params.report_bams}" ]; then
-  realigned_bams=()
+  realigned_crams=()
 
   IFS=',' read -ra bams <<< "!{params.report_bams}"
   for entry in "${bams[@]}"; do
     while IFS='=' read -r sample_id input_bam; do
       output_bam="realigned_$(basename "${input_bam}")"
       realign "${input_bam}" "${output_bam}"
-      mv "${output_bam/.bam/.bai}" "${output_bam}.bai"
-      realigned_bams+=("${sample_id}=${output_bam}")
+
+      output_cram="${output_bam%.bam}.cram"
+      bam2cram "${output_bam}" "${output_cram}"
+
+      realigned_crams+=("${sample_id}=${output_cram}")
     done <<< "${entry}"
   done
 fi
