@@ -19,6 +19,3 @@
 /test/output
 /test/nextflow.config
 /test/test_wrapper.sh
-
-# Vagrant folder.
-/.vagrant/
