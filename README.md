@@ -1,6 +1,7 @@
 # Variant Interpretation Pipeline
 
 ## Requirements
+- Linux-based OS
 - [Nextflow](https://www.nextflow.io/)
 - [Singularity](https://sylabs.io/singularity/)
 - 300GB disk space
