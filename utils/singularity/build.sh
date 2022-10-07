@@ -83,7 +83,7 @@ main() {
   images+=("samtools-1.16")
   images+=("gatk-4.2.5.0" "vcf-decision-tree-3.3.1" "vcf-inheritance-matcher-2.0.2" "vcf-report-5.0.0")
   images+=("annotsv-3.0.9")
-  images+=("capice-3.2.0")
+  images+=("capice-4.0.0")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
