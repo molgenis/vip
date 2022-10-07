@@ -81,7 +81,7 @@ main() {
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
   images+=("samtools-1.16")
-  images+=("gatk-4.2.5.0" "vcf-decision-tree-3.3.1" "vcf-inheritance-matcher-2.0.2" "vcf-report-5.0.0")
+  images+=("gatk-4.2.5.0" "vcf-decision-tree-3.4.2" "vcf-inheritance-matcher-2.1.2" "vcf-report-5.0.0")
   images+=("annotsv-3.0.9")
   images+=("capice-4.0.0")
 
