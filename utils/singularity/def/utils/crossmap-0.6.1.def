@@ -1,5 +1,5 @@
 Bootstrap: library
-From: ubuntu:20.04
+From: ubuntu:22.04
 
 %post
     apt-get -y update
