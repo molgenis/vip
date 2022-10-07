@@ -130,7 +130,7 @@ capice_bcftools() {
 
   !{singularity_bcftools} bcftools "${args[@]}"
 
-  echo -e "${header}$("!{singularity_bcftools}" bcftools +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
+  echo -e "${header}$(!{singularity_bcftools} bcftools +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
 }
 
 capice_predict() {
