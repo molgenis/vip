@@ -128,7 +128,7 @@ test_snv_proband_trio () {
   args+=("--probands" "PROBAND0")
   args+=("--phenotypes" "HP:0001250;HP:0001166")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
-  args+=("--bam" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio.bam")
+  args+=("--report_bams" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio.bam")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
@@ -171,7 +171,7 @@ test_snv_proband_trio_b38 () {
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.vcf")
   args+=("--probands" "PROBAND0")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
-  args+=("--bam" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio_b38.bam")
+  args+=("--report_bams" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio_b38.bam")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 

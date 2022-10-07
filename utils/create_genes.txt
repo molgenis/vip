@@ -1,16 +1,16 @@
-1) Navigate to https://genome.ucsc.edu/cgi-bin/hgTables
-2) Enter form data:
-   clade: Mammal
-   genome: Human
-   assembly: Feb. 2009 (GRCh37/h19)
-   group: Genes and Gene Predictions
-   track: NCBI RefSeq
-   table: RefSeq Curated (ncbiRefSeqCurated)
-   region: genome
-   output format: all fields from selected table
-   output file: ucsc_genes_ncbi_refseq_yyyymmdd.txt.gz
-   file type returned: gzip compressed
-3) Select 'get output' and store downloaded file in GRCh37 folder
-4) Update form data:
-   assembly: Dec. 2013 (GRCh38/hg38)
-5) Select 'get output' and store downloaded file in GRCh38 folder
+Files for the genes file are donwloaded here:
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.25_GRCh37.p13/
+and
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/
+
+These versions are bases on the refseq version of VEP.
+
+Step by step:
+1) download the GFF files and "assembly_report.txt"
+2) map the contig identifiers to the versions used in our data:
+python ./utils/mapContigIdentifiers.py path/to/input/gff.gz path/to/assembly_report path/to/output/gff.gz
+3) build the singularity image for Crossmap (./utils/singularity/def/utils/Crossmap-0.6.1.def)
+4) liftover build 37 version to the "g1k" build used by VIP by default:
+singularity exec ./utils/singularity/sif/utils/Crossmap-0.6.1.sif CrossMap.py gff utils/Hg19toHumanG1kV37.chain input.gff.gz output.gff
+5) gzip the
+gzip
