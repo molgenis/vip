@@ -104,6 +104,8 @@ capice_vep() {
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  args+=("--plugin" "Grantham")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
   !{singularity_vep} vep "${args[@]}"
 
@@ -114,19 +116,21 @@ capice_vep() {
 }
 
 capice_bcftools() {
-  local -r header="%CHROM\t%POS\t%REF\t%ALT\t%Consequence\t%SYMBOL\t%SYMBOL_SOURCE\t%Gene\t%Feature\t%Feature_type\t%cDNA_position\t%CDS_position\t%Protein_position\t%Amino_acids\t%STRAND\t%SIFT\t%PolyPhen\t%EXON\t%INTRON\t%SpliceAI_pred_DP_AG\t%SpliceAI_pred_DP_AL\t%SpliceAI_pred_DP_DG\t%SpliceAI_pred_DP_DL\t%SpliceAI_pred_DS_AG\t%SpliceAI_pred_DS_AL\t%SpliceAI_pred_DS_DG\t%SpliceAI_pred_DS_DL"
+  local -r format="%CHROM\t%POS\t%REF\t%ALT\t%CSQ\n"
+  local -r header="CHROM\tPOS\tREF\tALT\t"
   local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
 
   local args=()
   args+=("+split-vep")
   args+=("-d")
-  args+=("-f" "${header}\n")
+  args+=("-f" "${format}\n")
+  args+=("-A" "tab")
   args+=("-o" "${capiceInputPathHeaderless}")
   args+=("!{vcfCapiceAnnotatedPath}")
 
   !{singularity_bcftools} bcftools "${args[@]}"
 
-  echo -e "${header}" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
+  echo -e "${header}$(!{singularity_bcftools} bcftools +split-vep -l "!{vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
 }
 
 capice_predict() {

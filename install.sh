@@ -26,7 +26,7 @@ download_resources_molgenis() {
   files+=("inheritance_20220712.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v3.0.0-v1.pickle.dat")
+    files+=("GRCh37/capice_model_v4.0.0-v1.pickle.dat")
     files+=("GRCh37/clinvar_20220620.vcf.gz")
     files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
@@ -45,7 +45,7 @@ download_resources_molgenis() {
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v3.0.0-v1.pickle.dat")
+    files+=("GRCh38/capice_model_v4.0.0-v1.pickle.dat")
     files+=("GRCh38/clinvar_20220620.vcf.gz")
     files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
@@ -155,7 +155,7 @@ download_images() {
   local files=()
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
-  files+=("capice-3.2.0.sif")
+  files+=("capice-4.0.0.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("samtools-1.16.sif")
   files+=("vcf-decision-tree-3.4.2.sif")
