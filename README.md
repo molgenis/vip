@@ -25,7 +25,7 @@ NXF_VER="21.10.6" nextflow run vip/main.nf \
   --input <path> \
   --output <path>
 ```
-See [nextflow.config](https://github.com/molgenis/vip/blob/master/nextflow.config) for additional parameters.
+See [nextflow.config](https://github.com/molgenis/vip/blob/main/nextflow.config) for additional parameters.
 
 ### License
 Some tools and resources have licenses that restrict their usage: 
@@ -34,4 +34,4 @@ Some tools and resources have licenses that restrict their usage:
 - [SpliceAI](https://basespace.illumina.com/s/otSPW8hnhaZR) (free for academic and not-for-profit use)
 - [VKGL](https://vkgl.molgeniscloud.org/) (CC BY-NC-SA 4.0 license)
 
-Update [nextflow.config](https://github.com/molgenis/vip/blob/master/nextflow.config) to prevent their usage.
+Update [nextflow.config](https://github.com/molgenis/vip/blob/main/nextflow.config) to prevent their usage.
