@@ -186,7 +186,7 @@ vep() {
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  args+=("--custom" "resources/GREEN-DB_constraint.bed.gz,constraint,bed,exact,0")
+  args+=("--custom" "../resources/GREEN-DB_constraint.bed.gz,constraint,bed,exact,0")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
