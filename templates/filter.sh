@@ -12,7 +12,8 @@ filter () {
     args+=("--only_matched")
   fi
 
-  !{singularity_vep} filter_vep "${args[@]}"  | !{singularity_vep} bgzip -c > "!{vcfFilteredPath}"
+  !{CMD_FILTERVEP} filter_vep "${args[@]}"  | !{CMD_BGZIP} -c > "!{vcfFilteredPath}"
 }
 
 filter
+${CMD_BCFTOOLS} index "!{vcfFilteredPath}"

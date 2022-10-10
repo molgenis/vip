@@ -40,7 +40,7 @@ contains_sv() {
   local -r vcf_path="${1}"
 
   local vcf_header
-  vcf_header=$(!{singularity_bcftools} bcftools view -h "${vcf_path}")
+  vcf_header=$(!{CMD_BCFTOOLS} view -h "${vcf_path}")
 
   if [[ "${vcf_header}" =~ .*ID=SVTYPE.* ]]; then
     return 0
@@ -60,7 +60,7 @@ annot_sv() {
   if [ -n "!{params.phenotypes}" ]; then
     args+=("-hpo" "$(join_arr "," "${!UNIQUE_PHENOTYPES[@]}")")
   fi
-  !{singularity_annotsv} AnnotSV "${args[@]}"
+  !{CMD_ANNOTSV} "${args[@]}"
   if [ ! -f "!{vcfPath}.tsv" ]; then
     echo -e "AnnotSV error: failed to produce output" 1>&2
     exit 1
@@ -107,7 +107,7 @@ capice_vep() {
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  !{singularity_vep} vep "${args[@]}"
+  !{CMD_VEP} vep "${args[@]}"
 
   if [ ! -f "!{vcfCapiceAnnotatedPath}" ]; then
     echo -e "VEP error: failed to create capice input" 1>&2
@@ -128,9 +128,9 @@ capice_bcftools() {
   args+=("-o" "${capiceInputPathHeaderless}")
   args+=("!{vcfCapiceAnnotatedPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{CMD_BCFTOOLS} "${args[@]}"
 
-  echo -e "${header}$(!{singularity_bcftools} bcftools +split-vep -l "!{vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
+  echo -e "${header}$(!{CMD_BCFTOOLS} +split-vep -l "!{vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
 }
 
 capice_predict() {
@@ -140,7 +140,7 @@ capice_predict() {
   args+=("--output" "!{capiceOutputPath}")
   args+=("--model" "!{capiceModelPath}")
 
-  !{singularity_capice} capice "${args[@]}"
+  !{CMD_CAPICE} "${args[@]}"
   if [ ! -f "!{capiceOutputPath}" ]; then
     echo -e "CAPICE error: failed to produce output" 1>&2
     exit 1
@@ -206,7 +206,7 @@ vep() {
     args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
 
-  !{singularity_vep} vep "${args[@]}"
+  !{CMD_VEP} "${args[@]}"
 }
 
 if [ -n "!{params.phenotypes}" ]; then
@@ -220,3 +220,4 @@ fi
 
 capice
 vep
+${CMD_BCFTOOLS} index "!{vcfAnnotatedPath}"

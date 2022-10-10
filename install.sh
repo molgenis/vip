@@ -189,6 +189,27 @@ download_images() {
   done
 }
 
+# FIXME remove before PR merge
+download_images_dev() {
+  local -r download_dir="${SCRIPT_DIR}/images"
+  mkdir -p "${download_dir}"
+
+  local files=()
+  files+=("deepvariant_1.4.0.sif")
+  files+=("deepvariant_deeptrio-1.4.0.sif")
+  files+=("glnexus_v1.4.1.sif")
+  files+=("minimap2-2.24.sif")
+
+  for file in "${files[@]}"; do
+    if [ ! -f "${download_dir}/${file}" ]; then
+      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
+      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip_dev/images/${file}" --output-document "${download_dir}/${file}"
+    else
+      echo -e "skipping download ${download_dir}/${file}: already exists"
+    fi
+  done
+}
+
 main() {
   local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
   # shellcheck disable=SC2181
@@ -227,8 +248,10 @@ main() {
   echo -e "installing ..."
   download_nextflow
   download_images
+  download_images_dev
   download_resources "${assembly}"
   echo -e "installing done"
 }
 
 main "${@}"
+

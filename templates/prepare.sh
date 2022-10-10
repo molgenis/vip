@@ -11,7 +11,7 @@ add_header () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {
@@ -20,7 +20,7 @@ index () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfOutputPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{CMD_BCFTOOLS} "${args[@]}"
 }
 
 index_stats () {
@@ -30,7 +30,7 @@ index_stats () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfOutputPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}" > "!{vcfOutputPath}".stats
+  !{CMD_BCFTOOLS} "${args[@]}" > "!{vcfOutputPath}".stats
 }
 
 add_header

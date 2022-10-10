@@ -1,9 +1,11 @@
 process classify_samples {
   input:
-    tuple val(id), val(order), path(vcfPath)
+    tuple val(meta), path(vcfPath), path(vcfPathCsi)
   output:
-    tuple val(id), val(order), path(vcfSamplesClassifiedPath)
+    tuple val(meta), path(vcfSamplesClassifiedPath), path("${vcfSamplesClassifiedPath}.csi")
   shell:
+    id = "${vcfPath.simpleName}"
+    order = "${meta.chunk.index}"
     vcfSamplesClassifiedPath = "${id}_chunk${order}_samples_classified.vcf.gz"
     template 'classify_samples.sh'
 }

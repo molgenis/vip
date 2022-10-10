@@ -19,7 +19,8 @@ classify_samples () {
   fi
   args+=("--output" "!{vcfSamplesClassifiedPath}")
 
-  !{singularity_vcfdecisiontree} java "${args[@]}"
+  !{CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
 classify_samples
+${CMD_BCFTOOLS} index "!{vcfSamplesClassifiedPath}"

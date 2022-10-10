@@ -16,7 +16,8 @@ classify () {
 
   args+=("--output" "!{vcfClassifiedPath}")
 
-  !{singularity_vcfdecisiontree} java "${args[@]}"
+  !{CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
 classify
+${CMD_BCFTOOLS} index "!{vcfClassifiedPath}"

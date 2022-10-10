@@ -1,8 +1,8 @@
 process prepare {
   input:
-    path(vcfPath)
+    tuple val(meta), path(vcfPath), path(vcfIndexPath)
   output:
-    tuple val(id), path(vcfOutputPath), path("${vcfOutputPath}.csi"), path("${vcfOutputPath}.stats")
+    tuple val(meta), path(vcfOutputPath), path("${vcfOutputPath}.csi")
   shell:
     id="${vcfPath.simpleName}"
     vcfOutputPath="${id}_prepared.vcf.gz"

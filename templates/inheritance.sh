@@ -14,7 +14,8 @@ inheritance () {
     args+=("--probands" "!{params.probands}")
   fi
 
-  !{singularity_vcfinheritancematcher} java "${args[@]}"
+  !{CMD_VCFINHERITANCEMATCHER} java "${args[@]}"
 }
 
 inheritance
+${CMD_BCFTOOLS} index "!{vcfInheritancePath}"

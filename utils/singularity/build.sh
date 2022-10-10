@@ -33,6 +33,7 @@ validate() {
   fi
 }
 
+#TODO add deepvariant_1.4.0, deepvariant_deeptrio, glnexus_v1.4.1, minimap2-2.24.sif
 main() {
   local -r args=$(getopt -a -n pipeline -o i:o:b:p:t:c:fkh --long input:,output:,probands:,pedigree:,phenotypes:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181

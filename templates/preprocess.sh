@@ -13,7 +13,17 @@ norm () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{CMD_BCFTOOLS} "${args[@]}"
+}
+
+index () {
+  local args=()
+  args+=("index")
+  args+=("--threads" "!{task.cpus}")
+  args+=("!{vcfPreprocessedPath}")
+
+  !{CMD_BCFTOOLS} "${args[@]}"
 }
 
 norm
+index

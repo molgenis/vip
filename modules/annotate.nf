@@ -1,11 +1,13 @@
 process annotate {
   input:
-    tuple val(id), val(order), path(vcfPath)
+    tuple val(meta), path(vcfPath), path(vcfPathCsi)
   output:
-    tuple val(id), val(order), path(vcfAnnotatedPath)
+    tuple val(meta), path(vcfAnnotatedPath), path("${vcfAnnotatedPath}.csi")
   shell:
+    id = "${vcfPath.simpleName}"
+    order = "${meta.chunk.index}"
     vcfAnnotatedPath = "${id}_chunk${order}_annotated.vcf.gz"
-    refSeqPath = params[params.assembly + "_reference"]
+    refSeqPath = params[params.assembly].reference.fasta
     vepCustomGnomAdPath = params[params.assembly + "_annotate_vep_custom_gnomad"]
     vepCustomClinVarPath = params[params.assembly + "_annotate_vep_custom_clinvar"]
     vepCustomPhyloPPath = params[params.assembly + "_annotate_vep_custom_phylop"]
