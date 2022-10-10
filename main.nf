@@ -86,6 +86,62 @@ process deeptrio {
     """
 }
 
+process deeptrio_father {
+  input:
+    tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather)
+  output:
+    tuple val(meta), path(gVcfChild), path(gVcfFather)
+  script:
+    vcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.vcf.gz"
+    vcfFather="${meta.family_id}_${meta.paternal_id}_${meta.contig}.vcf.gz"
+    gVcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfFather="${meta.family_id}_${meta.paternal_id}_${meta.contig}.g.vcf.gz"
+    """
+    ${CMD_DEEPTRIO} \
+      --model_type=WES \
+      --ref=${reference} \
+      --reads_child=${cramChild} \
+      --reads_parent1=${cramFather} \
+      --regions ${meta.contig} \
+      --sample_name_child=${meta.family_id}_${meta.individual_id} \
+      --sample_name_parent1=${meta.family_id}_${meta.paternal_id} \
+      --output_vcf_child="${vcfChild}" \
+      --output_vcf_parent1="${vcfFather}" \
+      --output_gvcf_child="${gVcfChild}" \
+      --output_gvcf_parent1="${gVcfFather}" \
+      --intermediate_results_dir ${TMPDIR} \
+      --num_shards=${task.cpus}
+    """
+}
+
+process deeptrio_mother {
+  input:
+    tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramMother), path(cramCraiMother)
+  output:
+    tuple val(meta), path(gVcfChild), path(gVcfMother)
+  script:
+    vcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.vcf.gz"
+    vcfMother="${meta.family_id}_${meta.maternal_id}_${meta.contig}.vcf.gz"
+    gVcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfMother="${meta.family_id}_${meta.maternal_id}_${meta.contig}.g.vcf.gz"
+    """
+    ${CMD_DEEPTRIO} \
+      --model_type=WES \
+      --ref=${reference} \
+      --reads_child=${cramChild} \
+      --reads_parent1=${cramMother} \
+      --regions ${meta.contig} \
+      --sample_name_child=${meta.family_id}_${meta.individual_id} \
+      --sample_name_parent1=${meta.family_id}_${meta.maternal_id} \
+      --output_vcf_child="${vcfChild}" \
+      --output_vcf_parent1="${vcfMother}" \
+      --output_gvcf_child="${gVcfChild}" \
+      --output_gvcf_parent1="${gVcfMother}" \
+      --intermediate_results_dir ${TMPDIR} \
+      --num_shards=${task.cpus}
+    """
+}
+
 process glnexus {
   input:
     tuple val(meta), path(gVcfs)
@@ -303,6 +359,8 @@ workflow {
   def referenceMmi = params.reference + ".mmi"
 
   def sampleSheet = parseSampleSheet(params.input)
+  // FIXME calculate from sample sheet
+  def nrSamples = 8
   def contigs = parseContigs(referenceFai)
  
   sample_ch = Channel.from(sampleSheet.entrySet()) \
@@ -367,6 +425,8 @@ workflow {
   proband_cram_region_ch
     | branch { sample ->
         trio: sample.paternal_id != null && sample.maternal_id != null
+        duoFather: sample.paternal_id != null && sample.maternal_id == null
+        duoMother: sample.paternal_id == null && sample.maternal_id != null
         other: true
       }
     | set { proband_cram_region_branch_ch } 
@@ -392,6 +452,44 @@ workflow {
       }
     | set { proband_gvcf_region_trio_ch }
 
+  proband_cram_region_branch_ch.duoFather
+    | map { sample -> 
+        tuple(
+          sample,
+          params.reference, referenceFai, referenceGzi,
+          sample.cram, sample.cram_index,
+          sample.family[sample.paternal_id].cram, sample.family[sample.paternal_id].cram_index
+        )
+      }
+    | deeptrio_father
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.g_vcf=tuple[1]
+        sample.family=sample.family.clone()
+        sample.family[sample.paternal_id].g_vcf=tuple[2]
+        sample
+      }
+    | set { proband_gvcf_region_duo_father_ch }
+
+proband_cram_region_branch_ch.duoMother
+    | map { sample -> 
+        tuple(
+          sample,
+          params.reference, referenceFai, referenceGzi,
+          sample.cram, sample.cram_index,
+          sample.family[sample.maternal_id].cram, sample.family[sample.maternal_id].cram_index
+        )
+      }
+    | deeptrio_mother
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.g_vcf=tuple[1]
+        sample.family=sample.family.clone()
+        sample.family[sample.maternal_id].g_vcf=tuple[2]
+        sample
+      }
+    | set { proband_gvcf_region_duo_mother_ch }
+
   proband_cram_region_branch_ch.other \
     | map { sample -> 
         tuple(
@@ -408,13 +506,46 @@ workflow {
       }
     | set { proband_gvcf_region_other_ch }
 
-  proband_gvcf_region_ch = proband_gvcf_region_trio_ch.mix(proband_gvcf_region_other_ch)
+  proband_gvcf_region_ch = proband_gvcf_region_trio_ch.mix(proband_gvcf_region_other_ch, proband_gvcf_region_duo_father_ch, proband_gvcf_region_duo_mother_ch)
 
-  // FIXME replace hardcoded '4' with size based on sample sheet
+  // FIXME move father.contig etc. to proband_cram_ch 
   proband_gvcf_region_ch
-    | map { sample -> tuple(groupKey(sample.contig, 4), sample) }
+    | flatMap { sample -> 
+        def samples = []
+        samples << sample
+        
+        def father = sample.family[sample.paternal_id]
+        if(father) {
+          father = father.clone()
+          father.contig = sample.contig
+          father.nr_contigs = sample.nr_contigs
+          samples << father
+        }
+        
+        def mother = sample.family[sample.maternal_id]
+        if(mother) {
+          mother = mother.clone()
+          mother.contig = sample.contig
+          mother.nr_contigs = sample.nr_contigs
+          samples << mother
+        }
+        samples
+      }
+    | set { sample_gvcf_region_ch }
+  
+  sample_gvcf_region_ch
+    | map { sample -> tuple(groupKey(sample.contig, nrSamples), sample) }
     | groupTuple
     | map { group -> tuple([contig: group[0], samples: group[1]], group[1].collect(sample -> sample.g_vcf)) }
     | glnexus
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.bcf=tuple[1]
+        sample
+      }
+    | set { bcf_region_ch }
+
+  bcf_region_ch
+    | count
     | view
 }
