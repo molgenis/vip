@@ -17,6 +17,8 @@ process fastq_to_cram {
 }
 
 process cram_stats {
+  executor 'local'
+
   input:
     tuple val(meta), path(cram), path(cramCrai)
   output:
@@ -42,6 +44,7 @@ process deepvariant {
       --ref=${reference} \
       --reads=${cram} \
       --regions ${meta.contig} \
+      --sample_name ${meta.family_id}_${meta.individual_id} \
       --output_vcf="${vcf}" \
       --output_gvcf="${gVcf}" \
       --intermediate_results_dir ${TMPDIR} \
@@ -80,6 +83,23 @@ process deeptrio {
       --output_gvcf_parent2="${gVcfMother}" \
       --intermediate_results_dir ${TMPDIR} \
       --num_shards=${task.cpus}
+    """
+}
+
+process glnexus {
+  input:
+    tuple val(meta), path(gVcfs)
+  output:
+    tuple val(meta), path(bcf)
+  script:
+    bcf="${meta.contig}.bcf"
+    """
+    ${CMD_GLNEXUS} \
+      --dir ${TMPDIR}/glnexus \
+      --config DeepVariantWES \
+      --mem-gbytes 4 \
+      --threads ${task.cpus} \
+      ${gVcfs} > ${bcf}
     """
 }
 
@@ -332,7 +352,8 @@ workflow {
     | cram_stats
     | flatMap { sample, statsFile ->
         def stats = parseCramIndexStats(statsFile)
-        def contigsWithReads = contigs.findAll( contig -> { stats[contig].nrMappedReads + stats[contig].nrUnmappedReads > 0 } )
+        // FIXME remove (contig == "chr21" || contig == "chr22")
+        def contigsWithReads = contigs.findAll( contig -> { (contig == "chr21" || contig == "chr22") && (stats[contig].nrMappedReads + stats[contig].nrUnmappedReads > 0) } )
         contigsWithReads.collect{ contig -> 
           def samplePerContig = sample.clone()
           samplePerContig.contig = contig
@@ -389,7 +410,11 @@ workflow {
 
   proband_gvcf_region_ch = proband_gvcf_region_trio_ch.mix(proband_gvcf_region_other_ch)
 
+  // FIXME replace hardcoded '4' with size based on sample sheet
   proband_gvcf_region_ch
-    | count
+    | map { sample -> tuple(groupKey(sample.contig, 4), sample) }
+    | groupTuple
+    | map { group -> tuple([contig: group[0], samples: group[1]], group[1].collect(sample -> sample.g_vcf)) }
+    | glnexus
     | view
 }
