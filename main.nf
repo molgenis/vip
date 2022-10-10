@@ -1,185 +1,395 @@
 nextflow.enable.dsl=2
 
-include { validate } from './modules/validate'
-include { nr_records; split_determine; split; sort; merge } from './modules/utils'
-include { prepare } from './modules/prepare'
-include { preprocess; preprocess_publish } from './modules/preprocess'
-include { annotate; annotate_publish } from './modules/annotate'
-include { classify; classify_publish } from './modules/classify'
-include { filter; filter_publish } from './modules/filter'
-include { inheritance; inheritance_publish } from './modules/inheritance'
-include { classify_samples; classify_samples_publish } from './modules/classify_samples'
-include { filter_samples; filter_samples_publish } from './modules/filter_samples'
-include { report } from './modules/report'
+process fastq_to_cram {
+  input:
+    tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(referenceMmiIndex)
+  output:
+    tuple val(meta), path(cram), path(cramCrai)
+  script:
+    cram="${meta.family_id}_${meta.individual_id}.cram"
+    cramCrai="${cram}.crai"
+    """
+    ${CMD_MINIMAP2} -t ${task.cpus} -a -x sr ${referenceMmiIndex} ${meta.fastq_r1} ${meta.fastq_r2} | \
+    ${CMD_SAMTOOLS} fixmate -u -m - - | \
+    ${CMD_SAMTOOLS} sort -u -@ ${task.cpus} -T ${TMPDIR} - | \
+    ${CMD_SAMTOOLS} markdup -@ ${task.cpus} --reference ${reference} --write-index - ${cram}
+    """
+}
+
+process cram_stats {
+  input:
+    tuple val(meta), path(cram), path(cramCrai)
+  output:
+    tuple val(meta), path(cramStats)
+  script:
+    cramStats="${cram}.stats"
+    """
+    ${CMD_SAMTOOLS} idxstats ${cram} > ${cramStats}
+    """
+}
+
+process deepvariant {
+  input:
+    tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cram), path(cramCrai)
+  output:
+    tuple val(meta), path(gVcf)
+  script:
+    vcf="${meta.family_id}_${meta.individual_id}_${meta.contig}.vcf.gz"
+    gVcf="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    """
+    ${CMD_DEEPVARIANT} \
+      --model_type=WES \
+      --ref=${reference} \
+      --reads=${cram} \
+      --regions ${meta.contig} \
+      --output_vcf="${vcf}" \
+      --output_gvcf="${gVcf}" \
+      --intermediate_results_dir ${TMPDIR} \
+      --num_shards=${task.cpus}
+    """
+}
+
+process deeptrio {
+  input:
+    tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather), path(cramMother), path(cramCraiMother)
+  output:
+    tuple val(meta), path(gVcfChild), path(gVcfFather), path(gVcfMother)
+  script:
+    vcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.vcf.gz"
+    vcfFather="${meta.family_id}_${meta.paternal_id}_${meta.contig}.vcf.gz"
+    vcfMother="${meta.family_id}_${meta.maternal_id}_${meta.contig}.vcf.gz"
+    gVcfChild="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfFather="${meta.family_id}_${meta.paternal_id}_${meta.contig}.g.vcf.gz"
+    gVcfMother="${meta.family_id}_${meta.maternal_id}_${meta.contig}.g.vcf.gz"
+    """
+    ${CMD_DEEPTRIO} \
+      --model_type=WES \
+      --ref=${reference} \
+      --reads_child=${cramChild} \
+      --reads_parent1=${cramFather} \
+      --reads_parent2=${cramMother} \
+      --regions ${meta.contig} \
+      --sample_name_child=${meta.family_id}_${meta.individual_id} \
+      --sample_name_parent1=${meta.family_id}_${meta.paternal_id} \
+      --sample_name_parent2=${meta.family_id}_${meta.maternal_id} \
+      --output_vcf_child="${vcfChild}" \
+      --output_vcf_parent1="${vcfFather}" \
+      --output_vcf_parent2="${vcfMother}" \
+      --output_gvcf_child="${gVcfChild}" \
+      --output_gvcf_parent1="${gVcfFather}" \
+      --output_gvcf_parent2="${gVcfMother}" \
+      --intermediate_results_dir ${TMPDIR} \
+      --num_shards=${task.cpus}
+    """
+}
+
+def validateInput() {
+  if( !params.containsKey('input') )   exit 1, "missing required parameter 'input'"
+  if( !file(params.input).exists() )   exit 1, "parameter 'input' value '${params.input}' does not exist"
+  if( !params.input.endsWith(".csv") ) exit 1, "parameter 'input' value '${params.input}' is not a .csv file"
+}
+
+def validateReference() {
+  if( !params.containsKey('reference') )   exit 1, "missing required parameter 'reference'"
+  if( !file(params.reference).exists() )   exit 1, "parameter 'reference' value '${params.reference}' does not exist"
+  
+  def referenceFai = params.reference + ".fai"
+  if( !file(referenceFai).exists() )   exit 1, "parameter 'reference' value '${params.reference}' index '${referenceFai}' does not exist"
+
+  def referenceGzi = params.reference + ".gzi"
+  if( !file(referenceGzi).exists() )   exit 1, "parameter 'reference' value '${params.reference}' index '${referenceGzi}' does not exist"
+
+  def referenceMmi = params.reference + ".mmi"
+  if( !file(referenceMmi).exists() )   exit 1, "parameter 'reference' value '${params.reference}' index '${referenceMmi}' does not exist"
+}
+
+def validate() {
+  validateInput()
+  validateReference()
+}
+
+def parseSampleSheet(csvFile) {
+  def lines = new File(csvFile).readLines("UTF-8")
+  if (lines.size() == 0) exit 1, "error parsing '${csvFile}': file is empty"
+  
+  def header = lines[0]
+  def headerTokens = header.split(',', -1)
+  def cols = [:]
+  headerTokens.eachWithIndex { it, index -> cols[it] = index }
+  
+  // validate header
+  if (!cols.containsKey('family_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'family_id' in '${header}'"
+  if (!cols.containsKey('individual_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'individual_id' in '${header}'"
+  if (!cols.containsKey('paternal_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'paternal_id' in '${header}'"
+  if (!cols.containsKey('maternal_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'maternal_id' in '${header}'"
+  if (!cols.containsKey('proband') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'proband' in '${header}'"
+  if (!cols.containsKey('fastq_r1') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'fastq_r1' in '${header}'"
+  if (!cols.containsKey('fastq_r2') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'fastq_r2' in '${header}'"
+
+  // first pass: create family_id -> individual_id -> sample map
+  def samples=[:]
+  for (int i = 1; i < lines.size(); i++) {
+    def lineNr = i + 1
+
+    def line = lines[i]
+    if (line == null) continue;
+    
+    def tokens = line.split(',', -1)
+    if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFile}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
+    
+    def familyId = tokens[cols["family_id"]]
+    if (familyId.length() == 0 ) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'family_id' cannot be empty"
+
+    def individualId = tokens[cols["individual_id"]]
+    if (individualId.length() == 0 ) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'individual_id' cannot be empty"
+
+    def paternalId = tokens[cols["paternal_id"]]
+    if (paternalId.length() == 0 ) paternalId = null
+
+    def maternalId = tokens[cols["maternal_id"]]
+    if (maternalId.length() == 0 ) maternalId = null
+    
+    if (paternalId != null && maternalId != null && paternalId == maternalId) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'paternal_id' and 'maternal_id' cannot be equal"
+
+    def proband = tokens[cols["proband"]]
+    if (proband.length() == 0 || proband == "false") proband=false
+    else if(proband == "true") proband=true
+    else exit 1, "error parsing '${csvFile}' line ${lineNr}: invalid 'proband' value '${proband}'. valid values are 'true', 'false' or empty"
+
+    def fastqR1 = tokens[cols["fastq_r1"]]
+    if (fastqR1.length() == 0 ) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r1' cannot be empty"
+    fastqR1=file(fastqR1)
+    if (!fastqR1.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r1' '${fastqR1}' does not exist"
+    if (!fastqR1.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r1' '${fastqR1}' is not a file"
+
+    def fastqR2 = tokens[cols["fastq_r2"]]
+    if (fastqR2.length() == 0 ) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r2' cannot be empty"
+    fastqR2=file(fastqR2)
+    if (!fastqR2.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r2' '${fastqR2}' does not exist"
+    if (!fastqR2.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'fastq_r2' '${fastqR2}' is not a file"
+
+    def cram = tokens[cols["cram"]]
+    def cramIndex
+    if (cram.length() ==  0) {
+      cram = null
+      cramIndex = null
+    }
+    else {
+      cram=file(cram)
+      if (!cram.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' does not exist"
+      if (!cram.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' is not a file"
+      
+      cramIndex = file(cram + ".crai")
+      if (!cramIndex.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cramIndex}' does not exist"
+      if (!cramIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cramIndex}' is not a file"
+    }
+
+    def sample = [:]
+    sample["sample_sheet_line"] = lineNr
+    sample["family_id"] = familyId
+    sample["individual_id"] = individualId
+    sample["paternal_id"] = paternalId
+    sample["maternal_id"] = maternalId
+    sample["proband"] = proband
+    sample["fastq_r1"] = fastqR1
+    sample["fastq_r2"] = fastqR2
+    sample["cram"] = cram
+    sample["cram_index"] = cramIndex
+
+    def family = samples[familyId]
+    if (family == null) {
+      family = [:]
+      samples[familyId] = family
+    }
+    
+    def individual = family[individualId]
+    if (individual != null) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'family_id/individual_id' '${familyId}/${individualId}' already exists on line ${individual.sample_sheet_line}"
+    
+    family[individualId] = sample
+  }
+  
+  // second pass: validate paternal_id and maternal_id
+  samples.each { familyEntry -> familyEntry.value.each { individualEntry ->
+      def individual = individualEntry.value
+
+      def paternalId = individual["paternal_id"]
+      if (paternalId != null) {
+        def father = familyEntry.value[paternalId]
+        if (father == null) {
+          System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'paternal_id' '${paternalId}' does not exist within the same family, ignoring..."
+          individual["paternal_id"] = null
+        }
+      }
+
+      def maternalId = individual["maternal_id"]
+      if (maternalId != null) {
+        def mother = familyEntry.value[maternalId]
+        if (mother == null) {
+          System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'maternal_id' '${maternalId}' does not exist within the same family, ignoring..."
+          individual["maternal_id"] = null
+        }
+      }
+      
+      individual.remove("sample_sheet_line")
+    }
+  }  
+  
+  return samples
+}
+
+def parseContigs(faiFile) {
+  def lines = new File(faiFile).readLines("UTF-8")
+  if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
+
+  def contigs = []
+  for (int i = 0; i < lines.size(); i++) {
+    def lineNr = i + 1
+
+    def line = lines[i]
+    if (line == null) continue;
+
+    def tokens = line.split('\t', -1)
+    if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
+    
+    contigs+=tokens[0]
+  }
+  return contigs
+}
+
+def parseCramIndexStats(statsFile) {
+  def lines = statsFile.readLines("UTF-8")
+  if (lines.size() == 0) exit 1, "error parsing '${statsFile}': file is empty"
+
+  def contigs = [:]
+  for (int i = 0; i < lines.size(); i++) {
+    def lineNr = i + 1
+
+    def line = lines[i]
+    if (line == null) continue;
+
+    def tokens = line.split('\t', -1)
+    if (tokens.length != 4) exit 1, "error parsing '${statsFile}' line ${lineNr}: expected 4 columns instead of ${tokens.length}"
+
+    contigs[tokens[0]]=[length: tokens[1] as int, nrMappedReads: tokens[2] as int, nrUnmappedReads: tokens[3] as int]
+  }
+  return contigs
+}
 
 workflow {
   validate()
 
-  channel.fromPath(params.input) \
-      | prepare \
-      | branch {
-          small: nr_records(it.last()) <= params.chunk_size
-          large: true
-        }
-      | set { inputs }
+  def referenceFai = params.reference + ".fai"
+  def referenceGzi = params.reference + ".gzi"
+  def referenceMmi = params.reference + ".mmi"
 
-  // split large files
-  inputs.small \
-      | map { tuple -> new Tuple(tuple[0], 0, tuple[1]) }
-      | set { inputs_files }
+  def sampleSheet = parseSampleSheet(params.input)
+  def contigs = parseContigs(referenceFai)
+ 
+  sample_ch = Channel.from(sampleSheet.entrySet()) \
+    | flatMap { it.value.values() }
 
-  inputs.large \
-      | flatMap { tuple -> split_determine(tuple) } \
-      | split
-      | set { inputs_chunks }
-
-  inputs_files.mix(inputs_chunks) \
-      | branch {
-          take: params.start <= 0
-          skip: true
-        }
-      | set { preprocess_ch }
-
-  // stage #0: preprocessing
-  preprocess_ch.take \
-      | preprocess
-      | multiMap { it -> done: publish: it }
-      | set { preprocessed_ch }
-
-  preprocessed_ch.done.mix(preprocess_ch.skip) \
-      | branch {
-          take: params.start <= 1
-          skip: true
-        }
-      | set { annotate_ch }
-
-  preprocessed_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | preprocess_publish
-
-  // stage #1: annotation
-  annotate_ch.take \
-      | annotate
-      | multiMap { it -> done: publish: it }
-      | set { annotated_ch }
-
-  annotated_ch.done.mix(annotate_ch.skip) \
-      | branch {
-          take: params.start <= 2
-          skip: true
-        }
-      | set { classify_ch }
-
-  annotated_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | annotate_publish
-
-  // stage #2: classification
-  classify_ch.take \
-      | classify
-      | multiMap { it -> done: publish: it }
-      | set { classified_ch }
-
-  classified_ch.done.mix(classify_ch.skip) \
-      | branch {
-          take: params.start <= 3
-          skip: true
-        }
-      | set { filter_ch }
-
-  classified_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | classify_publish
-
-  // stage #3: filtering
-  filter_ch.take \
-      | filter
-      | multiMap { it -> done: publish: it }
-      | set { filtered_ch }
-
-  filtered_ch.done.mix(filter_ch.skip) \
-      | branch {
-          take: params.start <= 4 && params.pedigree != ""
-          skip: true
-        }
-      | set { inheritance_ch }
-
-  filtered_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | filter_publish
-
-  // stage #4: inheritance matching
-  inheritance_ch.take \
-      | inheritance
-      | set { inheritanced_ch }
-
-  inheritanced_ch.mix(inheritance_ch.skip) \
-        | branch {
-            take: params.start <= 5
-            skip: true
-          }
-      | set { classify_samples_ch }
-
-  // stage #5: classification
-  classify_samples_ch.take \
-      | classify_samples
-      | multiMap { it -> done: publish: it }
-      | set { classified_samples_ch }
-
-  classified_samples_ch.done.mix(classify_samples_ch.skip) \
-      | branch {
-          take: params.start <= 6 && params.filter_samples == 1
-          skip: true
-        }
-      | set { filter_samples_ch }
-
-  classified_samples_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | classify_samples_publish
-
-  // stage #6: filtering
-  filter_samples_ch.take \
-      | filter_samples
-      | multiMap { it -> done: publish: it }
-      | set { filtered_samples_ch }
-
-  filtered_samples_ch.done.mix(filter_samples_ch.skip) \
-      | set { report_ch }
-
-  filtered_samples_ch.publish \
-      | groupTuple \
-      | map { it -> sort(it) } \
-      | filter_samples_publish
-
-  // stage #7: reporting
-  report_ch \
-    | groupTuple \
-    | map { it -> sort(it) } \
+  sample_ch \
     | branch {
-        single: it[1].size() == 1
-        chunks: true
+        cram: it.cram != null
+        fastq: true
       }
-    | set { reported_ch }
+    | set { sample_branch_ch }
 
-  reported_ch.chunks \
-      | merge
-      | set { merged_ch }
+  sample_branch_ch.fastq \
+    | map { tuple(it, params.reference, referenceFai, referenceGzi, referenceMmi) }
+    | fastq_to_cram
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.cram=tuple[1]
+        sample.cram_index=tuple[2]
+        sample
+      }
+    | set { sample_fastq_ch }
 
-  merged_ch.mix(reported_ch.single) \
-    | report
+  sample_cram_ch = sample_branch_ch.cram.mix(sample_fastq_ch)
+
+  sample_cram_ch \
+    | map { sample -> tuple(groupKey(sample.family_id, sampleSheet[sample.family_id].size()), sample) }
+    | groupTuple
+    | map { group -> group[1] }
+    | set { family_cram_ch }
+  
+  family_cram_ch
+    | flatMap { samples ->
+        def family = [:]
+        samples.each { sample -> family[sample.individual_id] = sample }
+        samples.collect { sample -> 
+          def sampleWithFamily = sample.clone()
+          sampleWithFamily.family = family
+          sampleWithFamily
+        }
+      }
+    | filter { sample -> sample.proband}
+    | set { proband_cram_ch }
+  
+  proband_cram_ch
+    | map { sample -> tuple(sample, sample.cram, sample.cram_index) }
+    | cram_stats
+    | flatMap { sample, statsFile ->
+        def stats = parseCramIndexStats(statsFile)
+        def contigsWithReads = contigs.findAll( contig -> { stats[contig].nrMappedReads + stats[contig].nrUnmappedReads > 0 } )
+        contigsWithReads.collect{ contig -> 
+          def samplePerContig = sample.clone()
+          samplePerContig.contig = contig
+          samplePerContig.nr_contigs = contigsWithReads.size()
+          samplePerContig
+        }
+      }
+    | set {proband_cram_region_ch }
+
+  // TODO deeptrio for duos
+  proband_cram_region_ch
+    | branch { sample ->
+        trio: sample.paternal_id != null && sample.maternal_id != null
+        other: true
+      }
+    | set { proband_cram_region_branch_ch } 
+  
+  proband_cram_region_branch_ch.trio
+    | map { sample -> 
+        tuple(
+          sample,
+          params.reference, referenceFai, referenceGzi,
+          sample.cram, sample.cram_index,
+          sample.family[sample.paternal_id].cram, sample.family[sample.paternal_id].cram_index,
+          sample.family[sample.maternal_id].cram, sample.family[sample.maternal_id].cram_index
+        )
+      }
+    | deeptrio
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.g_vcf=tuple[1]
+        sample.family=sample.family.clone()
+        sample.family[sample.paternal_id].g_vcf=tuple[2]
+        sample.family[sample.maternal_id].g_vcf=tuple[3]
+        sample
+      }
+    | set { proband_gvcf_region_trio_ch }
+
+  proband_cram_region_branch_ch.other \
+    | map { sample -> 
+        tuple(
+          sample,
+          params.reference, referenceFai, referenceGzi,
+          sample.cram, sample.cram_index
+        )
+      }
+    | deepvariant
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.g_vcf=tuple[1]
+        sample
+      }
+    | set { proband_gvcf_region_other_ch }
+
+  proband_gvcf_region_ch = proband_gvcf_region_trio_ch.mix(proband_gvcf_region_other_ch)
+
+  proband_gvcf_region_ch
+    | count
+    | view
 }
-
-workflow.onComplete {
-    println "output: $params.output"
-    println "done"
-}
-
-workflow.onError {
-    println "Oops .. something when wrong"
-}
-
