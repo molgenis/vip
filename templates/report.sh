@@ -33,7 +33,10 @@ bam2cram () {
   args+=("--reference" "!{refSeqPath}")
   args+=("--output-fmt-option" "level=9")
   args+=("--output-fmt-option" "archive")
+  # not supported by igv.js v2.13.3
   args+=("--output-fmt-option" "use_lzma=0")
+  # not supported by igv.js v2.13.3
+  args+=("--output-fmt-option" "use_bzip2=0")
   args+=("--write-index")
   args+=("--no-PG")
   args+=("--threads" "!{task.cpus}")
