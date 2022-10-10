@@ -18,7 +18,7 @@ process annotate {
     capiceInputPath = "${id}_chunk${order}_capice_input.tsv"
     capiceOutputPath = "${id}_chunk${order}_capice_output.tsv.gz"
     capiceModelPath = params[params.assembly + "_annotate_capice_model"]
-    greenDbConstraintPath = params[params.assembly + "_constraint_GREEN_DB"
+    greenDbConstraintPath = params[params.assembly + "_constraint_GREEN_DB"]
 
     template 'annotate.sh'
 }
