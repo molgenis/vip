@@ -33,6 +33,7 @@ bam2cram () {
   args+=("--reference" "!{refSeqPath}")
   args+=("--output-fmt-option" "level=9")
   args+=("--output-fmt-option" "archive")
+  args+=("--output-fmt-option" "use_lzma=0")
   args+=("--write-index")
   args+=("--no-PG")
   args+=("--threads" "!{task.cpus}")
