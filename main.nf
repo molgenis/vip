@@ -52,6 +52,7 @@ process deepvariant {
     """
 }
 
+// FIXME set right model type
 process deeptrio {
   input:
     tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather), path(cramMother), path(cramCraiMother)
@@ -86,6 +87,7 @@ process deeptrio {
     """
 }
 
+// FIXME set right model type
 process deeptrio_father {
   input:
     tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather)
@@ -114,6 +116,7 @@ process deeptrio_father {
     """
 }
 
+// FIXME set right model type
 process deeptrio_mother {
   input:
     tuple val(meta), path(reference), path(referenceFai), path(referenceGzi), path(cramChild), path(cramCraiChild), path(cramMother), path(cramCraiMother)
@@ -142,6 +145,8 @@ process deeptrio_mother {
     """
 }
 
+// FIXME set config based on sample sheet
+// FIXME how to set mem-gbytes?
 process glnexus {
   input:
     tuple val(meta), path(gVcfs)
@@ -156,6 +161,39 @@ process glnexus {
       --mem-gbytes 4 \
       --threads ${task.cpus} \
       ${gVcfs} > ${bcf}
+    """
+}
+
+process bcftools_concat {
+  input:
+    path(bcfs)
+  output:
+    path(vcf)
+  script:
+    vcf="out.vcf.gz"
+    """
+    ${CMD_BCFTOOLS} concat \
+    --output-type z9 \
+    --output "${vcf}" \
+    --no-version \
+    --threads "${task.cpus}" ${bcfs}
+    """
+}
+
+process vip_report {
+  input:
+    path(vcf)
+  output:
+    path(html)
+  script:
+    html="out.html"
+    """
+    ${CMD_VCFREPORT} java \
+    -Djava.io.tmpdir=\"${TMPDIR}\" \
+    -XX:ParallelGCThreads=2 \
+    -jar /opt/vcf-report/lib/vcf-report.jar \
+    --input "${vcf}" \
+    --output "${html}"
     """
 }
 
@@ -539,13 +577,28 @@ proband_cram_region_branch_ch.duoMother
     | map { group -> tuple([contig: group[0], samples: group[1]], group[1].collect(sample -> sample.g_vcf)) }
     | glnexus
     | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.bcf=tuple[1]
-        sample
+        def contigSamples = tuple[0].clone()
+        contigSamples.bcf=tuple[1]
+        contigSamples
       }
     | set { bcf_region_ch }
 
-  bcf_region_ch
-    | count
-    | view
+  // TODO report probands
+  // TODO report pedigree
+  // TODO report reference
+  // TODO report crams
+  // TODO report genes
+  // TODO report phenotypes from sample sheet
+  bcf_region_ch 
+    | toSortedList { thisContigSamples, thatContigSamples -> 
+        contigs.findIndexOf{ it == thatContigSamples.contig } <=> contigs.findIndexOf{ it == thisContigSamples.contig }
+      }
+    | map { contigSamples -> contigSamples.collect{ it.bcf } }
+    | bcftools_concat
+    | vip_report
+
+  // TODO start from gvcf
+  // TODO start from vcf
+  // TODO publish result
+  // TODO publish intermediate results
 }
