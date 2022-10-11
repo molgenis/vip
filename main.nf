@@ -164,6 +164,27 @@ process glnexus {
     """
 }
 
+process publish_gvcf {
+  publishDir "$params.output", mode: 'link'
+
+  input:
+    tuple val(meta), path(gVcfs)
+  output:
+    tuple path(gVcf), path(gVcfCsi)
+  script:
+    gVcf="${meta.family_id}_${meta.individual_id}.g.vcf.gz"
+    gVcfCsi="${meta.family_id}_${meta.individual_id}.g.vcf.gz.csi"
+    """
+    ${CMD_BCFTOOLS} concat \
+    --output-type z9 \
+    --output "${gVcf}" \
+    --no-version \
+    --threads "${task.cpus}" ${gVcfs}
+    
+    ${CMD_BCFTOOLS} index "${gVcf}"
+    """
+}
+
 process bcftools_concat {
   input:
     path(bcfs)
@@ -181,12 +202,14 @@ process bcftools_concat {
 }
 
 process vip_report {
+  publishDir "$params.output", mode: 'link'
+
   input:
     path(vcf)
   output:
     path(html)
   script:
-    html="out.html"
+    html="vip_report.html"
     """
     ${CMD_VCFREPORT} java \
     -Djava.io.tmpdir=\"${TMPDIR}\" \
@@ -194,6 +217,18 @@ process vip_report {
     -jar /opt/vcf-report/lib/vcf-report.jar \
     --input "${vcf}" \
     --output "${html}"
+    """
+}
+
+process bcftools_split {
+  input:
+    tuple val(meta), path(gVcf), path(gVcfIndex)
+  output:
+    tuple val(meta), path(gVcfContig)
+  script:
+    gVcfContig="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    """
+    ${CMD_BCFTOOLS} view --regions "${meta.contig}" --output-type z --output-file "${gVcfContig}" --no-version --threads "${task.cpus}" "${gVcf}"
     """
 }
 
@@ -239,6 +274,8 @@ def parseSampleSheet(csvFile) {
   if (!cols.containsKey('proband') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'proband' in '${header}'"
   if (!cols.containsKey('fastq_r1') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'fastq_r1' in '${header}'"
   if (!cols.containsKey('fastq_r2') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'fastq_r2' in '${header}'"
+  if (!cols.containsKey('cram') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'cram' in '${header}'"
+  if (!cols.containsKey('g_vcf') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'g_vcf' in '${header}'"
 
   // first pass: create family_id -> individual_id -> sample map
   def samples=[:]
@@ -298,6 +335,21 @@ def parseSampleSheet(csvFile) {
       if (!cramIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cramIndex}' is not a file"
     }
 
+    def gVcf = tokens[cols["g_vcf"]]
+    def gVcfIndex
+    if (gVcf.length() == 0) {
+      gVcf = null
+      gVcfIndex = null
+    } else {
+      gVcf=file(gVcf)
+      if (!gVcf.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'g_vcf' '${gVcf}' does not exist"
+      if (!gVcf.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'g_vcf' '${gVcf}' is not a file"
+
+      gVcfIndex = file(gVcf + ".csi")
+      if (!gVcfIndex.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'g_vcf' '${gVcfIndex}' does not exist"
+      if (!gVcfIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'g_vcf' '${gVcfIndex}' is not a file"
+    }
+
     def sample = [:]
     sample["sample_sheet_line"] = lineNr
     sample["family_id"] = familyId
@@ -309,6 +361,8 @@ def parseSampleSheet(csvFile) {
     sample["fastq_r2"] = fastqR2
     sample["cram"] = cram
     sample["cram_index"] = cramIndex
+    sample["g_vcf"] = gVcf
+    sample["g_vcf_index"] = gVcfIndex
 
     def family = samples[familyId]
     if (family == null) {
@@ -398,15 +452,17 @@ workflow {
 
   def sampleSheet = parseSampleSheet(params.input)
   // FIXME calculate from sample sheet
-  def nrSamples = 8
+  def nrSamples = 9
   def contigs = parseContigs(referenceFai)
  
   sample_ch = Channel.from(sampleSheet.entrySet()) \
     | flatMap { it.value.values() }
 
+  // FIXME doesn't work when some duo/trio samples have gVCF while others have not
   sample_ch \
     | branch {
-        cram: it.cram != null
+        gVcf: it.g_vcf != null
+        cram: it.g_vcf == null && it.cram != null
         fastq: true
       }
     | set { sample_branch_ch }
@@ -459,7 +515,6 @@ workflow {
       }
     | set {proband_cram_region_ch }
 
-  // TODO deeptrio for duos
   proband_cram_region_ch
     | branch { sample ->
         trio: sample.paternal_id != null && sample.maternal_id != null
@@ -569,9 +624,42 @@ proband_cram_region_branch_ch.duoMother
         }
         samples
       }
+    | multiMap { done: publish: it }
     | set { sample_gvcf_region_ch }
+
+  sample_gvcf_region_ch.publish
+    | map { sample -> tuple(groupKey(sample.family_id + "_" + sample.individual_id, sample.nr_contigs), sample) }
+    | groupTuple
+    | map { group -> group[1] }
+    | map { samples -> samples.sort { thisSamples, thatSamples -> contigs.findIndexOf{ it == thisSamples.contig } <=> contigs.findIndexOf{ it == thatSamples.contig } } }
+    | map { samples -> tuple(samples[0], samples.collect(sample -> sample.g_vcf)) }
+    | publish_gvcf
+
+  // split gvcf from here
+  sample_branch_ch.gVcf \
+    | flatMap { sample ->
+      contigs.collect { contig ->
+        samplePerContig = sample.clone()
+        samplePerContig.contig = contig
+        // FIXME contigs.size() instead of 2
+        samplePerContig.nr_contigs = 2
+        samplePerContig
+        // FIXME remove (contig == "chr21" || contig == "chr22")
+      }.findAll { samplePerContig -> (samplePerContig.contig == "chr21" || samplePerContig.contig == "chr22") }
+    }
+    | map { sample -> tuple(sample, sample.g_vcf, sample.g_vcf_index) }
+    | bcftools_split
+    | map { tuple ->
+        def sample = tuple[0].clone()
+        sample.g_vcf=tuple[1]
+        sample.g_vcf_index=null
+        sample
+      }
+    | set { sample_start_with_gvcf_region_ch }
+
+  sample_gvcf_region_mix_ch=sample_gvcf_region_ch.done.mix(sample_start_with_gvcf_region_ch)
   
-  sample_gvcf_region_ch
+  sample_gvcf_region_mix_ch
     | map { sample -> tuple(groupKey(sample.contig, nrSamples), sample) }
     | groupTuple
     | map { group -> tuple([contig: group[0], samples: group[1]], group[1].collect(sample -> sample.g_vcf)) }
@@ -583,6 +671,8 @@ proband_cram_region_branch_ch.duoMother
       }
     | set { bcf_region_ch }
 
+  // TODO nanopore
+  // TODO mantasv
   // TODO report probands
   // TODO report pedigree
   // TODO report reference
