@@ -187,6 +187,9 @@ vep() {
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
   args+=("--custom" "!{greenDbConstraintPath},constraint,bed,overlap,0")
+  args+=("--custom" "!{dnaseRegionsPath},constraint,bed,overlap,0")
+  args+=("--custom" "!{tfbsRegionsPath},constraint,bed,overlap,0")
+  args+=("--custom" "!{ucneRegionsPath},constraint,bed,overlap,0")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
