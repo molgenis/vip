@@ -237,11 +237,12 @@ proband_cram_region_branch_ch.duoMother
       }
     | set { bcf_region_ch }
 
+
+  // TODO add derived sample data in wrapper object, do not edit sample row e.g. {sample: {...}], family: {...}, regions: { contig: <...>, start: <...>, stop: <...> }}, gVcf: <...> }
   // TODO nanopore
   // TODO mantasv
   // TODO report probands
   // TODO report pedigree
-  // TODO report reference
   // TODO report crams
   // TODO report genes
   // TODO report phenotypes from sample sheet
@@ -249,12 +250,11 @@ proband_cram_region_branch_ch.duoMother
     | toSortedList { thisContigSamples, thatContigSamples -> 
         contigs.findIndexOf{ it == thatContigSamples.contig } <=> contigs.findIndexOf{ it == thisContigSamples.contig }
       }
-    | map { contigSamples -> contigSamples.collect{ it.bcf } }
+    | map { contigSamples -> tuple(contigSamples, contigSamples.collect{ it.bcf }) }
     | bcftools_concat
-    | map { vcf -> tuple(vcf, params.reference, referenceFai, referenceGzi) }
+    | map { tuple(it[0], it[1], params.reference, referenceFai, referenceGzi) }
     | vcf_report_create
 
-  // TODO start from gvcf
   // TODO start from vcf
   // TODO publish result
   // TODO publish intermediate results

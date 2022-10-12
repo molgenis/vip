@@ -1,9 +1,9 @@
 // FIXME add meta input and determine output name from meta
 process bcftools_concat {
   input:
-    path(bcfs)
+    tuple val(meta), path(bcfs)
   output:
-    path(vcf)
+    tuple val(meta), path(vcf)
   script:
     vcf="out.vcf.gz"
     """
