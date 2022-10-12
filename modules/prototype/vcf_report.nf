@@ -2,7 +2,7 @@ process vcf_report_create {
   publishDir "$params.output", mode: 'link'
 
   input:
-    path(vcf)
+    tuple path(vcf), path(reference), path(referenceFai), path(referenceGzi)
   output:
     path(html)
   script:
@@ -13,6 +13,7 @@ process vcf_report_create {
     -XX:ParallelGCThreads=2 \
     -jar /opt/vcf-report/lib/vcf-report.jar \
     --input "${vcf}" \
+    --reference "${reference}" \
     --output "${html}"
     """
 }

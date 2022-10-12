@@ -251,6 +251,7 @@ proband_cram_region_branch_ch.duoMother
       }
     | map { contigSamples -> contigSamples.collect{ it.bcf } }
     | bcftools_concat
+    | map { vcf -> tuple(vcf, params.reference, referenceFai, referenceGzi) }
     | vcf_report_create
 
   // TODO start from gvcf
