@@ -6,8 +6,8 @@ include { samtools_idxstats; parseAlignmentStats; parseFastaIndex } from './modu
 include { deepvariant_call; deeptrio_call; deeptrio_call_duo_father; deeptrio_call_duo_mother } from './modules/prototype/deepvariant'
 include { glnexus_merge } from './modules/prototype/glnexus'
 include { bcftools_concat; bcftools_concat_index; bcftools_view_contig } from './modules/prototype/bcftools'
-include { vcf_report_create } from './modules/prototype/vcf_report'
 include { validate } from './modules/prototype/cli'
+include { vcf2html } from './subworkflows/vcf2html'
 
 workflow {
   validate()
@@ -60,7 +60,7 @@ workflow {
   // FIXME hardcoded nr_contigs, chr21, chr22
   variant_call_ch.skip \
     | flatMap { meta -> contigs.collect { contig -> [*:meta, contig: contig, nr_contigs: 2] } }
-    | filter { meta -> meta.contig == "chr22" || meta.contig == "chr23" }
+    | filter { meta -> meta.contig == "chr21" || meta.contig == "chr22" }
     | map { meta -> tuple(meta, meta.sample.g_vcf, meta.sample.g_vcf_index) }
     | bcftools_view_contig
     | map { meta, gVcf -> [*:meta, gVcf: gVcf] }
@@ -162,8 +162,8 @@ workflow {
     | toSortedList { thisMeta, thatMeta -> contigs.findIndexOf{ it == thatMeta.contig } <=> contigs.findIndexOf{ it == thisMeta.contig } }
     | map { metaList -> tuple(metaList, metaList.collect{ meta -> meta.bcf }) }
     | bcftools_concat
-    | map { metaList, vcf -> tuple(metaList, vcf, params.reference, referenceFai, referenceGzi) }
-    | vcf_report_create
+    | map { metaList, vcf -> [vcf: vcf, reference: [fasta: reference, fai: referenceFai, gzi: referenceGzi]] }
+    | vcf2html
 
   // TODO start from vcf
   // TODO publish result

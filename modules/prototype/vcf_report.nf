@@ -1,4 +1,4 @@
-process vcf_report_create {
+process vcf_report {
   publishDir "$params.output", mode: 'link'
 
   input:
