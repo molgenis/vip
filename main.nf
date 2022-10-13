@@ -12,6 +12,7 @@ include { validate } from './modules/prototype/cli'
 workflow {
   validate()
 
+  def reference = params.reference
   def referenceFai = params.reference + ".fai"
   def referenceGzi = params.reference + ".gzi"
   def referenceMmi = params.reference + ".mmi"
@@ -24,220 +25,131 @@ workflow {
   sample_ch = Channel.from(sampleSheet.entrySet()) \
     | flatMap { it.value.values() }
 
-  // FIXME doesn't work when some duo/trio samples have gVCF while others have not
   sample_ch \
     | branch {
-        gVcf: it.g_vcf != null
-        cram: it.g_vcf == null && it.cram != null
-        fastq: true
+        skip: it.cram != null && it.cram_index != null
+        process: true
       }
-    | set { sample_branch_ch }
+    | set { align_ch }
 
-  sample_branch_ch.fastq \
-    | map { tuple(it, params.reference, referenceFai, referenceGzi, referenceMmi) }
+  /*
+    step #1 alignment
+  */
+  align_ch.skip \
+    | map { sample -> [sample: sample, cram: sample.cram, cram_index: sample.cram_index] }
+    | set { align_skipped_ch }
+
+  align_ch.process \
+    | map { sample -> tuple(sample, reference, referenceFai, referenceGzi, referenceMmi) }
     | minimap2_align
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.cram=tuple[1]
-        sample.cram_index=tuple[2]
-        sample
+    | map { sample, cram, cramCrai -> [sample: sample, cram: cram, cram_index: cramCrai] }
+    | set { align_processed_ch }
+
+  aligned_ch = align_processed_ch.mix(align_skipped_ch)
+  
+  /*
+    step #2 variant calling
+  */
+  aligned_ch \
+    | branch { meta -> 
+        skip: meta.sample.g_vcf != null && meta.sample.g_vcf_index != null
+        process: true
       }
-    | set { sample_fastq_ch }
+    | set { variant_call_ch }
 
-  sample_cram_ch = sample_branch_ch.cram.mix(sample_fastq_ch)
-
-  sample_cram_ch \
-    | map { sample -> tuple(groupKey(sample.family_id, sampleSheet[sample.family_id].size()), sample) }
+  // FIXME hardcoded nr_contigs, chr21, chr22
+  variant_call_ch.skip \
+    | flatMap { meta -> contigs.collect { contig -> [*:meta, contig: contig, nr_contigs: 2] } }
+    | filter { meta -> meta.contig == "chr22" || meta.contig == "chr23" }
+    | map { meta -> tuple(meta, meta.sample.g_vcf, meta.sample.g_vcf_index) }
+    | bcftools_view_contig
+    | map { meta, gVcf -> [*:meta, gVcf: gVcf] }
+    | set { variant_call_skipped_ch }
+  
+  // TODO improvement: set nr_family_samples in sample_ch instead of sampleSheet[meta.sample.family_id].size())
+  // FIXME remove (contig == "chr21" || contig == "chr22")
+  variant_call_ch.process \
+    | map { meta -> tuple(groupKey(meta.sample.family_id, sampleSheet[meta.sample.family_id].size()), meta) }
     | groupTuple
-    | map { group -> group[1] }
-    | set { family_cram_ch }
-  
-  family_cram_ch
-    | flatMap { samples ->
-        def family = [:]
-        samples.each { sample -> family[sample.individual_id] = sample }
-        samples.collect { sample -> 
-          def sampleWithFamily = sample.clone()
-          sampleWithFamily.family = family
-          sampleWithFamily
-        }
-      }
-    | filter { sample -> sample.proband}
-    | set { proband_cram_ch }
-  
-  proband_cram_ch
-    | map { sample -> tuple(sample, sample.cram, sample.cram_index) }
+    | flatMap { key, group -> group.collect { [*:it, family: group.collectEntries{ meta -> [meta.sample.individual_id, meta] }] } }
+    | filter { meta -> meta.sample.proband }
+    | map { meta -> tuple(meta, meta.cram, meta.cram_index) }
     | samtools_idxstats
-    | flatMap { sample, statsFile ->
+    | flatMap { meta, statsFile ->
         def stats = parseAlignmentStats(statsFile)
-        // FIXME remove (contig == "chr21" || contig == "chr22")
-        def contigsWithReads = contigs.findAll( contig -> { (contig == "chr21" || contig == "chr22") && (stats[contig].nrMappedReads + stats[contig].nrUnmappedReads > 0) } )
-        contigsWithReads.collect{ contig -> 
-          def samplePerContig = sample.clone()
-          samplePerContig.contig = contig
-          samplePerContig.nr_contigs = contigsWithReads.size()
-          samplePerContig
-        }
+        def contigsWithReads = contigs.findAll { (it == "chr21" || it == "chr22") && (stats[it].nrMappedReads + stats[it].nrUnmappedReads > 0) }
+        contigsWithReads.collect { contig -> [*:meta, contig: contig, nr_contigs: contigsWithReads.size()] }
       }
-    | set {proband_cram_region_ch }
-
-  proband_cram_region_ch
-    | branch { sample ->
-        trio: sample.paternal_id != null && sample.maternal_id != null
-        duoFather: sample.paternal_id != null && sample.maternal_id == null
-        duoMother: sample.paternal_id == null && sample.maternal_id != null
-        other: true
+    | branch { meta ->
+        trio: meta.sample.paternal_id != null && meta.sample.maternal_id != null
+        duoFather: meta.sample.paternal_id != null && meta.sample.maternal_id == null
+        duoMother: meta.sample.paternal_id == null && meta.sample.maternal_id != null
+        single: true
       }
-    | set { proband_cram_region_branch_ch } 
+    | set { variant_call_branch_ch } 
   
-  proband_cram_region_branch_ch.trio
-    | map { sample -> 
-        tuple(
-          sample,
-          params.reference, referenceFai, referenceGzi,
-          sample.cram, sample.cram_index,
-          sample.family[sample.paternal_id].cram, sample.family[sample.paternal_id].cram_index,
-          sample.family[sample.maternal_id].cram, sample.family[sample.maternal_id].cram_index
-        )
+  variant_call_branch_ch.trio
+    | map { meta -> tuple(meta, reference, referenceFai, referenceGzi,
+          meta.cram, meta.cram_index,
+          meta.family[meta.sample.paternal_id].cram, meta.family[meta.sample.paternal_id].cram_index,
+          meta.family[meta.sample.maternal_id].cram, meta.family[meta.sample.maternal_id].cram_index)
       }
     | deeptrio_call
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.g_vcf=tuple[1]
-        sample.family=sample.family.clone()
-        sample.family[sample.paternal_id].g_vcf=tuple[2]
-        sample.family[sample.maternal_id].g_vcf=tuple[3]
-        sample
-      }
-    | set { proband_gvcf_region_trio_ch }
+    | flatMap { meta, gVcf, gVcfFather, gVcfMother -> [[*:meta, gVcf: gVcf], [*:meta.family[meta.sample.paternal_id], gVcf: gVcfFather, contig: meta.contig, nr_contigs: meta.nr_contigs], [*:meta.family[meta.sample.maternal_id], gVcf: gVcfMother, contig: meta.contig, nr_contigs: meta.nr_contigs]] }
+    | set { variant_call_trio_processed_ch }
 
-  proband_cram_region_branch_ch.duoFather
-    | map { sample -> 
-        tuple(
-          sample,
-          params.reference, referenceFai, referenceGzi,
-          sample.cram, sample.cram_index,
-          sample.family[sample.paternal_id].cram, sample.family[sample.paternal_id].cram_index
-        )
+  variant_call_branch_ch.duoFather
+    | map { meta -> tuple(meta,
+          reference, referenceFai, referenceGzi,
+          meta.cram, meta.cram_index,
+          meta.family[meta.sample.paternal_id].cram, meta.family[meta.sample.paternal_id].cram_index)
       }
     | deeptrio_call_duo_father
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.g_vcf=tuple[1]
-        sample.family=sample.family.clone()
-        sample.family[sample.paternal_id].g_vcf=tuple[2]
-        sample
-      }
-    | set { proband_gvcf_region_duo_father_ch }
+    | flatMap { meta, gVcf, gVcfFather -> [[*:meta, gVcf: gVcf], [*:meta.family[meta.sample.paternal_id], gVcf: gVcfFather, contig: meta.contig, nr_contigs: meta.nr_contigs]] }
+    | set { variant_call_duoFather_processed_ch }
 
-proband_cram_region_branch_ch.duoMother
-    | map { sample -> 
-        tuple(
-          sample,
-          params.reference, referenceFai, referenceGzi,
-          sample.cram, sample.cram_index,
-          sample.family[sample.maternal_id].cram, sample.family[sample.maternal_id].cram_index
-        )
+  variant_call_branch_ch.duoMother
+    | map { meta -> tuple(meta,
+          reference, referenceFai, referenceGzi,
+          meta.cram, meta.cram_index,
+          meta.family[meta.sample.maternal_id].cram, meta.family[meta.sample.maternal_id].cram_index)
       }
     | deeptrio_call_duo_mother
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.g_vcf=tuple[1]
-        sample.family=sample.family.clone()
-        sample.family[sample.maternal_id].g_vcf=tuple[2]
-        sample
-      }
-    | set { proband_gvcf_region_duo_mother_ch }
+    | flatMap { meta, gVcf, gVcfMother -> [[*:meta, gVcf: gVcf], [*:meta.family[meta.sample.maternal_id], gVcf: gVcfMother, contig: meta.contig, nr_contigs: meta.nr_contigs]] }
+    | set { variant_call_duoMother_processed_ch }
 
-  proband_cram_region_branch_ch.other \
-    | map { sample -> 
-        tuple(
-          sample,
-          params.reference, referenceFai, referenceGzi,
-          sample.cram, sample.cram_index
-        )
+  variant_call_branch_ch.single \
+    | map { meta -> tuple(meta,
+          reference, referenceFai, referenceGzi,
+          meta.cram, meta.cram_index)
       }
     | deepvariant_call
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.g_vcf=tuple[1]
-        sample
-      }
-    | set { proband_gvcf_region_other_ch }
+    | map { meta, gVcf -> [ *:meta, gVcf: gVcf ] }
+    | set { variant_call_other_processed_ch }
 
-  proband_gvcf_region_ch = proband_gvcf_region_trio_ch.mix(proband_gvcf_region_other_ch, proband_gvcf_region_duo_father_ch, proband_gvcf_region_duo_mother_ch)
+  variant_called_ch = variant_call_skipped_ch.mix(
+      variant_call_trio_processed_ch,
+      variant_call_duoFather_processed_ch,
+      variant_call_duoMother_processed_ch,
+      variant_call_other_processed_ch
+    )
 
-  // FIXME move father.contig etc. to proband_cram_ch 
-  proband_gvcf_region_ch
-    | flatMap { sample -> 
-        def samples = []
-        samples << sample
-        
-        def father = sample.family[sample.paternal_id]
-        if(father) {
-          father = father.clone()
-          father.contig = sample.contig
-          father.nr_contigs = sample.nr_contigs
-          samples << father
-        }
-        
-        def mother = sample.family[sample.maternal_id]
-        if(mother) {
-          mother = mother.clone()
-          mother.contig = sample.contig
-          mother.nr_contigs = sample.nr_contigs
-          samples << mother
-        }
-        samples
-      }
-    | multiMap { done: publish: it }
-    | set { sample_gvcf_region_ch }
-
-  sample_gvcf_region_ch.publish
-    | map { sample -> tuple(groupKey(sample.family_id + "_" + sample.individual_id, sample.nr_contigs), sample) }
+  /*
+    step #3 .g.vcf to .bcf  
+  */
+  variant_called_ch
+    | map { meta -> tuple(groupKey(meta.contig, nrSamples), meta) }
     | groupTuple
-    | map { group -> group[1] }
-    | map { samples -> samples.sort { thisSamples, thatSamples -> contigs.findIndexOf{ it == thisSamples.contig } <=> contigs.findIndexOf{ it == thatSamples.contig } } }
-    | map { samples -> tuple(samples[0], samples.collect(sample -> sample.g_vcf)) }
-    | bcftools_concat_index
-
-  // split gvcf from here
-  sample_branch_ch.gVcf \
-    | flatMap { sample ->
-      contigs.collect { contig ->
-        samplePerContig = sample.clone()
-        samplePerContig.contig = contig
-        // FIXME contigs.size() instead of 2
-        samplePerContig.nr_contigs = 2
-        samplePerContig
-        // FIXME remove (contig == "chr21" || contig == "chr22")
-      }.findAll { samplePerContig -> (samplePerContig.contig == "chr21" || samplePerContig.contig == "chr22") }
-    }
-    | map { sample -> tuple(sample, sample.g_vcf, sample.g_vcf_index) }
-    | bcftools_view_contig
-    | map { tuple ->
-        def sample = tuple[0].clone()
-        sample.g_vcf=tuple[1]
-        sample.g_vcf_index=null
-        sample
-      }
-    | set { sample_start_with_gvcf_region_ch }
-
-  sample_gvcf_region_mix_ch=sample_gvcf_region_ch.done.mix(sample_start_with_gvcf_region_ch)
-  
-  sample_gvcf_region_mix_ch
-    | map { sample -> tuple(groupKey(sample.contig, nrSamples), sample) }
-    | groupTuple
-    | map { group -> tuple([contig: group[0], samples: group[1]], group[1].collect(sample -> sample.g_vcf)) }
+    | map { key, group -> tuple([contig: key, samples: group], group.collect(meta -> meta.gVcf)) }
     | glnexus_merge
-    | map { tuple ->
-        def contigSamples = tuple[0].clone()
-        contigSamples.bcf=tuple[1]
-        contigSamples
-      }
+    | map { meta, bcf -> [*:meta, bcf: bcf] }
     | set { bcf_region_ch }
 
-
+  /*
+    step #4 .bcf to .html
+  */
+  // TODO split in subworkflows
+  // FIXME doesn't work when some duo/trio samples have gVCF while others have not
   // TODO add derived sample data in wrapper object, do not edit sample row e.g. {sample: {...}], family: {...}, regions: { contig: <...>, start: <...>, stop: <...> }}, gVcf: <...> }
   // TODO nanopore
   // TODO mantasv
@@ -247,12 +159,10 @@ proband_cram_region_branch_ch.duoMother
   // TODO report genes
   // TODO report phenotypes from sample sheet
   bcf_region_ch 
-    | toSortedList { thisContigSamples, thatContigSamples -> 
-        contigs.findIndexOf{ it == thatContigSamples.contig } <=> contigs.findIndexOf{ it == thisContigSamples.contig }
-      }
-    | map { contigSamples -> tuple(contigSamples, contigSamples.collect{ it.bcf }) }
+    | toSortedList { thisMeta, thatMeta -> contigs.findIndexOf{ it == thatMeta.contig } <=> contigs.findIndexOf{ it == thisMeta.contig } }
+    | map { metaList -> tuple(metaList, metaList.collect{ meta -> meta.bcf }) }
     | bcftools_concat
-    | map { tuple(it[0], it[1], params.reference, referenceFai, referenceGzi) }
+    | map { metaList, vcf -> tuple(metaList, vcf, params.reference, referenceFai, referenceGzi) }
     | vcf_report_create
 
   // TODO start from vcf

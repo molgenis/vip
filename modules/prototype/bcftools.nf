@@ -43,7 +43,7 @@ process bcftools_view_contig {
   output:
     tuple val(meta), path(gVcfContig)
   script:
-    gVcfContig="${meta.family_id}_${meta.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfContig="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
     """
     ${CMD_BCFTOOLS} view --regions "${meta.contig}" --output-type z --output-file "${gVcfContig}" --no-version --threads "${task.cpus}" "${gVcf}"
     """
