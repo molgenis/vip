@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { vcf_report } from '../modules/prototype/vcf_report'
 
-workflow vcf2html {
+workflow vip_vcf {
     take: meta
     main:
         meta
@@ -11,10 +11,11 @@ workflow vcf2html {
 }
 
 workflow {
+    // TODO parameter validation
     def vcf = params.vcf
     def fasta = params.reference
     def fai = fasta + ".fai"
     def gzi = fasta + ".gzi"
 
-    vcf2html( channel.from( [vcf: vcf, reference: [fasta: fasta, fai: fai, gzi: gzi]] ) )
+    vip_vcf( channel.from( [vcf: vcf, reference: [fasta: fasta, fai: fai, gzi: gzi]] ) )
 }

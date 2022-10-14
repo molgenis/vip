@@ -20,7 +20,7 @@ def parseSampleSheet(csvFile) {
   if (!cols.containsKey('g_vcf') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'g_vcf' in '${header}'"
 
   // first pass: create family_id -> individual_id -> sample map
-  def samples=[:]
+  def samples=[]
   for (int i = 1; i < lines.size(); i++) {
     def lineNr = i + 1
 
@@ -107,7 +107,7 @@ def parseSampleSheet(csvFile) {
     }
 
     def sample = [:]
-    sample["sample_sheet_line"] = lineNr
+    // sample["sample_sheet_line"] = lineNr
     sample["family_id"] = familyId
     sample["individual_id"] = individualId
     sample["paternal_id"] = paternalId
@@ -121,44 +121,45 @@ def parseSampleSheet(csvFile) {
     sample["cram_index"] = cramIndex
     sample["g_vcf"] = gVcf
     sample["g_vcf_index"] = gVcfIndex
-
-    def family = samples[familyId]
-    if (family == null) {
-      family = [:]
-      samples[familyId] = family
-    }
-    
-    def individual = family[individualId]
-    if (individual != null) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'family_id/individual_id' '${familyId}/${individualId}' already exists on line ${individual.sample_sheet_line}"
-    
-    family[individualId] = sample
+    samples << sample
   }
   
-  // second pass: validate paternal_id and maternal_id
-  samples.each { familyEntry -> familyEntry.value.each { individualEntry ->
-      def individual = individualEntry.value
+  // FIXME 2nd pass validation
+  //   def family = samples[familyId]
+  //   if (family == null) {
+  //     family = [:]
+  //     samples[familyId] = family
+  //   }
+    
+  //   def individual = family[individualId]
+  //   if (individual != null) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'family_id/individual_id' '${familyId}/${individualId}' already exists on line ${individual.sample_sheet_line}"
+    
+  //   family[individualId] = sample
+  // // second pass: validate paternal_id and maternal_id
+  // samples.each { familyEntry -> familyEntry.value.each { individualEntry ->
+  //     def individual = individualEntry.value
 
-      def paternalId = individual["paternal_id"]
-      if (paternalId != null) {
-        def father = familyEntry.value[paternalId]
-        if (father == null) {
-          System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'paternal_id' '${paternalId}' does not exist within the same family, ignoring..."
-          individual["paternal_id"] = null
-        }
-      }
+  //     def paternalId = individual["paternal_id"]
+  //     if (paternalId != null) {
+  //       def father = familyEntry.value[paternalId]
+  //       if (father == null) {
+  //         System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'paternal_id' '${paternalId}' does not exist within the same family, ignoring..."
+  //         individual["paternal_id"] = null
+  //       }
+  //     }
 
-      def maternalId = individual["maternal_id"]
-      if (maternalId != null) {
-        def mother = familyEntry.value[maternalId]
-        if (mother == null) {
-          System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'maternal_id' '${maternalId}' does not exist within the same family, ignoring..."
-          individual["maternal_id"] = null
-        }
-      }
+  //     def maternalId = individual["maternal_id"]
+  //     if (maternalId != null) {
+  //       def mother = familyEntry.value[maternalId]
+  //       if (mother == null) {
+  //         System.err.println "warning parsing '${csvFile}' line ${individual.sample_sheet_line}: 'maternal_id' '${maternalId}' does not exist within the same family, ignoring..."
+  //         individual["maternal_id"] = null
+  //       }
+  //     }
       
-      individual.remove("sample_sheet_line")
-    }
-  }  
+  //     individual.remove("sample_sheet_line")
+  //   }
+  // }  
   
   return samples
 }

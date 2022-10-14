@@ -18,7 +18,7 @@ def validateReference() {
   if( !file(referenceMmi).exists() )   exit 1, "parameter 'reference' value '${params.reference}' index '${referenceMmi}' does not exist"
 }
 
-def validate() {
+def validateParams() {
   validateInput()
   validateReference()
 }
