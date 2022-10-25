@@ -8,7 +8,7 @@ abort() {
 }
 
 NXF_VERSION="22.10.0"
-CMD_NEXTFLOW="${SCRIPT_DIR}/../nextflow-${NXF_VERSION}-all"
+CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"

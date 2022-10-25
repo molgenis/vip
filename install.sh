@@ -26,6 +26,8 @@ download_nextflow() {
   if [ ! -f "${download_dir}/${file}" ]; then
       echo -e "downloading from download.molgeniscloud.org: ${file} ..."
       wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/nextflow/${file}" --output-document "${download_dir}/${file}"
+      chmod +x "${download_dir}/${file}"
+      (cd "${download_dir}" && ln -s ${file} "nextflow")
     else
       echo -e "skipping download ${download_dir}/${file}: already exists"
     fi
