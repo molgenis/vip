@@ -22,7 +22,7 @@ process annotate {
     dnaseRegionsPath = params[params.assembly + "_DNase_regions"]
     tfbsRegionsPath = params[params.assembly + "_TFBS_regions"]
     ucneRegionsPath = params[params.assembly + "_UCNE_regions"]
-    fathmmMKLScoresPath = params[params.assembly + "_fathmm_MKL_regions"]
+    fathmmMKLScoresPath = params[params.assembly + "_fathmm_MKL_scores"]
 
     template 'annotate.sh'
 }
