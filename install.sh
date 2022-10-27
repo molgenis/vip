@@ -18,6 +18,21 @@ validate() {
   fi
 }
 
+download_nextflow() {
+  local -r version="22.10.0"
+  local -r file="nextflow-${version}-all"
+  local -r download_dir="${SCRIPT_DIR}"
+
+  if [ ! -f "${download_dir}/${file}" ]; then
+      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
+      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/nextflow/${file}" --output-document "${download_dir}/${file}"
+      chmod +x "${download_dir}/${file}"
+      (cd "${download_dir}" && ln -s ${file} "nextflow")
+    else
+      echo -e "skipping download ${download_dir}/${file}: already exists"
+    fi
+}
+
 download_resources_molgenis() {
   local -r assembly="${1}"
 
@@ -209,6 +224,7 @@ main() {
   validate "${assembly}"
 
   echo -e "installing ..."
+  download_nextflow
   download_images
   download_resources "${assembly}"
   echo -e "installing done"
