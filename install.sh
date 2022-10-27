@@ -41,7 +41,7 @@ download_resources_molgenis() {
   files+=("inheritance_20220712.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v4.0.0-v1.pickle.dat")
+    files+=("GRCh37/capice_model_v4.0.0-v2.pickle.dat")
     files+=("GRCh37/clinvar_20220620.vcf.gz")
     files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
@@ -60,7 +60,7 @@ download_resources_molgenis() {
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v4.0.0-v1.pickle.dat")
+    files+=("GRCh38/capice_model_v4.0.0-v2.pickle.dat")
     files+=("GRCh38/clinvar_20220620.vcf.gz")
     files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
