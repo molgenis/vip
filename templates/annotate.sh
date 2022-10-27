@@ -186,6 +186,12 @@ vep() {
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
+  args+=("--custom" "!{greenDbConstraintPath},constraint,bed,overlap,0")
+  args+=("--custom" "!{dnaseRegionsPath},region,bed,overlap,0")
+  args+=("--custom" "!{tfbsRegionsPath},region,bed,overlap,0")
+  args+=("--custom" "!{ucneRegionsPath},region,bed,overlap,0")
+  args+=("--custom" "!{fathmmMKLScoresPath},fathmm,vcf,overlap,0")
+
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
