@@ -175,7 +175,7 @@ download_images() {
   files+=("samtools-1.16.sif")
   files+=("vcf-decision-tree-3.4.2.sif")
   files+=("vcf-inheritance-matcher-2.1.2.sif")
-  files+=("vcf-report-5.0.0.sif")
+  files+=("vcf-report-5.1.0.sif")
   files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
