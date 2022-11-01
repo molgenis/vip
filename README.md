@@ -1,8 +1,9 @@
 # Variant Interpretation Pipeline
 
 ## Requirements
-- Linux-based OS
-- [Nextflow](https://www.nextflow.io/)
+- POSIX compatible system (Linux, OS X, etc) / Windows through [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+- Bash 3.2 (or later)
+- Java 11 or later
 - [Singularity](https://sylabs.io/singularity/)
 - 300GB disk space
 
@@ -20,7 +21,7 @@ bash vip/install.sh --assembly GRCh38
 
 ## Usage
 ```
-NXF_VER="21.10.6" nextflow run vip/main.nf \
+vip/nextflow run vip/main.nf \
   --assembly <GRCh37 or GRCh38> \
   --input <path> \
   --output <path>
@@ -33,5 +34,3 @@ Some tools and resources have licenses that restrict their usage:
 - [gnomAD](https://gnomad.broadinstitute.org/) (CC0 1.0 license)
 - [SpliceAI](https://basespace.illumina.com/s/otSPW8hnhaZR) (free for academic and not-for-profit use)
 - [VKGL](https://vkgl.molgeniscloud.org/) (CC BY-NC-SA 4.0 license)
-
-Update [nextflow.config](https://github.com/molgenis/vip/blob/main/nextflow.config) to prevent their usage.
