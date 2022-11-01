@@ -19,3 +19,7 @@
 /test/output
 /test/nextflow.config
 /test/test_wrapper.sh
+
+# nextflow
+nextflow
+nextflow-*-all
