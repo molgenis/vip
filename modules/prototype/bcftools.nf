@@ -48,3 +48,33 @@ process bcftools_view_contig {
     ${CMD_BCFTOOLS} view --regions "${meta.contig}" --output-type z --output-file "${gVcfContig}" --no-version --threads "${task.cpus}" "${gVcf}"
     """
 }
+
+process bcftools_view_chunk {
+  input:
+    tuple val(meta), path(gVcf), path(gVcfIndex)
+  output:
+    tuple val(meta), path(gVcfChunk), path(gVcfChunkIndex)
+  script:
+    bed="chunk_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    gVcfChunk="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
+    gVcfChunkIndex="${gVcfChunk}.csi"
+    """
+    echo -e "${bedContent}" > "${bed}"
+
+    ${CMD_BCFTOOLS} view --regions "${bed}" --output-type z --output-file "${gVcfChunk}" --no-version --threads "${task.cpus}" "${gVcf}"
+    ${CMD_BCFTOOLS} index "${gVcfChunk}"
+    """
+}
+
+process bcftools_index {
+  input:
+    tuple val(meta), path(vcf)
+  output:
+    tuple val(meta), path(vcfIndex)
+  script:
+    vcfIndex="${vcf}.csi"
+    """
+    ${CMD_BCFTOOLS} index --threads "${task.cpus}" "${vcf}"
+    """
+}

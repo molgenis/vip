@@ -4,18 +4,23 @@ process deepvariant_call {
   output:
     tuple val(meta), path(gVcf)
   script:
-    vcf="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.contig}.vcf.gz"
-    gVcf="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
+    bed="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    vcf="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.vcf.gz"
+    gVcf="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
+
     """
+    echo -e "${bedContent}" > "${bed}"
+    
     ${CMD_DEEPVARIANT} \
       --model_type=${meta.sample.seq_method} \
       --ref=${reference} \
       --reads=${cram} \
-      --regions ${meta.contig} \
+      --regions ${bed} \
       --sample_name ${meta.sample.family_id}_${meta.sample.individual_id} \
       --output_vcf="${vcf}" \
       --output_gvcf="${gVcf}" \
-      --intermediate_results_dir ${TMPDIR} \
+      --intermediate_results_dir . \
       --num_shards=${task.cpus}
     """
 }

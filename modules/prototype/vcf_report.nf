@@ -2,7 +2,7 @@ process vcf_report {
   publishDir "$params.output", mode: 'link'
 
   input:
-    tuple val(meta), path(vcf), path(reference), path(referenceFai), path(referenceGzi)
+    tuple val(meta), path(vcf), path(vcf_index), path(reference), path(referenceFai), path(referenceGzi)
   output:
     tuple val(meta), path(html)
   script:

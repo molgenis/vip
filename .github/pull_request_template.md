@@ -1,12 +1,2 @@
-## SOP
-### Before merge:
-- [ ] Functionality works & meets specs
-- [ ] No issues running `bash test/pipeline_test.sh`
-- [ ] Code reviewed
-- [ ] Documentation was updated
-
-### After merge:
-- [ ] Added feature/fix to draft release notes
-
-## Notes by PR author
-None.
+End-to-end tests are not executed by Travis CI, please execute manually:
+- [ ] `SINGULARITY_BIND=$PWD bash test/test.sh` passes

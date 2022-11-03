@@ -31,22 +31,3 @@ def parseAlignmentStats(statsFile) {
   return contigs
 }
 
-// TODO return map with all info instead of array of tokens
-def parseFastaIndex(faiFile) {
-  def lines = new File(faiFile).readLines("UTF-8")
-  if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
-
-  def contigs = []
-  for (int i = 0; i < lines.size(); i++) {
-    def lineNr = i + 1
-
-    def line = lines[i]
-    if (line == null) continue;
-
-    def tokens = line.split('\t', -1)
-    if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
-    
-    contigs+=tokens[0]
-  }
-  return contigs
-}
