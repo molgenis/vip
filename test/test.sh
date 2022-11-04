@@ -12,6 +12,7 @@ CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
+RESOURCES_DIR="$(realpath "${SCRIPT_DIR}/../resources/")"
 TEST_OUTPUT_DIR="${TEST_DIR}/output"
 
 RED="\033[0;31m"
@@ -169,6 +170,7 @@ test_snv_proband_trio_b38 () {
   args+=("-log" "${OUTPUT_LOG}")
   args+=("run")
   args+=("--assembly" "GRCh38")
+  args+=("--classify_decision_tree" "${RESOURCES_DIR}/decision_tree_GRCh38.json")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.vcf")
   args+=("--probands" "PROBAND0")
   args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
