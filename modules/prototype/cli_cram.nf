@@ -33,7 +33,10 @@ def parseSampleSheet(csvFile) {
   if (!cols.containsKey('family_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'family_id' in '${header}'"
   if (!cols.containsKey('individual_id') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'individual_id' in '${header}'"
   if (!cols.containsKey('seq_method') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'seq_method' in '${header}'"
-  if (!cols.containsKey('cram') ) exit 1, "error parsing '${csvFile}' line 1: missing column 'cram' in '${header}'"
+  if (!cols.containsKey('cram') && !cols.containsKey('bam')) exit 1, "error parsing '${csvFile}' line 1: missing column 'cram' or 'bam' in '${header}'"
+  if (cols.containsKey('cram') && cols.containsKey('bam')) exit 1, "error parsing '${csvFile}' line 1: column 'cram' and 'bam' cannot exist together in '${header}'"
+  if (cols.containsKey('cram') && !cols.containsKey('cram_index')) exit 1, "error parsing '${csvFile}' line 1: missing column 'cram_index' in '${header}'"
+  if (cols.containsKey('bam') && !cols.containsKey('bam_index')) exit 1, "error parsing '${csvFile}' line 1: missing column 'bam_index' in '${header}'"
 
   // first pass: create family_id -> individual_id -> sample map
   def samples=[]
@@ -91,15 +94,31 @@ def parseSampleSheet(csvFile) {
     if (seqMethod.length() == 0 ) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'seqMethod' cannot be empty"
     if (seqMethod != "WES" && seqMethod != "WGS") exit 1, "error parsing '${csvFile}' line ${lineNr}: invalid 'seq_method' value '${seqMethod}'. valid values are 'WES' or 'WGS'"
 
-    def cram = tokens[cols["cram"]]
-    cram=file(cram)
-    if (!cram.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' does not exist"
-    if (!cram.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' is not a file"
+    def cram
+    def cramIndex
+    if (cols.containsKey('cram')) {
+      cram = tokens[cols["cram"]]
+      cram=file(cram)
+      if (!cram.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' does not exist"
+      if (!cram.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram' '${cram}' is not a file"
 
-    def cramIndex = tokens[cols["cram"]] + ".crai"
-    cramIndex=file(cramIndex)
-    if (!cramIndex.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram_index' '${cramIndex}' does not exist"
-    if (!cramIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram_index' '${cramIndex}' is not a file"
+      cramIndex = tokens[cols["cram_index"]]
+      cramIndex=file(cramIndex)
+      if (!cramIndex.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram_index' '${cramIndex}' does not exist"
+      if (!cramIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'cram_index' '${cramIndex}' is not a file"
+    }
+
+    if (cols.containsKey('bam')) {
+      cram = tokens[cols["bam"]]
+      cram=file(cram)
+      if (!cram.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'bam' '${cram}' does not exist"
+      if (!cram.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'bam' '${cram}' is not a file"
+
+      cramIndex = tokens[cols["bam_index"]]
+      cramIndex=file(cramIndex)
+      if (!cramIndex.exists()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'bam_index' '${cramIndex}' does not exist"
+      if (!cramIndex.isFile()) exit 1, "error parsing '${csvFile}' line ${lineNr}: 'bam_index' '${cramIndex}' is not a file"
+    }
 
     def sample = [:]
     sample["family_id"] = familyId
