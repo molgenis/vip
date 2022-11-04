@@ -53,7 +53,7 @@ execute_workflow() {
     -with-report "${paramOutput}/report.html" \
     -with-timeline "${paramOutput}/timeline.html" \
     --input "${paramInput}" \
-    --reference "${SCRIPT_DIR}/resources/GRCh38/GCA_000001405.15_GRCh38_full_plus_hs38d1_analysis_set.fna.gz" \
+    --reference "${SCRIPT_DIR}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" \
     --output "${paramOutput}"
 }
 
