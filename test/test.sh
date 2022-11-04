@@ -218,7 +218,7 @@ test_lp () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2446 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2452 ]; then
     return 1
   fi
 }
@@ -237,7 +237,7 @@ test_lp_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2441 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2450 ]; then
     return 1
   fi
 }
@@ -256,7 +256,7 @@ test_lb () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 1331 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 1346 ]; then
     return 1
   fi
 }
@@ -275,7 +275,7 @@ test_lb_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 1236 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 1272 ]; then
     return 1
   fi
 }

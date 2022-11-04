@@ -124,16 +124,16 @@
         "operator": ">",
         "value": 0.57
       },
-    "outcomeTrue": {
-      "nextNode": "exit_lp"
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "gnomad"
+      },
+      "outcomeMissing": {
+        "nextNode": "gnomad"
+      }
     },
-    "outcomeFalse": {
-      "nextNode": "gnomad"
-    },
-    "outcomeMissing": {
-      "nextNode": "gnomad"
-    }
-},
     "gnomad": {
       "type": "BOOL_MULTI",
       "description": "gnomAD_AF < 0.02 && gnomAD_HN < 5",
