@@ -12,7 +12,6 @@ CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
-RESOURCES_DIR="$(realpath "${SCRIPT_DIR}/../resources/")"
 TEST_OUTPUT_DIR="${TEST_DIR}/output"
 
 RED="\033[0;31m"
