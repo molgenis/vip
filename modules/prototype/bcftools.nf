@@ -3,15 +3,18 @@ process bcftools_concat {
   input:
     tuple val(meta), path(bcfs)
   output:
-    tuple val(meta), path(vcf)
+    tuple val(meta), path(vcf), path(vcfCsi)
   script:
     vcf="out.vcf.gz"
+    vcfCsi="out.vcf.gz.csi"
     """
     ${CMD_BCFTOOLS} concat \
     --output-type z9 \
     --output "${vcf}" \
     --no-version \
     --threads "${task.cpus}" ${bcfs}
+
+    ${CMD_BCFTOOLS} index "${vcf}"
     """
 }
 
@@ -64,6 +67,25 @@ process bcftools_view_chunk {
 
     ${CMD_BCFTOOLS} view --regions "${bed}" --output-type z --output-file "${gVcfChunk}" --no-version --threads "${task.cpus}" "${gVcf}"
     ${CMD_BCFTOOLS} index "${gVcfChunk}"
+    """
+}
+
+// FIXME dedup with bcftools_view_chunk
+process bcftools_view_chunk_vcf {
+  input:
+    tuple val(meta), path(vcf), path(vcfIndex)
+  output:
+    tuple val(meta), path(vcfChunk), path(vcfChunkIndex)
+  script:
+    bed="chunk_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    vcfChunk="chunk_${meta.chunk.index}.vcf.gz"
+    vcfChunkIndex="${vcfChunk}.csi"
+    """
+    echo -e "${bedContent}" > "${bed}"
+
+    ${CMD_BCFTOOLS} view --regions "${bed}" --output-type z --output-file "${vcfChunk}" --no-version --threads "${task.cpus}" "${vcf}"
+    ${CMD_BCFTOOLS} index "${vcfChunk}"
     """
 }
 

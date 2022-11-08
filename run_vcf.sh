@@ -2,6 +2,7 @@
 SCRIPT_NAME="$(basename "$0")"
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
+#FIXME currently input is treated as .vcf.gz
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-i <arg> -o <arg>]
   -i, --input  <arg>  sample sheet .csv
@@ -46,13 +47,13 @@ execute_workflow() {
   NXF_HOME="${paramOutput}/.nxf.home" \
   NXF_TEMP="${paramOutput}/.nxf.tmp" \
   NXF_WORK="${paramOutput}/.nxf.work" \
-  "${SCRIPT_DIR}/nextflow" -C "${SCRIPT_DIR}/nxf_gvcf.config" -log "${paramOutput}/.nxf.log" run "${SCRIPT_DIR}/subworkflows/vip_gvcf.nf" \
+  "${SCRIPT_DIR}/nextflow" -C "${SCRIPT_DIR}/nxf_gvcf.config" -log "${paramOutput}/.nxf.log" run "${SCRIPT_DIR}/subworkflows/vip_vcf.nf" \
     -offline \
     -resume \
     -profile cluster \
     -with-report "${paramOutput}/report.html" \
     -with-timeline "${paramOutput}/timeline.html" \
-    --input "${paramInput}" \
+    --vcf "${paramInput}" \
     --reference "${SCRIPT_DIR}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" \
     --output "${paramOutput}"
 }
