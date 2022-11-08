@@ -1,3 +1,4 @@
+// FIXME reintroduce --reference (which can result in 'the input sequence contains invalid base calls like: :' error)
 process vcf_report {
   publishDir "$params.output", mode: 'link'
 
@@ -13,7 +14,6 @@ process vcf_report {
     -XX:ParallelGCThreads=2 \
     -jar /opt/vcf-report/lib/vcf-report.jar \
     --input "${vcf}" \
-    --reference "${reference}" \
     --output "${html}"
     """
 }

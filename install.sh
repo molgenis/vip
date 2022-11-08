@@ -178,7 +178,7 @@ download_images() {
   files+=("samtools-1.16.sif")
 #  files+=("vcf-decision-tree-3.4.2.sif")
 #  files+=("vcf-inheritance-matcher-2.1.2.sif")
-#  files+=("vcf-report-5.1.0.sif")
+  files+=("vcf-report-5.1.0.sif")
 #  files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
@@ -199,6 +199,7 @@ download_images_dev() {
   local files=()
   files+=("deepvariant_1.4.0.sif")
   files+=("deepvariant_deeptrio-1.4.0.sif")
+  files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
 
   for file in "${files[@]}"; do

@@ -14,6 +14,7 @@ workflow vip_fastq {
             | vip_cram
 }
 
+//TODO make .mmi optional
 workflow {
     validateParams()
 
