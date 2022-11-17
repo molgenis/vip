@@ -36,7 +36,7 @@ my %min_scores = (
 );
 
 sub is_in_region {
-    my $region = $_[0];
+    my $region_values = $_[0];
 
     ## if region contains value
     unless($region_values eq "") {
