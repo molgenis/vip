@@ -28,6 +28,46 @@ sub get_header_info {
     };
 }
 
+my %min_scores = (	
+  fathmm => 0.5,
+  ncER => 0.5,
+  ReMM => 0.499,
+  constraint => 0.7
+);
+
+sub is_in_region {
+    my $region = $_[0];
+
+    ## if region contains value
+    unless($region_values eq "") {
+        return = 1;
+    } else {
+        return = 0;
+    }
+}
+
+sub tool_min_score {
+    my fathmm_score = $_[0];
+    my ncER_score = $_[1];
+    my ReMM_score = $_[2];
+
+    if($fathmm_score >= %min_scores{"fathmm"} || $ncER >= %min_scores{"ncER"} || ReMM >= %min_scores{"ReMM"}) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+sub constraint_min_score {
+    my $constraint_score = $_[0];
+
+    if (constraint_score >= %min_scores{"constraint"}) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
@@ -53,42 +93,16 @@ sub run {
     # What if scores are sufficient but it is not in one of the regions?
     # Something with UTRAnnotator?
 
-    my %min_scores = (	
-     fathmm_min => 0.5,
-     ncER_min => 0.5,
-     ReMM_min => 0.499,
-     constraint_min => 0.7
-    );
-
-
-    ## if region contains value
-    unless($region_values eq "") {
-        $region = 1;
-    } else {
-        $region = 0;
-    }
-    if($fathmm_score >= %min_scores{"fathmm_min"} || $ncER >= %min_scores{"ncER_min"} || ReMM >= %min_scores{"ReMM_min"}) {
-        $score = 1;
-    } else {
-        $score = 0;
-    }
-    if($constraint_score >= %min_scores{"constraint_min"}) {
-        $constraint = 1;
-    } else {
-        $constraint = 0;
-    }
-
-    if($region == 1 && $score == 1 && $constraint == 1) {
+    if(is_in_region($region) && tool_min_score($fathmm_score, $ncER_score, $ReMM_score) && constraint_min_score($constraint_score)) {
         $score = 3;
-    } elsif($region == 1 && $score == 1 && $constraint == 0) {
+    } elsif(is_in_region($region) && tool_min_score($fathmm_score, $ncER_score, $ReMM_score) && !constraint_min_score($constraint_score)) {
         $score = 2;
-    } elsif($region == 1 && $score == 0 && $constraint == 0) {
+    } elsif(is_in_region($region) && !tool_min_score($fathmm_score, $ncER_score, $ReMM_score) && !constraint_min_score($constraint_score)) {
         $score = 1;
     } else {
         $score = 0;
     }
     
-
     return {
         #VIPVaranLevel => $results
         VIPVaranLevel => $score
