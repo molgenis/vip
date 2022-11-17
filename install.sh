@@ -18,19 +18,30 @@ validate() {
   fi
 }
 
+download() {
+  local -r url="${1}"
+  local -r output="${2}"
+
+  if [ ! -f "${output}" ]; then
+    echo -e "downloading ${url} ..."
+    if ! wget --quiet --continue "${url}" --output-document "${output}"; then
+      echo -e "an error occurred downloading ${url}"
+        # wget always writes an (empty) output file regardless of errors
+        rm -f "${output}"
+        exit 1
+    fi
+  else
+    echo -e "skipping download: ${output} already exists"
+  fi
+}
+
 download_nextflow() {
   local -r version="22.10.2"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
-  if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/nextflow/${file}" --output-document "${download_dir}/${file}"
-      chmod +x "${download_dir}/${file}"
-      (cd "${download_dir}" && ln -s ${file} "nextflow")
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
+  download "https://download.molgeniscloud.org/downloads/vip/nextflow/${file}" "${download_dir}/${file}"
+  (cd "${download_dir}" && chmod +x "${file}" && rm -f nextflow && ln -s ${file} "nextflow")
 }
 
 download_resources_molgenis() {
@@ -79,12 +90,7 @@ download_resources_molgenis() {
   fi
 
   for file in "${files[@]}"; do
-    if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/resources/${file}" --output-document "${download_dir}/${file}"
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
+    download "https://download.molgeniscloud.org/downloads/vip/resources/${file}" "${download_dir}/${file}"
   done
 }
 
@@ -179,12 +185,7 @@ download_images() {
   files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
-    if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/images/${file}" --output-document "${download_dir}/${file}"
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
+    download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
   done
 }
 
