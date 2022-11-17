@@ -51,6 +51,8 @@ sub tool_min_score {
     my ncER_score = $_[1];
     my ReMM_score = $_[2];
 
+    # add logic for when there are multiple scores for the same variant from the same tool.
+    # example: 99.7852&99.7217  (can be more than 2) ReMM: 0.1710&0.9490&0.9560 (low and high score what to do?)
     if($fathmm_score >= %min_scores{"fathmm"} || $ncER >= %min_scores{"ncER"} || ReMM >= %min_scores{"ReMM"}) {
         return 1;
     } else {
@@ -83,7 +85,12 @@ sub run {
     # $fathmm = something..
     # $ReMM = something...
     # $ncER = something...
-    # $constraint = something... 
+    # $constraint = something...
+    my $region = 0;
+    my $fathmm_score = 0;
+    my $ncER_score = 0; 
+    my $ReMM_score = 0;
+    my $constraint_score = 0;
 
     # Higher level = higher chance of pathogenicity 
     # If variant lays in in TFBS,DNase or UCNE = level 1
@@ -103,10 +110,11 @@ sub run {
         $score = 0;
     }
     
-    return {
-        #VIPVaranLevel => $results
-        VIPVaranLevel => $score
-    };
+    # return {
+    #     #VIPVaranLevel => $results
+    #     VIPVaranLevel => $score
+    # };
+    return $score;
 }
 
 1;
