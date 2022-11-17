@@ -31,7 +31,8 @@ sub get_header_info {
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
-    my @results = ... # do analysis
+    print($transcript_variation_allele)
+    #my @results = ... # do analysis
 
     return {
         VIPVaranLevel => $results
