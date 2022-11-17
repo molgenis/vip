@@ -40,16 +40,16 @@ sub is_in_region {
 
     ## if region contains value
     unless($region_values eq "") {
-        return = 1;
+        return 1;
     } else {
-        return = 0;
+        return 0;
     }
 }
 
 sub tool_min_score {
-    my fathmm_score = $_[0];
-    my ncER_score = $_[1];
-    my ReMM_score = $_[2];
+    my $fathmm_score = $_[0];
+    my $ncER_score = $_[1];
+    my $ReMM_score = $_[2];
 
     # add logic for when there are multiple scores for the same variant from the same tool.
     # example: 99.7852&99.7217  (can be more than 2) ReMM: 0.1710&0.9490&0.9560 (low and high score what to do?)
