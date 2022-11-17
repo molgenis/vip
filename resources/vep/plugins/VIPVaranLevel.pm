@@ -53,7 +53,7 @@ sub tool_min_score {
 
     # add logic for when there are multiple scores for the same variant from the same tool.
     # example: 99.7852&99.7217  (can be more than 2) ReMM: 0.1710&0.9490&0.9560 (low and high score what to do?)
-    if($fathmm_score >= %min_scores{"fathmm"} || $ncER >= %min_scores{"ncER"} || ReMM >= %min_scores{"ReMM"}) {
+    if($fathmm_score >= %min_scores{"fathmm"} || $ncER_score >= %min_scores{"ncER"} || $ReMM_score >= %min_scores{"ReMM"}) {
         return 1;
     } else {
         return 0;
@@ -74,8 +74,8 @@ sub run {
     my ($self, $transcript_variation_allele) = @_;
 
     print($transcript_variation_allele);
-    my $base_variation_feature = $tva->base_variation_feature;
-    my @vcf_line = @{$bvf->{_line}};
+    my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
+    my @vcf_line = @{$base_variation_feature->{_line}};
     print(@vcf_line);
 
     # score is 0 by default
