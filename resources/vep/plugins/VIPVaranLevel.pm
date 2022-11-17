@@ -53,7 +53,7 @@ sub tool_min_score {
 
     # add logic for when there are multiple scores for the same variant from the same tool.
     # example: 99.7852&99.7217  (can be more than 2) ReMM: 0.1710&0.9490&0.9560 (low and high score what to do?)
-    if($fathmm_score >= %min_scores{"fathmm"} || $ncER_score >= %min_scores{"ncER"} || $ReMM_score >= %min_scores{"ReMM"}) {
+    if($fathmm_score >= $min_scores{"fathmm"} || $ncER_score >= $min_scores{"ncER"} || $ReMM_score >= $min_scores{"ReMM"}) {
         return 1;
     } else {
         return 0;
@@ -63,7 +63,7 @@ sub tool_min_score {
 sub constraint_min_score {
     my $constraint_score = $_[0];
 
-    if (constraint_score >= %min_scores{"constraint"}) {
+    if ($constraint_score >= $min_scores{"constraint"}) {
         return 1;
     } else {
         return 0;
