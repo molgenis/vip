@@ -19,7 +19,7 @@ validate() {
 }
 
 download_nextflow() {
-  local -r version="22.10.0"
+  local -r version="22.10.2"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
