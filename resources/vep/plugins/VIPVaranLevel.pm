@@ -73,11 +73,15 @@ sub constraint_min_score {
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
-    print($transcript_variation_allele);
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
-    print(@vcf_line);
 
+    # code to write to file
+    my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
+    open($file, '>>', $filename);
+    print($file @vcf_line);
+    print($file $transcript_variation_allele);
+    close($file);
     # score is 0 by default
     my $score = 0;
 
@@ -114,7 +118,8 @@ sub run {
     #     #VIPVaranLevel => $results
     #     VIPVaranLevel => $score
     # };
-    return $score;
+    #return $score;
+    return {};
 }
-
+  
 1;
