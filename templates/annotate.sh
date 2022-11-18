@@ -194,7 +194,7 @@ vep() {
   args+=("--custom" "!{ncErScoresPath},ncER,bed,overlap,0")
   args+=("--custom" "!{reMMScoresPath},ReMM,bed,overlap,0")
   args+=("--custom" "!{regionPhenosPath},phenotype,bed,overlap,0")
-  args+=("--plugin" "VIPVaranLevel")
+  #args+=("--plugin" "VIPVaranLevel")
 
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
