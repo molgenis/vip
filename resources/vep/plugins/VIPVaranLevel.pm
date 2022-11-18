@@ -78,7 +78,7 @@ sub run {
 
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
-    open($file, '>>', $filename) or die "could not open file '$filename' $!";
+    open(my $file, '>>', $filename) or die "could not open file '$filename' $!";
     print($file @vcf_line);
     print($file $transcript_variation_allele);
     close($file);
