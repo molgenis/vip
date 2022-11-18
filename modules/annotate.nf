@@ -26,6 +26,7 @@ process annotate {
     ncErScoresPath = params[params.assembly + "_ncER_scores"]
     reMMScoresPath = params[params.assembly + "_ReMM_scores"]
     regionPhenosPath = params[params.assembly + "_region_phenotypes"]
+    fathmmMKLTsvPath = params[params.assembly + "_fathmm_MKL_scores_tsv"]
 
     template 'annotate.sh'
 }
