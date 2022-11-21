@@ -18,8 +18,9 @@ sub version {
     return '0.1';
 }
 
+# Feature includes regulatory features 
 sub feature_types {
-    return [ 'Transcript'];
+    return [ 'Transcript', 'Intergenic', 'Feature'];
 }
 
 sub get_header_info {
@@ -76,15 +77,29 @@ sub run {
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
 
+    my @data = @{$self->get_data()};
+
+    my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
     open(my $file, '>>', $filename) or die "could not open file '$filename' $!";
     print($file "HIER onder is vcf line");
     foreach (@vcf_line) {
-        print($file "$_\n");
+        print($file "$_\n"); 
     }
-    #print($file @vcf_line);
-    print($file "HIER onder is de tva");
+    print($file "HIER onder is green_db_tool_scores line");
+    foreach (@test_data) {
+        print($file "$_\n"); 
+    }
+    print($file "HIER onder is data variable");
+    foreach (@data) {
+        print($file "$_\n"); 
+    }
+    print($file "HIER onder is self");
+    print($file $self);
+    
+    #print($file @vcf_line); # becat chrom pos ref alt, 0 en 3x "."
+    print($file "HIER onder is de tva"); # is een hash
     print($file $transcript_variation_allele);
     close($file);
     # score is 0 by default
