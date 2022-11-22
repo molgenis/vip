@@ -91,8 +91,9 @@ sub run {
         print($file "$_\n"); 
     }
     print($file "HIER onder is data en test\n");
-    print($file $data);
+    print($file $test2);
     print($file $test);
+    print($file $test3);
     print($file "HIER onder is self \n");
     print($file $self);
     foreach ($self) {
