@@ -77,10 +77,11 @@ sub run {
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
 
-    my $data = @{$self->get_data};
-
+    #my $data = @{$self->get_data}; get_data is not a thing
+    
+    my $test2 = $line_hash->ncER;
     my $test = @{$line_hash->ncER};
-
+    my $test3 = $self->ncER;
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
