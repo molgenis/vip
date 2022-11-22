@@ -72,7 +72,7 @@ sub constraint_min_score {
 }
 
 sub run {
-    my ($self, $transcript_variation_allele) = @_;
+    my ($self, $transcript_variation_allele, $line_hash) = @_;
 
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
@@ -87,6 +87,12 @@ sub run {
     foreach (@vcf_line) {
         print($file "$_\n"); 
     }
+    print($file "HIER onder is line_hash");
+    print($file $line_hash);
+    foreach ($line_hash) {
+        print($file "$_\n")
+    }
+
     print($file "HIER onder is self \n");
     print($file $self);
     foreach ($self) {
