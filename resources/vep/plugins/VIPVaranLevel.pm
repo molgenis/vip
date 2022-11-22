@@ -77,7 +77,7 @@ sub run {
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
 
-    #my @data = @{$self->get_data()};
+    my @data = @{$self->{get_data}};
 
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
@@ -89,7 +89,7 @@ sub run {
     }
     print($file "HIER onder is line_hash");
     print($file $line_hash);
-    foreach ($line_hash) {
+    foreach (@line_hash) {
         print($file "$_\n")
     }
 
