@@ -70,29 +70,21 @@ sub constraint_min_score {
         return 0;
     }
 }
-print("test print");
+
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
     my $base_variation_feature = $transcript_variation_allele->base_variation_feature;
     my @vcf_line = @{$base_variation_feature->{_line}};
 
-    my @data = @{$self->get_data()};
+    #my @data = @{$self->get_data()};
 
-    my @test_data = @{$self->green_db_tool_scores};
+    #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
     open(my $file, '>>', $filename) or die $!;
     print($file "HIER onder is vcf line");
     foreach (@vcf_line) {
-        print($file "$_\n"); 
-    }
-    print($file "HIER onder is green_db_tool_scores line");
-    foreach (@test_data) {
-        print($file "$_\n");
-    }
-    print($file "HIER onder is data variable");
-    foreach (@data) {
         print($file "$_\n"); 
     }
     print($file "HIER onder is self");
