@@ -89,7 +89,7 @@ sub run {
     }
     print($file "HIER onder is green_db_tool_scores line");
     foreach (@test_data) {
-        print($file "$_\n"); 
+        print($file "$_\n");
     }
     print($file "HIER onder is data variable");
     foreach (@data) {
@@ -98,9 +98,8 @@ sub run {
     print($file "HIER onder is self");
     print($file $self);
     
-    #print($file @vcf_line); # becat chrom pos ref alt, 0 en 3x "."
-    print($file "HIER onder is de tva"); # is een hash
-    print($file $transcript_variation_allele);
+    #print($file @vcf_line); # bevat chrom pos ref alt, 0 en 3x "." 
+    # print($file $transcript_variation_allele); # is een hash
     close($file);
     # score is 0 by default
     my $score = 0;
