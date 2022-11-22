@@ -78,8 +78,7 @@ sub run {
     my @vcf_line = @{$base_variation_feature->{_line}};
 
     #my @data = @{$self->get_data()};
-    my $testncER = $self->ncER;
-    my $ncER_score = $self->ncER_score;
+
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
@@ -90,7 +89,9 @@ sub run {
     }
     print($file "HIER onder is self \n");
     print($file $self);
-    
+    foreach ($self) {
+        print($file "$_\n")
+    }
     #print($file @vcf_line); # bevat chrom pos ref alt, 0 en 3x "." 
     # print($file $transcript_variation_allele); # is een hash
     close($file);
