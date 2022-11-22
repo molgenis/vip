@@ -79,7 +79,6 @@ sub run {
 
     #my $data = @{$self->get_data}; get_data is not a thing
     
-    my $test = @{$line_hash->ncER};
     my $test3 = $self->ncER;
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
@@ -90,7 +89,6 @@ sub run {
         print($file "$_\n"); 
     }
     print($file "HIER onder is data en test\n");
-    print($file $test);
     print($file $test3);
     print($file "HIER onder is self \n");
     print($file $self);
