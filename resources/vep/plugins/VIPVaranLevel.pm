@@ -79,7 +79,6 @@ sub run {
 
     #my $data = @{$self->get_data}; get_data is not a thing
     
-    my $test2 = $line_hash->ncER;
     my $test = @{$line_hash->ncER};
     my $test3 = $self->ncER;
     #my @test_data = @{$self->green_db_tool_scores};
