@@ -89,9 +89,6 @@ sub run {
     }
     print($file "HIER onder is line_hash");
     print($file $line_hash);
-    foreach (@line_hash) {
-        print($file "$_\n")
-    }
 
     print($file "HIER onder is self \n");
     print($file $self);
