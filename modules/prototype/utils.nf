@@ -1,8 +1,3 @@
-def validateMeta(meta, keys) {
-    keys.each { key -> if(!meta.containsKey(key)) throw new IllegalArgumentException("""meta is missing required '${key}'""") }
-    meta
-}
-
 def parseFastaIndex(faiFile) {
   def lines = new File(faiFile).readLines("UTF-8")
   if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
