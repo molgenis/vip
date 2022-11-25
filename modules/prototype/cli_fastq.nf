@@ -28,11 +28,13 @@ def parseSampleSheet(csvFile) {
     ],
     fastq_r1: [
       type: "file",
-      required: true
+      required: true,
+      list: true
     ],
     fastq_r2: [
       type: "file",
-      required: true
+      required: true,
+      list: true
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

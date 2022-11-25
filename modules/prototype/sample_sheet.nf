@@ -91,6 +91,7 @@ def parseHeader(tokens, colMetaMap) {
 
 def parseValueStringList(token, col) {
   def values = token.length() > 0 ? token.split(',', -1) : []
+  if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
   return values.collect(value -> parseValueString(value, col))
 }
 
@@ -114,6 +115,12 @@ def parseValueBoolean(token, col) {
   return booleanValue
 }
 
+def parseValueFileList(token, col) {
+  def values = token.length() > 0 ? token.split(',', -1) : []
+  if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
+  return values.collect(value -> parseValueFile(value, col))
+}
+
 def parseValueFile(token, col) {
   def value = token.length() > 0 ? token : null
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
@@ -133,7 +140,7 @@ def parseValue(token, col) {
       value = parseValueBoolean(token, col)
       break
     case "file":
-      value = parseValueFile(token, col)
+      value = col.list ? parseValueFileList(token, col) : parseValueFile(token, col)
       break
     default:
       throw new RuntimeException("unexpected column type '${col.type}'")
