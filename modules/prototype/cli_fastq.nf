@@ -1,4 +1,5 @@
 include { validateCommonParams } from './cli'
+include { parseCommonSampleSheet } from './sample_sheet'
 
 def validateParams() {
   validateCommonParams()
