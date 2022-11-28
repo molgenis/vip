@@ -7,7 +7,7 @@ From: sif/build/openjdk-17.sif
 
 %help
     AnnotSV: Annotation and Ranking of Human Structural Variations
-    Usage: singularity run annotSv.sif -annotationsDir [path_to_annotations_dir] -SVinputFile [your_vcf]
+    Usage: apptainer run annotSv.sif -annotationsDir [path_to_annotations_dir] -SVinputFile [your_vcf]
 
 %files from build
     /usr/local/bin/bcftools
