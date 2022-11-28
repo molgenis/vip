@@ -41,8 +41,8 @@ execute_workflow() {
   rm -f "${paramOutput}/report.html"
   rm -f "${paramOutput}/timeline.html"
 
-  SINGULARITY_BIND="/groups,/tmp" \
-  SINGULARITY_CACHEDIR="${SCRIPT_DIR}/images" \
+  APPTAINER_BIND="/groups,/tmp" \
+  APPTAINER_CACHEDIR="${SCRIPT_DIR}/images" \
   NXF_HOME="${paramOutput}/.nxf.home" \
   NXF_TEMP="${paramOutput}/.nxf.tmp" \
   NXF_WORK="${paramOutput}/.nxf.work" \

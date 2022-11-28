@@ -16,7 +16,7 @@ classify () {
 
   args+=("--output" "!{vcfClassifiedPath}")
 
-  !{singularity_vcfdecisiontree} java "${args[@]}"
+  !{apptainer_vcfdecisiontree} java "${args[@]}"
 }
 
 classify

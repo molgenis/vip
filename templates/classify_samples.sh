@@ -19,7 +19,7 @@ classify_samples () {
   fi
   args+=("--output" "!{vcfSamplesClassifiedPath}")
 
-  !{singularity_vcfdecisiontree} java "${args[@]}"
+  !{apptainer_vcfdecisiontree} java "${args[@]}"
 }
 
 classify_samples

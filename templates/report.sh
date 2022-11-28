@@ -19,7 +19,7 @@ index_tbi () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{apptainer_bcftools} bcftools "${args[@]}"
 }
 
 bam2cram () {
@@ -42,7 +42,7 @@ bam2cram () {
   args+=("--threads" "!{task.cpus}")
   args+=("${input_bam}")
 
-  !{singularity_samtools} samtools "${args[@]}"
+  !{apptainer_samtools} samtools "${args[@]}"
 }
 
 realign () {
@@ -66,7 +66,7 @@ realign () {
   args+=("-OVI" "false")
   args+=("-bamout" "${output_bam}")
 
-  !{singularity_gatk} java "${args[@]}"
+  !{apptainer_gatk} java "${args[@]}"
 }
 
 index () {
@@ -75,7 +75,7 @@ index () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfOutputPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{apptainer_bcftools} bcftools "${args[@]}"
 }
 
 report () {
@@ -114,7 +114,7 @@ report () {
     args+=("--cram" "$(join_arr "," "${realigned_crams[@]}")")
   fi
 
-  !{singularity_vcfreport} java "${args[@]}"
+  !{apptainer_vcfreport} java "${args[@]}"
 }
 
 index_tbi

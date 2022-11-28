@@ -37,8 +37,8 @@ From: sif/build/openjdk-17.sif
     )
 
     # Set Environment
-    echo "export PATH=\"$PATH:/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/bin\"" >> "${SINGULARITY_ENVIRONMENT}"
-    echo "export ANNOTSV=\"/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/\"" >> "${SINGULARITY_ENVIRONMENT}"
+    echo "export PATH=\"$PATH:/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/bin\"" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export ANNOTSV=\"/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/\"" >> "${APPTAINER_ENVIRONMENT}"
 
     # cleanup
     apk del .build-dependencies

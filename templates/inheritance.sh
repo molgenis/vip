@@ -14,7 +14,7 @@ inheritance () {
     args+=("--probands" "!{params.probands}")
   fi
 
-  !{singularity_vcfinheritancematcher} java "${args[@]}"
+  !{apptainer_vcfinheritancematcher} java "${args[@]}"
 }
 
 inheritance

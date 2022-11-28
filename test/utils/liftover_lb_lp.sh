@@ -12,7 +12,7 @@
 
 if [ -z "$1" ]
 then
-      echo "usage: liftover_lb_lp.sh /absolute/path/to/vip/ specified_paths_for_singularity_bind";
+      echo "usage: liftover_lb_lp.sh /absolute/path/to/vip/ specified_paths_for_apptainer_bind";
       exit 1;
 fi
 

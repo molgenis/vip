@@ -32,7 +32,7 @@ EOT
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  APPTAINER_BIND="${SCRIPT_DIR}" singularity exec vcf-inheritance-3.0.0.sif java "${args[@]}"
+  APPTAINER_BIND="${SCRIPT_DIR}" apptainer exec vcf-inheritance-3.0.0.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 

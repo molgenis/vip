@@ -9,7 +9,7 @@ filter_samples () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{apptainer_bcftools} bcftools "${args[@]}"
 }
 
 filter_samples

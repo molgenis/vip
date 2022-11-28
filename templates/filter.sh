@@ -12,7 +12,7 @@ filter () {
     args+=("--only_matched")
   fi
 
-  !{singularity_vep} filter_vep "${args[@]}"  | !{singularity_vep} bgzip -c > "!{vcfFilteredPath}"
+  !{apptainer_vep} filter_vep "${args[@]}"  | !{apptainer_vep} bgzip -c > "!{vcfFilteredPath}"
 }
 
 filter

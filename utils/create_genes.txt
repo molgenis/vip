@@ -9,8 +9,8 @@ Step by step:
 1) download the GFF files and "assembly_report.txt"
 2) map the contig identifiers to the versions used in our data:
 python ./utils/mapContigIdentifiers.py path/to/input/gff.gz path/to/assembly_report path/to/output/gff.gz
-3) build the singularity image for Crossmap (./utils/singularity/def/utils/Crossmap-0.6.1.def)
+3) build the apptainer image for Crossmap (./utils/apptainer/def/utils/Crossmap-0.6.1.def)
 4) liftover build 37 version to the "g1k" build used by VIP by default:
-singularity exec ./utils/singularity/sif/utils/Crossmap-0.6.1.sif CrossMap.py gff utils/Hg19toHumanG1kV37.chain input.gff.gz output.gff
+apptainer exec ./utils/apptainer/sif/utils/Crossmap-0.6.1.sif CrossMap.py gff utils/Hg19toHumanG1kV37.chain input.gff.gz output.gff
 5) gzip the
 gzip
