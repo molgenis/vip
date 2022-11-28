@@ -61,28 +61,30 @@ workflow vip_vcf {
             | vcf_report
 }
 
+//TODO create one report instead of one report per sample
 workflow {
     validateParams()
     
-    def vcf = params.input
-        
-    Channel.from([vcf: vcf])
-        | map { meta -> [*:meta, vcf_index: meta.vcf_index ?: findTabixIndex(meta.vcf)] }
+    def sampleSheet = parseSampleSheet(params.input)
+
+    Channel.from(sampleSheet)
+        | map { sample -> [sample: sample] }
+        | map { meta -> [*:meta, sample: [*:meta.sample, vcf_index: meta.sample.vcf_index ?: findTabixIndex(meta.sample.vcf)]] }
         | branch { meta ->
-            index: meta.vcf_index == null
+            index: meta.sample.vcf_index == null
             ready: true
           }
         | set { ch_input }
     
     ch_input.index
-        | map { meta -> tuple(meta, meta.vcf) }
+        | map { meta -> tuple(meta, meta.sample.vcf) }
         | bcftools_index
-        | map { meta, vcfIndex -> [*:meta, vcf_index: vcfIndex] }
+        | map { meta, vcfIndex -> [*:meta, sample: [*:meta.sample, vcf_index: vcfIndex]] }
         | set { ch_input_indexed }
     
     ch_input_indexed.mix(ch_input.ready)
         | flatMap { meta -> scatter(meta) }
-        | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
+        | map { meta -> tuple(meta, meta.sample.vcf, meta.sample.vcf_index) }
         | bcftools_view_chunk_vcf
         | map { meta, vcfChunk, vcfChunkIndex -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex] }
         | set { ch_input_chunked }
@@ -96,10 +98,23 @@ def validateParams() {
   validateInput()
 }
 
-// TODO support .vcf
-// TODO support .bcf
 def validateInput() {
   if( !params.containsKey('input') )   exit 1, "missing required parameter 'input'"
   if( !file(params.input).exists() )   exit 1, "parameter 'input' value '${params.input}' does not exist"
-  if( !params.input.endsWith(".vcf.gz") ) exit 1, "parameter 'input' value '${params.input}' is not a .vcf.gz file"
+  if( !params.input.endsWith(".tsv") ) exit 1, "parameter 'input' value '${params.input}' is not a .tsv file"
+}
+
+def parseSampleSheet(csvFile) {
+  def cols = [
+    vcf: [
+      type: "file",
+      required: true,
+      regex: /.+\.vcf\.gz/
+    ],
+    vcf_index: [
+      type: "file",
+      regex: /.+\.vcf\.gz\.(csi|tbi)/
+    ]
+  ]
+  return parseCommonSampleSheet(csvFile, cols)
 }
