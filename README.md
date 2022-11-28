@@ -4,7 +4,8 @@
 - POSIX compatible system (Linux, OS X, etc) / Windows through [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 - Bash 3.2 (or later)
 - Java 11 or later
-- [Singularity](https://sylabs.io/singularity/)
+- [Apptainer](https://apptainer.org)
+  - including the apptainer-suid component ([Documentation](https://github.com/apptainer/apptainer/blob/main/INSTALL.md))
 - 300GB disk space
 
 ## Installation

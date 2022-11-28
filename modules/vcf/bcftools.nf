@@ -89,6 +89,17 @@ process bcftools_view_chunk_vcf {
     """
 }
 
+process bcftools_index_count {
+  input:
+    tuple val(meta), path(vcfIndex)
+  output:
+    count
+  script:
+    """
+    count=${CMD_BCFTOOLS} index -n "${vcfIndex}"
+    """
+}
+
 process bcftools_index {
   input:
     tuple val(meta), path(vcf)

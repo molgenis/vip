@@ -3,8 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-BCFTOOLS_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
-BGZIP_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
+BCFTOOLS_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
+BGZIP_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
 
 ASSEMBLY="GRCh38"
 THREADS=4

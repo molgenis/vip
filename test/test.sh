@@ -342,8 +342,8 @@ run_tests () {
 }
 
 main () {
-  if [ -z "${SINGULARITY_BIND}" ]; then
-    echo -e "${YELLOW}WARNING: SINGULARITY_BIND environment variable not found${NC}"
+  if [ -z "${APPTAINER_BIND}" ]; then
+    echo -e "${YELLOW}WARNING: APPTAINER_BIND environment variable not found${NC}"
   fi
 
   run_tests

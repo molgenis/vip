@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { findTabixIndex; scatter } from './modules/utils'
-include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf } from './modules/vcf/bcftools'
+include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf; bcftools_index_count } from './modules/vcf/bcftools'
 include { prepare } from './modules/vcf/prepare.nf'
 include { preprocess } from './modules/vcf/preprocess.nf'
 include { annotate } from './modules/vcf/annotate.nf'
@@ -18,6 +18,7 @@ workflow vip_vcf {
     take: meta
     main:
         meta
+            | filter { meta.vcf_index -> bcftools_index_count(meta.vcf_index) > 0 }
             | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
             | prepare
             | set { ch_prepared }
