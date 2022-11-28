@@ -1,17 +1,18 @@
 nextflow.enable.dsl=2
 
-include { validateParams } from './modules/prototype/cli_vcf'
-include { findVcfIndex; scatter } from './modules/prototype/utils'
-include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf } from './modules/prototype/bcftools'
-include { prepare } from './modules/prepare.nf'
-include { preprocess } from './modules/preprocess.nf'
-include { annotate } from './modules/annotate.nf'
-include { classify } from './modules/classify.nf'
-include { filter } from './modules/filter.nf'
-include { inheritance } from './modules/inheritance'
-include { classify_samples } from './modules/classify_samples'
-include { filter_samples } from './modules/filter_samples'
-include { vcf_report } from './modules/prototype/vcf_report'
+include { validateCommonParams } from './modules/cli'
+include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { findTabixIndex; scatter } from './modules/utils'
+include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf } from './modules/vcf/bcftools'
+include { prepare } from './modules/vcf/prepare.nf'
+include { preprocess } from './modules/vcf/preprocess.nf'
+include { annotate } from './modules/vcf/annotate.nf'
+include { classify } from './modules/vcf/classify.nf'
+include { filter } from './modules/vcf/filter.nf'
+include { inheritance } from './modules/vcf/inheritance'
+include { classify_samples } from './modules/vcf/classify_samples'
+include { filter_samples } from './modules/vcf/filter_samples'
+include { vcf_report } from './modules/vcf/vcf_report'
 
 workflow vip_vcf {
     take: meta
@@ -66,7 +67,7 @@ workflow {
     def vcf = params.input
         
     Channel.from([vcf: vcf])
-        | map { meta -> [*:meta, vcf_index: meta.vcf_index ?: findVcfIndex(meta.vcf)] }
+        | map { meta -> [*:meta, vcf_index: meta.vcf_index ?: findTabixIndex(meta.vcf)] }
         | branch { meta ->
             index: meta.vcf_index == null
             ready: true
@@ -88,4 +89,17 @@ workflow {
     
     ch_input_chunked
         | vip_vcf
+}
+
+def validateParams() {
+  validateCommonParams()
+  validateInput()
+}
+
+// TODO support .vcf
+// TODO support .bcf
+def validateInput() {
+  if( !params.containsKey('input') )   exit 1, "missing required parameter 'input'"
+  if( !file(params.input).exists() )   exit 1, "parameter 'input' value '${params.input}' does not exist"
+  if( !params.input.endsWith(".vcf.gz") ) exit 1, "parameter 'input' value '${params.input}' is not a .vcf.gz file"
 }

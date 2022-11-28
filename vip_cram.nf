@@ -1,9 +1,10 @@
 nextflow.enable.dsl=2
 
-include { validateParams; parseSampleSheet } from './modules/prototype/cli_cram'
-include { findCramIndex; scatter } from './modules/prototype/utils'
-include { samtools_index } from './modules/prototype/samtools'
-include { deepvariant_call } from './modules/prototype/deepvariant'
+include { validateCommonParams } from './modules/cli'
+include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { scatter } from './modules/utils'
+include { samtools_index } from './modules/cram/samtools'
+include { deepvariant_call } from './modules/cram/deepvariant'
 include { vip_gvcf } from './vip_gvcf'
 
 // TODO reintroduce trio/duo branching
@@ -40,4 +41,42 @@ workflow {
 
     ch_sample_indexed.mix(ch_sample.ready)
         | vip_cram
+}
+
+def validateParams() {
+  validateCommonParams()
+  validateInput()
+}
+
+//TODO move to parseCommonParams
+def validateInput() {
+  if( !params.containsKey('input') )   exit 1, "missing required parameter 'input'"
+  if( !file(params.input).exists() )   exit 1, "parameter 'input' value '${params.input}' does not exist"
+  if( !params.input.endsWith(".tsv") ) exit 1, "parameter 'input' value '${params.input}' is not a .tsv file"
+}
+
+def parseSampleSheet(csvFile) {
+  def cols = [
+    seq_method: [
+      type: "string",
+      enum: ["WES","WGS"],
+      required: true
+    ],
+    cram: [
+      type: "file",
+      required: true,
+      regex: /.+\.cram/
+    ],
+    cram_index: [
+      type: "file",
+      regex: /.+\.crai/
+    ]
+  ]
+  return parseCommonSampleSheet(csvFile, cols)
+}
+
+def findCramIndex(cram) {
+    def cram_index
+    if(file(cram + ".crai").exists()) cram_index = cram + ".crai"
+    cram_index
 }

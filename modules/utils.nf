@@ -1,60 +1,55 @@
-def nr_records(statsFilePath) {
-  statsFilePath.readLines().collect { line -> line.split('\t').last() as int }.sum()
+def parseFastaIndex(faiFile) {
+  def lines = new File(faiFile).readLines("UTF-8")
+  if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
+
+  def contigs = []
+  for (int i = 0; i < lines.size(); i++) {
+    def lineNr = i + 1
+
+    def line = lines[i]
+    if (line == null) continue;
+
+    def tokens = line.split('\t', -1)
+    if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
+    
+    contigs += [contig: tokens[0], size: tokens[1] as long, location: tokens[2] as long, basesPerLine: tokens[3] as long, bytesPerLine: tokens[4] as long]
+  }
+  return contigs
 }
 
-def split_determine(tuple) {
-  int order = 0
-  def records = tuple[tuple.size - 1].readLines().collect { line -> line.split('\t') }
-  int maxNrRecords = Math.max((records.max { record -> record[2] as int })[2] as int, params.chunk_size)
+def determineChunks(meta) {
+    def records = parseFastaIndex(params[params.assembly].reference.fastaFai)
 
-  int regionNrRecords=0
-  def contigs=[]
-  def regions=[]
-  records.each { record ->
-    def contig = record[0]
-    int contigNrRecords = record[2] as int
-    if(regionNrRecords + contigNrRecords <= maxNrRecords) {
-      contigs.add(contig)
-      regionNrRecords += contigNrRecords
+    long sizeMax = records.max{ record -> record.size }.size
+    long size = 0L;
+    
+    def chunks = []
+    def regions = []
+    records.each { record -> 
+        size += record.size
+        if(size > sizeMax) {
+            chunks.add(regions)
+            regions = []
+            size = 0L
+        }
+        regions.add([chrom: record.contig, chromStart: 0, chromEnd: record.size])
     }
-    else {
-      regions.add(contigs)
-      contigs=[]
-      contigs.add(contig)
-      regionNrRecords = contigNrRecords
+    if(regions.size() > 0) {
+        chunks.add(regions)
     }
-  }
-  if(contigs.size > 0) {
-     regions.add(contigs)
-  }
-  
-  regions.indexed().collect { index, region -> [groupKey(tuple[0], regions.size), index, region.join(','), tuple[1], tuple[2]] }
+
+    return chunks
 }
 
-process split {
-  input:
-    tuple val(id), val(order), val(contig), path(vcfPath), path(vcfIndexPath)
-  output:
-    tuple val(id), val(order), path(vcfRegionPath)
-  shell:
-    vcfRegionPath="${id}_chunk${order}.vcf.gz"
-    template 'split.sh'
+def scatter(meta) {
+    def chunks = determineChunks(meta)
+    def index = 0
+    chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ])
 }
 
-def sort(tuple) {
-  def vcfPaths = []
-  tuple[1].eachWithIndex { order, idx ->
-    vcfPaths[order] = tuple[2][idx]
-  }
-  return [tuple[0], vcfPaths]
-}
-
-process merge {
-  input:
-    tuple val(id), path(vcfPaths)
-  output:
-    tuple val(id), path(vcfMergedPath)
-  shell:
-    vcfMergedPath="${id}_merged.vcf.gz"
-    template 'merge.sh'
+def findTabixIndex(indexedFile) {
+    def index
+    if(file(indexedFile + ".csi").exists()) index = indexedFile + ".csi"
+    if(file(indexedFile + ".tbi").exists()) index = indexedFilevcf + ".tbi"
+    index
 }

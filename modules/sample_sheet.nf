@@ -98,8 +98,10 @@ def parseValueStringList(token, col) {
 def parseValueString(token, col) {
   def value = token.length() > 0 ? token : null
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
-  if(col.enum && !col.enum.contains(token) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
-  if(col.regex && col.regex != value) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
+  if(value != null) {
+    if(col.enum && !col.enum.contains(token) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
+    if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
+  }
   return value
 }
 
@@ -124,9 +126,11 @@ def parseValueFileList(token, col) {
 def parseValueFile(token, col) {
   def value = token.length() > 0 ? token : null
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
-  if(!file(value).exists()) throw new IllegalArgumentException("file '${token}' does not exist")
-  if(!file(value).isFile()) throw new IllegalArgumentException("file '${token}' is not a file")
-  if(col.regex && col.regex != value) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
+  if(value != null) {
+    if(!file(value).exists()) throw new IllegalArgumentException("file '${token}' does not exist")
+    if(!file(value).isFile()) throw new IllegalArgumentException("file '${token}' is not a file")
+    if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
+  }
   return value
 }
 
