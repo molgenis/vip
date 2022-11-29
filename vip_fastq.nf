@@ -40,7 +40,7 @@ workflow {
     def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
 
     Channel.from(sampleSheet)
-    | map { sample -> [sample: sample, probands: probands, hpo_ids: hpo_ids] }
+    | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
     | vip_fastq
 }
 

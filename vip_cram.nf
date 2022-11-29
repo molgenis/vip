@@ -28,7 +28,7 @@ workflow {
     def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
     
     Channel.from(sampleSheet)
-        | map { sample -> [sample: sample, probands: probands, hpo_ids: hpo_ids] }
+        | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
         | map { meta -> [*:meta, sample: [*:meta.sample, cram_index: meta.sample.cram_index ?: findCramIndex(meta.sample.cram)]] }
         | branch { meta ->
             index: meta.sample.cram_index == null

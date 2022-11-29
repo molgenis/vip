@@ -1,3 +1,5 @@
+include { createPedigree } from '../utils'
+
 process inheritance {
   input:
     tuple val(meta), path(vcfPath), path(vcfPathCsi)
@@ -8,6 +10,8 @@ process inheritance {
     order = "${meta.chunk.index}"
     vcfInheritancePath = "${id}_chunk${order}_inheritance.vcf.gz"
     probands = meta.probands.collect{ proband -> [proband.family_id, proband.individual_id].join("_")}.join(",")
+    pedigree = "pedigree.ped"
+    pedigreeContent = createPedigree(meta.sampleSheet)
     template 'inheritance.sh'
 }
 

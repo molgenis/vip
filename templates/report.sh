@@ -89,8 +89,8 @@ report () {
   if [ -n "!{probands}" ]; then
     args+=("--probands" "!{probands}")
   fi
-  if [ -n "!{params.pedigree}" ]; then
-    args+=("--pedigree" "!{params.pedigree}")
+  if [ -n "!{pedigree}" ]; then
+    args+=("--pedigree" "!{pedigree}")
   fi
   if [ -n "!{hpoIds}" ]; then
     #FIXME use hpo ids per sample
@@ -137,6 +137,7 @@ if [ -n "!{params.report_bams}" ]; then
   done
 fi
 
+echo -e "!{pedigreeContent}" > "!{pedigree}"
 cp --preserve=links "!{vcfPath}" "!{vcfOutputPath}"
 index
 md5sum "!{vcfOutputPath}" > "!{vcfOutputPath}.md5" 
