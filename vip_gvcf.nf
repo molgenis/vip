@@ -24,9 +24,10 @@ workflow {
     validateParams()
 
     def sampleSheet = parseSampleSheet(params.input)
+    def probands = sampleSheet.findAll{ sample -> sample.proband }.collect{ sample -> [family_id:sample.family_id, individual_id:sample.individual_id] }
 
     Channel.from(sampleSheet)
-        | map { sample -> [sample: sample] }
+        | map { sample -> [sample: sample, probands: probands] }
         | map { meta -> [*:meta, sample: [*:meta.sample, g_vcf_index: meta.sample.g_vcf_index ?: findTabixIndex(meta.sample.g_vcf)]] }
         | branch { meta ->
             index: meta.sample.g_vcf_index == null

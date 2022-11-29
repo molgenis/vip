@@ -10,7 +10,8 @@ process report {
     reportPath = "${id}.html"
     refSeqPath = params[params.assembly + "_reference"]
     genesPath = params[params.assembly + "_report_genes"]
-
+    probands = meta.probands.collect{ proband -> [proband.family_id, proband.individual_id].join("_")}.join(",")
+    
     template 'report.sh'
 }
 

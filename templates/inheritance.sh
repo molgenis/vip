@@ -10,8 +10,8 @@ inheritance () {
   if [ -n "!{params.pedigree}" ]; then
     args+=("--pedigree" "!{params.pedigree}")
   fi
-  if [ -n "!{params.probands}" ]; then
-    args+=("--probands" "!{params.probands}")
+  if [ -n "!{probands}" ]; then
+    args+=("--probands" "!{probands}")
   fi
 
   !{CMD_VCFINHERITANCEMATCHER} java "${args[@]}"

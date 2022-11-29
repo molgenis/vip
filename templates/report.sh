@@ -86,8 +86,8 @@ report () {
   args+=("--input" "!{vcfOutputPath}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
-  if [ -n "!{params.probands}" ]; then
-    args+=("--probands" "!{params.probands}")
+  if [ -n "!{probands}" ]; then
+    args+=("--probands" "!{probands}")
   fi
   if [ -n "!{params.pedigree}" ]; then
     args+=("--pedigree" "!{params.pedigree}")
