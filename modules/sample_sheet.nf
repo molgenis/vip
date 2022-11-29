@@ -28,7 +28,7 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
     proband: [
       type: "boolean",
     ],
-    hpo_terms: [
+    hpo_ids: [
       type: "string",
       list: true,
       regex: /HP:\d{7}/

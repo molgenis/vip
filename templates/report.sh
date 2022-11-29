@@ -92,8 +92,9 @@ report () {
   if [ -n "!{params.pedigree}" ]; then
     args+=("--pedigree" "!{params.pedigree}")
   fi
-  if [ -n "!{params.phenotypes}" ]; then
-    args+=("--phenotypes" "!{params.phenotypes}")
+  if [ -n "!{hpoIds}" ]; then
+    #FIXME use hpo ids per sample
+    args+=("--phenotypes" "!{hpoIds}")
   fi
   if [ -n "!{params.classify_decision_tree}" ]; then
     args+=("--decision_tree" "!{params.classify_decision_tree}")
