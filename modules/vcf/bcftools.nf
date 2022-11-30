@@ -7,15 +7,8 @@ process bcftools_concat {
   script:
     vcf="out.vcf.gz"
     vcfCsi="out.vcf.gz.csi"
-    """
-    ${CMD_BCFTOOLS} concat \
-    --output-type z9 \
-    --output "${vcf}" \
-    --no-version \
-    --threads "${task.cpus}" ${bcfs}
-
-    ${CMD_BCFTOOLS} index "${vcf}"
-    """
+    
+    template 'bcftools_concat.sh'
 }
 
 // TODO code deduplication with bcftools_concat
@@ -29,15 +22,8 @@ process bcftools_concat_index {
   script:
     gVcf="${meta.family_id}_${meta.individual_id}.g.vcf.gz"
     gVcfCsi="${meta.family_id}_${meta.individual_id}.g.vcf.gz.csi"
-    """
-    ${CMD_BCFTOOLS} concat \
-    --output-type z9 \
-    --output "${gVcf}" \
-    --no-version \
-    --threads "${task.cpus}" ${gVcfs}
     
-    ${CMD_BCFTOOLS} index "${gVcf}"
-    """
+    template 'bcftools_concat_index.sh'
 }
 
 process bcftools_view_contig {
@@ -47,9 +33,8 @@ process bcftools_view_contig {
     tuple val(meta), path(gVcfContig)
   script:
     gVcfContig="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
-    """
-    ${CMD_BCFTOOLS} view --regions "${meta.contig}" --output-type z --output-file "${gVcfContig}" --no-version --threads "${task.cpus}" "${gVcf}"
-    """
+    
+    template 'bcftools_view_contig.sh'
 }
 
 process bcftools_view_chunk {
@@ -62,12 +47,8 @@ process bcftools_view_chunk {
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     gVcfChunk="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
     gVcfChunkIndex="${gVcfChunk}.csi"
-    """
-    echo -e "${bedContent}" > "${bed}"
-
-    ${CMD_BCFTOOLS} view --regions-file "${bed}" --output-type z --output-file "${gVcfChunk}" --no-version --threads "${task.cpus}" "${gVcf}"
-    ${CMD_BCFTOOLS} index "${gVcfChunk}"
-    """
+    
+    template 'bcftools_view_chunk.sh'
 }
 
 // FIXME dedup with bcftools_view_chunk
@@ -81,12 +62,8 @@ process bcftools_view_chunk_vcf {
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     vcfChunk="chunk_${meta.chunk.index}.vcf.gz"
     vcfChunkIndex="${vcfChunk}.csi"
-    """
-    echo -e "${bedContent}" > "${bed}"
-
-    ${CMD_BCFTOOLS} view --regions-file "${bed}" --output-type z --output-file "${vcfChunk}" --no-version --threads "${task.cpus}" "${vcf}"
-    ${CMD_BCFTOOLS} index "${vcfChunk}"
-    """
+    
+    template 'bcftools_view_chunk_vcf.sh'
 }
 
 process bcftools_index_count {
@@ -95,9 +72,7 @@ process bcftools_index_count {
   output:
     count
   script:
-    """
-    count=${CMD_BCFTOOLS} index -n "${vcfIndex}"
-    """
+    template 'bcftools_index_count.sh'
 }
 
 process bcftools_index {
@@ -107,7 +82,6 @@ process bcftools_index {
     tuple val(meta), path(vcfIndex)
   script:
     vcfIndex="${vcf}.csi"
-    """
-    ${CMD_BCFTOOLS} index --threads "${task.cpus}" "${vcf}"
-    """
+
+    template 'bcftools_index.sh'
 }

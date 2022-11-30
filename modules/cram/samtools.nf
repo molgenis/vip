@@ -5,7 +5,6 @@ process samtools_index {
     tuple val(meta), path(cramIndex)
   script:
     cramIndex="${cram}.crai"
-    """
-    ${CMD_SAMTOOLS} index "${cram}"
-    """
+
+    template 'samtools_index.sh'
 }

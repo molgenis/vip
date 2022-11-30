@@ -8,14 +8,6 @@ process glnexus_merge {
   script:
     vcf="chunk_${meta.chunk.index}.vcf.gz"
     vcfIndex="${vcf}.csi"
-    """
-    ${CMD_GLNEXUS} \
-      --dir ${TMPDIR}/glnexus \
-      --config DeepVariantWGS \
-      --threads ${task.cpus} \
-      ${gVcfs} | \
-      ${CMD_BCFTOOLS} view --output-type z --output-file ${vcf} --no-version --threads "${task.cpus}"
 
-    ${CMD_BCFTOOLS} index --threads "${task.cpus}" ${vcf}
-    """
+    template 'glnexus_merge.sh'
 }
