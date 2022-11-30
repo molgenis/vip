@@ -53,3 +53,11 @@ def findTabixIndex(indexedFile) {
     if(file(indexedFile + ".tbi").exists()) index = indexedFilevcf + ".tbi"
     index
 }
+
+def createPedigree(sampleSheet) {
+    sampleSheet.collect{ sample ->
+        def sex = sample.sex == "male" ? 1 : (sample.sex == "female" ? 2 : 0)
+        def affected = sample.affected == false ? 1 : (sample.affected == true ? 2 : 0)
+        [sample.family_id, sample.individual_id, sample.paternal_id ?: 0, sample.maternal_id ?: 0, sex, affected].join("\t")
+    }.join("\n")
+}

@@ -2,17 +2,21 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
   def commonCols = [
     family_id: [
       type: "string",
-      required: true
+      required: true,
+      regex: /[a-zA-Z0-9]+/
     ],
     individual_id: [
       type: "string",
-      required: true
+      required: true,
+      regex: /[a-zA-Z0-9]+/
     ],
     paternal_id: [
       type: "string",
+      regex: /[a-zA-Z0-9]+/
     ],
     maternal_id: [
       type: "string",
+      regex: /[a-zA-Z0-9]+/
     ],
     sex: [
       type: "string",
@@ -24,7 +28,7 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
     proband: [
       type: "boolean",
     ],
-    hpo_terms: [
+    hpo_ids: [
       type: "string",
       list: true,
       regex: /HP:\d{7}/

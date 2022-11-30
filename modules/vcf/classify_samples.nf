@@ -7,6 +7,7 @@ process classify_samples {
     id = "${vcfPath.simpleName}"
     order = "${meta.chunk.index}"
     vcfSamplesClassifiedPath = "${id}_chunk${order}_samples_classified.vcf.gz"
+    probands = meta.probands.collect{ proband -> [proband.family_id, proband.individual_id].join("_")}.join(",")
     template 'classify_samples.sh'
 }
 

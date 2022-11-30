@@ -1,32 +1,5 @@
 #!/bin/bash
 
-# creates string with specified separator from an array.
-#
-# arguments:
-#   separator
-#   elements to be joined
-join_arr() {
-  local IFS="$1"
-  shift
-  echo -e "$*"
-}
-
-get_unique_phenotypes() {
-  IFS=',' read -ra SAMPLE_PHENOTYPES <<<"$1"
-  for i in "${SAMPLE_PHENOTYPES[@]}"; do
-    if [[ "$i" =~ (.*\/)?(.*) ]]; then
-      IFS=';' read -ra PHENOTYPES <<<"${BASH_REMATCH[2]}"
-      for j in "${PHENOTYPES[@]}"; do
-        UNIQUE_PHENOTYPES["$j"]=1
-      done
-    else
-      echo -e "Invalid phenotype '${phenotypes}' in -t or --phenotypes\n"
-      usage
-      exit 2
-    fi
-  done
-}
-
 #######################################
 # Returns whether VCF file contains structural variants.
 #
@@ -57,8 +30,8 @@ annot_sv() {
   args+=("-genomeBuild" "!{params.assembly}")
   args+=("-annotationMode" "full")
   args+=("-annotationsDir" "!{params.annotate_annotsv_cache_dir}")
-  if [ -n "!{params.phenotypes}" ]; then
-    args+=("-hpo" "$(join_arr "," "${!UNIQUE_PHENOTYPES[@]}")")
+  if [ -n "!{hpoIds}" ]; then
+    args+=("-hpo" "!{hpoIds}")
   fi
   !{CMD_ANNOTSV} "${args[@]}"
   if [ ! -f "!{vcfPath}.tsv" ]; then
@@ -189,8 +162,8 @@ vep() {
   if [ -n "!{vepPluginArtefact}" ]; then
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
-  if [ -n "!{params.phenotypes}" ]; then
-    args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+  if [ -n "!{hpoIds}" ]; then
+    args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
   args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
@@ -208,11 +181,6 @@ vep() {
 
   !{CMD_VEP} "${args[@]}"
 }
-
-if [ -n "!{params.phenotypes}" ]; then
-  declare -A UNIQUE_PHENOTYPES
-  get_unique_phenotypes "!{params.phenotypes}"
-fi
 
 if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; then
   annot_sv

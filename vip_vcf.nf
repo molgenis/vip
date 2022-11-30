@@ -2,8 +2,8 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
-include { findTabixIndex; scatter } from './modules/utils'
-include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf; bcftools_index_count } from './modules/vcf/bcftools'
+include { findTabixIndex; scatter; createPedigree } from './modules/utils'
+include { bcftools_concat; bcftools_index; bcftools_view_chunk_vcf } from './modules/vcf/bcftools'
 include { prepare } from './modules/vcf/prepare.nf'
 include { preprocess } from './modules/vcf/preprocess.nf'
 include { annotate } from './modules/vcf/annotate.nf'
@@ -12,13 +12,12 @@ include { filter } from './modules/vcf/filter.nf'
 include { inheritance } from './modules/vcf/inheritance'
 include { classify_samples } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
-include { vcf_report } from './modules/vcf/vcf_report'
+include { report } from './modules/vcf/report'
 
 workflow vip_vcf {
     take: meta
     main:
         meta
-            | filter { meta.vcf_index -> bcftools_index_count(meta.vcf_index) > 0 }
             | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
             | prepare
             | set { ch_prepared }
@@ -54,12 +53,12 @@ workflow vip_vcf {
         ch_filtered_samples
             | map { meta, vcf, vcfCsi -> [*:meta, vcf: vcf, vcf_index: vcfCsi] }
             | collect(sort: { metaLeft, metaRight -> metaRight.chunk.index <=> metaLeft.chunk.index })
-            | map { metaList -> tuple([], metaList.collect { meta -> meta.vcf }) }
+            | map { metaList -> tuple([*:metaList[0], chunk: null], metaList.collect { meta -> meta.vcf }) }
             | bcftools_concat
             | set { ch_concat }
                 
         ch_concat
-            | vcf_report
+            | report
 }
 
 //TODO create one report instead of one report per sample
@@ -67,9 +66,11 @@ workflow {
     validateParams()
     
     def sampleSheet = parseSampleSheet(params.input)
+    def probands = sampleSheet.findAll{ sample -> sample.proband }.collect{ sample -> [family_id:sample.family_id, individual_id:sample.individual_id] }
+    def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
 
     Channel.from(sampleSheet)
-        | map { sample -> [sample: sample] }
+        | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
         | map { meta -> [*:meta, sample: [*:meta.sample, vcf_index: meta.sample.vcf_index ?: findTabixIndex(meta.sample.vcf)]] }
         | branch { meta ->
             index: meta.sample.vcf_index == null

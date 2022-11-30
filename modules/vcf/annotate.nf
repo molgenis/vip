@@ -20,7 +20,8 @@ process annotate {
     capiceInputPath = "${id}_chunk${order}_capice_input.tsv"
     capiceOutputPath = "${id}_chunk${order}_capice_output.tsv.gz"
     capiceModelPath = params[params.assembly + "_annotate_capice_model"]
-
+    hpoIds = meta.hpo_ids.join(",")
+    
     template 'annotate.sh'
 }
 
