@@ -7,7 +7,7 @@ concat () {
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
-  !{singularity_bcftools} bcftools "${args[@]}" !{vcfPaths.join(' ')}
+  !{apptainer_bcftools} bcftools "${args[@]}" !{vcfPaths.join(' ')}
 }
 
 index () {
@@ -16,7 +16,7 @@ index () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcfMergedPath}")
 
-  !{singularity_bcftools} bcftools "${args[@]}"
+  !{apptainer_bcftools} bcftools "${args[@]}"
 }
 
 concat

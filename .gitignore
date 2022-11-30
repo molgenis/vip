@@ -5,9 +5,9 @@
 .IDEA/
 /vip.iml
 
-# Singularity images build folder.
+# Apptainer images build folder.
 /images
-/utils/singularity/sif
+/utils/apptainer/sif
 
 # Installed resource folders.
 /resources

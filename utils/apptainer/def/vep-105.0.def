@@ -56,7 +56,7 @@ Stage: final
        cd "${TARGET_DIR}"
        perl INSTALL.pl --AUTO a --NO_UPDATE
     )
-    echo "export PATH=\"$PATH:${TARGET_DIR}\"" >> "${SINGULARITY_ENVIRONMENT}"
+    echo "export PATH=\"$PATH:${TARGET_DIR}\"" >> "${APPTAINER_ENVIRONMENT}"
 
     tar xf ensembl-xs.tar.gz
     (

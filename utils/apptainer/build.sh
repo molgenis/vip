@@ -22,13 +22,13 @@ validate() {
     exit 1
   fi
 
-  if ! command -v singularity &>/dev/null; then
-    echo "error: 'singularity' could not be found"
+  if ! command -v apptainer &>/dev/null; then
+    echo "error: 'apptainer' could not be found"
     exit 1
   fi
 
   if [ "$EUID" -ne 0 ]
-    then echo "error: 'singularity' requires to run as as root, use 'sudo build.sh' to run as root."
+    then echo "error: 'apptainer' requires to run as as root, use 'sudo build.sh' to run as root."
     exit
   fi
 }
@@ -88,12 +88,12 @@ main() {
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
-    singularity build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
+    apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
     echo "---Done building ${images[$i]}---"
   done
 
   echo "---Building vep-107.0---"
-  singularity build "${outputDir}/vep-107.0.sif" docker://ensemblorg/ensembl-vep:release_107.0 | tee "${outputDir}/build.log"
+  apptainer build "${outputDir}/vep-107.0.sif" docker://ensemblorg/ensembl-vep:release_107.0 | tee "${outputDir}/build.log"
   echo "---Done building vep-107.0---"
 }
 
