@@ -47,6 +47,7 @@ execute_workflow() {
   NXF_HOME="${paramOutput}/.nxf.home" \
   NXF_TEMP="${paramOutput}/.nxf.tmp" \
   NXF_WORK="${paramOutput}/.nxf.work" \
+  NXF_ENABLE_STRICT="true" \
   "${SCRIPT_DIR}/nextflow" -C "${SCRIPT_DIR}/config/nxf_fastq.config" -log "${paramOutput}/.nxf.log" run "${SCRIPT_DIR}/vip_fastq.nf" \
     -offline \
     -resume \
