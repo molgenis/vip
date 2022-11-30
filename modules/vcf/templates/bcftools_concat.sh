@@ -1,8 +1,14 @@
 #!/bin/bash
-!{CMD_BCFTOOLS} concat \
---output-type z9 \
---output "!{vcf}" \
---no-version \
---threads "!{task.cpus}" !{bcfs}
+set -euo pipefail
 
-!{CMD_BCFTOOLS} index "!{vcf}"
+main() {
+    !{CMD_BCFTOOLS} concat \
+    --output-type z9 \
+    --output "!{vcf}" \
+    --no-version \
+    --threads "!{task.cpus}" !{bcfs}
+
+    !{CMD_BCFTOOLS} index "!{vcf}"
+}
+
+main "$@"

@@ -1,2 +1,8 @@
 #!/bin/bash
-!{CMD_SAMTOOLS} index "!{cram}"
+set -euo pipefail
+
+main() {
+    !{CMD_SAMTOOLS} index "!{cram}"
+}
+
+main "$@"

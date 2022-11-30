@@ -1,2 +1,8 @@
 #!/bin/bash
-count=!{CMD_BCFTOOLS} index -n "!{vcfIndex}"
+set -euo pipefail
+
+main() {
+    count=!{CMD_BCFTOOLS} index -n "!{vcfIndex}"
+}
+
+main "$@"
