@@ -1,2 +1,2 @@
 #!/bin/bash
-${CMD_BCFTOOLS} index --threads "${task.cpus}" "${vcf}"
+!{CMD_BCFTOOLS} index --threads "!{task.cpus}" "!{vcf}"

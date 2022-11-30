@@ -5,9 +5,9 @@ process glnexus_merge {
     tuple val(meta), path(gVcfs)
   output:
     tuple val(meta), path(vcf), path(vcfIndex)
-  script:
-    vcf="chunk_${meta.chunk.index}.vcf.gz"
-    vcfIndex="${vcf}.csi"
+  shell:
+    vcf="chunk_!{meta.chunk.index}.vcf.gz"
+    vcfIndex="!{vcf}.csi"
 
     template 'glnexus_merge.sh'
 }

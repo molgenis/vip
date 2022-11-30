@@ -3,7 +3,7 @@ process samtools_index {
     tuple val(meta), path(cram)
   output:
     tuple val(meta), path(cramIndex)
-  script:
+  shell:
     cramIndex="${cram}.crai"
 
     template 'samtools_index.sh'

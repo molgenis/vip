@@ -1,2 +1,2 @@
 #!/bin/bash
-count=${CMD_BCFTOOLS} index -n "${vcfIndex}"
+count=!{CMD_BCFTOOLS} index -n "!{vcfIndex}"

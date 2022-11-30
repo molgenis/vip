@@ -1,8 +1,8 @@
 #!/bin/bash
-${CMD_BCFTOOLS} concat \
+!{CMD_BCFTOOLS} concat \
 --output-type z9 \
---output "${gVcf}" \
+--output "!{gVcf}" \
 --no-version \
---threads "${task.cpus}" ${gVcfs}
+--threads "!{task.cpus}" !{gVcfs}
 
-${CMD_BCFTOOLS} index "${gVcf}"
+!{CMD_BCFTOOLS} index "!{gVcf}"

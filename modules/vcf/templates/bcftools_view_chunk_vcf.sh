@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "${bedContent}" > "${bed}"
+echo -e "!{bedContent}" > "!{bed}"
 
-${CMD_BCFTOOLS} view --regions-file "${bed}" --output-type z --output-file "${vcfChunk}" --no-version --threads "${task.cpus}" "${vcf}"
-${CMD_BCFTOOLS} index "${vcfChunk}"
+!{CMD_BCFTOOLS} view --regions-file "!{bed}" --output-type z --output-file "!{vcfChunk}" --no-version --threads "!{task.cpus}" "!{vcf}"
+!{CMD_BCFTOOLS} index "!{vcfChunk}"

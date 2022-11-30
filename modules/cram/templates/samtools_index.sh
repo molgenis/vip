@@ -1,2 +1,2 @@
 #!/bin/bash
-${CMD_SAMTOOLS} index "${cram}"
+!{CMD_SAMTOOLS} index "!{cram}"
