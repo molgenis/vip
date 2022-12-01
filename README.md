@@ -23,8 +23,5 @@ bash vip/install.sh --assembly GRCh38
 
 ## Usage
 ```
-bash vip/run_vcf.sh
-bash vip/run_gvcf.sh
-bash vip/run_cram.sh
-bash vip/run_fastq.sh
+bash vip/run.sh
 ```
