@@ -14,7 +14,7 @@ process report {
     refSeqPath = params[params.assembly].reference.fasta
     genesPath = params[params.assembly + "_report_genes"]
     probands = meta.probands.collect{ proband -> [proband.family_id, proband.individual_id].join("_")}.join(",")
-    hpoIds = meta.hpo_ids.join(",")
+    hpoIds = meta.hpo_ids.join(";")
     pedigree = "pedigree.ped"
     pedigreeContent = createPedigree(meta.sampleSheet)
 
