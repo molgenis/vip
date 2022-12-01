@@ -24,17 +24,3 @@ process annotate {
     
     template 'annotate.sh'
 }
-
-process annotate_publish {
-  publishDir "$params.output/intermediates", mode: 'copy'
-
-  when: "$params.keep" == true
-
-  input:
-    tuple val(id), path(vcfPaths)
-  output:
-    tuple val(id), path(vcfMergedPath), path("${vcfMergedPath}.csi")
-  shell:
-    vcfMergedPath = "${id}_annotated.vcf.gz"
-    template 'merge.sh'
-}
