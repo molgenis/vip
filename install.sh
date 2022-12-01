@@ -177,7 +177,11 @@ download_images() {
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-4.0.0.sif")
+  files+=("deepvariant_1.4.0.sif")
+  files+=("deepvariant_deeptrio-1.4.0.sif")
   files+=("gatk-4.2.5.0.sif")
+  files+=("glnexus_v1.4.1.sif")
+  files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
   files+=("vcf-decision-tree-3.4.3.sif")
   files+=("vcf-inheritance-matcher-2.1.3.sif")
@@ -186,27 +190,6 @@ download_images() {
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
-  done
-}
-
-# FIXME remove before PR merge
-download_images_dev() {
-  local -r download_dir="${SCRIPT_DIR}/images"
-  mkdir -p "${download_dir}"
-
-  local files=()
-  files+=("deepvariant_1.4.0.sif")
-  files+=("deepvariant_deeptrio-1.4.0.sif")
-  files+=("glnexus_v1.4.1.sif")
-  files+=("minimap2-2.24.sif")
-
-  for file in "${files[@]}"; do
-    if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip_dev/images/${file}" --output-document "${download_dir}/${file}"
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
   done
 }
 
@@ -248,7 +231,6 @@ main() {
   echo -e "installing ..."
   download_nextflow
   download_images
-  download_images_dev
   download_resources "${assembly}"
   echo -e "installing done"
 }
