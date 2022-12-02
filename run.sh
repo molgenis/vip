@@ -49,7 +49,7 @@ execute_workflow() {
   rm -f "${paramOutput}/nxf_report.html"
   rm -f "${paramOutput}/nxf_timeline.html"
 
-  local configs="${SCRIPT_DIR}/config/nxf_vcf.config"
+  local configs="${SCRIPT_DIR}/config/nxf_${paramWorkflow}.config"
   if [[ -n "${paramConfig}" ]]; then
     configs+=",${paramConfig}"
   fi
