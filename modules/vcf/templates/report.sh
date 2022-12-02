@@ -15,7 +15,6 @@ report () {
     args+=("--pedigree" "!{pedigree}")
   fi
   if [ -n "!{hpoIds}" ]; then
-    #FIXME use hpo ids per sample
     args+=("--phenotypes" "!{hpoIds}")
   fi
   if [ -n "!{params.classify_decision_tree}" ]; then
