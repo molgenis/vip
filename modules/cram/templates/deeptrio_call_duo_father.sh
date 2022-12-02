@@ -8,8 +8,8 @@ main() {
     --reads_child="!{cramChild}" \
     --reads_parent1="!{cramFather}" \
     --regions "!{meta.contig}" \
-    --sample_name_child="!{meta.sample.family_id}_!{meta.sample.individual_id}" \
-    --sample_name_parent1="!{meta.sample.family_id}_!{meta.sample.paternal_id}" \
+    --sample_name_child="!{meta.sample.individual_id}" \
+    --sample_name_parent1="!{meta.sample.paternal_id}" \
     --output_vcf_child="!{vcfChild}" \
     --output_vcf_parent1="!{vcfFather}" \
     --output_gvcf_child="!{gVcfChild}" \

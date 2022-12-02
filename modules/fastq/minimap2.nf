@@ -6,7 +6,7 @@ process minimap2_align {
   shell:
     reference=params[params.assembly].reference.fasta
     referenceMmi=params[params.assembly].reference.fastaMmi
-    cram="${meta.sample.family_id}_${meta.sample.individual_id}.cram"
+    cram="${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
 
     template 'minimap2_align.sh'

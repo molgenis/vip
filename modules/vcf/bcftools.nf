@@ -20,8 +20,8 @@ process bcftools_concat_index {
   output:
     tuple path(gVcf), path(gVcfCsi)
   shell:
-    gVcf="${meta.family_id}_${meta.individual_id}.g.vcf.gz"
-    gVcfCsi="${meta.family_id}_${meta.individual_id}.g.vcf.gz.csi"
+    gVcf="${meta.individual_id}.g.vcf.gz"
+    gVcfCsi="${meta.individual_id}.g.vcf.gz.csi"
     
     template 'bcftools_concat_index.sh'
 }
@@ -32,7 +32,7 @@ process bcftools_view_contig {
   output:
     tuple val(meta), path(gVcfContig)
   shell:
-    gVcfContig="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfContig="${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
     
     template 'bcftools_view_contig.sh'
 }
@@ -45,7 +45,7 @@ process bcftools_view_chunk {
   shell:
     bed="chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    gVcfChunk="${meta.sample.family_id}_${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
+    gVcfChunk="${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
     gVcfChunkIndex="${gVcfChunk}.csi"
     
     template 'bcftools_view_chunk.sh'

@@ -13,8 +13,8 @@ process report {
     reportPath = "${id}.html"
     refSeqPath = params[params.assembly].reference.fasta
     genesPath = params[params.assembly + "_report_genes"]
-    probands = meta.probands.collect{ proband -> [proband.family_id, proband.individual_id].join("_")}.join(",")
-    hpoIds = meta.sampleSheet.collect{ sample -> [[sample.family_id, sample.individual_id].join("_"), meta.hpo_ids.join(";")].join("/")}.join(",") 
+    probands = meta.probands.collect{ proband -> proband.individual_id}.join(",")
+    hpoIds = meta.sampleSheet.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/")}.join(",") 
     pedigree = "pedigree.ped"
     pedigreeContent = createPedigree(meta.sampleSheet)
 

@@ -4,7 +4,7 @@ process concat_fastq {
   output:
     tuple val(meta), path(fastq_r1), path(fastq_r2)
   shell:
-    sample_id="${meta.sample.family_id}_${meta.sample.individual_id}"
+    sample_id="${meta.sample.individual_id}"
     fastq_r1="${sample_id}_r1.fastq.gz"
     fastq_r2="${sample_id}_r2.fastq.gz"
     
