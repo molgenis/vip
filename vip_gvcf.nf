@@ -7,12 +7,14 @@ include { glnexus_merge } from './modules/gvcf/glnexus'
 include { bcftools_index; bcftools_view_chunk } from './modules/vcf/bcftools'
 include { vip_vcf } from './vip_vcf'
 
-// FIXME replace hardcoded nrSamples=1 with nrSamples_that_have_data derived from sample sheet
 workflow vip_gvcf {
     take: meta
     main:
         meta
-            | map { meta -> tuple(groupKey(meta.chunk.index, 1), meta) }
+            | map { meta ->
+                def groupSize = meta.sampleSheet.count{ sample -> sample.g_vcf != null }
+                tuple(groupKey(meta.chunk.index, groupSize), meta)
+              }
             | groupTuple
             | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
             | glnexus_merge
@@ -21,7 +23,6 @@ workflow vip_gvcf {
                 newMeta.remove('sample')
                 return newMeta
               }
-            | view
             | vip_vcf
 }
 
