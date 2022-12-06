@@ -4,10 +4,10 @@ include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { concat_fastq } from './modules/fastq/concat'
 include { minimap2_align } from './modules/fastq/minimap2'
-include { vip_cram } from './vip_cram'
+include { cram } from './vip_cram'
 
 //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
-workflow vip_fastq {
+workflow fastq {
     take: meta
     main:
         meta
@@ -27,7 +27,7 @@ workflow vip_fastq {
             | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2) }
             | minimap2_align
             | map { meta, cram, cramIndex -> [*:meta, sample: [*:meta.sample, cram: cram, cram_index: cramIndex] ] }
-            | vip_cram
+            | cram
 }
 
 //TODO make .mmi optional
@@ -41,7 +41,7 @@ workflow {
 
     Channel.from(sampleSheet)
     | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
-    | vip_fastq
+    | fastq
 }
 
 def validateParams() {

@@ -5,10 +5,10 @@ include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { deepvariant_call } from './modules/cram/deepvariant'
-include { vip_gvcf } from './vip_gvcf'
+include { gvcf } from './vip_gvcf'
 
 // TODO reintroduce trio/duo branching
-workflow vip_cram {
+workflow cram {
     take: meta
     main:
         meta
@@ -16,7 +16,7 @@ workflow vip_cram {
             | map { meta -> tuple(meta, meta.sample.cram, meta.sample.cram_index) }
             | deepvariant_call
             | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, g_vcf: gVcf] ] }
-            | vip_gvcf
+            | gvcf
 }
 
 workflow {
@@ -43,7 +43,7 @@ workflow {
         | set { ch_sample_indexed }
 
     ch_sample_indexed.mix(ch_sample.ready)
-        | vip_cram
+        | cram
 }
 
 def validateParams() {
@@ -51,7 +51,6 @@ def validateParams() {
   validateInput()
 }
 
-//TODO move to parseCommonParams
 def validateInput() {
   if( !params.containsKey('input') )   exit 1, "missing required parameter 'input'"
   if( !file(params.input).exists() )   exit 1, "parameter 'input' value '${params.input}' does not exist"

@@ -14,7 +14,7 @@ include { classify_samples } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { report } from './modules/vcf/report'
 
-workflow vip_vcf {
+workflow vcf {
     take: meta
     main:
         meta
@@ -92,7 +92,7 @@ workflow {
         | set { ch_input_chunked }
     
     ch_input_chunked
-        | vip_vcf
+        | vcf
 }
 
 def validateParams() {

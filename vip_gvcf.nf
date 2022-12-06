@@ -5,9 +5,9 @@ include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { findTabixIndex; scatter } from './modules/utils'
 include { glnexus_merge } from './modules/gvcf/glnexus'
 include { bcftools_index; bcftools_view_chunk } from './modules/vcf/bcftools'
-include { vip_vcf } from './vip_vcf'
+include { vcf } from './vip_vcf'
 
-workflow vip_gvcf {
+workflow gvcf {
     take: meta
     main:
         meta
@@ -23,7 +23,7 @@ workflow vip_gvcf {
                 newMeta.remove('sample')
                 return newMeta
               }
-            | vip_vcf
+            | vcf
 }
 
 workflow {
@@ -54,7 +54,7 @@ workflow {
         | map { meta -> tuple(meta, meta.sample.g_vcf, meta.sample.g_vcf_index) }
         | bcftools_view_chunk
         | map { meta, gVcfChunk, gVcfChunkIndex -> [*:meta, sample: [*:meta.sample, g_vcf: gVcfChunk, g_vcf_index: gVcfChunkIndex]] }
-        | vip_gvcf
+        | gvcf
 }
 
 def validateParams() {
