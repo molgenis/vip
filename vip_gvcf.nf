@@ -14,9 +14,14 @@ workflow vip_gvcf {
         meta
             | map { meta -> tuple(groupKey(meta.chunk.index, 1), meta) }
             | groupTuple
-            | map { key, group -> tuple([samples: group.collect(meta -> meta.sample), chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
+            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
             | glnexus_merge
-            | map { meta, vcf, vcfIndex -> [*:meta, vcf: vcf, vcf_index: vcfIndex] }
+            | map { meta, vcf, vcfIndex -> 
+                def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex]
+                newMeta.remove('sample')
+                return newMeta
+              }
+            | view
             | vip_vcf
 }
 
