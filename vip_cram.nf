@@ -59,11 +59,6 @@ def validateInput() {
 
 def parseSampleSheet(csvFile) {
   def cols = [
-    seq_method: [
-      type: "string",
-      enum: ["WES","WGS"],
-      required: true
-    ],
     cram: [
       type: "file",
       required: true,

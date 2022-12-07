@@ -3,7 +3,7 @@ set -euo pipefail
 
 main() {
     !{CMD_DEEPTRIO} \
-    --model_type="!{meta.sample.seq_method}" \
+    --model_type="!{params.sequencingMethod}" \
     --ref="!{reference}" \
     --reads_child="!{cramChild}" \
     --reads_parent1="!{cramFather}" \

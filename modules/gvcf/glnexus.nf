@@ -8,6 +8,7 @@ process glnexus_merge {
   shell:
     vcf="chunk_${meta.chunk.index}.vcf.gz"
     vcfIndex="${vcf}.csi"
+    config=params.sequencingMethod == "WES" ? "DeepVariantWES" : "DeepVariantWGS"
 
     template 'glnexus_merge.sh'
 }

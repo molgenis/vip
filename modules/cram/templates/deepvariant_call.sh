@@ -5,7 +5,7 @@ main() {
     echo -e "!{bedContent}" > "!{bed}"
         
     !{CMD_DEEPVARIANT} \
-    --model_type="!{meta.sample.seq_method}" \
+    --model_type="!{params.sequencingMethod}" \
     --ref="!{reference}" \
     --reads="!{cram}" \
     --regions "!{bed}" \

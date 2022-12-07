@@ -66,11 +66,6 @@ def parseSampleSheet(csvFile) {
   def fastqRegex = /.+\.(fastq|fq)(\.gz)?/
 
   def cols = [
-    seq_method: [
-      type: "string",
-      enum: ["WES","WGS"],
-      required: true
-    ],
     fastq_r1: [
       type: "file",
       required: true,
