@@ -29,7 +29,7 @@ annot_sv() {
   args+=("-outputFile" "!{vcfPath}.tsv")
   args+=("-genomeBuild" "!{params.assembly}")
   args+=("-annotationMode" "full")
-  args+=("-annotationsDir" "!{params.annotate_annotsv_cache_dir}")
+  args+=("-annotationsDir" "!{params.vcf.annotate.annotsv_cache_dir}")
   if [ -n "!{hpoIds}" ]; then
     args+=("-hpo" "!{hpoIds}")
   fi
@@ -57,7 +57,7 @@ capice_vep() {
   args+=("--fasta" "!{refSeqPath}")
   args+=("--offline")
   args+=("--cache")
-  args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  args+=("--dir_cache" "!{params.vcf.annotate.vep_cache_dir}")
   args+=("--species" "homo_sapiens")
   args+=("--assembly" "!{params.assembly}")
   args+=("--refseq")
@@ -73,9 +73,9 @@ capice_vep() {
   args+=("--numbers")
   args+=("--dont_skip")
   args+=("--allow_non_variant")
-  args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
+  args+=("--buffer_size" "!{params.vcf.annotate.vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
-  args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
@@ -131,7 +131,7 @@ vep() {
   args+=("--fasta" "!{refSeqPath}")
   args+=("--offline")
   args+=("--cache")
-  args+=("--dir_cache" "!{params.annotate_vep_cache_dir}")
+  args+=("--dir_cache" "!{params.vcf.annotate.vep_cache_dir}")
   args+=("--species" "homo_sapiens")
   args+=("--assembly" "!{params.assembly}")
   args+=("--refseq")
@@ -148,11 +148,11 @@ vep() {
   args+=("--numbers")
   args+=("--dont_skip")
   args+=("--allow_non_variant")
-  args+=("--buffer_size" "!{params.annotate_vep_buffer_size}")
+  args+=("--buffer_size" "!{params.vcf.annotate.vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--hgvs")
   args+=("--pubmed")
-  args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
+  args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,!{capiceOutputPath}")
@@ -163,11 +163,11 @@ vep() {
     args+=("--plugin" "Artefact,!{vepPluginArtefact}")
   fi
   if [ -n "!{hpoIds}" ]; then
-    args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
+    args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
-  args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
-  if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
-    args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
+  args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
+  if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
+    args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
   fi
   if [ -n "!{vepCustomGnomAdPath}" ]; then
     args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
@@ -182,7 +182,7 @@ vep() {
   !{CMD_VEP} "${args[@]}"
 }
 
-if [ -n "!{params.annotate_annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; then
+if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; then
   annot_sv
 fi
 

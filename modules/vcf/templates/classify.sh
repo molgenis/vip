@@ -6,11 +6,11 @@ classify () {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcfPath}")
-  args+=("--config" "!{params.classify_decision_tree}")
-  if [ !{params.classify_annotate_labels} -eq 1 ]; then
+  args+=("--config" "!{params.vcf.classify.decision_tree}")
+  if [ !{params.vcf.classify.annotate_labels} -eq 1 ]; then
     args+=("--labels")
   fi
-  if [ !{params.classify_annotate_path} -eq 1 ]; then
+  if [ !{params.vcf.classify.annotate_path} -eq 1 ]; then
     args+=("--path")
   fi
 

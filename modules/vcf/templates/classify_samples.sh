@@ -7,11 +7,11 @@ classify_samples () {
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcfPath}")
   args+=("--mode" "sample")
-  args+=("--config" "!{params.classify_samples_decision_tree}")
-  if [ !{params.classify_samples_annotate_labels} -eq 1 ]; then
+  args+=("--config" "!{params.vcf.classify_samples.decision_tree}")
+  if [ !{params.vcf.classify_samples.annotate_labels} -eq 1 ]; then
     args+=("--labels")
   fi
-  if [ !{params.classify_samples_annotate_path} -eq 1 ]; then
+  if [ !{params.vcf.classify_samples.annotate_path} -eq 1 ]; then
     args+=("--path")
   fi
   if [ -n "!{probands}" ]; then

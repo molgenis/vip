@@ -8,18 +8,18 @@ process annotate {
     order = "${meta.chunk.index}"
     vcfAnnotatedPath = "${id}_chunk${order}_annotated.vcf.gz"
     refSeqPath = params[params.assembly].reference.fasta
-    vepCustomGnomAdPath = params[params.assembly + "_annotate_vep_custom_gnomad"]
-    vepCustomClinVarPath = params[params.assembly + "_annotate_vep_custom_clinvar"]
-    vepCustomPhyloPPath = params[params.assembly + "_annotate_vep_custom_phylop"]
-    vepPluginArtefact = params[params.assembly + "_annotate_vep_plugin_artefact"]
-    vepPluginSpliceAiIndelPath = params[params.assembly + "_annotate_vep_plugin_spliceai_indel"]
-    vepPluginSpliceAiSnvPath = params[params.assembly + "_annotate_vep_plugin_spliceai_snv"]
-    vepPluginVkglPath = params[params.assembly + "_annotate_vep_plugin_vkgl"]
-    vepPluginUtrAnnotatorPath = params[params.assembly + "_annotate_vep_plugin_utrannotator"]
+    vepCustomGnomAdPath = params.vcf.annotate[params.assembly].vep_custom_gnomad
+    vepCustomClinVarPath = params.vcf.annotate[params.assembly].vep_custom_clinvar
+    vepCustomPhyloPPath = params.vcf.annotate[params.assembly].vep_custom_phylop
+    vepPluginArtefact = params.vcf.annotate[params.assembly].vep_plugin_artefact
+    vepPluginSpliceAiIndelPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
+    vepPluginSpliceAiSnvPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_snv
+    vepPluginVkglPath = params.vcf.annotate[params.assembly].vep_plugin_vkgl
+    vepPluginUtrAnnotatorPath = params.vcf.annotate[params.assembly].vep_plugin_utrannotator
     vcfCapiceAnnotatedPath = "${id}_chunk${order}_capice_annotated.vcf.gz"
     capiceInputPath = "${id}_chunk${order}_capice_input.tsv"
     capiceOutputPath = "${id}_chunk${order}_capice_output.tsv.gz"
-    capiceModelPath = params[params.assembly + "_annotate_capice_model"]
+    capiceModelPath = params.vcf.annotate[params.assembly].capice_model
     hpoIds = meta.hpo_ids.join(",")
     
     template 'annotate.sh'

@@ -3,12 +3,12 @@ filter () {
   args+=("-i" "!{vcfPath}")
 
   local operator;
-  if [[ "!{params.filter_classes}" =~ .+,.+ ]]; then
-    args+=("-f" "VIPC in !{params.filter_classes}")
+  if [[ "!{params.vcf.filter.classes}" =~ .+,.+ ]]; then
+    args+=("-f" "VIPC in !{params.vcf.filter.classes}")
   else
-    args+=("-f" "VIPC is !{params.filter_classes}")
+    args+=("-f" "VIPC is !{params.vcf.filter.classes}")
   fi
-  if [ "!{params.filter_consequences}" = true ]; then
+  if [ "!{params.vcf.filter.consequences}" = true ]; then
     args+=("--only_matched")
   fi
 
