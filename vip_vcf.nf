@@ -13,6 +13,7 @@ include { inheritance } from './modules/vcf/inheritance'
 include { classify_samples } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { report } from './modules/vcf/report'
+include { nrRecords } from './modules/vcf/utils'
 
 workflow vcf {
     take: meta
@@ -20,6 +21,7 @@ workflow vcf {
         meta
             | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
             | prepare
+            | flatMap { meta, vcf, vcfCsi, vcfStats -> nrRecords(vcfStats) > 0 ? [tuple(meta, vcf, vcfCsi)] : [] }
             | set { ch_prepared }
 
         ch_prepared
@@ -61,7 +63,6 @@ workflow vcf {
             | report
 }
 
-//TODO create one report instead of one report per sample
 workflow {
     validateParams()
     
@@ -70,23 +71,29 @@ workflow {
     def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
 
     Channel.from(sampleSheet)
-        | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
-        | map { meta -> [*:meta, sample: [*:meta.sample, vcf_index: meta.sample.vcf_index ?: findTabixIndex(meta.sample.vcf)]] }
+        | map { sample -> tuple(groupKey(sample.vcf, sampleSheet.count{ it.vcf == sample.vcf }), sample) }
+        | groupTuple
+        | map { key, group -> 
+            def aSample = group.first()
+            def vcf = aSample.vcf
+            def vcf_index = aSample.vcf_index ?: findTabixIndex(vcf)
+            [vcf: vcf, vcf_index: vcf_index, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids]
+          }
         | branch { meta ->
-            index: meta.sample.vcf_index == null
+            index: meta.vcf_index == null
             ready: true
           }
         | set { ch_input }
     
     ch_input.index
-        | map { meta -> tuple(meta, meta.sample.vcf) }
+        | map { meta -> tuple(meta, meta.vcf) }
         | bcftools_index
-        | map { meta, vcfIndex -> [*:meta, sample: [*:meta.sample, vcf_index: vcfIndex]] }
+        | map { meta, vcfIndex -> [*:meta, vcf_index: vcfIndex] }
         | set { ch_input_indexed }
     
     ch_input_indexed.mix(ch_input.ready)
         | flatMap { meta -> scatter(meta) }
-        | map { meta -> tuple(meta, meta.sample.vcf, meta.sample.vcf_index) }
+        | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
         | bcftools_view_chunk_vcf
         | map { meta, vcfChunk, vcfChunkIndex -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex] }
         | set { ch_input_chunked }
