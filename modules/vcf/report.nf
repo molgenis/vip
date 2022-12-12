@@ -12,7 +12,7 @@ process report {
     vcfOutputPath = "${id}.vcf.gz"
     reportPath = "${id}.html"
     refSeqPath = params[params.assembly].reference.fasta
-    genesPath = params.report[params.assembly].genes
+    genesPath = params.vcf.report[params.assembly].genes
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.sampleSheet.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
     pedigree = "pedigree.ped"
