@@ -1,5 +1,4 @@
-// FIXME set config to DeepVariantWES, DeepVariantWGS or DeepVariant_unfiltered (trio)
-// --bed seems to be broken: https://github.com/dnanexus-rnd/GLnexus/issues/279
+// TODO --bed seems to be broken: https://github.com/dnanexus-rnd/GLnexus/issues/279
 process glnexus_merge {
   input:
     tuple val(meta), path(gVcfs)
