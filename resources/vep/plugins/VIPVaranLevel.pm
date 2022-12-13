@@ -79,19 +79,20 @@ sub run {
 
     #my $data = @{$self->get_data}; get_data is not a thing
     
-    my $test3 = $self->ncER;
+    # my $test3 = $self->ncER; werkt ook niet met $line_hash
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
     my $filename = '/groups/solve-rd/tmp10/jklimp/green_db_tool_scores/VIPVaranLevel.log';
     open(my $file, '>>', $filename) or die $!;
-    print($file "HIER onder is vcf line");
-    foreach (@vcf_line) {
-        print($file "$_\n"); 
-    }
-    print($file "HIER onder is data en test\n");
-    print($file $test3);
-    print($file "HIER onder is self \n");
-    print($file $self);
+    #print($file "HIER onder is vcf line");
+    # foreach (@vcf_line) {
+    #     print($file "$_\n"); 
+    # }
+    #print($file "HIER onder is data en test\n");
+    #print($file $test3);
+    #print($file "HIER onder is self \n");
+    #print($file $self);
+    print("hier self")
     foreach ($self) {
         print($file "$_\n")
     }
