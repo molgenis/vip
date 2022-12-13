@@ -3,7 +3,7 @@ set -euo pipefail
 
 main() {
     !{CMD_GLNEXUS} \
-        --dir !{TMPDIR}/glnexus \
+        --dir glnexus \
         --config "!{config}" \
         --threads "!{task.cpus}" \
         !{gVcfs} | \
