@@ -6,11 +6,9 @@ process inheritance {
   output:
     tuple val(meta), path(vcfInheritancePath), path("${vcfInheritancePath}.csi")
   shell:
-    id = "${vcfPath.simpleName}"
-    order = "${meta.chunk.index}"
-    vcfInheritancePath = "${id}_chunk${order}_inheritance.vcf.gz"
+    vcfInheritancePath = vcfFilteredPath = "${meta.project_id}_chunk_${meta.chunk.index}_inheritance.vcf.gz"
     probands = meta.probands.collect{ proband -> proband.individual_id}.join(",")
-    pedigree = "pedigree.ped"
+    pedigree = "${meta.project_id}.ped"
     pedigreeContent = createPedigree(meta.sampleSheet)
     template 'inheritance.sh'
 }

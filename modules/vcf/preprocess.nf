@@ -4,7 +4,7 @@ process preprocess {
   output:
     tuple val(meta), path(vcfPreprocessedPath), path("${vcfPreprocessedPath}.csi")
   shell:
-    vcfPreprocessedPath = "${vcfPath.simpleName}.preprocessed.vcf.gz"
+    vcfPreprocessedPath = "${meta.project_id}_chunk_${meta.chunk.index}_preprocessed.vcf.gz"
     refSeqPath = params[params.assembly].reference.fasta
     template 'preprocess.sh'
 }

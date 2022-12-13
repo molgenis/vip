@@ -1,12 +1,10 @@
-// FIXME add meta input and determine output name from meta
 process bcftools_concat {
   input:
     tuple val(meta), path(bcfs)
   output:
-    tuple val(meta), path(vcf), path(vcfCsi)
+    tuple val(meta), path(vcf), path("${vcf}.csi")
   shell:
-    vcf="out.vcf.gz"
-    vcfCsi="out.vcf.gz.csi"
+    vcf="${meta.project_id}.vcf.gz"
     
     template 'bcftools_concat.sh'
 }
@@ -58,9 +56,9 @@ process bcftools_view_chunk_vcf {
   output:
     tuple val(meta), path(vcfChunk), path(vcfChunkIndex)
   shell:
-    bed="chunk_${meta.chunk.index}.bed"
+    bed="${meta.project_id}_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    vcfChunk="chunk_${meta.chunk.index}.vcf.gz"
+    vcfChunk="${meta.project_id}_chunk_${meta.chunk.index}.vcf.gz"
     vcfChunkIndex="${vcfChunk}.csi"
     
     template 'bcftools_view_chunk_vcf.sh'

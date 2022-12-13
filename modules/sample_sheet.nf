@@ -1,22 +1,27 @@
 def parseCommonSampleSheet(csvFile, additionalCols) {
   def commonCols = [
+    project_id: [
+      type: "string",
+      required: true,
+      regex: /[a-zA-Z0-9_-]+/
+    ],
     family_id: [
       type: "string",
       required: true,
-      regex: /[a-zA-Z0-9]+/
+      regex: /[a-zA-Z0-9_-]+/
     ],
     individual_id: [
       type: "string",
       required: true,
-      regex: /[a-zA-Z0-9_]+/
+      regex: /[a-zA-Z0-9_-]+/
     ],
     paternal_id: [
       type: "string",
-      regex: /[a-zA-Z0-9]+/
+      regex: /[a-zA-Z0-9_-]+/
     ],
     maternal_id: [
       type: "string",
-      regex: /[a-zA-Z0-9]+/
+      regex: /[a-zA-Z0-9_-]+/
     ],
     sex: [
       type: "string",

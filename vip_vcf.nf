@@ -77,7 +77,7 @@ workflow {
             def aSample = group.first()
             def vcf = aSample.vcf
             def vcf_index = aSample.vcf_index ?: findTabixIndex(vcf)
-            [vcf: vcf, vcf_index: vcf_index, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids]
+            [project_id: aSample.project_id, vcf: vcf, vcf_index: vcf_index, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids]
           }
         | branch { meta ->
             index: meta.vcf_index == null

@@ -4,9 +4,7 @@ process classify_samples {
   output:
     tuple val(meta), path(vcfSamplesClassifiedPath), path("${vcfSamplesClassifiedPath}.csi")
   shell:
-    id = "${vcfPath.simpleName}"
-    order = "${meta.chunk.index}"
-    vcfSamplesClassifiedPath = "${id}_chunk${order}_samples_classified.vcf.gz"
+    vcfSamplesClassifiedPath = "${meta.project_id}_chunk_${meta.chunk.index}_classified_samples.vcf.gz"
     probands = meta.probands.collect{ proband -> proband.individual_id}.join(",")
     template 'classify_samples.sh'
 }

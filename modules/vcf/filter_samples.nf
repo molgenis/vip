@@ -4,9 +4,7 @@ process filter_samples {
   output:
     tuple val(meta), path(vcfFilteredSamplesPath), path("${vcfFilteredSamplesPath}.csi")
   shell:
-    id = "${vcfPath.simpleName}"
-    order = "${meta.chunk.index}"
-    vcfFilteredSamplesPath = "${id}_chunk${order}_samples_filtered.vcf.gz"
-    vcfSplittedSamplesPath = "${id}_chunk${order}_samples_splitted.vcf.gz"
+    vcfFilteredSamplesPath = "${meta.project_id}_chunk_${meta.chunk.index}_filtered_samples.vcf.gz"
+    vcfSplittedSamplesPath = "${meta.project_id}_chunk_${meta.chunk.index}_splitted_samples.vcf.gz"
     template 'filter_samples.sh'
 }

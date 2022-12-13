@@ -4,8 +4,6 @@ process classify {
   output:
     tuple val(meta), path(vcfClassifiedPath), path("${vcfClassifiedPath}.csi")
   shell:
-    id = "${vcfPath.simpleName}"
-    order = "${meta.chunk.index}"
-    vcfClassifiedPath = "${id}_chunk${order}_classified.vcf.gz"
+    vcfClassifiedPath = "${meta.project_id}_chunk_${meta.chunk.index}_classified.vcf.gz"
     template 'classify.sh'
 }
