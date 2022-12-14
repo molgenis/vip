@@ -100,20 +100,24 @@ sub run {
     print($file $self);
     print($file "\n");
     # print($file "hier self geprint met keys\n");
-    # foreach my $key (keys $self) {
-    #     print($file "in keys loop\n");
-    #     print($file $key);
-    #     print($file "=>");
-    #     print("$self->{$key}\n");
+    # foreach my $key ( keys %$self ) { 
+    #     print $key, " => ", $self->{$key},"\n";
     # }
+    foreach my $key (keys %$self) {
+        print($file "in keys loop\n");
+        print($file $key);
+        print($file "=>");
+        print($file $self->{$key});
+        print($file "\n")
+    }
     # print($file "hier andere manier van printen\n")
     # for my $z (@$self) {
     #     for my $k (keys %$z) {
     #         print($file "$k: $z->{$k}\n");
     #     }
     # }
-    # print("dumper\n");
-    # print(Dumper($self));
+    #print("dumper\n");
+    #print(Dumper($self));
 
     #print($file @vcf_line); # bevat chrom pos ref alt, 0 en 3x "." 
     # print($file $transcript_variation_allele); # is een hash
