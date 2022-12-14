@@ -1,14 +1,3 @@
-process bcftools_concat {
-  input:
-    tuple val(meta), path(bcfs)
-  output:
-    tuple val(meta), path(vcf), path("${vcf}.csi")
-  shell:
-    vcf="${meta.project_id}.vcf.gz"
-    
-    template 'bcftools_concat.sh'
-}
-
 // TODO code deduplication with bcftools_concat
 process bcftools_concat_index {
   publishDir "$params.output", mode: 'link'
@@ -47,21 +36,6 @@ process bcftools_view_chunk {
     gVcfChunkIndex="${gVcfChunk}.csi"
     
     template 'bcftools_view_chunk.sh'
-}
-
-// FIXME dedup with bcftools_view_chunk
-process bcftools_view_chunk_vcf {
-  input:
-    tuple val(meta), path(vcf), path(vcfIndex)
-  output:
-    tuple val(meta), path(vcfChunk), path(vcfChunkIndex)
-  shell:
-    bed="${meta.project_id}_chunk_${meta.chunk.index}.bed"
-    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    vcfChunk="${meta.project_id}_chunk_${meta.chunk.index}.vcf.gz"
-    vcfChunkIndex="${vcfChunk}.csi"
-    
-    template 'bcftools_view_chunk_vcf.sh'
 }
 
 process bcftools_index_count {

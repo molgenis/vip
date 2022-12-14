@@ -1,7 +1,7 @@
 include { createPedigree } from '../utils'
 
 process report {
-  publishDir "$params.output", mode: 'copy'
+  publishDir "$params.output", mode: 'link'
 
   input:
     tuple val(meta), path(vcf), path(vcf_index)

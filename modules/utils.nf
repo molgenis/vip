@@ -47,10 +47,10 @@ def scatter(meta) {
     chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ])
 }
 
-def findTabixIndex(indexedFile) {
+def findIndex(vcf) {
     def index
-    if(file(indexedFile + ".csi").exists()) index = indexedFile + ".csi"
-    if(file(indexedFile + ".tbi").exists()) index = indexedFilevcf + ".tbi"
+    if(file(vcf + ".csi").exists()) index = vcf + ".csi"
+    else if(file(vcf + ".tbi").exists()) index = vcf + ".tbi"
     index
 }
 

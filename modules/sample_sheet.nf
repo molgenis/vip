@@ -56,7 +56,6 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
   if (lines.size() == 1) exit 1, "error parsing '${csvFile}': file does not contain data"
 
   def samples=[]
-  def sample_ids=[]
   for (int i = 1; i < lines.size(); i++) {
     def lineNr = i + 1
 
@@ -72,9 +71,7 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
     } catch(IllegalArgumentException e) {
       exit 1, "error parsing '${csvFile}' line ${lineNr}: ${e.message}"
     }
-    if(sample_ids.contains(sample.individual_id)) exit 1, "error parsing '${csvFile}' line ${lineNr}: duplicate value: '${sample.individual_id}' for unique column 'individual_id'"
     
-    sample_ids << sample.individual_id
     samples << sample
   }
   
