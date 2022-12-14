@@ -4,7 +4,8 @@ include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { findTabixIndex; scatter } from './modules/utils'
 include { glnexus_merge } from './modules/gvcf/glnexus'
-include { bcftools_index; bcftools_view_chunk } from './modules/vcf/bcftools'
+include { bcftools_view_chunk } from './modules/vcf/bcftools'
+include { index } from './modules/vcf/index'
 include { vcf } from './vip_vcf'
 
 workflow gvcf {
@@ -45,7 +46,7 @@ workflow {
 
     ch_sample.index
         | map { meta -> tuple(meta, meta.sample.g_vcf) }
-        | bcftools_index
+        | index
         | map { meta, gVcfIndex -> [*:meta, sample: [*:meta.sample, g_vcf_index: gVcfIndex]] }
         | set { ch_sample_indexed }
 

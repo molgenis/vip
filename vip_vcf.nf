@@ -99,7 +99,7 @@ workflow {
     ch_vcfs.index
         | map { meta -> [meta, meta.vcf] }
         | index
-        | map { meta, vcf, vcf_index -> [*:meta, vcf: vcf, vcf_index: vcf_index] }
+        | map { meta, vcf_index -> [*:meta, vcf_index: vcf_index] }
         | set { ch_vcfs_indexed }
 
     // group vcfs per project
