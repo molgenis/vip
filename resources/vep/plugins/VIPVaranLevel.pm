@@ -96,6 +96,11 @@ sub run {
     foreach ($self) {
         print($file "$_\n");
     }
+    print($file "hier self geprint met keys\n");
+    foreach my $var(keys ${self}) {
+        print($file "in keys loop\n");
+        print($file "$var and $self{$var}\n");
+    }
     #print($file @vcf_line); # bevat chrom pos ref alt, 0 en 3x "." 
     # print($file $transcript_variation_allele); # is een hash
     close($file);
