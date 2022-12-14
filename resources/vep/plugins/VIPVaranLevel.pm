@@ -111,19 +111,19 @@ sub run {
     #     print($file "\n")
     # }
     print($file "params\n");
-    foreach ($self{"params"}) {
+    foreach ($self->{"params"}) {
         print($file "$_\n");
     }
     print($file "variant feature types\n");
-    foreach ($self{"variant_feature_types"}) {
+    foreach ($self->{"variant_feature_types"}) {
         print($file "$_\n");
     }
     print($file "feature types\n");
-    foreach ($self{"feature_types"}) {
+    foreach (%$self->{"feature_types"}) {
         print($file "$_\n");
     }
     print($file "variant feature types wanted\n");
-    foreach my $variant_feature_wanted ($self{"variant_feature_types_wanted"}) {
+    foreach my $variant_feature_wanted ($self->{"variant_feature_types_wanted"}) {
         foreach my $key (keys %$variant_feature_wanted) {
                 print($file "in keys loop variant feature types wanted\n");
                 print($file $key);
@@ -133,7 +133,7 @@ sub run {
         }
     }
     print($file "feature types wanted\n");
-    foreach my $feature_wanted ($self{"feature_types_wanted"}) {
+    foreach my $feature_wanted ($self->{"feature_types_wanted"}) {
         foreach my $key (keys %$feature_wanted) {
                 print($file "in keys loop feature types wanted\n");
                 print($file $key);
@@ -143,7 +143,7 @@ sub run {
         }
     }
     print($file "config\n");
-    foreach my $config ($self{"config"}) {
+    foreach my $config ($self->{"config"}) {
         foreach my $key (keys %$config) {
                 print($file "in keys loop config\n");
                 print($file $key);
