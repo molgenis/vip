@@ -82,7 +82,7 @@ sub run {
     # my $test3 = $self->ncER; werkt ook niet met $line_hash
     #my @test_data = @{$self->green_db_tool_scores};
     # code to write to file
-    my $filename = '/groups/solve-rd/projects/vip/feat/non-coding/test/VIPVaranLevel.log';
+    my $filename = '/groups/solve-rd/tmp10/projects/vip/feat/non-coding/test/VIPVaranLevel.log';
     open(my $file, '>>', $filename) or die $!;
     #print($file "HIER onder is vcf line");
     # foreach (@vcf_line) {
