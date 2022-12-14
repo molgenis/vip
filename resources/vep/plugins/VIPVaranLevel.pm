@@ -93,12 +93,12 @@ sub run {
     #print($file $test3);
     #print($file "HIER onder is self \n");
     #print($file $self);
-    print($file "hier self\n");
-    foreach ($self) {
-        print($file "$_\n");
-    }
-    print($file $self);
-    print($file "\n");
+    # print($file "hier self\n");
+    # foreach ($self) {
+    #     print($file "$_\n");
+    # }
+    # print($file $self);
+    # print($file "\n");
     # print($file "hier self geprint met keys\n");
     # foreach my $key ( keys %$self ) { 
     #     print $key, " => ", $self->{$key},"\n";
@@ -123,9 +123,19 @@ sub run {
         print($file "$_\n");
     }
     print($file "variant feature types wanted\n");
-    foreach my $feature_wanted ($self{"variant_feature_types_wanted"}) {
+    foreach my $variant_feature_wanted ($self{"variant_feature_types_wanted"}) {
+        foreach my $key (keys %$variant_feature_wanted) {
+                print($file "in keys loop variant feature types wanted\n");
+                print($file $key);
+                print($file "=>");
+                print($file $variant_feature_wanted->{$key});
+                print($file "\n")
+        }
+    }
+    print($file "feature types wanted\n");
+    foreach my $feature_wanted ($self{"feature_types_wanted"}) {
         foreach my $key (keys %$feature_wanted) {
-                print($file "in keys loop\n");
+                print($file "in keys loop feature types wanted\n");
                 print($file $key);
                 print($file "=>");
                 print($file $feature_wanted->{$key});
@@ -135,7 +145,7 @@ sub run {
     print($file "config\n");
     foreach my $config ($self{"config"}) {
         foreach my $key (keys %$config) {
-                print($file "in keys loop\n");
+                print($file "in keys loop config\n");
                 print($file $key);
                 print($file "=>");
                 print($file $config->{$key});
