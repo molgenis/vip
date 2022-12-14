@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
-include { findTabixIndex; scatter } from './modules/utils'
+include { findIndex; scatter } from './modules/utils'
 include { glnexus_merge } from './modules/gvcf/glnexus'
 include { index } from './modules/vcf/index'
 include { split } from './modules/vcf/split'
@@ -37,7 +37,7 @@ workflow {
 
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
-        | map { meta -> [*:meta, sample: [*:meta.sample, g_vcf_index: meta.sample.g_vcf_index ?: findTabixIndex(meta.sample.g_vcf)]] }
+        | map { meta -> [*:meta, sample: [*:meta.sample, g_vcf_index: meta.sample.g_vcf_index ?: findIndex(meta.sample.g_vcf)]] }
         | branch { meta ->
             index: meta.sample.g_vcf_index == null
             ready: true
