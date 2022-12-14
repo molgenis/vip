@@ -98,7 +98,7 @@ sub run {
         print($file "$_\n");
     }
     print($file $self);
-    print($file "\n")
+    print($file "\n");
     # print($file "hier self geprint met keys\n");
     # foreach my $key (keys $self) {
     #     print($file "in keys loop\n");
