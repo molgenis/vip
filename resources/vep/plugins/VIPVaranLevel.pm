@@ -103,12 +103,44 @@ sub run {
     # foreach my $key ( keys %$self ) { 
     #     print $key, " => ", $self->{$key},"\n";
     # }
-    foreach my $key (keys %$self) {
-        print($file "in keys loop\n");
-        print($file $key);
-        print($file "=>");
-        print($file $self->{$key});
-        print($file "\n")
+    # foreach my $key (keys %$self) {
+    #     print($file "in keys loop\n");
+    #     print($file $key);
+    #     print($file "=>");
+    #     print($file $self->{$key});
+    #     print($file "\n")
+    # }
+    print($file "params\n");
+    foreach ($self{"params"}) {
+        print($file "$_\n");
+    }
+    print($file "variant feature types\n");
+    foreach ($self{"variant_feature_types"}) {
+        print($file "$_\n");
+    }
+    print($file "feature types\n");
+    foreach ($self{"feature_types"}) {
+        print($file "$_\n");
+    }
+    print($file "variant feature types wanted\n");
+    foreach my $feature_wanted ($self{"variant_feature_types_wanted"}) {
+        foreach my $key (keys %$feature_wanted) {
+                print($file "in keys loop\n");
+                print($file $key);
+                print($file "=>");
+                print($file $feature_wanted->{$key});
+                print($file "\n")
+        }
+    }
+    print($file "config\n");
+    foreach my $config ($self{"config"}) {
+        foreach my $key (keys %$config) {
+                print($file "in keys loop\n");
+                print($file $key);
+                print($file "=>");
+                print($file $config->{$key});
+                print($file "\n")
+        }
     }
     # print($file "hier andere manier van printen\n")
     # for my $z (@$self) {
