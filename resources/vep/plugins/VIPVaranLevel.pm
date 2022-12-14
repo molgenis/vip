@@ -135,12 +135,13 @@ sub run {
     #  pick_order custom
     print($file "config\n");
     foreach my $config ($self->{"config"}) {
-        my @config_custom_array = $self->{"custom"};
+        my @config_custom_array = $self->{"plugin"};
         foreach (@config_custom_array) {
             print($file "$_\n");
-            # foreach (@$_) {
-            #     print($file "$_\n");
-            # }
+        }
+        my @pick_order = $self->{"pick_order"};
+        foreach (@pick_order) {
+            print($file "$_\n");
         }
         # foreach my $key (keys %$config) {
         #         print($file "in keys loop config\n");
