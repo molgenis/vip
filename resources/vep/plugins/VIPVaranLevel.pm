@@ -119,7 +119,7 @@ sub run {
         print($file "$_\n");
     }
     print($file "feature types\n");
-    foreach (%$self->{"feature_types"}) {
+    foreach ($self->{"feature_types"}) {
         print($file "$_\n");
     }
     print($file "variant feature types wanted\n");
