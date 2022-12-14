@@ -92,16 +92,25 @@ sub run {
     my @params_array = $self->{"params"};
     foreach (@params_array) {
         print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }
     }
     print($file "variant feature types\n");
     my @vft_array = $self->{"variant_feature_types"};
     foreach (@vft_array) {
         print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }        
     }
     print($file "feature types\n");
     my @f_types_array = $self->{"feature_types"};
     foreach (@f_types_array) {
         print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }        
     }
     # print($file "variant feature types wanted\n");
     # foreach my $variant_feature_wanted ($self->{"variant_feature_types_wanted"}) {
