@@ -31,7 +31,7 @@ workflow {
     validateParams()
 
     def sampleSheet = parseSampleSheet(params.input)
-    //TODO deduplicate with vip_vcf
+    //FIXME calculate probands and hpo_ids per project
     def probands = sampleSheet.findAll{ sample -> sample.proband }.collect{ sample -> [family_id:sample.family_id, individual_id:sample.individual_id] }
     def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
 
@@ -68,10 +68,6 @@ def parseSampleSheet(csvFile) {
       type: "file",
       required: true,
       regex: /.+\.g\.vcf\.gz/
-    ],
-    g_vcf_index: [
-      type: "file",
-      regex: /.+\.g\.vcf\.gz\.(csi|tbi)/
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)
