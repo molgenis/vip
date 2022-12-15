@@ -2,7 +2,7 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
   def commonCols = [
     project_id: [
       type: "string",
-      required: true,
+      default: "vip",
       regex: /[a-zA-Z0-9_-]+/
     ],
     family_id: [
@@ -106,7 +106,7 @@ def parseValueStringList(token, col) {
 }
 
 def parseValueString(token, col) {
-  def value = token.length() > 0 ? token : null
+  def value = token.length() > 0 ? token : (col.default ?: null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   if(value != null) {
     if(col.enum && !col.enum.contains(token) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
@@ -116,7 +116,7 @@ def parseValueString(token, col) {
 }
 
 def parseValueBoolean(token, col) {
-  def value = token.length() > 0 ? token : null
+  def value = token.length() > 0 ? token : (col.default ?: null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   
   def booleanValue
@@ -134,7 +134,7 @@ def parseValueFileList(token, col) {
 }
 
 def parseValueFile(token, col) {
-  def value = token.length() > 0 ? token : null
+  def value = token.length() > 0 ? token : (col.default ?: null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   def fileValue
   if(value != null) {
