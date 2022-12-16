@@ -54,7 +54,15 @@ execute_workflow() {
     configs+=",${paramConfig}"
   fi
 
-  APPTAINER_BIND="/groups,/tmp" \
+  local binds=()
+  binds+=("/$(realpath "${paramInput}" | cut -f 2 -d "/")")
+  if [[ -n "${TMPDIR}" ]]; then
+    binds+=("${TMPDIR}")
+  elif [[ -d "/tmp" ]]; then
+    binds+=("/tmp")
+  fi
+
+  APPTAINER_BIND="$(IFS=, ; echo "${binds[*]}")" \
   APPTAINER_CACHEDIR="${SCRIPT_DIR}/images" \
   NXF_HOME="${paramOutput}/.nxf.home" \
   NXF_TEMP="${paramOutput}/.nxf.tmp" \
