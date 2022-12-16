@@ -193,6 +193,13 @@ download_images() {
   done
 }
 
+create_executable() {
+  chmod +x "${SCRIPT_DIR}/vip.sh"
+  if [ ! -f "${SCRIPT_DIR}/vip" ]; then
+    (cd "${SCRIPT_DIR}" && ln -s "vip.sh" "vip")
+  fi
+}
+
 main() {
   local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
   # shellcheck disable=SC2181
@@ -232,6 +239,7 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
+  create_executable
   echo -e "installing done"
 }
 
