@@ -43,7 +43,15 @@ bash vip/install.sh --assembly GRCh38
 ```
 
 ## Usage
-TODO
+```
+usage: vip [-w <arg> -i <arg> -o <arg>]
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
+  -i, --input    <arg>  path to sample sheet .tsv
+  -o, --output   <arg>  output folder
+  -p, --profile  <arg>  nextflow configuration profile (optional)
+  -c, --config   <arg>  path to additional nextflow .cfg (optional)
+  -h, --help            print this message and exit
+```  
 
 ## Configuration
 TODO
