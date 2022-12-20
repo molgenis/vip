@@ -67,7 +67,7 @@ def parseSampleSheet(csvFile) {
     g_vcf: [
       type: "file",
       required: true,
-      regex: /.+\.g\.vcf\.gz/
+      regex: /.+(?:\.g\.bcf|\.g\.bcf.gz|\.g\.vcf|\.g\.vcf\.gz)/
     ],
     cram: [
       type: "file",
