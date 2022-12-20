@@ -180,41 +180,41 @@ vep() {
   args+=("--hgvs")
   args+=("--pubmed")
   args+=("--dir_plugins" "!{params.annotate_vep_plugin_dir}")
-  args+=("--plugin" "Grantham")
-  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  args+=("--plugin" "Capice,!{capiceOutputPath}")
-  args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
-  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  # args+=("--plugin" "Grantham")
+  # args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  # args+=("--plugin" "Capice,!{capiceOutputPath}")
+  # args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
+  # args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  args+=("--custom" "!{greenDbConstraintPath},constraint,bed,overlap,0")
-  args+=("--custom" "!{dnaseRegionsPath},region,bed,overlap,0")
-  args+=("--custom" "!{tfbsRegionsPath},region,bed,overlap,0")
-  args+=("--custom" "!{ucneRegionsPath},region,bed,overlap,0")
-  args+=("--custom" "!{fathmmMKLScoresPath},fathmm,vcf,exact,0,fathmm")
-  args+=("--custom" "!{ncErScoresPath},ncER,bed,overlap,0")
-  args+=("--custom" "!{reMMScoresPath},ReMM,bed,overlap,0")
-  args+=("--custom" "!{regionPhenosPath},phenotype,bed,overlap,0")
+  # args+=("--custom" "!{greenDbConstraintPath},constraint,bed,overlap,0")
+  # args+=("--custom" "!{dnaseRegionsPath},region,bed,overlap,0")
+  # args+=("--custom" "!{tfbsRegionsPath},region,bed,overlap,0")
+  # args+=("--custom" "!{ucneRegionsPath},region,bed,overlap,0")
+  # args+=("--custom" "!{fathmmMKLScoresPath},fathmm,vcf,exact,0,fathmm")
+  # args+=("--custom" "!{ncErScoresPath},ncER,bed,overlap,0")
+  # args+=("--custom" "!{reMMScoresPath},ReMM,bed,overlap,0")
+  # args+=("--custom" "!{regionPhenosPath},phenotype,bed,overlap,0")
   args+=("--plugin" "VIPVaranLevel")
 
-  if [ -n "!{vepPluginArtefact}" ]; then
-    args+=("--plugin" "Artefact,!{vepPluginArtefact}")
-  fi
-  if [ -n "!{params.phenotypes}" ]; then
-    args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
-  fi
-  args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
-  if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
-    args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
-  fi
-  if [ -n "!{vepCustomGnomAdPath}" ]; then
-    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
-  fi
-  if [ -n "!{vepCustomClinVarPath}" ]; then
-      args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
-  fi
-  if [ -f "!{vcfPath}.tsv" ]; then
-    args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
-  fi
+  # if [ -n "!{vepPluginArtefact}" ]; then
+  #   args+=("--plugin" "Artefact,!{vepPluginArtefact}")
+  # fi
+  # if [ -n "!{params.phenotypes}" ]; then
+  #   args+=("--plugin" "Hpo,!{params.annotate_vep_plugin_hpo},$(join_arr ";" "${!UNIQUE_PHENOTYPES[@]}")")
+  # fi
+  # args+=("--plugin" "Inheritance,!{params.annotate_vep_plugin_inheritance}")
+  # if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.annotate_vep_plugin_vkgl_mode}" ]; then
+  #   args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.annotate_vep_plugin_vkgl_mode}")
+  # fi
+  # if [ -n "!{vepCustomGnomAdPath}" ]; then
+  #   args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
+  # fi
+  # if [ -n "!{vepCustomClinVarPath}" ]; then
+  #     args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
+  # fi
+  # if [ -f "!{vcfPath}.tsv" ]; then
+  #   args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
+  # fi
 
   !{singularity_vep} vep "${args[@]}"
 }
