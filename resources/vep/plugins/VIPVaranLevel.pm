@@ -132,7 +132,6 @@ sub run {
                 print($file "\n")
         }
     }
-     pick_order custom
     print($file "config\n");
     foreach my $config ($self->{"config"}) {
         my @config_custom_array = $self->{"plugin"};
