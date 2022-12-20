@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	hpo_ids	vcf	cram
+FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	HP:0001250,HP:0001166	snv_proband_trio_b38.vcf	snv_proband_trio_b38.bam
+FAM0	FATHER0			male	false			snv_proband_trio_b38.vcf	snv_proband_trio_b38.bam
+FAM0	MOTHER0			female	false			snv_proband_trio_b38.vcf	snv_proband_trio_b38.bam

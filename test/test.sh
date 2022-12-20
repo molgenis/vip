@@ -7,6 +7,7 @@ abort() {
    exit 1
 }
 
+CMD_VIP="$(realpath "${SCRIPT_DIR}/../vip")"
 NXF_VERSION="22.10.2"
 CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
@@ -70,224 +71,173 @@ after_all () {
   fi
 }
 
-test_snv () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv.vcf")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
-
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
-    return 1
-  fi
-
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
-    return 1
-  fi
-}
-
 test_corner_cases () {
   local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/corner_cases.vcf")
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/corner_cases.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 }
 
 test_snv_proband () {
   local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband.vcf")
-  args+=("--probands" "PROBAND0")
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
     return 1
   fi
 }
 
 test_snv_proband_trio () {
   local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
-  args+=("--probands" "PROBAND0")
-  args+=("--phenotypes" "HP:0001250;HP:0001166")
-  args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
-  args+=("--report_bams" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio.bam")
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband_trio.vcf.gz" | grep -vc "^#")" -eq 3 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 3 ]; then
     return 1
   fi
 }
 
 test_snv_proband_trio_sample_filtering () {
+  echo -e "params { vcf.filter_samples.classes = \"K\" }" > "${OUTPUT_DIR}/custom.cfg"
+  
   local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.vcf")
-  args+=("--probands" "PROBAND0")
-  args+=("--phenotypes" "HP:0001250;HP:0001166")
-  args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--filter_samples" 1)
-  args+=("${SCRIPT_DIR}/../main.nf")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband_trio.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ] > /dev/null 2>&1; then
     return 1
   fi
 }
 
 test_snv_proband_trio_b38 () {
   local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "local")
   args+=("--assembly" "GRCh38")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.vcf")
-  args+=("--probands" "PROBAND0")
-  args+=("--pedigree" "${TEST_RESOURCES_DIR}/snv_proband_trio.ped")
-  args+=("--report_bams" "PROBAND0=${TEST_RESOURCES_DIR}/snv_proband_trio_b38.bam")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv_proband_trio_b38.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
-    return 1
-  fi
-}
-
-test_sv () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/sv.vcf")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
-
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
-    return 1
-  fi
-
-  if [ ! "$(zcat "${OUTPUT_DIR}/sv.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
     return 1
   fi
 }
 
 test_lp () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/lp.vcf.gz")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  echo -e "params { vcf.annotate.GRCh37.vep_plugin_vkgl = \"${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv\" }" > "${OUTPUT_DIR}/custom.cfg"
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lp.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2452 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2452 ]; then
     return 1
   fi
 }
 
 test_lp_b38 () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh38")
-  args+=("--input" "${TEST_RESOURCES_DIR}/lp_b38.vcf.gz")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  echo -e "params { vcf.annotate.GRCh38.vep_plugin_vkgl = \"${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv\" }" > "${OUTPUT_DIR}/custom.cfg"
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lp_b38.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh38")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2450 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2450 ]; then
     return 1
   fi
 }
 
 test_lb () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/lb.bcf.gz")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  echo -e "params { vcf.annotate.GRCh37.vep_plugin_vkgl = \"${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv\" }" > "${OUTPUT_DIR}/custom.cfg"
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lb.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 1346 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 1346 ]; then
     return 1
   fi
 }
 
 test_lb_b38 () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh38")
-  args+=("--input" "${TEST_RESOURCES_DIR}/lb_b38.bcf.gz")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
-  args+=("${SCRIPT_DIR}/../main.nf")
+  echo -e "params { vcf.annotate.GRCh38.vep_plugin_vkgl = \"${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv\" }" > "${OUTPUT_DIR}/custom.cfg"
 
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/lb_b38.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh38")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 1272 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 1272 ]; then
     return 1
   fi
 }
 
 run_tests () {
   before_all
-
-  TEST_ID="test_snv"
-  before_each
-  test_snv
-  after_each
-
+  
   TEST_ID="test_corner_cases"
   before_each
   test_corner_cases
@@ -311,11 +261,6 @@ run_tests () {
   TEST_ID="test_snv_proband_trio_b38"
   before_each
   test_snv_proband_trio_b38
-  after_each
-
-  TEST_ID="test_sv"
-  before_each
-  test_sv
   after_each
 
   TEST_ID="test_lp"
@@ -342,10 +287,6 @@ run_tests () {
 }
 
 main () {
-  if [ -z "${APPTAINER_BIND}" ]; then
-    echo -e "${YELLOW}WARNING: APPTAINER_BIND environment variable not found${NC}"
-  fi
-
   run_tests
 }
 
