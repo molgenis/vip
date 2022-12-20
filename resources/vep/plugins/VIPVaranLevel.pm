@@ -88,51 +88,51 @@ sub run {
     # foreach (@vcf_line) {
     #     print($file "$_\n"); 
     # }
-    # print($file "params\n");
-    # my @params_array = $self->{"params"};
-    # foreach (@params_array) {
-    #     print($file "$_\n");
-    #     foreach (@$_) {
-    #         print($file "$_\n");
-    #     }
-    # }
-    # print($file "variant feature types\n");
-    # my @vft_array = $self->{"variant_feature_types"};
-    # foreach (@vft_array) {
-    #     print($file "$_\n");
-    #     foreach (@$_) {
-    #         print($file "$_\n");
-    #     }        
-    # }
-    # print($file "feature types\n");
-    # my @f_types_array = $self->{"feature_types"};
-    # foreach (@f_types_array) {
-    #     print($file "$_\n");
-    #     foreach (@$_) {
-    #         print($file "$_\n");
-    #     }        
-    # }
-    # print($file "variant feature types wanted\n");
-    # foreach my $variant_feature_wanted ($self->{"variant_feature_types_wanted"}) {
-    #     foreach my $key (keys %$variant_feature_wanted) {
-    #             print($file "in keys loop variant feature types wanted\n");
-    #             print($file $key);
-    #             print($file "=>");
-    #             print($file $variant_feature_wanted->{$key});
-    #             print($file "\n")
-    #     }
-    # }
-    # print($file "feature types wanted\n");
-    # foreach my $feature_wanted ($self->{"feature_types_wanted"}) {
-    #     foreach my $key (keys %$feature_wanted) {
-    #             print($file "in keys loop feature types wanted\n");
-    #             print($file $key);
-    #             print($file "=>");
-    #             print($file $feature_wanted->{$key});
-    #             print($file "\n")
-    #     }
-    # }
-    #  pick_order custom
+    print($file "params\n");
+    my @params_array = $self->{"params"};
+    foreach (@params_array) {
+        print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }
+    }
+    print($file "variant feature types\n");
+    my @vft_array = $self->{"variant_feature_types"};
+    foreach (@vft_array) {
+        print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }        
+    }
+    print($file "feature types\n");
+    my @f_types_array = $self->{"feature_types"};
+    foreach (@f_types_array) {
+        print($file "$_\n");
+        foreach (@$_) {
+            print($file "$_\n");
+        }        
+    }
+    print($file "variant feature types wanted\n");
+    foreach my $variant_feature_wanted ($self->{"variant_feature_types_wanted"}) {
+        foreach my $key (keys %$variant_feature_wanted) {
+                print($file "in keys loop variant feature types wanted\n");
+                print($file $key);
+                print($file "=>");
+                print($file $variant_feature_wanted->{$key});
+                print($file "\n")
+        }
+    }
+    print($file "feature types wanted\n");
+    foreach my $feature_wanted ($self->{"feature_types_wanted"}) {
+        foreach my $key (keys %$feature_wanted) {
+                print($file "in keys loop feature types wanted\n");
+                print($file $key);
+                print($file "=>");
+                print($file $feature_wanted->{$key});
+                print($file "\n")
+        }
+    }
+     pick_order custom
     print($file "config\n");
     foreach my $config ($self->{"config"}) {
         my @config_custom_array = $self->{"plugin"};
@@ -143,13 +143,13 @@ sub run {
         foreach (@pick_order) {
             print($file "$_\n");
         }
-        # foreach my $key (keys %$config) {
-        #         print($file "in keys loop config\n");
-        #         print($file $key);
-        #         print($file "=>");
-        #         print($file $config->{$key});
-        #         print($file "\n")
-        # }
+        foreach my $key (keys %$config) {
+                print($file "in keys loop config\n");
+                print($file $key);
+                print($file "=>");
+                print($file $config->{$key});
+                print($file "\n")
+        }
     }
     #print($file @vcf_line); # bevat chrom pos ref alt, 0 en 3x "." 
     # print($file $transcript_variation_allele); # is een hash
