@@ -77,16 +77,18 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | column  | type     | required |                                        |
 |---------|----------|----------|----------------------------------------|
 | ``vcf`` | ``file`` |          | file extensions: [.vcf.gz, .vcf, .bcf] |
+| ``cram``| ``file`` |          | file extensions: [bam, cram]           |
 
 #### Input gVCF
 | column    | type     | required |                                      |
 |-----------|----------|----------|--------------------------------------|
 | ``g_vcf`` | ``file`` |          | file extensions: [.g.vcf.gz, .g.vcf] |
+| ``cram``  | ``file`` |          | file extensions: [bam, cram]         |
 
 #### Input CRAM
 | column   | type     | required |                              |
 |----------|----------|----------|------------------------------|
-| ``cram`` | ``file`` |          | file extensions: [cram, bam] |
+| ``cram`` | ``file`` |          | file extensions: [bam, cram] |
 
 #### Input FASTQ
 | column       | type          | required |                                               |

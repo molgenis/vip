@@ -68,7 +68,11 @@ def parseSampleSheet(csvFile) {
       type: "file",
       required: true,
       regex: /.+\.g\.vcf\.gz/
-    ]
+    ],
+    cram: [
+      type: "file",
+      regex: /.+(?:\.bam|\.cram)/
+    ],
   ]
   return parseCommonSampleSheet(csvFile, cols)
 }
