@@ -82,7 +82,7 @@ execute_workflow() {
   local envStrict="true"
 
   local args=()
-  args+=("-C" "${configs[@]}")
+  args+=("-C" "${configs}")
   args+=("-log" "${paramOutput}/.nxf.log")
   args+=("run")
   args+=("${SCRIPT_DIR}/vip_${paramWorkflow}.nf")
@@ -96,6 +96,7 @@ execute_workflow() {
   if [[ -n "${paramAssembly}" ]]; then
     args+=("--assembly" "${paramAssembly}")
   fi
+  
   APPTAINER_BIND="${envBind}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}"
 }
 
