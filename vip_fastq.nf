@@ -35,12 +35,9 @@ workflow {
     validateParams()
 
     def sampleSheet = parseSampleSheet(params.input)
-    //FIXME calculate probands and hpo_ids per project
-    def probands = sampleSheet.findAll{ sample -> sample.proband }.collect{ sample -> [family_id:sample.family_id, individual_id:sample.individual_id] }
-    def hpo_ids = sampleSheet.collectMany { sample -> sample.hpo_ids }.unique()
 
     Channel.from(sampleSheet)
-    | map { sample -> [sample: sample, sampleSheet: sampleSheet, probands: probands, hpo_ids: hpo_ids] }
+    | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
     | fastq
 }
 
