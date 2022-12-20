@@ -1,4 +1,6 @@
-def parseCommonSampleSheet(csvFile, additionalCols) {
+def parseCommonSampleSheet(csvFilename, additionalCols) {
+  def csvFile = new File(csvFilename)
+
   def seq_nr = 0
   
   def commonCols = [
@@ -44,18 +46,18 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
 
   def cols = [*:commonCols, *:additionalCols]
     
-  def lines = new File(csvFile).readLines("UTF-8")
-  if (lines.size() == 0) exit 1, "error parsing '${csvFile}': file is empty"
+  def lines = csvFile.readLines("UTF-8")
+  if (lines.size() == 0) exit 1, "error parsing '${csvFilename}': file is empty"
   
   def headerTokens = lines[0].split('\t', -1)
   def colsWithIndex
   try {
     colsWithIndex = parseHeader(headerTokens, cols)
   } catch(IllegalArgumentException e) {
-    exit 1, "error parsing '${csvFile}' line 1: ${e.message}"
+    exit 1, "error parsing '${csvFilename}' line 1: ${e.message}"
   }
   
-  if (lines.size() == 1) exit 1, "error parsing '${csvFile}': file does not contain data"
+  if (lines.size() == 1) exit 1, "error parsing '${csvFilename}': file does not contain data"
 
   def samples=[]
   for (int i = 1; i < lines.size(); i++) {
@@ -65,13 +67,13 @@ def parseCommonSampleSheet(csvFile, additionalCols) {
     if (line == null) continue;
     
     def tokens = line.split('\t', -1)
-    if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFile}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
+    if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
     
     def sample
     try {
-      sample = parseSample(tokens, colsWithIndex)
+      sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile())
     } catch(IllegalArgumentException e) {
-      exit 1, "error parsing '${csvFile}' line ${lineNr}: ${e.message}"
+      exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
     }
     
     samples << sample
@@ -129,26 +131,27 @@ def parseValueBoolean(token, col) {
   return booleanValue
 }
 
-def parseValueFileList(token, col) {
+def parseValueFileList(token, col, rootDir) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect(value -> parseValueFile(value, col))
+  return values.collect(value -> parseValueFile(value, col, rootDir))
 }
 
-def parseValueFile(token, col) {
+def parseValueFile(token, col, rootDir) {
   def value = token.length() > 0 ? token : (col.default ? col.default() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   def fileValue
   if(value != null) {
-    fileValue = file(value)
-    if(!fileValue.exists()) throw new IllegalArgumentException("file '${token}' does not exist")
+    def relative = value.startsWith('/')
+    fileValue = relative ? file(value) : file(new File(value, rootDir).getPath())
+    if(!fileValue.exists()) throw new IllegalArgumentException(relative ? "file '${token}' in directory '${rootDir}' does not exist" : "file '${token}' does not exist")
     if(!fileValue.isFile()) throw new IllegalArgumentException("file '${token}' is not a file")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
   }
   return fileValue
 }
 
-def parseValue(token, col) {
+def parseValue(token, col, rootDir) {
   def value
   switch(col.type) {
     case "string":
@@ -158,7 +161,7 @@ def parseValue(token, col) {
       value = parseValueBoolean(token, col)
       break
     case "file":
-      value = col.list ? parseValueFileList(token, col) : parseValueFile(token, col)
+      value = col.list ? parseValueFileList(token, col, rootDir) : parseValueFile(token, col, rootDir)
       break
     default:
       throw new RuntimeException("unexpected column type '${col.type}'")
@@ -166,12 +169,12 @@ def parseValue(token, col) {
   return value;
 }
 
-def parseSample(tokens, cols) {
+def parseSample(tokens, cols, rootDir) {
     def sample = [:]
     cols.each { colId, col -> 
       def token = col.index != null ? tokens[col.index] : ''
       try {
-        sample[colId] = parseValue(token, col)
+        sample[colId] = parseValue(token, col, rootDir)
       } catch(IllegalArgumentException e) {
         throw new IllegalArgumentException("column '${colId}': ${e.message}")
       }
