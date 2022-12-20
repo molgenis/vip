@@ -71,24 +71,6 @@ after_all () {
   fi
 }
 
-test_snv () {
-  local args=()
-  args+=("-log" "${OUTPUT_LOG}")
-  args+=("run")
-  args+=("--assembly" "GRCh37")
-  args+=("--input" "${TEST_RESOURCES_DIR}/snv.vcf")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("${SCRIPT_DIR}/../main.nf")
-
-  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
-    return 1
-  fi
-
-  if [ ! "$(zcat "${OUTPUT_DIR}/snv.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
-    return 1
-  fi
-}
-
 test_corner_cases () {
   local args=()
   args+=("-log" "${OUTPUT_LOG}")
@@ -268,12 +250,6 @@ test_lb_b38 () {
 
 run_tests () {
   before_all
-
-  #FIXME re-enable test
-  #TEST_ID="test_snv"
-  #before_each
-  #test_snv
-  #after_each
   
   #FIXME re-enable test
   #TEST_ID="test_corner_cases"
