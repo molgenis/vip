@@ -23,7 +23,7 @@ workflow vcf {
     take: meta
     main:
         meta
-            | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
+            | map { meta -> tuple([*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index) }
             | prepare
             | flatMap { meta, vcf, vcfCsi, vcfStats -> nrRecords(vcfStats) > 0 ? [tuple(meta, vcf, vcfCsi)] : [] } // FIXME chunk.total invalid after operation
             | set { ch_prepared }
@@ -124,7 +124,6 @@ workflow {
     ch_project_vcfs.ready
         | map { meta -> [ *:meta, vcf: meta.sampleSheet.first().vcf, vcf_index: meta.sampleSheet.first().vcf_index, sampleSheet: meta.sampleSheet.collect { it.sample } ] }
         | mix(ch_project_vcfs_merged)
-        | map { meta -> [*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ] }
         | set { ch_inputs }
 
     ch_inputs
