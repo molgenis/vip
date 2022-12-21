@@ -10,8 +10,14 @@ process report {
   shell:
     vcfOutputPath = "${meta.project_id}.vcf.gz"
     reportPath = "${meta.project_id}.html"
+
     refSeqPath = params[params.assembly].reference.fasta
+    decisionTree = params.vcf.classify[params.assembly].decision_tree
+    maxRecords = params.vcf.report.max_records
+    maxSamples = params.vcf.report.max_samples
     genesPath = params.vcf.report[params.assembly].genes
+    template = params.vcf.report.template
+
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.sampleSheet.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
     pedigree = "${meta.project_id}.ped"

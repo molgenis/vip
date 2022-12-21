@@ -1,6 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
-report () {
+main() {
+  echo -e "!{pedigreeContent}" > "!{pedigree}"
+  
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
@@ -17,26 +20,24 @@ report () {
   if [ -n "!{hpoIds}" ]; then
     args+=("--phenotypes" "!{hpoIds}")
   fi
-  if [ -n "!{params.vcf.classify.decision_tree}" ]; then
-    args+=("--decision_tree" "!{params.vcf.classify.decision_tree}")
+  if [ -n "!{decisionTree}" ]; then
+    args+=("--decision_tree" "!{decisionTree}")
   fi
-  if [ -n "!{params.vcf.report.max_records}" ]; then
-    args+=("--max_records" "!{params.vcf.report.max_records}")
+  if [ -n "!{maxRecords}" ]; then
+    args+=("--max_records" "!{maxRecords}")
   fi
-  if [ -n "!{params.vcf.report.max_samples}" ]; then
-    args+=("--max_samples" "!{params.vcf.report.max_samples}")
+  if [ -n "!{maxSamples}" ]; then
+    args+=("--max_samples" "!{maxSamples}")
   fi
   if [ -n "!{genesPath}" ]; then
     args+=("--genes" "!{genesPath}")
   fi
-  if [ -n "!{params.vcf.report.template}" ]; then
-    args+=("--template" "!{params.vcf.report.template}")
+  if [ -n "!{template}" ]; then
+    args+=("--template" "!{template}")
   fi
   #FIXME include crams
 
   !{CMD_VCFREPORT} java "${args[@]}"
 }
 
-echo -e "!{pedigreeContent}" > "!{pedigree}"
-
-report
+main "$@"
