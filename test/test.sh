@@ -71,6 +71,25 @@ after_all () {
   fi
 }
 
+test_multiproject () {
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/multiproject.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "local")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip0.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+    return 1
+  fi
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip1.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+    return 1
+  fi
+}
+
 test_corner_cases () {
   local args=()
   args+=("--workflow" "vcf")
@@ -238,6 +257,11 @@ test_lb_b38 () {
 run_tests () {
   before_all
   
+  TEST_ID="test_multiproject"
+  before_each
+  test_multiproject
+  after_each
+
   TEST_ID="test_corner_cases"
   before_each
   test_corner_cases
