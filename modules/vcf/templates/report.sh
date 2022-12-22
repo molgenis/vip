@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-main() {
+report() {
   echo -e "!{pedigreeContent}" > "!{pedigree}"
   
   local args=()
@@ -35,9 +35,15 @@ main() {
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi
-  #FIXME include crams
+  if [ -n "!{crams}" ]; then
+    args+=("--cram" "!{crams}")
+  fi
 
   !{CMD_VCFREPORT} java "${args[@]}"
+}
+
+main() {
+  report
 }
 
 main "$@"

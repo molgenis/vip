@@ -16,6 +16,7 @@ include { inheritance } from './modules/vcf/inheritance'
 include { classify_samples } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
+include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds } from './modules/vcf/utils'
 
@@ -66,9 +67,28 @@ workflow vcf {
                 [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index } ]
               }
             | concat
-            | set { ch_concat }
-                
-        ch_concat
+            | map { meta, vcf, vcfCsi -> [*:meta, vcf: vcf, vcf_index: vcfCsi] }
+            | branch { meta ->
+                slice: meta.sampleSheet.any{ sample -> sample.cram != null }
+                ready: true
+              }
+            | set { ch_concated }
+     
+        ch_concated.slice
+            | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | map { meta -> tuple(meta, meta.vcf, meta.vcf_index, meta.sample.cram) }
+            | slice
+            | map { meta, cram -> [*:meta, cram: cram] }
+            | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
+            | groupTuple
+            | map { key, metaList -> 
+                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
+                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+              }
+            | set { ch_sliced }
+
+        ch_sliced.mix(ch_concated.ready)
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
             | report
 }
 
