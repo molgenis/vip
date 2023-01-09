@@ -1,3 +1,7 @@
+def basename(meta) {
+  return meta.chunk ? "${meta.project_id}_chunk_${meta.chunk.index}" : meta.project_id
+}
+
 def nrRecords(statsFilePath) {
   statsFilePath.readLines().collect { line -> line.split('\t').last() as int }.sum()
 }

@@ -1,9 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
-main() {
+convert () {
     !{CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "!{vcf}"
-    !{CMD_BCFTOOLS} index --threads "!{task.cpus}" "!{vcfOut}"
+}
+
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+main () {
+  convert
+  index
 }
 
 main "$@"

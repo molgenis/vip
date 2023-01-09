@@ -23,8 +23,9 @@ classify_samples() {
   !{CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
-index() {
-  !{CMD_BCFTOOLS} index --threads "!{task.cpus}" "!{vcfOut}"
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

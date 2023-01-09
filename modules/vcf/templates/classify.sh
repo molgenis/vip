@@ -1,11 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 
 classify () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
-  args+=("--input" "!{vcfPath}")
+  args+=("--input" "!{vcf}")
   args+=("--config" "!{decisionTree}")
   if [ !{annotateLabels} -eq 1 ]; then
     args+=("--labels")
@@ -14,10 +15,19 @@ classify () {
     args+=("--path")
   fi
 
-  args+=("--output" "!{vcfClassifiedPath}")
+  args+=("--output" "!{vcfOut}")
 
   !{CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
-classify
-${CMD_BCFTOOLS} index "!{vcfClassifiedPath}"
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+main () {
+  classify
+  index
+}
+
+main "$@"

@@ -1,12 +1,17 @@
 #!/bin/bash
+set -euo pipefail
+
+create_ped () {
+  echo -e "!{pedigreeContent}" > "!{pedigree}"
+}
 
 inheritance () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
-  args+=("--input" "!{vcfPath}")
-  args+=("--output" "!{vcfInheritancePath}")
+  args+=("--input" "!{vcf}")
+  args+=("--output" "!{vcfOut}")
   if [ -n "!{pedigree}" ]; then
     args+=("--pedigree" "!{pedigree}")
   fi
@@ -17,6 +22,15 @@ inheritance () {
   !{CMD_VCFINHERITANCEMATCHER} java "${args[@]}"
 }
 
-echo -e "!{pedigreeContent}" > "!{pedigree}"
-inheritance
-${CMD_BCFTOOLS} index "!{vcfInheritancePath}"
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+main() {
+  create_ped
+  inheritance
+  index
+}
+
+main "$@"

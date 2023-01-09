@@ -19,8 +19,8 @@ workflow gvcf {
             | groupTuple
             | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
             | glnexus_merge
-            | map { meta, vcf, vcfIndex -> 
-                def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex]
+            | map { meta, vcf, vcfIndex, vcfStats -> 
+                def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
                 newMeta.remove('sample')
                 return newMeta
               }
@@ -51,7 +51,7 @@ workflow {
         | flatMap { meta -> scatter(meta) }
         | map { meta -> tuple(meta, meta.sample.g_vcf, meta.sample.g_vcf_index) }
         | split
-        | map { meta, gVcfChunk, gVcfChunkIndex -> [*:meta, sample: [*:meta.sample, g_vcf: gVcfChunk, g_vcf_index: gVcfChunkIndex]] }
+        | map { meta, gVcfChunk, gVcfChunkIndex, gVcfChunkStats -> [*:meta, sample: [*:meta.sample, g_vcf: gVcfChunk, g_vcf_index: gVcfChunkIndex]] }
         | gvcf
 }
 

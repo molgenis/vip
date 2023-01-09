@@ -1,4 +1,10 @@
 #!/bin/bash
+set -euo pipefail
+
+capiceOutputPath="!{basename}_capice_output.tsv.gz"
+vcfCapiceAnnotatedPath="!{basename}_capice_annotated.vcf.gz"
+capiceInputPath="!{basename}_capice_input.tsv"
+capiceOutputPath="!{basename}_capice_output.tsv.gz"
 
 #######################################
 # Returns whether VCF file contains structural variants.
@@ -24,9 +30,9 @@ contains_sv() {
 
 annot_sv() {
   local args=()
-  args+=("-SVinputFile" "!{vcfPath}")
+  args+=("-SVinputFile" "!{vcf}")
   args+=("-outputDir" ".")
-  args+=("-outputFile" "!{vcfPath}.tsv")
+  args+=("-outputFile" "!{vcf}.tsv")
   args+=("-genomeBuild" "!{params.assembly}")
   args+=("-annotationMode" "full")
   args+=("-annotationsDir" "!{params.vcf.annotate.annotsv_cache_dir}")
@@ -34,7 +40,7 @@ annot_sv() {
     args+=("-hpo" "!{hpoIds}")
   fi
   !{CMD_ANNOTSV} "${args[@]}"
-  if [ ! -f "!{vcfPath}.tsv" ]; then
+  if [ ! -f "!{vcf}.tsv" ]; then
     echo -e "AnnotSV error: failed to produce output" 1>&2
     exit 1
   fi
@@ -48,9 +54,9 @@ capice() {
 
 capice_vep() {
   local args=()
-  args+=("--input_file" "!{vcfPath}")
+  args+=("--input_file" "!{vcf}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfCapiceAnnotatedPath}")
+  args+=("--output_file" "${vcfCapiceAnnotatedPath}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -82,7 +88,7 @@ capice_vep() {
 
   !{CMD_VEP} vep "${args[@]}"
 
-  if [ ! -f "!{vcfCapiceAnnotatedPath}" ]; then
+  if [ ! -f "${vcfCapiceAnnotatedPath}" ]; then
     echo -e "VEP error: failed to create capice input" 1>&2
     exit 1
   fi
@@ -91,7 +97,7 @@ capice_vep() {
 capice_bcftools() {
   local -r format="%CHROM\t%POS\t%REF\t%ALT\t%CSQ\n"
   local -r header="CHROM\tPOS\tREF\tALT\t"
-  local -r capiceInputPathHeaderless="!{capiceInputPath}.headerless"
+  local -r capiceInputPathHeaderless="${capiceInputPath}.headerless"
 
   local args=()
   args+=("+split-vep")
@@ -99,22 +105,22 @@ capice_bcftools() {
   args+=("-f" "${format}\n")
   args+=("-A" "tab")
   args+=("-o" "${capiceInputPathHeaderless}")
-  args+=("!{vcfCapiceAnnotatedPath}")
+  args+=("${vcfCapiceAnnotatedPath}")
 
   !{CMD_BCFTOOLS} "${args[@]}"
 
-  echo -e "${header}$(!{CMD_BCFTOOLS} +split-vep -l "!{vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "!{capiceInputPath}"
+  echo -e "${header}$(!{CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "${capiceInputPath}"
 }
 
 capice_predict() {
   local args=()
   args+=("predict")
-  args+=("--input" "!{capiceInputPath}")
-  args+=("--output" "!{capiceOutputPath}")
+  args+=("--input" "${capiceInputPath}")
+  args+=("--output" "${capiceOutputPath}")
   args+=("--model" "!{capiceModelPath}")
 
   !{CMD_CAPICE} "${args[@]}"
-  if [ ! -f "!{capiceOutputPath}" ]; then
+  if [ ! -f "${capiceOutputPath}" ]; then
     echo -e "CAPICE error: failed to produce output" 1>&2
     exit 1
   fi
@@ -122,9 +128,9 @@ capice_predict() {
 
 vep() {
   local args=()
-  args+=("--input_file" "!{vcfPath}")
+  args+=("--input_file" "!{vcf}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfAnnotatedPath}")
+  args+=("--output_file" "!{vcfOut}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -155,7 +161,7 @@ vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  args+=("--plugin" "Capice,!{capiceOutputPath}")
+  args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
@@ -175,17 +181,26 @@ vep() {
   if [ -n "!{vepCustomClinVarPath}" ]; then
       args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
   fi
-  if [ -f "!{vcfPath}.tsv" ]; then
-    args+=("--plugin" "AnnotSV,!{vcfPath}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
+  if [ -f "!{vcf}.tsv" ]; then
+    args+=("--plugin" "AnnotSV,!{vcf}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
 
   !{CMD_VEP} "${args[@]}"
 }
 
-if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ] && contains_sv "!{vcfPath}"; then
-  annot_sv
-fi
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
 
-capice
-vep
-${CMD_BCFTOOLS} index "!{vcfAnnotatedPath}"
+main () {
+  if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ] && contains_sv "!{vcf}"; then
+    annot_sv
+  fi
+
+  capice
+  vep
+  index
+}
+
+main "$@"

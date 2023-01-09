@@ -1,13 +1,15 @@
+include { basename } from './utils'
+
 process annotate {
   input:
-    tuple val(meta), path(vcfPath), path(vcfPathCsi)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
   output:
-    tuple val(meta), path(vcfAnnotatedPath), path("${vcfAnnotatedPath}.csi")
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    vcfAnnotatedPath = "${meta.project_id}_chunk_${meta.chunk.index}_annotated.vcf.gz"
-    vcfCapiceAnnotatedPath = "${meta.project_id}_chunk_${meta.chunk.index}_capice_annotated.vcf.gz"
-    capiceInputPath = "${meta.project_id}_chunk_${meta.chunk.index}_capice_input.tsv"
-    capiceOutputPath = "${meta.project_id}_chunk_${meta.chunk.index}_capice_output.tsv.gz"
+    basename = basename(meta)
+    vcfOut = "${basename}_annotated.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
     
     hpoIds = meta.hpo_ids.join(",")
     
