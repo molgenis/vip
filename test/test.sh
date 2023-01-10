@@ -71,6 +71,62 @@ after_all () {
   fi
 }
 
+test_empty_input () {
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/empty_input.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "local")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 0 ]; then
+    return 1
+  fi
+}
+
+test_empty_output_filter () {
+  echo -e "params { vcf.filter.classes = \"B\" }" > "${OUTPUT_DIR}/custom.cfg"
+  
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/empty_output_filter.tsv")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 0 ]; then
+    return 1
+  fi
+}
+
+test_empty_output_filter_samples () {
+  echo -e "params { vcf.filter_samples.classes = \"R\" }" > "${OUTPUT_DIR}/custom.cfg"
+
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/empty_output_filter_samples.tsv")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "local")
+  args+=("--assembly" "GRCh37")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 0 ]; then
+    return 1
+  fi
+}
+
 test_multiproject () {
   local args=()
   args+=("--workflow" "vcf")
@@ -111,11 +167,11 @@ test_snv_proband () {
   args+=("--profile" "local")
   args+=("--assembly" "GRCh37")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}"; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
     return 1
   fi
 }
@@ -257,6 +313,21 @@ test_lb_b38 () {
 run_tests () {
   before_all
   
+  TEST_ID="test_empty_input"
+  before_each
+  test_empty_input
+  after_each
+
+  TEST_ID="test_empty_output_filter"
+  before_each
+  test_empty_output_filter
+  after_each
+
+  TEST_ID="test_empty_output_filter_samples"
+  before_each
+  test_empty_output_filter_samples
+  after_each
+
   TEST_ID="test_multiproject"
   before_each
   test_multiproject

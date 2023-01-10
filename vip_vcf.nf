@@ -24,7 +24,13 @@ workflow vcf {
     main:
         meta
             | map { meta -> tuple([*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats) }
-            | flatMap { meta, vcf, vcfCsi, vcfStats -> nrRecords(vcfStats) > 0 ? [tuple(meta, vcf, vcfCsi, vcfStats)] : [] } // FIXME chunk.total invalid after operation
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
+            | set { ch_inputs }
+
+        ch_inputs.process
             | normalize
             | set { ch_normalized }
 
@@ -38,9 +44,13 @@ workflow vcf {
 
         ch_classified
             | filter
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
             | set { ch_filtered }
 
-        ch_filtered
+        ch_filtered.process
             | inheritance
             | set { ch_inheritanced }
 
@@ -50,11 +60,18 @@ workflow vcf {
 
         ch_classified_samples
             | filter_samples
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
             | set { ch_filtered_samples }
 
-        ch_filtered_samples
+        ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+            | set { ch_outputs }
+
+        ch_outputs
             | map { meta, vcf, vcfCsi, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats] }
-            | map { meta -> [meta.project_id, meta] } // TODO use 'groupKey(meta.project_id, meta.sampleSheet.size() * meta.chunk.total)'. currently doesn't work because chunk.total is invalid (see FIXME)
+            | map { meta -> [groupKey(meta.project_id, meta.chunk.total), meta] }
             | groupTuple
             | map { key, metaList -> 
                 def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
