@@ -167,7 +167,7 @@ test_snv_proband () {
   args+=("--profile" "local")
   args+=("--assembly" "GRCh37")
 
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
