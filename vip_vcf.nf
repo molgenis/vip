@@ -23,7 +23,7 @@ workflow vcf {
     take: meta
     main:
         meta
-            | map { meta -> tuple([*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats) }
+            | map { meta -> [[*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats] }
             | branch { meta, vcf, vcfIndex, vcfStats ->
                 process: nrRecords(vcfStats) > 0
                 empty: true
@@ -67,10 +67,10 @@ workflow vcf {
             | set { ch_filtered_samples }
 
         ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+            | map { meta, vcf, vcfCsi, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats] }
             | set { ch_outputs }
 
         ch_outputs
-            | map { meta, vcf, vcfCsi, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats] }
             | map { meta -> [groupKey(meta.project_id, meta.chunk.total), meta] }
             | groupTuple
             | map { key, metaList -> 
@@ -88,7 +88,7 @@ workflow vcf {
      
         ch_concated.slice
             | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> tuple(meta, meta.vcf, meta.vcf_index, meta.sample.cram) }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
             | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
@@ -160,7 +160,7 @@ workflow {
 
     ch_inputs
         | flatMap { meta -> scatter(meta) }
-        | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
+        | map { meta -> [meta, meta.vcf, meta.vcf_index] }
         | split
         | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex, vcf_stats: vcfChunkStats] }
         | vcf
