@@ -1,16 +1,15 @@
 include { basename } from './utils'
 
-process concat {
-  publishDir "$params.output", mode: 'link'
-  
+process concat {  
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
   output:
-    tuple val(meta), path(vcfOut), path("${vcfOutIndex}")
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     basename = basename(meta)
-    vcfOut="${basename}.vcf.gz"
+    vcfOut="${basename}_concated.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
-    
+    vcfOutStats = "${vcfOut}.stats"
+
     template 'concat.sh'
 }

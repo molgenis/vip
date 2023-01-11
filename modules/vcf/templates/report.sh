@@ -1,6 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
+create_vcf () {
+  printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "!{workflow.commandLine}" > "!{basename}.header"
+
+  local args=()
+  args+=("annotate")
+  args+=("--header-lines" "!{basename}.header")
+  args+=("--output-type" "z9")
+  args+=("--output" "!{vcfOut}")
+  args+=("--no-version")
+  args+=("--threads" "!{task.cpus}")
+  args+=("!{vcf}")
+
+  !{CMD_BCFTOOLS} "${args[@]}"
+}
+
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
 report() {
   echo -e "!{pedigreeContent}" > "!{pedigree}"
   
@@ -8,7 +28,7 @@ report() {
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
-  args+=("--input" "!{vcfOutputPath}")
+  args+=("--input" "!{vcfOut}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
   if [ -n "!{probands}" ]; then
@@ -43,6 +63,8 @@ report() {
 }
 
 main() {
+  create_vcf
+  index
   report
 }
 

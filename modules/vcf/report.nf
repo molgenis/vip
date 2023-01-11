@@ -1,15 +1,20 @@
+include { basename } from './utils'
 include { createPedigree } from '../utils'
 
 process report {
   publishDir "$params.output", mode: 'link'
 
   input:
-    tuple val(meta), path(vcf), path(vcf_index), path(crams)
+    tuple val(meta), path(vcf), path(vcfIndex), path(crams)
   output:
-    tuple val(meta), path(reportPath)
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(reportPath)
   shell:
-    vcfOutputPath = "${meta.project_id}.vcf.gz"
-    reportPath = "${meta.project_id}.html"
+    basename = basename(meta)
+    vcfOut = "${basename}.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    reportPath = "${basename}.html"
 
     refSeqPath = params[params.assembly].reference.fasta
     decisionTree = params.vcf.classify[params.assembly].decision_tree
