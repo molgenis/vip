@@ -5,7 +5,7 @@ include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { findIndex; scatter } from './modules/utils'
 include { glnexus_merge } from './modules/gvcf/glnexus'
 include { index } from './modules/vcf/index'
-include { split } from './modules/vcf/split'
+include { split } from './modules/gvcf/split'
 include { vcf } from './vip_vcf'
 
 workflow gvcf {
