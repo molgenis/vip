@@ -1,12 +1,10 @@
-include { basename } from './utils'
-
 process convert {
   input:
     tuple val(meta), path(vcf)
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex)
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    vcfOut = "${vcf.simpleName}.vcf.gz"
+    vcfOut = "${vcf.simpleName}_converted.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

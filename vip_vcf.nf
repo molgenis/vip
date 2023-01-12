@@ -2,9 +2,10 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
-include { findIndex; scatter; createPedigree } from './modules/utils'
+include { findIndex; createPedigree } from './modules/utils'
 include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
+include { stats } from './modules/vcf/stats'
 include { merge } from './modules/vcf/merge'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
@@ -17,7 +18,7 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter } from './modules/vcf/utils'
 
 workflow vcf {
     take: meta
@@ -25,7 +26,7 @@ workflow vcf {
         meta
             | map { meta -> [[*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats] }
             | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: nrRecords(vcfStats) > 0
+                process: meta.chunk.total > 0
                 empty: true
               }
             | set { ch_inputs }
@@ -148,6 +149,7 @@ workflow {
         | branch { meta ->
             convert: !(meta.vcf ==~ /.+\.vcf\.gz/)
             index:   meta.vcf_index == null
+            stats:   meta.vcf_stats == null
             ready:   true
           }
         | set { ch_vcfs }
@@ -156,17 +158,23 @@ workflow {
     ch_vcfs.convert
         | map { meta -> [meta, meta.vcf] }
         | convert
-        | map { meta, vcf, vcf_index -> [*:meta, vcf: vcf, vcf_index: vcf_index] }
+        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
         | set { ch_vcfs_converted }
 
     ch_vcfs.index
         | map { meta -> [meta, meta.vcf] }
         | index
-        | map { meta, vcf_index -> [*:meta, vcf_index: vcf_index] }
+        | map { meta, vcfIndex, vcfStats -> [*:meta, vcf_index: vcfIndex, vcf_stats: vcfStats] }
         | set { ch_vcfs_indexed }
 
+    ch_vcfs.stats
+        | map { meta -> [meta, meta.vcf, meta.vcf_index] }
+        | stats
+        | map { meta, vcfStats -> [*:meta, vcf_stats: vcfStats] }
+        | set { ch_vcfs_statsed }
+
     // group vcfs per project
-    ch_vcfs.ready.mix(ch_vcfs_converted, ch_vcfs_indexed)
+    ch_vcfs.ready.mix(ch_vcfs_converted, ch_vcfs_indexed, ch_vcfs_statsed)
         | flatMap { meta -> meta.sampleSheet.collect { sample -> [*:meta, sample: sample].findAll { it.key != 'sampleSheet' } } }
         | map { meta -> [groupKey(meta.sample.project_id, sampleSheet.count{ it.project_id == meta.sample.project_id }), meta] }
         | groupTuple
@@ -181,19 +189,32 @@ workflow {
     ch_project_vcfs.merge
         | map { meta -> [ meta, meta.sampleSheet.collect{ it.vcf }.unique(), meta.sampleSheet.collect{ it.vcf_index }.unique() ] }
         | merge
-        | map { meta, vcf, vcfIndex -> [*:meta, vcf: vcf, vcf_index: vcfIndex, sampleSheet: meta.sampleSheet.collect { it.sample }] }
+        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats, sampleSheet: meta.sampleSheet.collect { it.sample }] }
         | set { ch_project_vcfs_merged }
 
     ch_project_vcfs.ready
-        | map { meta -> [ *:meta, vcf: meta.sampleSheet.first().vcf, vcf_index: meta.sampleSheet.first().vcf_index, sampleSheet: meta.sampleSheet.collect { it.sample } ] }
+        | map { meta ->
+            def sample = meta.sampleSheet.first()
+            [ *:meta, vcf: sample.vcf, vcf_index: sample.vcf_index, vcf_stats: sample.vcf_stats, sampleSheet: meta.sampleSheet.collect { it.sample } ]
+          }
         | mix(ch_project_vcfs_merged)
         | set { ch_inputs }
 
     ch_inputs
         | flatMap { meta -> scatter(meta) }
+        | branch { meta ->
+          split: meta.chunk.total > 1
+          ready: true
+        }
+        | set { ch_inputs_scattered }
+
+    ch_inputs_scattered.split
         | map { meta -> [meta, meta.vcf, meta.vcf_index] }
         | split
         | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex, vcf_stats: vcfChunkStats] }
+        | set { ch_inputs_splitted }
+    
+    ch_inputs_scattered.ready.mix(ch_inputs_splitted)
         | vcf
 }
 
