@@ -1,8 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-main() {
-    !{CMD_BCFTOOLS} index --threads "!{task.cpus}" "!{vcf}"
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfIndex}" --threads "!{task.cpus}" "!{vcf}"
+}
+
+main () {
+  index
 }
 
 main "$@"

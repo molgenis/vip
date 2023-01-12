@@ -1,26 +1,36 @@
 #!/bin/bash
+set -euo pipefail
 
-classify_samples () {
+classify_samples() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
-  args+=("--input" "!{vcfPath}")
+  args+=("--input" "!{vcf}")
   args+=("--mode" "sample")
-  args+=("--config" "!{params.vcf.classify_samples.decision_tree}")
-  if [ !{params.vcf.classify_samples.annotate_labels} -eq 1 ]; then
+  args+=("--config" "!{decisionTree}")
+  if [ !{annotateLabels} -eq 1 ]; then
     args+=("--labels")
   fi
-  if [ !{params.vcf.classify_samples.annotate_path} -eq 1 ]; then
+  if [ !{annotatePath} -eq 1 ]; then
     args+=("--path")
   fi
   if [ -n "!{probands}" ]; then
     args+=("--probands" "!{probands}")
   fi
-  args+=("--output" "!{vcfSamplesClassifiedPath}")
+  args+=("--output" "!{vcfOut}")
 
   !{CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
-classify_samples
-${CMD_BCFTOOLS} index "!{vcfSamplesClassifiedPath}"
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+main() {
+  classify_samples
+  index
+}
+
+main "$@"

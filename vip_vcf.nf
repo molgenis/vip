@@ -7,8 +7,7 @@ include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
 include { merge } from './modules/vcf/merge'
 include { split } from './modules/vcf/split'
-include { prepare } from './modules/vcf/prepare'
-include { preprocess } from './modules/vcf/preprocess'
+include { normalize } from './modules/vcf/normalize'
 include { annotate } from './modules/vcf/annotate'
 include { classify } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
@@ -16,6 +15,7 @@ include { inheritance } from './modules/vcf/inheritance'
 include { classify_samples } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
+include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds } from './modules/vcf/utils'
 
@@ -23,16 +23,18 @@ workflow vcf {
     take: meta
     main:
         meta
-            | map { meta -> tuple([*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index) }
-            | prepare
-            | flatMap { meta, vcf, vcfCsi, vcfStats -> nrRecords(vcfStats) > 0 ? [tuple(meta, vcf, vcfCsi)] : [] } // FIXME chunk.total invalid after operation
-            | set { ch_prepared }
+            | map { meta -> [[*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats] }
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
+            | set { ch_inputs }
 
-        ch_prepared
-            | preprocess
-            | set { ch_preprocessed }
+        ch_inputs.process
+            | normalize
+            | set { ch_normalized }
 
-        ch_preprocessed
+        ch_normalized
             | annotate
             | set { ch_annotated }
 
@@ -42,9 +44,13 @@ workflow vcf {
 
         ch_classified
             | filter
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
             | set { ch_filtered }
 
-        ch_filtered
+        ch_filtered.process
             | inheritance
             | set { ch_inheritanced }
 
@@ -54,21 +60,78 @@ workflow vcf {
 
         ch_classified_samples
             | filter_samples
+            | branch { meta, vcf, vcfIndex, vcfStats ->
+                process: nrRecords(vcfStats) > 0
+                empty: true
+              }
             | set { ch_filtered_samples }
 
-        ch_filtered_samples
-            | map { meta, vcf, vcfCsi -> [*:meta, vcf: vcf, vcf_index: vcfCsi] }
-            | map { meta -> [meta.project_id, meta] } // TODO use 'groupKey(meta.project_id, meta.sampleSheet.size() * meta.chunk.total)'. currently doesn't work because chunk.total is invalid (see FIXME)
+        ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+            | map { meta, vcf, vcfCsi, vcfStats -> [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
             | groupTuple
             | map { key, metaList -> 
-                def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-                def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'chunk' }
-                [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index } ]
+                def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
+                def meta, vcfs, vcfIndexes
+                if(filteredMetaList.size() == 0) {
+                  meta = metaList.first()
+                  vcfs = [meta.vcf]
+                  vcfIndexes = [meta.vcf_index]
+                }
+                else if(filteredMetaList.size() == 1) {
+                  meta = filteredMetaList.first()
+                  vcfs = [meta.vcf]
+                  vcfIndexes = [meta.vcf_index]
+                }
+                else {
+                  def sortedMetaList = filteredMetaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+                  meta = sortedMetaList.first()
+                  vcfs = sortedMetaList.collect { it.vcf }
+                  vcfIndexes = sortedMetaList.collect { it.vcf_index }
+                }
+                meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+                return [meta, vcfs, vcfIndexes]
               }
+            | branch { meta, vcfs, vcfIndexes ->
+                concat: vcfs.size() > 1
+                ready: true
+              }
+            | set { ch_outputs }
+
+          ch_outputs.concat
             | concat
-            | set { ch_concat }
-                
-        ch_concat
+            | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
+            | branch { meta ->
+                slice: meta.sampleSheet.any{ sample -> sample.cram != null }
+                ready: true
+              }
+            | set { ch_concated }
+     
+          ch_outputs.ready
+            | map { meta, vcfs, vcfIndexes -> [*:meta, vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
+            | set { ch_output_singleton }
+
+          ch_output_singleton.mix(ch_concated)
+            | branch { meta ->
+                slice: meta.sampleSheet.any{ sample -> sample.cram != null }
+                ready: true
+              }
+            | set { ch_output }
+
+        ch_output.slice
+            | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
+            | slice
+            | map { meta, cram -> [*:meta, cram: cram] }
+            | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
+            | groupTuple
+            | map { key, metaList -> 
+                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
+                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+              }
+            | set { ch_sliced }
+
+        ch_sliced.mix(ch_output.ready)
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
             | report
 }
 
@@ -128,9 +191,9 @@ workflow {
 
     ch_inputs
         | flatMap { meta -> scatter(meta) }
-        | map { meta -> tuple(meta, meta.vcf, meta.vcf_index) }
+        | map { meta -> [meta, meta.vcf, meta.vcf_index] }
         | split
-        | map { meta, vcfChunk, vcfChunkIndex -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex] }
+        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex, vcf_stats: vcfChunkStats] }
         | vcf
 }
 

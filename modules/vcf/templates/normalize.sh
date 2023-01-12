@@ -1,5 +1,7 @@
 #!/bin/bash
-norm () {
+set -euo pipefail
+
+normalize () {
   local args=()
   args+=("norm")
   # split multi-allelic sites into bi-allelic records (both SNPs and indels are merged separately into two records)
@@ -8,22 +10,22 @@ norm () {
   args+=("--check-ref" "w")
   args+=("--fasta-ref" "!{refSeqPath}")
   args+=("--output-type" "z")
-  args+=("--output" "!{vcfPreprocessedPath}")
+  args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
-  args+=("!{vcfPath}")
+  args+=("!{vcf}")
 
   !{CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {
-  local args=()
-  args+=("index")
-  args+=("--threads" "!{task.cpus}")
-  args+=("!{vcfPreprocessedPath}")
-
-  !{CMD_BCFTOOLS} "${args[@]}"
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
-norm
-index
+main() {
+  normalize
+  index
+}
+
+main "$@"

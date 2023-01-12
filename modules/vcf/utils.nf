@@ -1,5 +1,11 @@
+def basename(meta) {
+  return meta.chunk ? "${meta.project_id}_chunk_${meta.chunk.index}" : meta.project_id
+}
+
 def nrRecords(statsFilePath) {
-  statsFilePath.readLines().collect { line -> line.split('\t').last() as int }.sum()
+  // stats file only contains counts for contigs with at least one record
+  def lines = statsFilePath.readLines()
+  return !lines.isEmpty() ? lines.collect { line -> line.split('\t').last() as int }.sum() : 0
 }
 
 def getProbands(samples) {

@@ -1,10 +1,15 @@
+include { basename } from './utils'
+
 process filter_samples {
   input:
-    tuple val(meta), path(vcfPath), path(vcfPathCsi)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
   output:
-    tuple val(meta), path(vcfFilteredSamplesPath), path("${vcfFilteredSamplesPath}.csi")
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    vcfFilteredSamplesPath = "${meta.project_id}_chunk_${meta.chunk.index}_filtered_samples.vcf.gz"
-    vcfSplittedSamplesPath = "${meta.project_id}_chunk_${meta.chunk.index}_splitted_samples.vcf.gz"
+    basename = basename(meta)
+    vcfOut = "${basename}_filtered_samples.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+    
     template 'filter_samples.sh'
 }

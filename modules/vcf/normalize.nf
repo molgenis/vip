@@ -1,15 +1,17 @@
 include { basename } from './utils'
 
-process concat {  
+process normalize {
   input:
-    tuple val(meta), path(vcfs), path(vcfIndexes)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     basename = basename(meta)
-    vcfOut="${basename}_concated.vcf.gz"
+    vcfOut = "${basename}_normalized.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
-
-    template 'concat.sh'
+    
+    refSeqPath = params[params.assembly].reference.fasta
+    
+    template 'normalize.sh'
 }

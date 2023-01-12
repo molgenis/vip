@@ -1,11 +1,34 @@
 #!/bin/bash
+set -euo pipefail
 
-report () {
+create_vcf () {
+  printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "!{workflow.commandLine}" > "!{basename}.header"
+
+  local args=()
+  args+=("annotate")
+  args+=("--header-lines" "!{basename}.header")
+  args+=("--output-type" "z9")
+  args+=("--output" "!{vcfOut}")
+  args+=("--no-version")
+  args+=("--threads" "!{task.cpus}")
+  args+=("!{vcf}")
+
+  !{CMD_BCFTOOLS} "${args[@]}"
+}
+
+index () {
+  !{CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+report() {
+  echo -e "!{pedigreeContent}" > "!{pedigree}"
+  
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
-  args+=("--input" "!{vcfOutputPath}")
+  args+=("--input" "!{vcfOut}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
   if [ -n "!{probands}" ]; then
@@ -17,26 +40,32 @@ report () {
   if [ -n "!{hpoIds}" ]; then
     args+=("--phenotypes" "!{hpoIds}")
   fi
-  if [ -n "!{params.vcf.classify.decision_tree}" ]; then
-    args+=("--decision_tree" "!{params.vcf.classify.decision_tree}")
+  if [ -n "!{decisionTree}" ]; then
+    args+=("--decision_tree" "!{decisionTree}")
   fi
-  if [ -n "!{params.vcf.report.max_records}" ]; then
-    args+=("--max_records" "!{params.vcf.report.max_records}")
+  if [ -n "!{maxRecords}" ]; then
+    args+=("--max_records" "!{maxRecords}")
   fi
-  if [ -n "!{params.vcf.report.max_samples}" ]; then
-    args+=("--max_samples" "!{params.vcf.report.max_samples}")
+  if [ -n "!{maxSamples}" ]; then
+    args+=("--max_samples" "!{maxSamples}")
   fi
   if [ -n "!{genesPath}" ]; then
     args+=("--genes" "!{genesPath}")
   fi
-  if [ -n "!{params.vcf.report.template}" ]; then
-    args+=("--template" "!{params.vcf.report.template}")
+  if [ -n "!{template}" ]; then
+    args+=("--template" "!{template}")
   fi
-  #FIXME include crams
+  if [ -n "!{crams}" ]; then
+    args+=("--cram" "!{crams}")
+  fi
 
   !{CMD_VCFREPORT} java "${args[@]}"
 }
 
-echo -e "!{pedigreeContent}" > "!{pedigree}"
+main() {
+  create_vcf
+  index
+  report
+}
 
-report
+main "$@"
