@@ -6,6 +6,7 @@ include { scatter } from './modules/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { deepvariant_call; deeptrio_call; deeptrio_call_duo_father; deeptrio_call_duo_mother } from './modules/cram/deepvariant'
 include { vcf } from './vip_vcf'
+include { merge_gvcf } from './modules/vcf/merge_gvcf'
 
 workflow {
     validateParams()
@@ -95,7 +96,7 @@ workflow cram {
                 }
             | groupTuple
             | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
-            | glnexus_merge
+            | merge_gvcf
             | map { meta, vcf, vcfIndex, vcfStats -> 
                 def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
                 newMeta.remove('sample')
