@@ -1,0 +1,2 @@
+proband	hpo_ids	project_id	family_id	individual_id	g_vcf
+true	HP:0000001	NA12878	fam0	fam0_NA12878	test.g.vcf.gz
