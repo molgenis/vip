@@ -4,7 +4,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
-  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, vcf
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -a, --assembly <arg>  genome assembly. allowed values: GRCh37, GRCh38 (optional)
@@ -26,8 +26,8 @@ validate() {
     usage
     exit 2
   else
-    if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf ]]; then
-      >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf]"
+    if [[ ! "${workflow}" =~ cram|fastq|vcf ]]; then
+      >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, vcf]"
       usage
       exit 2
     fi

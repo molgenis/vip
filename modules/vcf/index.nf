@@ -2,9 +2,10 @@ process index {
   input:
     tuple val(meta), path(vcf)
   output:
-    tuple val(meta), path(vcfIndex)
+    tuple val(meta), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    vcfIndex = "${vcf}.csi"
+    vcfOutIndex = "${vcf}.csi"
+    vcfOutStats = "${vcf}.stats"
 
     template 'index.sh'
 }

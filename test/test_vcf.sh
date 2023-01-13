@@ -244,7 +244,7 @@ test_lb_b38 () {
 run_tests () {
   before_all
 
-  comment="TEST_ID="test_empty_input"
+  TEST_ID="test_empty_input"
   before_each
   test_empty_input
   after_each
@@ -307,7 +307,7 @@ run_tests () {
   TEST_ID="test_lb_b38"
   before_each
   test_lb_b38
-  after_each"
+  after_each
 
   after_all
 }
