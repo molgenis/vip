@@ -335,7 +335,26 @@ test_lb_b38 () {
 
 run_tests () {
   before_all
-  
+
+  TEST_ID="gvcf"
+  before_each
+  test_gvcf
+  after_each
+
+  TEST_ID="test_empty_input"
+  before_each
+  test_empty_input
+  after_each
+
+  TEST_ID="test_empty_output_filter"
+  before_each
+  test_empty_output_filter
+  after_each
+
+  TEST_ID="test_empty_output_filter_samples"
+  before_each
+  test_empty_output_filter_samples
+  after_each  
 
   TEST_ID="test_multiproject"
   before_each
