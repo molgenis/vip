@@ -6,7 +6,8 @@ include { findIndex; createPedigree } from './modules/utils'
 include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
 include { stats } from './modules/vcf/stats'
-include { merge } from './modules/vcf/merge'
+include { merge_vcf } from './modules/vcf/merge_vcf'
+include { merge_gvcf } from './modules/vcf/merge_gvcf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate } from './modules/vcf/annotate'
@@ -18,7 +19,7 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf } from './modules/vcf/utils'
 
 workflow vcf {
     take: meta
@@ -180,24 +181,31 @@ workflow {
         | groupTuple
         | map { key, group -> [project_id: group.first().sample.project_id, sampleSheet: group] }
         | branch { meta ->
-            merge: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1
+            merge_gvcfs: isGVcf(meta.sampleSheet.first().vcf)
+            merge_vcfs: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1
             ready: true
           }
         | set { ch_project_vcfs }
 
     // merge unique project vcfs
-    ch_project_vcfs.merge
+    ch_project_vcfs.merge_vcfs
         | map { meta -> [ meta, meta.sampleSheet.collect{ it.vcf }.unique(), meta.sampleSheet.collect{ it.vcf_index }.unique() ] }
-        | merge
+        | merge_vcf
         | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats, sampleSheet: meta.sampleSheet.collect { it.sample }] }
-        | set { ch_project_vcfs_merged }
+        | set { ch_project_vcfs_merged_vcfs }
+
+    ch_project_vcfs.merge_gvcfs
+        | map { meta -> [ meta, meta.sampleSheet.collect{ it.vcf }.unique(), meta.sampleSheet.collect{ it.vcf_index }.unique() ] }
+        | merge_gvcf
+        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats, sampleSheet: meta.sampleSheet.collect { it.sample }] }
+        | set { ch_project_vcfs_merged_gvcfs }
 
     ch_project_vcfs.ready
         | map { meta ->
             def sample = meta.sampleSheet.first()
             [ *:meta, vcf: sample.vcf, vcf_index: sample.vcf_index, vcf_stats: sample.vcf_stats, sampleSheet: meta.sampleSheet.collect { it.sample } ]
           }
-        | mix(ch_project_vcfs_merged)
+        | mix(ch_project_vcfs_merged_vcfs, ch_project_vcfs_merged_gvcfs)
         | set { ch_inputs }
 
     ch_inputs
@@ -227,7 +235,7 @@ def parseSampleSheet(csvFile) {
     vcf: [
       type: "file",
       required: true,
-      regex: /.+(?:\.bcf|\.bcf.gz|\.vcf|\.vcf\.gz)/
+      regex: getVcfRegex()
     ],
     cram: [
       type: "file",

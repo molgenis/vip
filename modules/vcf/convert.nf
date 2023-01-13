@@ -1,10 +1,13 @@
+include { isGVcf } from './utils'
+
 process convert {
   input:
     tuple val(meta), path(vcf)
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    vcfOut = "${vcf.simpleName}_converted.vcf.gz"
+    basename = "${vcf.simpleName}_converted"
+    vcfOut = isGVcf(vcf) ? "${basename}.g.vcf.gz" : "${basename}.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

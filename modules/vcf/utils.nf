@@ -54,3 +54,19 @@ def scatter(meta) {
     def index = 0
     return !chunks.isEmpty() ? chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ]) : [[*:meta, chunk: [index: 0, regions: [], total: 0] ]]
 }
+
+def getVcfRegex() {
+  /.+(?:\.bcf|\.bcf.gz|\.vcf|\.vcf\.gz)/
+}
+
+def isVcf(vcf) {
+  vcf ==~ getVcfRegex()  
+}
+
+def getGVcfRegex() {
+  /.+(?:\.g\.bcf|\.g\.bcf.gz|\.g\.vcf|\.g\.vcf\.gz)/
+}
+
+def isGVcf(gVcf) {
+  gVcf ==~ getGVcfRegex()
+}

@@ -5,7 +5,7 @@ include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { deepvariant_call; deeptrio_call; deeptrio_call_duo_father; deeptrio_call_duo_mother } from './modules/cram/deepvariant'
-include { gvcf } from './vip_gvcf'
+include { vcf } from './vip_vcf'
 
 workflow {
     validateParams()
@@ -51,7 +51,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.sample.cram, meta.sample.cram_index) }
             | deepvariant_call
-            | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, g_vcf: gVcf] ] }
+            | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, vcf: gVcf] ] }
             | set { ch_deepvariant_single }
 
             ch_callvariants.duo_father
@@ -60,7 +60,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.father.cram, meta.samples.father.cram_index) }
             | deeptrio_call_duo_father
-            | map { meta, gVcf, gVcfFather -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, g_vcf: gVcf], father: [*:meta.samples.father, g_vcf: gVcfFather] ] ] }
+            | map { meta, gVcf, gVcfFather -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf], father: [*:meta.samples.father, vcf: gVcfFather] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_duo_father }
 
@@ -70,7 +70,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
             | deeptrio_call_duo_mother
-            | map { meta, gVcf, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, g_vcf: gVcf],mother: [*:meta.samples.mother, g_vcf: gVcfMother] ] ] }
+            | map { meta, gVcf, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf],mother: [*:meta.samples.mother, vcf: gVcfMother] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_duo_mother }
 
@@ -80,12 +80,28 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
             | deeptrio_call
-            | map { meta, gVcf, gVcfFather, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, g_vcf: gVcf], mother: [*:meta.samples.mother, g_vcf: gVcfMother], father: [*:meta.samples.father, g_vcf: gVcfFather] ] ] }
+            | map { meta, gVcf, gVcfFather, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf], mother: [*:meta.samples.mother, vcf: gVcfMother], father: [*:meta.samples.father, vcf: gVcfFather] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_trio }
-
+            
             ch_deepvariant_single.mix(ch_deeptrio_duo_father).mix(ch_deeptrio_duo_mother).mix(ch_deeptrio_trio)
-            | gvcf
+            | set { ch_gvcf }
+
+            //FIXME merge per project instead of per samplesheet
+            ch_gvcf
+              | map { meta ->
+                def groupSize = meta.sampleSheet.count{ sample -> sample.g_vcf != null }
+                tuple(groupKey(meta.chunk.index, groupSize), meta)
+                }
+            | groupTuple
+            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
+            | glnexus_merge
+            | map { meta, vcf, vcfIndex, vcfStats -> 
+                def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
+                newMeta.remove('sample')
+                return newMeta
+              }
+            | vcf
 }
 
 def getFamilyStructure(meta) {

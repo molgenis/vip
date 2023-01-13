@@ -9,7 +9,6 @@ VIP is a flexible human variant interpretation pipeline for rare disease using s
   - [Workflow](#workflow)
   - [Input](#input)
     - [Input VCF](#input-vcf)
-    - [Input gVCF](#input-gvcf)
     - [Input CRAM](#input-cram)
     - [Input FASTQ](#input-fastq)
   - [Profile](#profile)
@@ -79,12 +78,6 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | ``vcf`` | ``file`` |          | file extensions: [.vcf.gz, .vcf, .bcf, .bcf.gz] |
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                    |
 
-#### Input gVCF
-| column    | type     | required |                                                         |
-|-----------|----------|----------|---------------------------------------------------------|
-| ``g_vcf`` | ``file`` |          | file extensions: [.g.vcf.gz, .g.vcf, .g.bcf, .g.bcf.gz] |
-| ``cram``  | ``file`` |          | file extensions: [bam, cram]                            |
-
 #### Input CRAM
 | column   | type     | required |                              |
 |----------|----------|----------|------------------------------|
@@ -131,9 +124,6 @@ For the full list, see [config/nxf.config](https://github.com/molgenis/vip/tree/
 
 #### Config VCF
 For the full list, see [config/nxf_vcf.config](https://github.com/molgenis/vip/tree/main/config/nxf_vcf.config)
-
-#### Config gVCF
-For the full list, see [config/nxf_gvcf.config](https://github.com/molgenis/vip/tree/main/config/nxf_gvcf.config)
 
 #### Config CRAM
 For the full list, see [config/nxf_cram.config](https://github.com/molgenis/vip/tree/main/config/nxf_cram.config)

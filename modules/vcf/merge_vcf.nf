@@ -1,6 +1,6 @@
 include { basename } from './utils'
 
-process merge {  
+process merge_vcf {  
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
   output:
@@ -11,5 +11,5 @@ process merge {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
-    template 'merge.sh'
+    template 'merge_vcf.sh'
 }
