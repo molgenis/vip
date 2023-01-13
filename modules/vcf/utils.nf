@@ -1,7 +1,7 @@
 include { parseFastaIndex } from '../utils'
 
 def basename(meta) {
-  return meta.chunk ? "${meta.project_id}_chunk_${meta.chunk.index}" : meta.project_id
+  return meta.chunk && meta.chunk.total > 1 ? "${meta.project_id}_chunk_${meta.chunk.index}" : meta.project_id
 }
 
 def nrRecords(statsFilePath) {
