@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { concat_fastq } from './modules/fastq/concat'
-include { minimap2_align } from './modules/fastq/minimap2'
+include { minimap2_align; minimap2_index } from './modules/fastq/minimap2'
 include { cram } from './vip_cram'
 
 //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
@@ -30,26 +30,31 @@ workflow fastq {
             | cram
 }
 
-//TODO make .mmi optional
 workflow {
     validateParams()
 
     def sampleSheet = parseSampleSheet(params.input)
 
     Channel.from(sampleSheet)
-    | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
+        | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
+        | map { meta -> [*:meta, fasta_mmi: params[params.assembly].reference.fastaMmi] }
+        | branch { meta ->
+            index: meta.fasta_mmi == null
+            ready: true
+        }
+        | set { ch_index }
+
+    ch_index.index
+        | minimap2_index
+        | map { meta, fasta_mmi -> [*:meta, fasta_mmi: fasta_mmi] }
+        | set { ch_index_indexed }
+
+    ch_index_indexed.mix(ch_index.ready)
     | fastq
 }
 
 def validateParams() {
   validateCommonParams()
-  validateReferenceMmi()
-}
-
-def validateReferenceMmi() {
-  def assembly = params[params.assembly]
-  def referenceMmi = assembly.reference.fastaMmi
-  if( !file(referenceMmi).exists() )   exit 1, "parameter '${assembly}.reference.fastaMmi' value '${referenceMmi}' does not exist"
 }
 
 def parseSampleSheet(csvFile) {
