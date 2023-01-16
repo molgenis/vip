@@ -79,7 +79,7 @@ workflow cram {
             | map { meta -> meta[1] }
             | map { meta -> [samples:[proband:getProbandMeta(meta[1]), father:getParentMeta(meta[1], "paternal_id"), mother:getParentMeta(meta[1], "maternal_id")], sampleSheet:getSampleSheet(meta[1]) ] }
             | flatMap { meta -> scatter(meta) }
-            | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
+            | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.father.cram, meta.samples.father.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
             | deeptrio_call
             | map { meta, gVcf, gVcfIndex, gVcfFather, gVcfFatherIndex, gVcfMother, gVcfMotherIndex -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf, vcf_index: gVcfIndex], mother: [*:meta.samples.mother, vcf: gVcfMother, vcf_index: gVcfMotherIndex], father: [*:meta.samples.father, vcf: gVcfFather, vcf_index: gVcfFatherIndex] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
