@@ -2,7 +2,7 @@ process deepvariant_call {
   input:
     tuple val(meta), path(cram), path(cramCrai)
   output:
-    tuple val(meta), path(gVcf)
+    tuple val(meta), path(gVcf), path(gVcfIndex)
   shell:
     reference=params[params.assembly].reference.fasta
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
@@ -10,6 +10,7 @@ process deepvariant_call {
     
     vcf="${meta.sample.individual_id}_${meta.chunk.index}.vcf.gz"
     gVcf="${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
+    gVcfIndex="${gVcf}.tbi"
 
     template 'deepvariant_call.sh'
 }
@@ -18,7 +19,7 @@ process deeptrio_call {
   input:
     tuple val(meta), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather), path(cramMother), path(cramCraiMother)
   output:
-    tuple val(meta), path(gVcfChild), path(gVcfFather), path(gVcfMother)
+    tuple val(meta), path(gVcfChild), path(gVcfChildIndex), path(gVcfFather), path(gVcfFatherIndex), path(gVcfMother), path(gVcfMotherIndex)
   shell:
     reference=params[params.assembly].reference.fasta
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
@@ -30,7 +31,10 @@ process deeptrio_call {
     gVcfChild="${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
     gVcfFather="${meta.sample.paternal_id}_${meta.contig}.g.vcf.gz"
     gVcfMother="${meta.sample.maternal_id}_${meta.contig}.g.vcf.gz"
-    
+    gVcfChildIndex="${gVcfChild}.tbi"
+    gVcfFatherIndex="${gVcfFather}.tbi"
+    gVcfMotherIndex="${gVcfMother}.tbi"
+
     template 'deeptrio_call.sh'
 }
 
@@ -38,7 +42,7 @@ process deeptrio_call_duo_father {
   input:
     tuple val(meta), path(cramChild), path(cramCraiChild), path(cramFather), path(cramCraiFather)
   output:
-    tuple val(meta), path(gVcfChild), path(gVcfFather)
+    tuple val(meta), path(gVcfChild), path(gVcfChildIndex), path(gVcfFather), path(gVcfFatherIndex)
   shell:
     reference=params[params.assembly].reference.fasta
     bed="${meta.samples.proband.individual_id}_${meta.chunk.index}.bed"
@@ -47,6 +51,8 @@ process deeptrio_call_duo_father {
     vcfFather="${meta.samples.proband.paternal_id}_${meta.chunk.index}.vcf.gz"
     gVcfChild="${meta.samples.proband.individual_id}_${meta.chunk.index}.g.vcf.gz"
     gVcfFather="${meta.samples.proband.paternal_id}_${meta.chunk.index}.g.vcf.gz"
+    gVcfChildIndex="${gVcfChild}.tbi"
+    gVcfFatherIndex="${gVcfFather}.tbi"
 
     template 'deeptrio_call_duo_father.sh'
 }
@@ -55,7 +61,7 @@ process deeptrio_call_duo_mother {
   input:
     tuple val(meta), path(cramChild), path(cramCraiChild), path(cramMother), path(cramCraiMother)
   output:
-    tuple val(meta), path(gVcfChild), path(gVcfMother)
+    tuple val(meta), path(gVcfChild), path(gVcfChildIndex), path(gVcfMother), path(gVcfMotherIndex)
   shell:
     reference=params[params.assembly].reference.fasta
     bed="${meta.samples.proband.individual_id}_${meta.chunk.index}.bed"
@@ -65,6 +71,8 @@ process deeptrio_call_duo_mother {
     vcfMother="${meta.samples.proband.maternal_id}_${meta.contig}.vcf.gz"
     gVcfChild="${meta.samples.proband.individual_id}_${meta.contig}.g.vcf.gz"
     gVcfMother="${meta.samples.proband.maternal_id}_${meta.contig}.g.vcf.gz"
-    
+    gVcfChildIndex="${gVcfChild}.tbi"
+    gVcfMotherIndex="${gVcfMother}.tbi"
+
     template 'deeptrio_call_duo_mother.sh'
 }

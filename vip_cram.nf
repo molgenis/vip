@@ -52,7 +52,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.sample.cram, meta.sample.cram_index) }
             | deepvariant_call
-            | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, vcf: gVcf] ] }
+            | map { meta, gVcf, gVcfIndex -> [*:meta, sample: [*:meta.sample, vcf: gVcf, vcf_index: gVcfIndex] ] }
             | set { ch_deepvariant_single }
 
             ch_callvariants.duo_father
@@ -61,7 +61,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.father.cram, meta.samples.father.cram_index) }
             | deeptrio_call_duo_father
-            | map { meta, gVcf, gVcfFather -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf], father: [*:meta.samples.father, vcf: gVcfFather] ] ] }
+            | map { meta, gVcf, gVcfIndex, gVcfFather, gVcfFatherIndex -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf, vcf_index: gVcfIndex], father: [*:meta.samples.father, vcf: gVcfFather, vcf_index: gVcfFatherIndex] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_duo_father }
 
@@ -71,7 +71,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
             | deeptrio_call_duo_mother
-            | map { meta, gVcf, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf],mother: [*:meta.samples.mother, vcf: gVcfMother] ] ] }
+            | map { meta, gVcf, gVcfIndex, gVcfMother, gVcfMotherIndex -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf],mother: [*:meta.samples.mother, vcf: gVcfMother, vcf_index: gVcfMotherIndex] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_duo_mother }
 
@@ -81,7 +81,7 @@ workflow cram {
             | flatMap { meta -> scatter(meta) }
             | map { meta -> tuple(meta, meta.samples.proband.cram, meta.samples.proband.cram_index, meta.samples.mother.cram, meta.samples.mother.cram_index) }
             | deeptrio_call
-            | map { meta, gVcf, gVcfFather, gVcfMother -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf], mother: [*:meta.samples.mother, vcf: gVcfMother], father: [*:meta.samples.father, vcf: gVcfFather] ] ] }
+            | map { meta, gVcf, gVcfIndex, gVcfFather, gVcfFatherIndex, gVcfMother, gVcfMotherIndex -> [*:meta, samples: [*:meta.samples, proband: [*:meta.samples.proband, vcf: gVcf, vcf_index: gVcfIndex], mother: [*:meta.samples.mother, vcf: gVcfMother, vcf_index: gVcfMotherIndex], father: [*:meta.samples.father, vcf: gVcfFather, vcf_index: gVcfFatherIndex] ] ] }
             | flatMap { meta -> {meta.samples.collect(entry -> [sample: entry.value, sampleSheet: meta.sampleSheet, chunk: meta.chunk]) } }
             | set { ch_deeptrio_trio }
             
@@ -95,7 +95,7 @@ workflow cram {
                 tuple(groupKey(meta.chunk.index, groupSize), meta)
                 }
             | groupTuple
-            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.vcf)) }
+            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.vcf), group.collect(meta -> meta.sample.vcf_index)) }
             | merge_gvcf
             | map { meta, vcf, vcfIndex, vcfStats -> 
                 def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
