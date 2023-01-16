@@ -22,15 +22,15 @@ process deeptrio_call {
     tuple val(meta), path(gVcfChild), path(gVcfChildIndex), path(gVcfFather), path(gVcfFatherIndex), path(gVcfMother), path(gVcfMotherIndex)
   shell:
     reference=params[params.assembly].reference.fasta
-    bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
+    bed="${meta.samples.proband.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
-    vcfChild="${meta.sample.individual_id}_${meta.contig}.vcf.gz"
-    vcfFather="${meta.sample.paternal_id}_${meta.contig}.vcf.gz"
-    vcfMother="${meta.sample.maternal_id}_${meta.contig}.vcf.gz"
-    gVcfChild="${meta.sample.individual_id}_${meta.contig}.g.vcf.gz"
-    gVcfFather="${meta.sample.paternal_id}_${meta.contig}.g.vcf.gz"
-    gVcfMother="${meta.sample.maternal_id}_${meta.contig}.g.vcf.gz"
+    vcfChild="${meta.samples.proband.individual_id}_${meta.contig}.vcf.gz"
+    vcfFather="${meta.samples.proband.paternal_id}_${meta.contig}.vcf.gz"
+    vcfMother="${meta.samples.proband.maternal_id}_${meta.contig}.vcf.gz"
+    gVcfChild="${meta.samples.proband.individual_id}_${meta.contig}.g.vcf.gz"
+    gVcfFather="${meta.samples.proband.paternal_id}_${meta.contig}.g.vcf.gz"
+    gVcfMother="${meta.samples.proband.maternal_id}_${meta.contig}.g.vcf.gz"
     gVcfChildIndex="${gVcfChild}.tbi"
     gVcfFatherIndex="${gVcfFather}.tbi"
     gVcfMotherIndex="${gVcfMother}.tbi"
