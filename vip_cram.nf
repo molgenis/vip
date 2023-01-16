@@ -91,11 +91,11 @@ workflow cram {
             //FIXME merge per project instead of per samplesheet
             ch_gvcf
               | map { meta ->
-                def groupSize = meta.sampleSheet.count{ sample -> sample.g_vcf != null }
+                def groupSize = meta.sampleSheet.count{ sample -> sample.vcf != null }
                 tuple(groupKey(meta.chunk.index, groupSize), meta)
                 }
             | groupTuple
-            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.g_vcf)) }
+            | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.vcf)) }
             | merge_gvcf
             | map { meta, vcf, vcfIndex, vcfStats -> 
                 def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
