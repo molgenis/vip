@@ -46,12 +46,12 @@ bash vip/install.sh --assembly GRCh38
 ## Usage
 ```
 usage: vip [-w <arg> -i <arg> -o <arg>]
-  -w, --workflow <arg>  workflow to execute. allowed values: vcf, gvcf, cram, fastq
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, vcf
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -a, --assembly <arg>  genome assembly. allowed values: GRCh37, GRCh38 (optional)
-  -p, --profile  <arg>  nextflow configuration profile (optional)
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
+  -p, --profile  <arg>  nextflow configuration profile (optional)
   -h, --help            print this message and exit
 ```  
 <mark>TODO</mark>
@@ -75,7 +75,7 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 #### Input VCF
 | column  | type     | required |                                                 |
 |---------|----------|----------|-------------------------------------------------|
-| ``vcf`` | ``file`` |          | file extensions: [.vcf.gz, .vcf, .bcf, .bcf.gz] |
+| ``vcf`` | ``file`` |          | file extensions: [vcf.gz, vcf, bcf, bcf.gz]     |
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                    |
 
 #### Input CRAM
@@ -158,3 +158,7 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [AnnotSV](https://lbgi.fr/AnnotSV/)
 - [Illumina SpliceAI](https://github.com/Illumina/SpliceAI)
 - [igv.js](https://github.com/igvteam/igv.js)
+- [DeepVariant](https://github.com/google/deepvariant)
+- [Minimap2](https://github.com/lh3/minimap2)
+- [GLnexus](https://github.com/dnanexus-rnd/GLnexus)
+- [Samtools formats and tools](http://samtools.github.io/)
