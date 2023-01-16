@@ -80,12 +80,17 @@ main() {
   images=()
   images+=("build/alpine-3.15.0")
   images+=("build/openjdk-17")
-  images+=("bcftools-1.14")
-  images+=("samtools-1.16")
-  images+=("vcf-decision-tree-3.4.3" "vcf-inheritance-matcher-2.1.3" "vcf-report-5.1.2")
   images+=("annotsv-3.0.9")
+  images+=("bcftools-1.14")
+  images+=("bwa-mem2-2.2.1")
   images+=("capice-4.0.0")
-
+  images+=("minimap2-2.24")
+  images+=("samtools-1.16")
+  images+=("vcf-decision-tree-3.4.3")
+  images+=("vcf-inheritance-matcher-2.1.3")
+  images+=("vcf-report-5.1.2")
+  images+=("vep-105.0")
+  
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
     apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
