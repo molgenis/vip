@@ -98,9 +98,10 @@ workflow cram {
             | map { key, group -> tuple([group: group, chunk: group.first().chunk], group.collect(meta -> meta.sample.vcf), group.collect(meta -> meta.sample.vcf_index)) }
             | merge_gvcf
             | map { meta, vcf, vcfIndex, vcfStats -> 
-                def newMeta = [*:meta.group.first(), vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
-                newMeta.remove('sample')
-                return newMeta
+                meta = meta.group.first()
+                meta = [*:meta, project_id: meta.sample.project_id, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]
+                meta.remove('sample')
+                return meta
               }
             | vcf
 }
