@@ -68,7 +68,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/vkgl_consensus_20211201.tsv")
+    files+=("GRCh37/vkgl_consensus_20220901.tsv")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -83,7 +83,7 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/vkgl_consensus_20211201.tsv")
+    files+=("GRCh38/vkgl_consensus_20220901.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
