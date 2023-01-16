@@ -179,7 +179,6 @@ download_images() {
   files+=("capice-4.0.0.sif")
   files+=("deepvariant_1.4.0.sif")
   files+=("deepvariant_deeptrio-1.4.0.sif")
-  files+=("gatk-4.2.5.0.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
