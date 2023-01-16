@@ -53,8 +53,8 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v4.0.0-v2.pickle.dat")
-    files+=("GRCh37/clinvar_20220620.vcf.gz")
-    files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
+    files+=("GRCh37/clinvar_20230115.vcf.gz")
+    files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
@@ -73,8 +73,8 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v4.0.0-v2.pickle.dat")
-    files+=("GRCh38/clinvar_20220620.vcf.gz")
-    files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
+    files+=("GRCh38/clinvar_20230115.vcf.gz")
+    files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/hg38.phyloP100way.bw")
