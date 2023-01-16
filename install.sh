@@ -62,6 +62,7 @@ download_resources_molgenis() {
     files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
@@ -87,6 +88,7 @@ download_resources_molgenis() {
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
   fi
 
   for file in "${files[@]}"; do
