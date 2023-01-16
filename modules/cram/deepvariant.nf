@@ -1,4 +1,3 @@
-//FIXME parallel: Error: Output is incomplete. Cannot append to buffer file in /local/1443534/. Is the disk full?
 process deepvariant_call {
   input:
     tuple val(meta), path(cram), path(cramCrai)
