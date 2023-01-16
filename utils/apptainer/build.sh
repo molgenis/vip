@@ -77,7 +77,7 @@ main() {
   mkdir -p "${outputDir}"
   mkdir -p "${outputDir}/build"
 
-  images=()
+  local images=()
   images+=("build/alpine-3.15.0")
   images+=("build/openjdk-17")
   images+=("annotsv-3.0.9")
@@ -89,7 +89,6 @@ main() {
   images+=("vcf-decision-tree-3.4.3")
   images+=("vcf-inheritance-matcher-2.1.3")
   images+=("vcf-report-5.1.2")
-  images+=("vep-105.0")
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
@@ -97,9 +96,16 @@ main() {
     echo "---Done building ${images[$i]}---"
   done
 
-  echo "---Building vep-107.0---"
-  apptainer build "${outputDir}/vep-107.0.sif" docker://ensemblorg/ensembl-vep:release_107.0 | tee "${outputDir}/build.log"
-  echo "---Done building vep-107.0---"
+  declare -A uris
+  uris["docker://ensemblorg/ensembl-vep:release_107.0"]="vep-107.0"
+  uris["docker://google/deepvariant:1.4.0"]="deepvariant_1.4.0"
+  uris["docker://google/deepvariant:deeptrio-1.4.0"]="deepvariant_deeptrio-1.4.0"
+  
+  for i in "${!uris[@]}"; do
+    echo "---Building from URI ${i}---"
+    apptainer build "${outputDir}/${uris[${i}]}.sif" "${i}" | tee "${outputDir}/build.log"
+    echo "---Done building ${uris[${i}]}---"
+  done
 }
 
 main "${@}"
