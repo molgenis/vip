@@ -4,7 +4,7 @@ set -euo pipefail
 main() {
     echo -e "!{bedContent}" > "!{bed}"
         
-    !{CMD_DEEPVARIANT} \
+    ${CMD_DEEPVARIANT} \
     --model_type="!{params.sequencingMethod}" \
     --ref="!{reference}" \
     --reads="!{cram}" \

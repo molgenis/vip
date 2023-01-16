@@ -2,7 +2,7 @@
 set -euo pipefail
 
 stats () {
-  !{CMD_BCFTOOLS} index --stats "!{vcf}" > "!{vcfOutStats}"
+  ${CMD_BCFTOOLS} index --stats "!{vcf}" > "!{vcfOutStats}"
 }
 
 main () {

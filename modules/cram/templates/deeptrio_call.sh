@@ -4,7 +4,7 @@ set -euo pipefail
 main() {
     echo -e "!{bedContent}" > "!{bed}"
     
-    !{CMD_DEEPTRIO} \
+    ${CMD_DEEPTRIO} \
     --model_type="!{params.sequencingMethod}" \
     --ref="!{reference}" \
     --reads_child="!{cramChild}" \

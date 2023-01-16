@@ -9,7 +9,7 @@ create_bed () {
     args+=("--threads" "!{task.cpus}")
     args+=("!{vcf}")
 
-    !{CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1-250 "\t" $2-1+250 "\t"}' > "!{vcf.simpleName}.bed"
+    ${CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1-250 "\t" $2-1+250 "\t"}' > "!{vcf.simpleName}.bed"
 }
 
 slice () {
@@ -30,7 +30,7 @@ slice () {
     args+=("--threads" "!{task.cpus}")
     args+=("!{cram}")
 
-    !{CMD_SAMTOOLS} "${args[@]}"
+    ${CMD_SAMTOOLS} "${args[@]}"
 }
 
 main() {
