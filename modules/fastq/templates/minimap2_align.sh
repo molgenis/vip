@@ -2,10 +2,20 @@
 set -euo pipefail
 
 main() {
-    ${CMD_MINIMAP2} -t "!{task.cpus}" -a -x sr "!{referenceMmi}" "!{fastqR1}" "!{fastqR2}" | \
-    ${CMD_SAMTOOLS} fixmate -u -m - - | \
-    ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | \
-    ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
+    local args=()
+    args+=("-t" "!{task.cpus}")
+    args+=("-a")
+    if [[ -n "!{preset}" ]]; then
+        args+=("-x" "!{preset}")
+    fi
+    args+=("!{referenceMmi}")
+    args+=("!{fastq}")
+
+    if [[ -n "!{preset}" ]] && [[ "!{preset}" == "map-ont" ]]; then
+      ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
+    else
+      ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
+    fi    
 }
 
 main "$@"
