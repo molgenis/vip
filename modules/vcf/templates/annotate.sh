@@ -88,11 +88,6 @@ capice_vep() {
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
   ${CMD_VEP} vep "${args[@]}"
-
-  if [ ! -f "${vcfCapiceAnnotatedPath}" ]; then
-    echo -e "VEP error: failed to create capice input" 1>&2
-    exit 1
-  fi
 }
 
 capice_bcftools() {
