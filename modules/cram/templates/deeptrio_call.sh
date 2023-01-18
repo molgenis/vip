@@ -20,7 +20,7 @@ main() {
     --output_gvcf_child="!{gVcfChild}" \
     --output_gvcf_parent1="!{gVcfFather}" \
     --output_gvcf_parent2="!{gVcfMother}" \
-    --intermediate_results_dir "!{TMPDIR}" \
+    --intermediate_results_dir "." \
     --num_shards="!{task.cpus}"
 }
 

@@ -12,7 +12,7 @@ main() {
     --sample_name "!{meta.sample.individual_id}" \
     --output_vcf="!{vcf}" \
     --output_gvcf="!{gVcf}" \
-    --intermediate_results_dir . \
+    --intermediate_results_dir "." \
     --num_shards="!{task.cpus}"
 }
 

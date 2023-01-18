@@ -16,7 +16,7 @@ main() {
     --output_vcf_parent1="!{vcfFather}" \
     --output_gvcf_child="!{gVcfChild}" \
     --output_gvcf_parent1="!{gVcfFather}" \
-    --intermediate_results_dir "!{TMPDIR}" \
+    --intermediate_results_dir "." \
     --num_shards="!{task.cpus}"
 }
 
