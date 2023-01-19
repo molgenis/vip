@@ -15,26 +15,12 @@ workflow cram {
     main:
         meta
             | flatMap { meta -> scatter(meta) }
-            | multiMap { it -> snv: sv: it }
-            | set { ch_inputs_chunked }
-        
-        //TODO add clair3-trio once it supports longphase probably in the next release (which doesn't suffer from the whatshap bgzipped fasta reference issue)
-        ch_inputs_chunked.snv
-            | map { meta -> [*:meta, sample: [*:meta.sample, project_id: "${meta.sample.project_id}_snv"] ] }
             | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
             | clair3_call
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
-            | set { ch_vcf_snv }
+            | set { ch_vcf }
 
-        //TODO sniffles2 trio calling (https://github.com/fritzsedlazeck/Sniffles#b-multi-sample-sv-calling-trios-populations)
-        ch_inputs_chunked.sv
-            | map { meta -> [*:meta, sample: [*:meta.sample, project_id: "${meta.sample.project_id}_sv"] ] }
-            | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
-            | sniffles2_sv_call
-            | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
-            | set { ch_vcf_sv }
-
-        ch_vcf_snv.mix(ch_vcf_sv)
+        ch_vcf
           | map { meta ->
               meta = [*:meta, project_id: meta.sample.project_id, vcf: meta.sample.vcf, vcf_index: meta.sample.vcf_index, vcf_stats: meta.sample.vcf_stats]
               meta.remove('sample')

@@ -169,10 +169,6 @@ download_resources() {
   download_resources_molgenis "${assembly}"
   download_resources_vep "${assembly}"
   download_resources_annotsv
-
-  #TODO host on molgenis download server
-  wget --continue https://github.com/PacificBiosciences/pbsv/raw/master/annotations/human_hs37d5.trf.bed --output-document "${download_dir}/GRCh37/tandem_repeat_annotations.bed"
-  wget --continue https://github.com/PacificBiosciences/pbsv/raw/master/annotations/human_GRCh38_no_alt_analysis_set.trf.bed --output-document "${download_dir}/GRCh38/tandem_repeat_annotations.bed"
 }
 
 download_images() {
@@ -183,8 +179,7 @@ download_images() {
   files+=("annotsv-3.0.9.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-5.0.0.sif")
-  files+=("deepvariant_1.4.0.sif")
-  files+=("deepvariant_deeptrio-1.4.0.sif")
+  files+=("clair3-v0.1-r12.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
