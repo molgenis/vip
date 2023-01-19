@@ -57,7 +57,7 @@ def validateParams() {
   validateCommonParams()
   
   def fastaMmi = params[params.assembly].reference.fastaMmi
-  if(fastaMmi !== null && !file(fastaMmi).exists() )   exit 1, "parameter '${params.assembly}.reference.fastaMmi' value '${fastaMmi}' does not exist"
+  if(!fastaMmi.isEmpty() && !file(fastaMmi).exists() )   exit 1, "parameter '${params.assembly}.reference.fastaMmi' value '${fastaMmi}' does not exist"
 }
 
 def parseSampleSheet(csvFile) {

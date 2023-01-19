@@ -228,6 +228,49 @@ workflow {
 
 def validateParams() {
   validateCommonParams()
+
+  //annotate
+  def annotSvCacheDir = params.vcf.annotate.annotsv_cache_dir
+  if(!file(annotSvCacheDir).exists() )   exit 1, "parameter 'vcf.annotate.annotsv_cache_dir' value '${annotSvCacheDir}' does not exist"
+
+  def vepCacheDir = params.vcf.annotate.vep_cache_dir
+  if(!file(vepCacheDir).exists() )   exit 1, "parameter 'vcf.annotate.vep_cache_dir' value '${vepCacheDir}' does not exist"
+
+  def vepPluginDir = params.vcf.annotate.vep_plugin_dir
+  if(!file(vepPluginDir).exists() )   exit 1, "parameter 'vcf.annotate.vep_plugin_dir' value '${vepPluginDir}' does not exist"
+
+  def vepPluginHpo = params.vcf.annotate.vep_plugin_hpo
+  if(!file(vepPluginHpo).exists() )   exit 1, "parameter 'vcf.annotate.vep_plugin_hpo' value '${vepPluginHpo}' does not exist"
+
+  def vepPluginInheritance = params.vcf.annotate.vep_plugin_inheritance
+  if(!file(vepPluginInheritance).exists() )   exit 1, "parameter 'vcf.annotate.vep_plugin_inheritance' value '${vepPluginInheritance}' does not exist"
+
+  def capiceModel = params.vcf.annotate[params.assembly].capice_model
+  if(!file(capiceModel).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.capiceModel' value '${capiceModel}' does not exist"
+
+  def vepCustomGnomad = params.vcf.annotate[params.assembly].vep_custom_gnomad
+  if(!file(vepCustomGnomad).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_gnomad' value '${vepCustomGnomad}' does not exist"
+
+  def vepCustomClinvar = params.vcf.annotate[params.assembly].vep_custom_clinvar
+  if(!file(vepCustomClinvar).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_clinvar' value '${vepCustomClinvar}' does not exist"
+
+  def vepCustomPhylop = params.vcf.annotate[params.assembly].vep_custom_phylop
+  if(!file(vepCustomPhylop).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_phylop' value '${vepCustomPhylop}' does not exist"
+
+  def vepPluginArtefact = params.vcf.annotate[params.assembly].vep_plugin_artefact
+  if(!vepPluginArtefact.isEmpty() && !file(vepPluginArtefact).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_artefact' value '${vepPluginArtefact}' does not exist"
+
+  def vepPluginSpliceaiIndel = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
+  if(!file(vepPluginSpliceaiIndel).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_spliceai_indel' value '${vepPluginSpliceaiIndel}' does not exist"
+
+  def vepPluginSpliceaiSnv = params.vcf.annotate[params.assembly].vep_plugin_spliceai_snv
+  if(!file(vepPluginSpliceaiSnv).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_spliceai_snv' value '${vepPluginSpliceaiSnv}' does not exist"
+
+  def vepPluginUtrannotator = params.vcf.annotate[params.assembly].vep_plugin_utrannotator
+  if(!file(vepPluginUtrannotator).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_utrannotator' value '${vepPluginUtrannotator}' does not exist"
+
+  def vepPluginVkgl = params.vcf.annotate[params.assembly].vep_plugin_vkgl
+  if(!file(vepPluginVkgl).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_vkgl' value '${vepPluginVkgl}' does not exist"
 }
 
 def parseSampleSheet(csvFile) {
