@@ -271,6 +271,20 @@ def validateParams() {
 
   def vepPluginVkgl = params.vcf.annotate[params.assembly].vep_plugin_vkgl
   if(!file(vepPluginVkgl).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_vkgl' value '${vepPluginVkgl}' does not exist"
+
+  // classify
+  def decisionTree = params.vcf.classify[params.assembly].decision_tree
+  if(!file(decisionTree).exists() )   exit 1, "parameter 'vcf.classify.${params.assembly}.decision_tree' value '${decisionTree}' does not exist"
+
+  def samplesDecisionTree = params.vcf.classify_samples[params.assembly].decision_tree
+  if(!file(samplesDecisionTree).exists() )   exit 1, "parameter 'vcf.classify_samples.${params.assembly}.decision_tree' value '${samplesDecisionTree}' does not exist"
+
+  // report
+  def template = params.vcf.report.template
+  if(!template.isEmpty() && !file(decisionTree).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
+
+  def genes = params.vcf.report[params.assembly].genes
+  if(!file(genes).exists() )   exit 1, "parameter 'vcf.report.${params.assembly}.genes' value '${genes}' does not exist"
 }
 
 def parseSampleSheet(csvFile) {
