@@ -13,7 +13,7 @@ process clair3_call {
     vcfOutStats="${vcfOut}.stats"
 
     platform=params.sequencingMethod == "ONT" ? "ont" : "ilmn"
-    modelName=params.clair3[params.sequencingMethod].model_name
+    modelName=params.cram.clair3[params.sequencingMethod].model_name
 
     template 'clair3_call.sh'
 }
