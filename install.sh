@@ -169,6 +169,10 @@ download_resources() {
   download_resources_molgenis "${assembly}"
   download_resources_vep "${assembly}"
   download_resources_annotsv
+
+  #TODO host on molgenis download server
+  wget --continue https://github.com/PacificBiosciences/pbsv/raw/master/annotations/human_hs37d5.trf.bed --output-document "${download_dir}/GRCh37/tandem_repeat_annotations.bed"
+  wget --continue https://github.com/PacificBiosciences/pbsv/raw/master/annotations/human_GRCh38_no_alt_analysis_set.trf.bed --output-document "${download_dir}/GRCh38/tandem_repeat_annotations.bed"
 }
 
 download_images() {

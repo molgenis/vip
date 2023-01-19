@@ -12,7 +12,7 @@ process merge_gvcf {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
-    config=params.sequencingMethod == "WES" ? "DeepVariantWES" : "DeepVariantWGS"
+    config="gatk"
 
     template 'merge_gvcf.sh'
 }

@@ -6,10 +6,10 @@ def validateAssembly() {
 }
 
 def validateSequencingMethod() {
-  if( !params.containsKey('sequencingMethod') ) exit 1, "missing required parameter 'sequencingMethod' with value 'WES' or 'WGS'"
+  if( !params.containsKey('sequencingMethod') ) exit 1, "missing required parameter 'sequencingMethod' with value 'WES', 'WGS' or 'ONT'"
   def sequencingMethod = params.sequencingMethod
-  if( sequencingMethod.length() == 0 ) exit 1, "parameter 'sequencingMethod' is empty but must be 'WES' or 'WGS'"
-  if( !sequencingMethod.equals("WES") && !sequencingMethod.equals("WGS") ) exit 1, "parameter 'sequencingMethod' value '${sequencingMethod}' must be 'WES' or 'WGS'"
+  if( sequencingMethod.length() == 0 ) exit 1, "parameter 'sequencingMethod' is empty but must be 'WES', 'WGS' or 'ONT'"
+  if( !sequencingMethod.equals("WES") && !sequencingMethod.equals("WGS") && !sequencingMethod.equals("ONT") ) exit 1, "parameter 'sequencingMethod' value '${sequencingMethod}' must be 'WES' or 'WGS'"
 }
 
 def validateReference() {

@@ -27,7 +27,7 @@ workflow vcf {
         meta
             | map { meta -> [[*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats] }
             | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: meta.chunk.total > 0
+                process: nrRecords(vcfStats) > 0
                 empty: true
               }
             | set { ch_inputs }

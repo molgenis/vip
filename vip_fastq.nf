@@ -2,8 +2,8 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet } from './modules/sample_sheet'
-include { concat_fastq } from './modules/fastq/concat'
-include { minimap2_align; minimap2_index } from './modules/fastq/minimap2'
+include { concat_fastq; concat_fastq_paired_end } from './modules/fastq/concat'
+include { minimap2_align; minimap2_align_paired_end; minimap2_index } from './modules/fastq/minimap2'
 include { cram } from './vip_cram'
 
 //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
@@ -12,21 +12,53 @@ workflow fastq {
     main:
         meta
             | branch { meta ->
-                merge: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
-                ready: true
+                paired_end: !meta.sample.fastq_r1.isEmpty() && !meta.sample.fastq_r2.isEmpty()
+                single: true
               }
             | set { ch_input }
         
-        ch_input.merge
+        // paired-end fastq
+        ch_input.paired_end
+            | branch { meta ->
+                merge: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
+                ready: true
+              }
+            | set { ch_input_paired_end }
+        
+        ch_input_paired_end.merge
             | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2) }
-            | concat_fastq
+            | concat_fastq_paired_end
             | map { meta, fastq_r1, fastq_r2 -> [*:meta, sample: [*:meta.sample, fastq_r1: fastq_r1, fastq_r2: fastq_r2] ] }
-            | set { ch_input_merged }
+            | set { ch_input_paired_end_merged }
 
-        ch_input_merged.mix(ch_input.ready)
+        ch_input_paired_end_merged.mix(ch_input_paired_end.ready)
             | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2) }
+            | minimap2_align_paired_end
+            | map { meta, cram, cramIndex -> [*:meta, sample: [*:meta.sample, cram: cram, cram_index: cramIndex] ] }
+            | set { ch_input_paired_end_aligned }
+        
+        // single fastq
+        ch_input.single
+            | branch { meta ->
+                merge: meta.sample.fastq.size() > 1
+                ready: true
+              }
+            | set { ch_input_single }
+        
+        ch_input_single.merge
+            | map { meta -> tuple(meta, meta.sample.fastq) }
+            | concat_fastq
+            | map { meta, fastq -> [*:meta, sample: [*:meta.sample, fastq: fastq] ] }
+            | set { ch_input_single_merged }
+
+        ch_input_single_merged.mix(ch_input_single.ready)
+            | map { meta -> tuple(meta, meta.sample.fastq) }
             | minimap2_align
             | map { meta, cram, cramIndex -> [*:meta, sample: [*:meta.sample, cram: cram, cram_index: cramIndex] ] }
+            | set { ch_input_single_aligned }
+
+        // merge
+        ch_input_paired_end_aligned.mix(ch_input_single_aligned)
             | cram
 }
 
@@ -63,16 +95,20 @@ def validateParams() {
 def parseSampleSheet(csvFile) {
   def fastqRegex = /.+\.(fastq|fq)(\.gz)?/
 
+  // TODO implement constraint: either fastq or fastq_r1/fastq_r2 must have a value
   def cols = [
+    fastq: [
+      type: "file",
+      list: true,
+      regex: fastqRegex
+    ],
     fastq_r1: [
       type: "file",
-      required: true,
       list: true,
       regex: fastqRegex
     ],
     fastq_r2: [
       type: "file",
-      required: true,
       list: true,
       regex: fastqRegex
     ]

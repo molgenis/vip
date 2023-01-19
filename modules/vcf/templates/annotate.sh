@@ -40,10 +40,11 @@ annot_sv() {
     args+=("-hpo" "!{hpoIds}")
   fi
   ${CMD_ANNOTSV} "${args[@]}"
-  if [ ! -f "!{vcf}.tsv" ]; then
-    echo -e "AnnotSV error: failed to produce output" 1>&2
-    exit 1
-  fi
+  
+  # potentially exists with the following message without creating a .tsv file
+  # ############################################################################
+  # No SV to annotate in the SVinputFile - Exit without error.
+  # ############################################################################
 }
 
 capice() {

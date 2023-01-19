@@ -8,7 +8,7 @@ usage() {
   -i, --input             <arg>  path to sample sheet .tsv
   -o, --output            <arg>  output folder
   -a, --assembly          <arg>  genome assembly. allowed values: GRCh37, GRCh38 (optional)
-  -s, --sequencing_method <arg>  sequencing method. allowed values: WES, WGS (optional)
+  -s, --sequencing_method <arg>  sequencing method. allowed values: WES, WGS, ONT (optional)
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
   -h, --help                     print this message and exit"
@@ -50,8 +50,8 @@ validate() {
   if [[ -n "${assembly}" ]] && [[ ! "${assembly}" =~ GRCh37|GRCh38 ]]; then
     >&2 echo -e "error: assembly '${assembly}'. allowed values are [GRCh37, GRCh38]"
   fi
-  if [[ -n "${sequencingMethod}" ]] && [[ ! "${sequencingMethod}" =~ WES|WGS ]]; then
-    >&2 echo -e "error: sequencing '${sequencingMethod}'. allowed values are [WES, WGS]"
+  if [[ -n "${sequencingMethod}" ]] && [[ ! "${sequencingMethod}" =~ WES|WGS|ONT ]]; then
+    >&2 echo -e "error: sequencing '${sequencingMethod}'. allowed values are [WES, WGS, ONT]"
   fi
 }
 
