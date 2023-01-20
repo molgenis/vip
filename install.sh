@@ -60,6 +60,7 @@ download_resources_molgenis() {
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
+    #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh37/human_g1k_v37.fasta.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
@@ -87,6 +88,7 @@ download_resources_molgenis() {
     files+=("GRCh38/vkgl_consensus_20220901.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
@@ -261,6 +263,7 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
+  #FIXME: remove after clair 3 is fixed
   unzip_reference "${assembly}"
   create_executable
   echo -e "installing done"
