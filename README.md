@@ -73,10 +73,10 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | ``hpo_ids``       | ``string list`` |          | regex: /HP:\d{7}/              |
 
 #### Input VCF
-| column  | type     | required |                                                 |
-|---------|----------|----------|-------------------------------------------------|
-| ``vcf`` | ``file`` |          | file extensions: [vcf.gz, vcf, bcf, bcf.gz]     |
-| ``cram``| ``file`` |          | file extensions: [bam, cram]                    |
+| column  | type     | required |                                                               |
+|---------|----------|----------|---------------------------------------------------------------|
+| ``vcf`` | ``file`` |          | file extensions: [vcf, vcf.gz, vcf.bgz, bcf, bcf.gz, bcf.bgz] |
+| ``cram``| ``file`` |          | file extensions: [bam, cram]                                  |
 
 #### Input CRAM
 | column   | type     | required |                              |
