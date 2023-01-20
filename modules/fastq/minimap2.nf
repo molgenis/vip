@@ -9,7 +9,7 @@ process minimap2_align {
     cram="${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
 
-    preset=params.sequencingMethod == "ONT" ? "map-ont" : ""
+    preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : ""
 
     template 'minimap2_align.sh'
 }

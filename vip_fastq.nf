@@ -111,6 +111,11 @@ def parseSampleSheet(csvFile) {
       type: "file",
       list: true,
       regex: fastqRegex
+    ],
+    sequencing_platform: [
+      type: "string",
+      required: true,
+      enum: ["illumina", "nanopore"]
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

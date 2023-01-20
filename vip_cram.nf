@@ -61,6 +61,11 @@ def parseSampleSheet(csvFile) {
       type: "file",
       required: true,
       regex: /.+\.cram/
+    ],
+    sequencing_platform: [
+      type: "string",
+      required: true,
+      enum: ["illumina", "nanopore"]
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

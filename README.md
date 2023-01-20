@@ -79,15 +79,18 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                                  |
 
 #### Input CRAM
-| column   | type     | required |                              |
-|----------|----------|----------|------------------------------|
-| ``cram`` | ``file`` |          | file extensions: [bam, cram] |
+| column                  | type          | required |                              |
+|-------------------------|---------------|----------|------------------------------|
+| ``cram``                | ``file``      |          | file extensions: [bam, cram] |
+| ``sequencing_platform`` | ``string``    | yes      | values: [illumina,nanopore]  |
 
 #### Input FASTQ
-| column       | type          | required |                                               |
-|--------------|---------------|----------|-----------------------------------------------|
-| ``fastq_r1`` | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
-| ``fastq_r2`` | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
+| column                  | type          | required |                                               |
+|-------------------------|---------------|----------|-----------------------------------------------|
+| ``fastq``               | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
+| ``fastq_r1``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
+| ``fastq_r2``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
+| ``sequencing_platform`` | ``string``    | yes      | values: [illumina,nanopore]                   |
 
 ### Profile
 By default, VIP detects whether [Slurm](https://slurm.schedmd.com/) is available on the system and use the <code>slurm</code> profile. Otherwise, the <code>local</code> profile is used which executes the workflow on this machine. You can override the profile or refer to a custom profile specified in your <code>--config</code>.
@@ -111,8 +114,7 @@ An additional configuration file can be provided to override defaults:
 
 | param                         | default                                                                                   |                                |
 |-------------------------------|-------------------------------------------------------------------------------------------|--------------------------------|
-| ``assembly``                  | ``GRCh38``                                                                                | allowed values: GRCh37, GRCh38 | 
-| ``sequencingMethod``          | ``WGS``                                                                                   | allowed values: WES, WGS       |
+| ``assembly``                  | ``GRCh38``                                                                                | allowed values: GRCh37, GRCh38 |
 | ``GRCh37.reference.fasta``    | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz``                                 ||
 | ``GRCh37.reference.fastaFai`` | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz.fai``                             ||
 | ``GRCh37.reference.fastaGzi`` | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz.gzi``                             ||
