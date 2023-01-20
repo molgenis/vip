@@ -95,7 +95,7 @@ process() {
 		if [[ ! -f "${output_path}" ]]; then
 			if [[ "${chromosome}" != "Y" ]]; then
 				# workaround: undo rename fields
-				${BCFTOOLS_CMD} merge --no-version -m none -i GAC:sum,GAN:sum "${input_path_exomes}" "${input_path_genomes}" -Ou | \
+				${BCFTOOLS_CMD} merge --no-version -m none -i GAC:sum,GAN:sum,HN:sum "${input_path_exomes}" "${input_path_genomes}" -Ou | \
 				${BCFTOOLS_CMD} annotate --no-version --rename-annots "${rename_revert_path}" -Ou | \
 				${BCFTOOLS_CMD} +fill-tags --no-version -Ou -- -t AF | \
 				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF,INFO/HN -Oz --threads "${THREADS}" -o "${output_path}"
