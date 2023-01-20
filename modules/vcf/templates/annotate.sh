@@ -6,28 +6,6 @@ vcfCapiceAnnotatedPath="!{basename}_capice_annotated.vcf.gz"
 capiceInputPath="!{basename}_capice_input.tsv"
 capiceOutputPath="!{basename}_capice_output.tsv.gz"
 
-#######################################
-# Returns whether VCF file contains structural variants.
-#
-# Arguments:
-#   path to VCF file
-# Returns:
-#   0 if the VCF file contains structural variants
-#   1 if the VCF file doesn't contain structural variants
-#######################################
-contains_sv() {
-  local -r vcf_path="${1}"
-
-  local vcf_header
-  vcf_header=$(${CMD_BCFTOOLS} view -h "${vcf_path}")
-
-  if [[ "${vcf_header}" =~ .*ID=SVTYPE.* ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 annot_sv() {
   local args=()
   args+=("-SVinputFile" "!{vcf}")
@@ -41,10 +19,15 @@ annot_sv() {
   fi
   ${CMD_ANNOTSV} "${args[@]}"
   
-  # potentially exists with the following message without creating a .tsv file
+  # AnnotSV potentially exists with the following message without creating a .tsv file
   # ############################################################################
   # No SV to annotate in the SVinputFile - Exit without error.
   # ############################################################################
+  
+  # write an empty file so that the AnnotSV VEP plugin is always used to ensure an equal number of VEP fields accross chunks
+  if [[ ! -f "!{vcf}.tsv" ]]; then
+    echo -e "AnnotSV_ranking_score\tAnnotSV_ranking_criteria\tACMG_class\n" > "!{vcf}.tsv"
+  fi
 }
 
 capice() {
@@ -177,7 +160,8 @@ vep() {
   if [ -n "!{vepCustomClinVarPath}" ]; then
       args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
   fi
-  if [ -f "!{vcf}.tsv" ]; then
+  if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
+    # when you change the field also update the empty file header in this file
     args+=("--plugin" "AnnotSV,!{vcf}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
 
@@ -190,7 +174,7 @@ index () {
 }
 
 main () {
-  if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ] && contains_sv "!{vcf}"; then
+  if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     annot_sv
   fi
 
