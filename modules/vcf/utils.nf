@@ -56,7 +56,7 @@ def scatter(meta) {
 }
 
 def getVcfRegex() {
-  /.+(?:\.bcf|\.bcf.gz|\.vcf|\.vcf\.gz)/
+  /.+(?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz|\.gvcf|\.gvcf\.gz|\.gvcf\.bgz)/
 }
 
 def isVcf(vcf) {
@@ -64,7 +64,7 @@ def isVcf(vcf) {
 }
 
 def getGVcfRegex() {
-  /.+(?:\.g\.bcf|\.g\.bcf.gz|\.g\.vcf|\.g\.vcf\.gz)/
+  /.+(?:\.g\.bcf|\.g\.bcf.gz|\.g\.vcf|\.g\.vcf\.gz|\.gvcf\.gz|\.gvcf\.bgz)/
 }
 
 def isGVcf(gVcf) {
