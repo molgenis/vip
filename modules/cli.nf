@@ -5,13 +5,6 @@ def validateAssembly() {
   if( !assembly.equals("GRCh37") && !assembly.equals("GRCh38") ) exit 1, "parameter 'assembly' value '${assembly}' must be 'GRCh37' or 'GRCh38'"
 }
 
-def validateSequencingMethod() {
-  if( !params.containsKey('sequencingMethod') ) exit 1, "missing required parameter 'sequencingMethod' with value 'WES', 'WGS' or 'ONT'"
-  def sequencingMethod = params.sequencingMethod
-  if( sequencingMethod.length() == 0 ) exit 1, "parameter 'sequencingMethod' is empty but must be 'WES', 'WGS' or 'ONT'"
-  if( !sequencingMethod.equals("WES") && !sequencingMethod.equals("WGS") && !sequencingMethod.equals("ONT") ) exit 1, "parameter 'sequencingMethod' value '${sequencingMethod}' must be 'WES' or 'WGS'"
-}
-
 def validateReference() {
   def assembly = params[params.assembly]
   def reference = assembly.reference
@@ -34,7 +27,6 @@ def validateInput() {
 
 def validateCommonParams() {
   validateAssembly()
-  validateSequencingMethod()
   validateReference()
   validateInput()
 }
