@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source ./test_utils.sh
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+source ${SCRIPT_DIR}/test_utils.sh
 
 test_cram () {
   local args=()
