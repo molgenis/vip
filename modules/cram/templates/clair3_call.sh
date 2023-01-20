@@ -7,7 +7,7 @@ create_bed () {
 
 call_small_variants () {
     local args=()
-    args+=("--bam_fn=$(realpath "!{cram}")")
+    args+=("--bam_fn=!{cram}")
     args+=("--ref_fn=$(realpath "!{reference}")")
     args+=("--bed_fn=$(realpath "!{bed}")")
     args+=("--threads=!{task.cpus}")

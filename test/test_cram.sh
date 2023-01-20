@@ -13,13 +13,13 @@ test_cram () {
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/NA12878.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
     return 1
   fi
 }
 
 run_tests () {
-  before_all
+  #before_all
 
   TEST_ID="cram"
   before_each

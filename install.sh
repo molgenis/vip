@@ -60,6 +60,7 @@ download_resources_molgenis() {
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
+    files+=("GRCh37/human_g1k_v37.fasta.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
@@ -86,6 +87,7 @@ download_resources_molgenis() {
     files+=("GRCh38/vkgl_consensus_20220901.tsv")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
@@ -200,6 +202,26 @@ create_executable() {
   fi
 }
 
+unzip_reference() {
+  local -r assembly="${1}"
+  local -r download_dir="${SCRIPT_DIR}/resources"
+
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    if [ ! -d "${download_dir}/GRCh37/human_g1k_v37.fasta" ]; then
+      gunzip -c "${download_dir}/GRCh37/human_g1k_v37.fasta.gz" > "${download_dir}/GRCh37/human_g1k_v37.fasta"
+    else
+      echo -e "skipping extraction of reference for GRCh37: already exists"
+    fi
+  fi
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    if [ ! -d "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna" ]; then
+      gunzip -c "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" > "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
+    else
+      echo -e "skipping extraction of reference for GRCh38: already exists"
+    fi
+  fi
+}
+
 main() {
   local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
   # shellcheck disable=SC2181
@@ -239,6 +261,7 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
+  unzip_reference "${assembly}"
   create_executable
   echo -e "installing done"
 }
