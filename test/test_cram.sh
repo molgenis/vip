@@ -19,7 +19,7 @@ test_cram () {
 }
 
 run_tests () {
-  #before_all
+  before_all
 
   TEST_ID="cram"
   before_each
