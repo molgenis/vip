@@ -256,10 +256,7 @@ def validateParams() {
 
   def vepCustomPhylop = params.vcf.annotate[params.assembly].vep_custom_phylop
   if(!file(vepCustomPhylop).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_phylop' value '${vepCustomPhylop}' does not exist"
-
-  def vepPluginArtefact = params.vcf.annotate[params.assembly].vep_plugin_artefact
-  if(!vepPluginArtefact.isEmpty() && !file(vepPluginArtefact).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_artefact' value '${vepPluginArtefact}' does not exist"
-
+  
   def vepPluginSpliceaiIndel = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
   if(!file(vepPluginSpliceaiIndel).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_spliceai_indel' value '${vepPluginSpliceaiIndel}' does not exist"
 

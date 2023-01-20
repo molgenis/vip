@@ -17,7 +17,6 @@ process annotate {
     vepCustomGnomAdPath = params.vcf.annotate[params.assembly].vep_custom_gnomad
     vepCustomClinVarPath = params.vcf.annotate[params.assembly].vep_custom_clinvar
     vepCustomPhyloPPath = params.vcf.annotate[params.assembly].vep_custom_phylop
-    vepPluginArtefact = params.vcf.annotate[params.assembly].vep_plugin_artefact
     vepPluginSpliceAiIndelPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
     vepPluginSpliceAiSnvPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_snv
     vepPluginVkglPath = params.vcf.annotate[params.assembly].vep_plugin_vkgl

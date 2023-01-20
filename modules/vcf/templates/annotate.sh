@@ -144,9 +144,6 @@ vep() {
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  if [ -n "!{vepPluginArtefact}" ]; then
-    args+=("--plugin" "Artefact,!{vepPluginArtefact}")
-  fi
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
