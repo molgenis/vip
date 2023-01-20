@@ -209,14 +209,14 @@ unzip_reference() {
   local -r download_dir="${SCRIPT_DIR}/resources"
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -d "${download_dir}/GRCh37/human_g1k_v37.fasta" ]; then
+    if [ ! -f "${download_dir}/GRCh37/human_g1k_v37.fasta" ]; then
       gunzip -c "${download_dir}/GRCh37/human_g1k_v37.fasta.gz" > "${download_dir}/GRCh37/human_g1k_v37.fasta"
     else
       echo -e "skipping extraction of reference for GRCh37: already exists"
     fi
   fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    if [ ! -d "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna" ]; then
+    if [ ! -f "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna" ]; then
       gunzip -c "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" > "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
     else
       echo -e "skipping extraction of reference for GRCh38: already exists"
