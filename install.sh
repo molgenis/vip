@@ -55,13 +55,14 @@ download_resources_molgenis() {
     files+=("GRCh37/capice_model_v5.0.0-v1.ubj")
     files+=("GRCh37/clinvar_20230115.vcf.gz")
     files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
-    files+=("GRCh37/human_g1k_v37.fasta.gz")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh37/human_g1k_v37.fasta.fai")
+    files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
@@ -69,7 +70,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
-    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
+    files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh37/vkgl_consensus_20220901.tsv")
   fi
 
@@ -77,6 +78,14 @@ download_resources_molgenis() {
     files+=("GRCh38/capice_model_v5.0.0-v1.ubj")
     files+=("GRCh38/clinvar_20230115.vcf.gz")
     files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
+    #FIXME: remove line below after clair 3 is fixed
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
+    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/hg38.phyloP100way.bw")
@@ -84,15 +93,8 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
-    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
+    files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20220901.tsv")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
-    #FIXME: remove line below after clair 3 is fixed
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
   fi
 
   for file in "${files[@]}"; do
