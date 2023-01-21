@@ -68,7 +68,7 @@ workflow {
 
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
-        | map { meta -> [*:meta, fasta_mmi: params[params.sample.assembly].reference.fastaMmi] }
+        | map { meta -> [*:meta, fasta_mmi: params[meta.sample.assembly].reference.fastaMmi] }
         | branch { meta ->
             index: meta.fasta_mmi == null
             ready: true
