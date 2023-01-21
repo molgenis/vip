@@ -13,15 +13,15 @@ process annotate {
     
     hpoIds = meta.hpo_ids.join(",")
     
-    refSeqPath = params[params.assembly].reference.fasta
-    vepCustomGnomAdPath = params.vcf.annotate[params.assembly].vep_custom_gnomad
-    vepCustomClinVarPath = params.vcf.annotate[params.assembly].vep_custom_clinvar
-    vepCustomPhyloPPath = params.vcf.annotate[params.assembly].vep_custom_phylop
-    vepPluginSpliceAiIndelPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
-    vepPluginSpliceAiSnvPath = params.vcf.annotate[params.assembly].vep_plugin_spliceai_snv
-    vepPluginVkglPath = params.vcf.annotate[params.assembly].vep_plugin_vkgl
-    vepPluginUtrAnnotatorPath = params.vcf.annotate[params.assembly].vep_plugin_utrannotator
-    capiceModelPath = params.vcf.annotate[params.assembly].capice_model
+    refSeqPath = params[meta.assembly].reference.fasta
+    vepCustomGnomAdPath = params.vcf.annotate[meta.assembly].vep_custom_gnomad
+    vepCustomClinVarPath = params.vcf.annotate[meta.assembly].vep_custom_clinvar
+    vepCustomPhyloPPath = params.vcf.annotate[meta.assembly].vep_custom_phylop
+    vepPluginSpliceAiIndelPath = params.vcf.annotate[meta.assembly].vep_plugin_spliceai_indel
+    vepPluginSpliceAiSnvPath = params.vcf.annotate[meta.assembly].vep_plugin_spliceai_snv
+    vepPluginVkglPath = params.vcf.annotate[meta.assembly].vep_plugin_vkgl
+    vepPluginUtrAnnotatorPath = params.vcf.annotate[meta.assembly].vep_plugin_utrannotator
+    capiceModelPath = params.vcf.annotate[meta.assembly].capice_model
     
     template 'annotate.sh'
 }

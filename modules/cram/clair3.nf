@@ -4,7 +4,7 @@ process clair3_call {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    refSeqPath = params[params.assembly].reference.fasta
+    refSeqPath = params[meta.sample.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.')) 
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")

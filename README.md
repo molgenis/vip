@@ -49,7 +49,6 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
   -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, vcf
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
-  -a, --assembly <arg>  genome assembly. allowed values: GRCh37, GRCh38 (optional)
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
   -p, --profile  <arg>  nextflow configuration profile (optional)
   -h, --help            print this message and exit
@@ -60,17 +59,18 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 <mark>TODO</mark>
 
 ### Input
-| column            | type            | required |                                |
-|-------------------|-----------------|----------|--------------------------------|
-| ``project_id``    | ``string``      |          | default:vip                    |
-| ``family_id``     | ``string``      |          | default:vip_fam&#60;index&#62; |
-| ``individual_id`` | ``string``      | yes      |                                |
-| ``paternal_id``   | ``string``      |          |                                |
-| ``maternal_id``   | ``string``      |          |                                |
-| ``sex``           | ``enum``        |          | values: [male,female]          |
-| ``affected``      | ``boolean``     |          |                                |
-| ``proband``       | ``boolean``     |          |                                |
-| ``hpo_ids``       | ``string list`` |          | regex: /HP:\d{7}/              |
+| column            | type            | required |                                        |
+|-------------------|-----------------|----------|----------------------------------------|
+| ``project_id``    | ``string``      |          | default:vip                            |
+| ``family_id``     | ``string``      |          | default:vip_fam&#60;index&#62;         |
+| ``individual_id`` | ``string``      | yes      |                                        |
+| ``paternal_id``   | ``string``      |          |                                        |
+| ``maternal_id``   | ``string``      |          |                                        |
+| ``sex``           | ``enum``        |          | values: [male,female]                  |
+| ``affected``      | ``boolean``     |          |                                        |
+| ``proband``       | ``boolean``     |          |                                        |
+| ``hpo_ids``       | ``string list`` |          | regex: /HP:\d{7}/                      |
+| ``assembly``      | ``enum``        |          | default:GRCh38 values: [GRCh37,GRCh38] |
 
 #### Input VCF
 | column  | type     | required |                                                               |
@@ -79,10 +79,10 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                                  |
 
 #### Input CRAM
-| column                  | type          | required |                              |
-|-------------------------|---------------|----------|------------------------------|
-| ``cram``                | ``file``      |          | file extensions: [bam, cram] |
-| ``sequencing_platform`` | ``string``    | yes      | values: [illumina,nanopore]  |
+| column                  | type          | required |                                              |
+|-------------------------|---------------|----------|----------------------------------------------|
+| ``cram``                | ``file``      |          | file extensions: [bam, cram]                 |
+| ``sequencing_platform`` | ``enum``      | yes      | default:illumina values: [illumina,nanopore] |
 
 #### Input FASTQ
 | column                  | type          | required |                                               |
@@ -90,7 +90,7 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 | ``fastq``               | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``fastq_r1``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``fastq_r2``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
-| ``sequencing_platform`` | ``string``    | yes      | values: [illumina,nanopore]                   |
+| ``sequencing_platform`` | ``enum``      | yes      | default:illumina values: [illumina,nanopore]  |                   |
 
 ### Profile
 By default, VIP detects whether [Slurm](https://slurm.schedmd.com/) is available on the system and use the <code>slurm</code> profile. Otherwise, the <code>local</code> profile is used which executes the workflow on this machine. You can override the profile or refer to a custom profile specified in your <code>--config</code>.
@@ -114,7 +114,6 @@ An additional configuration file can be provided to override defaults:
 
 | param                         | default                                                                                   |                                |
 |-------------------------------|-------------------------------------------------------------------------------------------|--------------------------------|
-| ``assembly``                  | ``GRCh38``                                                                                | allowed values: GRCh37, GRCh38 |
 | ``GRCh37.reference.fasta``    | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz``                                 ||
 | ``GRCh37.reference.fastaFai`` | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz.fai``                             ||
 | ``GRCh37.reference.fastaGzi`` | ``${projectDir}/resources/GRCh37/human_g1k_v37.fasta.gz.gzi``                             ||

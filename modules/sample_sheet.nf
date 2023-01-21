@@ -42,6 +42,11 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
+    assembly: [
+      type: "string",
+      default: { 'GRCh38' },
+      enum: ['GRCh37', 'GRCh38']
+    ]
   ]
 
   def cols = [*:commonCols, *:additionalCols]
@@ -113,7 +118,7 @@ def parseValueString(token, col) {
   def value = token.length() > 0 ? token : (col.default ? col.default() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   if(value != null) {
-    if(col.enum && !col.enum.contains(token) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
+    if(col.enum && !col.enum.contains(value) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
   }
   return value
@@ -180,4 +185,8 @@ def parseSample(tokens, cols, rootDir) {
       }
     }
     return sample
+}
+
+def getAssemblies(sampleSheet) {
+  sampleSheet.collect(sample -> sample.assembly).unique()
 }

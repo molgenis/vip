@@ -18,7 +18,7 @@ def parseFastaIndex(faiFile) {
 }
 
 def determineChunks(meta) {
-    def records = parseFastaIndex(params[params.assembly].reference.fastaFai)
+    def records = parseFastaIndex(params[meta.sample.assembly].reference.fastaFai)
 
     long sizeMax = records.max{ record -> record.size }.size
     long size = 0L;

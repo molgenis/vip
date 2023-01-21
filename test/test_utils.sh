@@ -8,7 +8,7 @@ abort() {
 }
 
 CMD_VIP="$(realpath "${SCRIPT_DIR}/../vip")"
-NXF_VERSION="22.10.2"
+NXF_VERSION="22.10.5"
 CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"

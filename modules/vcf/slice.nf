@@ -6,7 +6,7 @@ process slice {
   shell:
     cramOut="${cram.simpleName}_sliced.cram"
     
-    refSeqPath = params[params.assembly].reference.fasta
+    refSeqPath = params[meta.assembly].reference.fasta
 
     template 'slice.sh'
 }

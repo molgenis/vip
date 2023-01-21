@@ -16,11 +16,11 @@ process report {
 
     reportPath = "${basename}.html"
 
-    refSeqPath = params[params.assembly].reference.fasta
-    decisionTree = params.vcf.classify[params.assembly].decision_tree
+    refSeqPath = params[meta.assembly].reference.fasta
+    decisionTree = params.vcf.classify[meta.assembly].decision_tree
     maxRecords = params.vcf.report.max_records
     maxSamples = params.vcf.report.max_samples
-    genesPath = params.vcf.report[params.assembly].genes
+    genesPath = params.vcf.report[meta.assembly].genes
     template = params.vcf.report.template
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : "" 
 

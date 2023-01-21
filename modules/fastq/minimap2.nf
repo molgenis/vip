@@ -4,7 +4,7 @@ process minimap2_align {
   output:
     tuple val(meta), path(cram), path(cramCrai)
   shell:
-    reference=params[params.assembly].reference.fasta
+    reference=params[meta.sample.assembly].reference.fasta
     referenceMmi="${meta.fasta_mmi}"
     cram="${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
@@ -20,7 +20,7 @@ process minimap2_align_paired_end {
   output:
     tuple val(meta), path(cram), path(cramCrai)
   shell:
-    reference=params[params.assembly].reference.fasta
+    reference=params[meta.sample.assembly].reference.fasta
     referenceMmi="${meta.fasta_mmi}"
     cram="${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
@@ -34,7 +34,7 @@ process minimap2_index {
   output:
     tuple val(meta), path(fasta_mmi)
   shell:
-    reference=params[params.assembly].reference.fasta
+    reference=params[meta.sample.assembly].reference.fasta
     fasta_mmi="reference.mmi"
 
     template 'minimap2_index.sh'

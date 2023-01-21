@@ -21,7 +21,7 @@ workflow cram {
 
         ch_vcf
           | map { meta ->
-              meta = [*:meta, project_id: meta.sample.project_id, vcf: meta.sample.vcf, vcf_index: meta.sample.vcf_index, vcf_stats: meta.sample.vcf_stats]
+              meta = [*:meta, project_id: meta.sample.project_id, assembly: meta.sample.assembly, vcf: meta.sample.vcf, vcf_index: meta.sample.vcf_index, vcf_stats: meta.sample.vcf_stats]
               meta.remove('sample')
               return meta
             }
@@ -29,9 +29,9 @@ workflow cram {
 }
 
 workflow {
-    validateParams()
     def sampleSheet = parseSampleSheet(params.input)
-    
+    validateParams(sampleSheet)
+
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
         | map { meta -> [*:meta, sample: [*:meta.sample, cram_index: meta.sample.cram_index ?: findCramIndex(meta.sample.cram)]] }
@@ -51,8 +51,8 @@ workflow {
         | cram
 }
 
-def validateParams() {
-  validateCommonParams()
+def validateParams(sampleSheet) {
+  validateCommonParams(sampleSheet)
 }
 
 def parseSampleSheet(csvFile) {
@@ -64,8 +64,8 @@ def parseSampleSheet(csvFile) {
     ],
     sequencing_platform: [
       type: "string",
-      required: true,
-      enum: ["illumina", "nanopore"]
+      default: 'illumina'
+      enum: ['illumina', 'nanopore']
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

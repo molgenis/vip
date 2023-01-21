@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
-include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { findIndex; createPedigree } from './modules/utils'
 include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
@@ -138,10 +138,9 @@ workflow vcf {
 }
 
 workflow {
-    validateParams()
-    
     def sampleSheet = parseSampleSheet(params.input)
-
+    validateParams(sampleSheet)
+    
     // emit unique vcfs with corresponding sample sheet rows
     Channel.from(sampleSheet)
         | map { sample -> [groupKey(sample.vcf, sampleSheet.count{ it.vcf == sample.vcf }), sample] }
@@ -179,7 +178,7 @@ workflow {
         | flatMap { meta -> meta.sampleSheet.collect { sample -> [*:meta, sample: sample].findAll { it.key != 'sampleSheet' } } }
         | map { meta -> [groupKey(meta.sample.project_id, sampleSheet.count{ it.project_id == meta.sample.project_id }), meta] }
         | groupTuple
-        | map { key, group -> [project_id: group.first().sample.project_id, sampleSheet: group] }
+        | map { key, group -> [project_id: group.first().sample.project_id, assembly: group.first().sample.assembly, sampleSheet: group] }
         | branch { meta ->
             merge_gvcfs: isGVcf(meta.sampleSheet.first().vcf)
             merge_vcfs: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1
@@ -226,9 +225,11 @@ workflow {
         | vcf
 }
 
-def validateParams() {
-  validateCommonParams()
-
+def validateParams(sampleSheet) {
+  def assemblies = getAssemblies(sampleSheet)
+  
+  validateCommonParams(assemblies)
+  
   //annotate
   def annotSvCacheDir = params.vcf.annotate.annotsv_cache_dir
   if(!file(annotSvCacheDir).exists() )   exit 1, "parameter 'vcf.annotate.annotsv_cache_dir' value '${annotSvCacheDir}' does not exist"
@@ -245,43 +246,49 @@ def validateParams() {
   def vepPluginInheritance = params.vcf.annotate.vep_plugin_inheritance
   if(!file(vepPluginInheritance).exists() )   exit 1, "parameter 'vcf.annotate.vep_plugin_inheritance' value '${vepPluginInheritance}' does not exist"
 
-  def capiceModel = params.vcf.annotate[params.assembly].capice_model
-  if(!file(capiceModel).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.capiceModel' value '${capiceModel}' does not exist"
+  assemblies.each { assembly ->
+    def capiceModel = params.vcf.annotate[assembly].capice_model
+    if(!file(capiceModel).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.capiceModel' value '${capiceModel}' does not exist"
 
-  def vepCustomGnomad = params.vcf.annotate[params.assembly].vep_custom_gnomad
-  if(!file(vepCustomGnomad).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_gnomad' value '${vepCustomGnomad}' does not exist"
+    def vepCustomGnomad = params.vcf.annotate[assembly].vep_custom_gnomad
+    if(!file(vepCustomGnomad).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_gnomad' value '${vepCustomGnomad}' does not exist"
 
-  def vepCustomClinvar = params.vcf.annotate[params.assembly].vep_custom_clinvar
-  if(!file(vepCustomClinvar).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_clinvar' value '${vepCustomClinvar}' does not exist"
+    def vepCustomClinvar = params.vcf.annotate[assembly].vep_custom_clinvar
+    if(!file(vepCustomClinvar).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_clinvar' value '${vepCustomClinvar}' does not exist"
 
-  def vepCustomPhylop = params.vcf.annotate[params.assembly].vep_custom_phylop
-  if(!file(vepCustomPhylop).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_custom_phylop' value '${vepCustomPhylop}' does not exist"
-  
-  def vepPluginSpliceaiIndel = params.vcf.annotate[params.assembly].vep_plugin_spliceai_indel
-  if(!file(vepPluginSpliceaiIndel).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_spliceai_indel' value '${vepPluginSpliceaiIndel}' does not exist"
+    def vepCustomPhylop = params.vcf.annotate[assembly].vep_custom_phylop
+    if(!file(vepCustomPhylop).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_phylop' value '${vepCustomPhylop}' does not exist"
+    
+    def vepPluginSpliceaiIndel = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
+    if(!file(vepPluginSpliceaiIndel).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_spliceai_indel' value '${vepPluginSpliceaiIndel}' does not exist"
 
-  def vepPluginSpliceaiSnv = params.vcf.annotate[params.assembly].vep_plugin_spliceai_snv
-  if(!file(vepPluginSpliceaiSnv).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_spliceai_snv' value '${vepPluginSpliceaiSnv}' does not exist"
+    def vepPluginSpliceaiSnv = params.vcf.annotate[assembly].vep_plugin_spliceai_snv
+    if(!file(vepPluginSpliceaiSnv).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_spliceai_snv' value '${vepPluginSpliceaiSnv}' does not exist"
 
-  def vepPluginUtrannotator = params.vcf.annotate[params.assembly].vep_plugin_utrannotator
-  if(!file(vepPluginUtrannotator).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_utrannotator' value '${vepPluginUtrannotator}' does not exist"
+    def vepPluginUtrannotator = params.vcf.annotate[assembly].vep_plugin_utrannotator
+    if(!file(vepPluginUtrannotator).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_utrannotator' value '${vepPluginUtrannotator}' does not exist"
 
-  def vepPluginVkgl = params.vcf.annotate[params.assembly].vep_plugin_vkgl
-  if(!file(vepPluginVkgl).exists() )   exit 1, "parameter 'vcf.annotate.${params.assembly}.vep_plugin_vkgl' value '${vepPluginVkgl}' does not exist"
+    def vepPluginVkgl = params.vcf.annotate[assembly].vep_plugin_vkgl
+    if(!file(vepPluginVkgl).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_vkgl' value '${vepPluginVkgl}' does not exist"
+  }
 
   // classify
-  def decisionTree = params.vcf.classify[params.assembly].decision_tree
-  if(!file(decisionTree).exists() )   exit 1, "parameter 'vcf.classify.${params.assembly}.decision_tree' value '${decisionTree}' does not exist"
+  assemblies.each { assembly ->
+    def decisionTree = params.vcf.classify[assembly].decision_tree
+    if(!file(decisionTree).exists() )   exit 1, "parameter 'vcf.classify.${assembly}.decision_tree' value '${decisionTree}' does not exist"
 
-  def samplesDecisionTree = params.vcf.classify_samples[params.assembly].decision_tree
-  if(!file(samplesDecisionTree).exists() )   exit 1, "parameter 'vcf.classify_samples.${params.assembly}.decision_tree' value '${samplesDecisionTree}' does not exist"
+    def samplesDecisionTree = params.vcf.classify_samples[assembly].decision_tree
+    if(!file(samplesDecisionTree).exists() )   exit 1, "parameter 'vcf.classify_samples.${assembly}.decision_tree' value '${samplesDecisionTree}' does not exist"
+  }
 
   // report
   def template = params.vcf.report.template
   if(!template.isEmpty() && !file(decisionTree).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
 
-  def genes = params.vcf.report[params.assembly].genes
-  if(!file(genes).exists() )   exit 1, "parameter 'vcf.report.${params.assembly}.genes' value '${genes}' does not exist"
+  assemblies.each { assembly ->
+    def genes = params.vcf.report[assembly].genes
+    if(!file(genes).exists() )   exit 1, "parameter 'vcf.report.${assembly}.genes' value '${genes}' does not exist"
+  }
 }
 
 def parseSampleSheet(csvFile) {

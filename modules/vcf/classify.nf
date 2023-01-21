@@ -11,7 +11,7 @@ process classify {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
-    decisionTree = params.vcf.classify[params.assembly].decision_tree
+    decisionTree = params.vcf.classify[meta.assembly].decision_tree
     annotateLabels = params.vcf.classify.annotate_labels
     annotatePath = params.vcf.classify.annotate_path
     

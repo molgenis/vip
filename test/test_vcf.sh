@@ -11,8 +11,6 @@ test_gvcf () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/gvcf.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh38")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -28,7 +26,6 @@ test_empty_input () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/empty_input.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -47,8 +44,6 @@ test_empty_output_filter () {
   args+=("--input" "${TEST_RESOURCES_DIR}/empty_output_filter.tsv")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -67,8 +62,6 @@ test_empty_output_filter_samples () {
   args+=("--input" "${TEST_RESOURCES_DIR}/empty_output_filter_samples.tsv")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -84,7 +77,6 @@ test_multiproject () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/multiproject.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -103,8 +95,6 @@ test_corner_cases () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/corner_cases.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -116,8 +106,6 @@ test_snv_proband () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -133,8 +121,6 @@ test_snv_proband_trio () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -153,8 +139,6 @@ test_snv_proband_trio_sample_filtering () {
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -170,8 +154,6 @@ test_snv_proband_trio_b38 () {
   args+=("--workflow" "vcf")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh38")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -190,8 +172,6 @@ test_lp () {
   args+=("--input" "${TEST_RESOURCES_DIR}/lp.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -210,8 +190,6 @@ test_lp_b38 () {
   args+=("--input" "${TEST_RESOURCES_DIR}/lp_b38.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh38")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -230,8 +208,6 @@ test_lb () {
   args+=("--input" "${TEST_RESOURCES_DIR}/lb.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh37")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -250,8 +226,6 @@ test_lb_b38 () {
   args+=("--input" "${TEST_RESOURCES_DIR}/lb_b38.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--profile" "local")
-  args+=("--assembly" "GRCh38")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
