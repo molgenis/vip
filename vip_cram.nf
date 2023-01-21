@@ -64,7 +64,7 @@ def parseSampleSheet(csvFile) {
     ],
     sequencing_platform: [
       type: "string",
-      default: 'illumina',
+      default: { 'illumina' },
       enum: ['illumina', 'nanopore']
     ]
   ]
