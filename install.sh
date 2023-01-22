@@ -56,8 +56,8 @@ download_resources_molgenis() {
     files+=("GRCh37/clinvar_20230115.vcf.gz")
     files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
     #FIXME: remove line below after clair 3 is fixed

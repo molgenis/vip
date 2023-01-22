@@ -115,7 +115,8 @@ process() {
 		echo "  processing chromosome ${chromosome} done"
 	done
 
-	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.vcf.gz"
+	# patch1: https://github.com/molgenis/vip/issues/305
+	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz"
 	if [[ ! -f "${total_output_path}" ]]; then
 		${BCFTOOLS_CMD} concat --no-version -Ov "${output_files[@]}" | ${BGZIP_CMD} -l 9 -@ "${THREADS}" > "${total_output_path}"
 		${BCFTOOLS_CMD} index "${total_output_path}"
