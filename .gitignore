@@ -19,6 +19,7 @@
 /test/.nextflow
 /test/output
 /test/nextflow.config
+/test/resources/downloads
 /test/test_wrapper.sh
 
 # nextflow

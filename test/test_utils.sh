@@ -13,6 +13,7 @@ CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
+TEST_RESOURCES_DOWNLOADS_DIR="${TEST_RESOURCES_DIR}/downloads"
 RESOURCES_DIR="$(realpath "${SCRIPT_DIR}/../resources/")"
 TEST_OUTPUT_DIR="${TEST_DIR}/output"
 
@@ -68,5 +69,22 @@ after_all () {
     return 1
   else
     echo -e "all tests passed successfully"
+  fi
+}
+
+download_test_resource() {
+  local -r file="${1}"
+
+  local -r url="https://download.molgeniscloud.org/downloads/vip/test/resources/${file}"
+  local -r output="${TEST_RESOURCES_DOWNLOADS_DIR}/${file}"
+
+  if [ ! -f "${output}" ]; then
+    mkdir -p "${TEST_RESOURCES_DOWNLOADS_DIR}"
+    if ! wget --quiet --continue "${url}" --output-document "${output}"; then
+      echo -e "an error occurred downloading ${url}"
+        # wget always writes an (empty) output file regardless of errors
+        rm -f "${output}"
+        exit 1
+    fi
   fi
 }
