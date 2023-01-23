@@ -14,7 +14,7 @@ test_fastq_nanopore () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--profile" "slurm")
 
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -43,7 +43,7 @@ test_fastq_illumina_pairedend () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--profile" "slurm")
 
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
