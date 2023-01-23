@@ -8,7 +8,6 @@ test_bam () {
   args+=("--workflow" "cram")
   args+=("--input" "${TEST_RESOURCES_DIR}/bam.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "slurm")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -24,7 +23,6 @@ test_cram () {
   args+=("--workflow" "cram")
   args+=("--input" "${TEST_RESOURCES_DIR}/cram.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "slurm")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1

@@ -12,7 +12,6 @@ test_fastq_nanopore () {
   args+=("--workflow" "fastq")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_nanopore.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "slurm")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -41,7 +40,6 @@ test_fastq_illumina_pairedend () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina_pairedend.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "slurm")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -67,7 +65,6 @@ local args=()
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina_pairedend_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "slurm")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
