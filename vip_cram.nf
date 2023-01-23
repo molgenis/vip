@@ -1,8 +1,9 @@
 nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
-include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
+include { findIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { clair3_call } from './modules/cram/clair3'
 include { vcf } from './vip_vcf'
@@ -34,7 +35,7 @@ workflow {
 
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
-        | map { meta -> [*:meta, sample: [*:meta.sample, cram_index: meta.sample.cram_index ?: findCramIndex(meta.sample.cram)]] }
+        | map { meta -> [*:meta, sample: [*:meta.sample, cram_index: meta.sample.cram_index ?: findIndex(meta.sample.cram)]] }
         | branch { meta ->
             index: meta.sample.cram_index == null
             ready: true
@@ -52,7 +53,8 @@ workflow {
 }
 
 def validateParams(sampleSheet) {
-  validateCommonParams(sampleSheet)
+  def assemblies = getAssemblies(sampleSheet)
+  validateCommonParams(assemblies)
 }
 
 def parseSampleSheet(csvFile) {
@@ -60,7 +62,7 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       required: true,
-      regex: /.+\.cram/
+      regex: /.+\.(cram|bam)/
     ],
     sequencing_platform: [
       type: "string",
@@ -69,11 +71,4 @@ def parseSampleSheet(csvFile) {
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)
-}
-
-// TODO move to ./modules/cram/utils
-def findCramIndex(cram) {
-    def cram_index
-    if(file(cram + ".crai").exists()) cram_index = cram + ".crai"
-    cram_index
 }

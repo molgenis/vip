@@ -4,7 +4,7 @@ process samtools_index {
   output:
     tuple val(meta), path(cramIndex)
   shell:
-    cramIndex="${cram}.crai"
+    cramIndex=cram.name.endsWith('.cram') ? "${cram}.crai" : "${cram}.bai"
 
     template 'samtools_index.sh'
 }
