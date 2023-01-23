@@ -3,6 +3,26 @@
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 source ${SCRIPT_DIR}/test_utils.sh
 
+test_fastq_nanopore () {
+  download_test_resource "GM24385_1_s0_10000.fastq.gz"
+  download_test_resource "GM24385_2_s0_10000.fastq.gz"
+  download_test_resource "GM24385_3_s0_10000.fastq.gz"
+  
+  local args=()
+  args+=("--workflow" "fastq")
+  args+=("--input" "${TEST_RESOURCES_DIR}/fastq_nanopore.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--profile" "slurm")
+
+  if ! "${CMD_VIP}" "${args[@]}"; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+    return 1
+  fi
+}
+
 test_fastq_illumina_pairedend () {
   download_test_resource "NIST7035_TAAGGCGA_L001_R1_001_s0_10000.fastq.gz"
   download_test_resource "NIST7035_TAAGGCGA_L001_R2_001_s0_10000.fastq.gz"
@@ -60,6 +80,11 @@ local args=()
 
 run_tests () {
   before_all
+
+  TEST_ID="fastq_nanopore"
+  before_each
+  test_fastq_nanopore
+  after_each
 
   TEST_ID="fastq_illumina_pairedend"
   before_each
