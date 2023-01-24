@@ -134,26 +134,25 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.0.9"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.2"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.0.9.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.0.9.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.2.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.2.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
 
-  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2007"
+  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2202"
   if [ ! -d "${annotsv_exomiser_dir}" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: 2007_hg19.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2007_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
-    echo -e "downloading from data.monarchinitiative.org: 2007_phenotype.zip ..."
-    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2007_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
-    unzip -qq "${annotsv_exomiser_dir}/2007_phenotype.zip" -d "${annotsv_exomiser_dir}"
-    rm "${annotsv_exomiser_dir}/2007_phenotype.zip"
+    echo -e "downloading from www.lbgi.fr: 2202_hg19.tar.gz ..."
+    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2202_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
+    echo -e "downloading from data.monarchinitiative.org: 2202_phenotype.zip ..."
+    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2202_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
+    unzip -qq "${annotsv_exomiser_dir}/2202_phenotype.zip" -d "${annotsv_exomiser_dir}"
+    rm "${annotsv_exomiser_dir}/2202_phenotype.zip"
   else
     echo -e "skipping download annotsv exomiser annotations: already exists"
   fi
@@ -182,7 +181,7 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.0.9.sif")
+  files+=("annotsv-3.2.2.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-5.0.0.sif")
   files+=("clair3-v0.1-r12.sif")
