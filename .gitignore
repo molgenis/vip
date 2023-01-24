@@ -12,7 +12,6 @@
 # Installed resource folders.
 /resources
 !/resources/decision_tree_*.json
-!/resources/uORF_5UTR_*_PUBLIC.txt
 !/resources/vep/plugins
 
 # test
