@@ -27,6 +27,10 @@ annot_sv() {
   # write an empty file so that the AnnotSV VEP plugin is always used to ensure an equal number of VEP fields accross chunks
   if [[ ! -f "!{vcf}.tsv" ]]; then
     echo -e "AnnotSV_ranking_score\tAnnotSV_ranking_criteria\tACMG_class\n" > "!{vcf}.tsv"
+  elif [[ "!{meta.assembly}" == "GRCh38" ]]; then
+    # workaround for https://github.com/lgmgeo/AnnotSV/issues/152 that might fail for some chromosomes e.g. GRCh37 MT maps to GRCh38 chrM)
+    mv "!{vcf}.tsv" "!{vcf}.tsv.tmp"
+    awk -v FS='\t' -v OFS='\t' 'NR>1 {$2 = "chr"$2; print} 1' "!{vcf}.tsv.tmp" > "!{vcf}.tsv"
   fi
 }
 
