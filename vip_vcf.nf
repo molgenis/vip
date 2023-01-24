@@ -236,7 +236,7 @@ workflow vcf {
 
         ch_output.slice
             | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram, meta.sample.cram_index] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
             | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
