@@ -264,10 +264,13 @@ workflow {
 
 def validateParams(sampleSheet) {
   def assemblies = getAssemblies(sampleSheet)
-  
   validateCommonParams(assemblies)
   
-  //annotate
+  // general
+  def gvcfMergePreset = params.vcf.gvcf_merge_preset
+  if (!(gvcfMergePreset ==~ /gatk|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
+
+  // annotate
   def annotSvCacheDir = params.vcf.annotate.annotsv_cache_dir
   if(!file(annotSvCacheDir).exists() )   exit 1, "parameter 'vcf.annotate.annotsv_cache_dir' value '${annotSvCacheDir}' does not exist"
 

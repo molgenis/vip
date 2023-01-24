@@ -12,7 +12,7 @@ process merge_gvcf {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
-    config="gatk"
+    config=params.vcf.gvcf_merge_preset
 
     template 'merge_gvcf.sh'
 }
