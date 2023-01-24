@@ -33,7 +33,6 @@ validate() {
   fi
 }
 
-#TODO add deepvariant_1.4.0, deepvariant_deeptrio, glnexus_v1.4.1, minimap2-2.24.sif
 main() {
   local -r args=$(getopt -a -n pipeline -o i:o:b:p:t:c:fkh --long input:,output:,probands:,pedigree:,phenotypes:,config:,force,keep,help -- "$@")
   # shellcheck disable=SC2181
@@ -97,8 +96,8 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_107.0"]="vep-107.0"
-  uris["docker://google/deepvariant:1.4.0"]="deepvariant_1.4.0"
-  uris["docker://google/deepvariant:deeptrio-1.4.0"]="deepvariant_deeptrio-1.4.0"
+  uris["docker://hkubal/clair3:latest"]="clair3-v0.1-r12"
+  uris["docker://ghcr.io/dnanexus-rnd/glnexus:v1.4.1"]="glnexus_v1.4.1"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
