@@ -1,6 +1,6 @@
 process slice {  
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(cram)
+    tuple val(meta), path(vcf), path(vcfIndex), path(cram), path(cramIndex)
   output:
     tuple val(meta), path(cramOut)
   shell:
