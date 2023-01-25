@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
-include { findIndex } from './modules/cram/utils'
+include { findCramIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { clair3_call } from './modules/cram/clair3'
 include { vcf } from './vip_vcf'
@@ -49,7 +49,7 @@ workflow {
 
   // create sample channel, detect cram index and continue with cram workflow   
   Channel.from(sampleSheet)
-    | map { sample -> [sample: [*:sample, cram_index: findIndex(sample.cram)], sampleSheet: sampleSheet] }
+    | map { sample -> [sample: [*:sample, cram_index: findCramIndex(sample.cram)], sampleSheet: sampleSheet] }
     | cram
 }
 

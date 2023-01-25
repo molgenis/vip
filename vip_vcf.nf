@@ -2,7 +2,9 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { findIndex; createPedigree } from './modules/utils'
+include { findVcfIndex; createPedigree } from './modules/utils'
+include { findCramIndex } from './modules/cram/utils'
+include { samtools_index } from './modules/cram/samtools'
 include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
 include { stats } from './modules/vcf/stats'
@@ -256,9 +258,24 @@ workflow {
   def sampleSheet = parseSampleSheet(params.input)
   validateParams(sampleSheet)
 
-  // create sample channel, detect vcf index and continue with vcf workflow   
+  // create sample channel, detect vcf and cram indexes
   Channel.from(sampleSheet)
-    | map { sample -> [sample: [*:sample, vcf_index: findIndex(sample.vcf)], sampleSheet: sampleSheet] }
+    | map { sample -> [sample: [*:sample, vcf_index: findVcfIndex(sample.vcf), cram_index: findCramIndex(sample.cram)], sampleSheet: sampleSheet] }
+    | branch { meta ->
+        index_cram: meta.sample.cram != null && meta.sample.cram_index == null
+        ready: true
+      }
+    | set { ch_sample }
+
+  // index cram
+  ch_sample.index_cram
+    | map { meta -> [meta, meta.sample.cram] }
+    | samtools_index
+    | map { meta, cramIndex -> [*:meta, sample: [*:meta.sample, cram_index: cramIndex]] }
+    | set { ch_sample_indexed_cram }
+
+  // run vcf workflow
+  ch_sample_indexed_cram.mix(ch_sample.ready)  
     | vcf
 }
 
