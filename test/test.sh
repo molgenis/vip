@@ -7,10 +7,12 @@ abort() {
    exit 1
 }
 
-NXF_VERSION="21.10.6"
+NXF_VERSION="22.10.2"
+CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
 TEST_RESOURCES_DIR="${TEST_DIR}/resources"
+RESOURCES_DIR="$(realpath "${SCRIPT_DIR}/../resources/")"
 TEST_OUTPUT_DIR="${TEST_DIR}/output"
 
 RED="\033[0;31m"
@@ -77,7 +79,7 @@ test_snv () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -95,7 +97,7 @@ test_corner_cases () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 }
@@ -110,7 +112,7 @@ test_snv_proband () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -132,7 +134,7 @@ test_snv_proband_trio () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -154,7 +156,7 @@ test_snv_proband_trio_sample_filtering () {
   args+=("--filter_samples" 1)
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -175,7 +177,7 @@ test_snv_proband_trio_b38 () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -193,7 +195,7 @@ test_sv () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -212,11 +214,11 @@ test_lp () {
   args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2446 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lp.vcf.gz" | grep -vc "^#")" -lt 2452 ]; then
     return 1
   fi
 }
@@ -231,11 +233,11 @@ test_lp_b38 () {
   args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2441 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lp_b38.vcf.gz" | grep -vc "^#")" -lt 2450 ]; then
     return 1
   fi
 }
@@ -250,11 +252,11 @@ test_lb () {
   args+=("--GRCh37_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 1331 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lb.vcf.gz" | grep -vc "^#")" -gt 1346 ]; then
     return 1
   fi
 }
@@ -269,11 +271,11 @@ test_lb_b38 () {
   args+=("--GRCh38_annotate_vep_plugin_vkgl" "${TEST_RESOURCES_DIR}/vkgl_public_consensus_empty.tsv")
   args+=("${SCRIPT_DIR}/../main.nf")
 
-  if ! NXF_VER="${NXF_VERSION}" nextflow "${args[@]}" > /dev/null 2>&1; then
+  if ! NXF_VER="${NXF_VERSION}" "${CMD_NEXTFLOW}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 1236 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/lb_b38.vcf.gz" | grep -vc "^#")" -gt 1272 ]; then
     return 1
   fi
 }
@@ -340,10 +342,6 @@ run_tests () {
 }
 
 main () {
-  if ! command -v nextflow &> /dev/null; then
-    echo -e "command 'nextflow' could not be found"
-    exit 2
-  fi
   if [ -z "${SINGULARITY_BIND}" ]; then
     echo -e "${YELLOW}WARNING: SINGULARITY_BIND environment variable not found${NC}"
   fi

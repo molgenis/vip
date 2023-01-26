@@ -11,7 +11,8 @@
 
 # Installed resource folders.
 /resources
-!/resources/decision_tree.json
+!/resources/decision_tree_GRCh37.json
+!/resources/decision_tree_GRCh38.json
 !/resources/vep/plugins
 
 # test
@@ -19,3 +20,7 @@
 /test/output
 /test/nextflow.config
 /test/test_wrapper.sh
+
+# nextflow
+nextflow
+nextflow-*-all

@@ -18,6 +18,32 @@ validate() {
   fi
 }
 
+download() {
+  local -r url="${1}"
+  local -r output="${2}"
+
+  if [ ! -f "${output}" ]; then
+    echo -e "downloading ${url} ..."
+    if ! wget --quiet --continue "${url}" --output-document "${output}"; then
+      echo -e "an error occurred downloading ${url}"
+        # wget always writes an (empty) output file regardless of errors
+        rm -f "${output}"
+        exit 1
+    fi
+  else
+    echo -e "skipping download: ${output} already exists"
+  fi
+}
+
+download_nextflow() {
+  local -r version="22.10.2"
+  local -r file="nextflow-${version}-all"
+  local -r download_dir="${SCRIPT_DIR}"
+
+  download "https://download.molgeniscloud.org/downloads/vip/nextflow/${file}" "${download_dir}/${file}"
+  (cd "${download_dir}" && chmod +x "${file}" && rm -f nextflow && ln -s ${file} "nextflow")
+}
+
 download_resources_molgenis() {
   local -r assembly="${1}"
 
@@ -26,7 +52,7 @@ download_resources_molgenis() {
   files+=("inheritance_20220712.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v4.0.0-v1.pickle.dat")
+    files+=("GRCh37/capice_model_v4.0.0-v2.pickle.dat")
     files+=("GRCh37/clinvar_20220620.vcf.gz")
     files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
@@ -45,7 +71,7 @@ download_resources_molgenis() {
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v4.0.0-v1.pickle.dat")
+    files+=("GRCh38/capice_model_v4.0.0-v2.pickle.dat")
     files+=("GRCh38/clinvar_20220620.vcf.gz")
     files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
@@ -64,12 +90,7 @@ download_resources_molgenis() {
   fi
 
   for file in "${files[@]}"; do
-    if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/resources/${file}" --output-document "${download_dir}/${file}"
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
+    download "https://download.molgeniscloud.org/downloads/vip/resources/${file}" "${download_dir}/${file}"
   done
 }
 
@@ -158,18 +179,13 @@ download_images() {
   files+=("capice-4.0.0.sif")
   files+=("gatk-4.2.5.0.sif")
   files+=("samtools-1.16.sif")
-  files+=("vcf-decision-tree-3.4.2.sif")
-  files+=("vcf-inheritance-matcher-2.1.2.sif")
-  files+=("vcf-report-5.0.0.sif")
+  files+=("vcf-decision-tree-3.4.3.sif")
+  files+=("vcf-inheritance-matcher-2.1.3.sif")
+  files+=("vcf-report-5.1.2.sif")
   files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
-    if [ ! -f "${download_dir}/${file}" ]; then
-      echo -e "downloading from download.molgeniscloud.org: ${file} ..."
-      wget --quiet --continue "https://download.molgeniscloud.org/downloads/vip/images/${file}" --output-document "${download_dir}/${file}"
-    else
-      echo -e "skipping download ${download_dir}/${file}: already exists"
-    fi
+    download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
   done
 }
 
@@ -209,6 +225,7 @@ main() {
   validate "${assembly}"
 
   echo -e "installing ..."
+  download_nextflow
   download_images
   download_resources "${assembly}"
   echo -e "installing done"
