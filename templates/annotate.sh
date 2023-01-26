@@ -192,7 +192,7 @@ vep() {
   args+=("--custom" "!{ucneRegionsPath},region,bed,overlap,0")
   args+=("--custom" "!{fathmmMKLScoresPath},fathmm,vcf,exact,0,fathmm")
   args+=("--custom" "!{ncErScoresPath},ncER,bed,overlap,0")
-  args+=("--custom" "!{reMMScoresPath},ReMM,bed,exact,0")
+  args+=("--custom" "!{reMMScoresPath},ReMM,bed,overlap,0")
   args+=("--custom" "!{regionPhenosPath},phenotype,bed,overlap,0")
 
   if [ -n "!{vepPluginArtefact}" ]; then
