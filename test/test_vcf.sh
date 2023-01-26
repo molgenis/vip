@@ -4,7 +4,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 source ${SCRIPT_DIR}/test_utils.sh
 
 test_gvcf () {
-  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
   args+=("--workflow" "vcf")
@@ -120,8 +120,11 @@ test_snv_proband () {
 }
 
 test_snv_proband_trio () {
+  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
   local args=()
   args+=("--workflow" "vcf")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
@@ -135,7 +138,7 @@ test_snv_proband_trio () {
 }
 
 test_snv_proband_trio_sample_filtering () {
-  echo -e "params { vcf.filter_samples.classes = \"K\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.filter_samples.classes = \"OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
   args+=("--workflow" "vcf")
@@ -153,8 +156,11 @@ test_snv_proband_trio_sample_filtering () {
 }
 
 test_snv_proband_trio_b38 () {
+  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
   local args=()
   args+=("--workflow" "vcf")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
