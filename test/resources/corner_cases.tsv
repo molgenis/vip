@@ -1,2 +1,2 @@
-individual_id	vcf
-SAMPLE0	snv_proband.vcf
+individual_id	assembly	vcf
+SAMPLE0	GRCh37	snv_proband.vcf

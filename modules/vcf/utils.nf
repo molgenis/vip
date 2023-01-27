@@ -19,7 +19,7 @@ def getHpoIds(samples) {
 }
 
 def determineChunks(meta) {
-  def fastaContigs = parseFastaIndex(params[params.assembly].reference.fastaFai).collectEntries { record -> [record.contig, record] }
+  def fastaContigs = parseFastaIndex(params[meta.assembly].reference.fastaFai).collectEntries { record -> [record.contig, record] }
   def records = meta.vcf_stats.readLines().collect { line -> line.split('\t') }
   
   int chunkSize = 10000

@@ -11,7 +11,7 @@ process normalize {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
-    refSeqPath = params[params.assembly].reference.fasta
+    refSeqPath = params[meta.assembly].reference.fasta
     
     template 'normalize.sh'
 }

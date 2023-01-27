@@ -12,13 +12,13 @@
 # Installed resource folders.
 /resources
 !/resources/decision_tree_*.json
-!/resources/uORF_5UTR_*_PUBLIC.txt
 !/resources/vep/plugins
 
 # test
 /test/.nextflow
-/test/output
+/test/output*
 /test/nextflow.config
+/test/resources/downloads
 /test/test_wrapper.sh
 
 # nextflow

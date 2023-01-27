@@ -7,8 +7,6 @@ usage() {
   -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, vcf
   -i, --input             <arg>  path to sample sheet .tsv
   -o, --output            <arg>  output folder
-  -a, --assembly          <arg>  genome assembly. allowed values: GRCh37, GRCh38 (optional)
-  -s, --sequencing_method <arg>  sequencing method. allowed values: WES, WGS, ONT (optional)
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
   -h, --help                     print this message and exit"
@@ -20,8 +18,6 @@ validate() {
   local -r output="${3}"
   local -r config="${4}"
   local -r profile="${5}"
-  local -r assembly="${6}"
-  local -r sequencingMethod="${7}"
   
   if [[ -z "${workflow}" ]]; then
     >&2 echo -e "error: missing required -w / --workflow"
@@ -47,12 +43,6 @@ validate() {
   if [[ -n "${config}" ]] && [[ ! -f "${config}" ]]; then
     >&2 echo -e "error: config '${config}' does not exist"
   fi
-  if [[ -n "${assembly}" ]] && [[ ! "${assembly}" =~ GRCh37|GRCh38 ]]; then
-    >&2 echo -e "error: assembly '${assembly}'. allowed values are [GRCh37, GRCh38]"
-  fi
-  if [[ -n "${sequencingMethod}" ]] && [[ ! "${sequencingMethod}" =~ WES|WGS|ONT ]]; then
-    >&2 echo -e "error: sequencing '${sequencingMethod}'. allowed values are [WES, WGS, ONT]"
-  fi
 }
 
 execute_workflow() {
@@ -61,8 +51,6 @@ execute_workflow() {
   local -r paramOutput="${3}"
   local -r paramConfig="${4}"
   local -r paramProfile="${5}"
-  local -r paramAssembly="${6}"
-  local -r paramSequencingMethod="${7}"
 
   rm -f "${paramOutput}/nxf_report.html"
   rm -f "${paramOutput}/nxf_timeline.html"
@@ -99,18 +87,12 @@ execute_workflow() {
   args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
-  if [[ -n "${paramAssembly}" ]]; then
-    args+=("--assembly" "${paramAssembly}")
-  fi
-  if [[ -n "${paramSequencingMethod}" ]]; then
-    args+=("--sequencingMethod" "${paramSequencingMethod}")
-  fi
 
   APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}"
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o w:i:o:a:s:c:p:h --long workflow:,input:,output:,assembly:,sequencing_method:,config:,profile:,help -- "$@")
+  local -r args=$(getopt -a -n pipeline -o w:i:o:c:p:h --long workflow:,input:,output:,config:,profile:,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -120,8 +102,6 @@ main() {
   local workflow=""
   local input=""
   local output=""
-  local assembly=""
-  local sequencingMethod=""
   local config=""
   local profile=""
   if command -v sbatch &> /dev/null; then
@@ -150,14 +130,6 @@ main() {
       output="$2"
       shift 2
       ;;
-    -a | --assembly)
-      assembly="$2"
-      shift 2
-      ;;
-    -s | --sequencing_method)
-      sequencingMethod="$2"
-      shift 2
-      ;;
     -c | --config)
       config="$2"
       shift 2
@@ -177,8 +149,8 @@ main() {
     esac
   done
 
-  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${assembly}" "${sequencingMethod}"
-  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${assembly}" "${sequencingMethod}"
+  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}"
+  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}"
 }
 
 main "${@}"

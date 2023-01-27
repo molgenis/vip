@@ -1,12 +1,12 @@
 process slice {  
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(cram)
+    tuple val(meta), path(vcf), path(vcfIndex), path(cram), path(cramIndex)
   output:
     tuple val(meta), path(cramOut)
   shell:
     cramOut="${cram.simpleName}_sliced.cram"
     
-    refSeqPath = params[params.assembly].reference.fasta
+    refSeqPath = params[meta.assembly].reference.fasta
 
     template 'slice.sh'
 }

@@ -55,13 +55,14 @@ download_resources_molgenis() {
     files+=("GRCh37/capice_model_v5.0.0-v1.ubj")
     files+=("GRCh37/clinvar_20230115.vcf.gz")
     files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
-    files+=("GRCh37/human_g1k_v37.fasta.gz")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh37/human_g1k_v37.fasta.fai")
+    files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
     files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
@@ -69,7 +70,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
-    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
+    files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh37/vkgl_consensus_20220901.tsv")
   fi
 
@@ -77,6 +78,14 @@ download_resources_molgenis() {
     files+=("GRCh38/capice_model_v5.0.0-v1.ubj")
     files+=("GRCh38/clinvar_20230115.vcf.gz")
     files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
+    #FIXME: remove line below after clair 3 is fixed
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
+    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/hg38.phyloP100way.bw")
@@ -84,15 +93,8 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
-    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
+    files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20220901.tsv")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
-    #FIXME: remove line below after clair 3 is fixed
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
   fi
 
   for file in "${files[@]}"; do
@@ -132,26 +134,25 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.0.9"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.2"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.0.9.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.0.9.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.2.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.2.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
 
-  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2007"
+  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2202"
   if [ ! -d "${annotsv_exomiser_dir}" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: 2007_hg19.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2007_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
-    echo -e "downloading from data.monarchinitiative.org: 2007_phenotype.zip ..."
-    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2007_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
-    unzip -qq "${annotsv_exomiser_dir}/2007_phenotype.zip" -d "${annotsv_exomiser_dir}"
-    rm "${annotsv_exomiser_dir}/2007_phenotype.zip"
+    echo -e "downloading from www.lbgi.fr: 2202_hg19.tar.gz ..."
+    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2202_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
+    echo -e "downloading from data.monarchinitiative.org: 2202_phenotype.zip ..."
+    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2202_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
+    unzip -qq "${annotsv_exomiser_dir}/2202_phenotype.zip" -d "${annotsv_exomiser_dir}"
+    rm "${annotsv_exomiser_dir}/2202_phenotype.zip"
   else
     echo -e "skipping download annotsv exomiser annotations: already exists"
   fi
@@ -180,7 +181,7 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.0.9.sif")
+  files+=("annotsv-3.2.2.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-5.0.0.sif")
   files+=("clair3-v0.1-r12.sif")

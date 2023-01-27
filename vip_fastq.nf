@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
-include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { concat_fastq; concat_fastq_paired_end } from './modules/fastq/concat'
 include { minimap2_align; minimap2_align_paired_end; minimap2_index } from './modules/fastq/minimap2'
 include { cram } from './vip_cram'
@@ -63,13 +63,12 @@ workflow fastq {
 }
 
 workflow {
-    validateParams()
-
     def sampleSheet = parseSampleSheet(params.input)
+    validateParams(sampleSheet)
 
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
-        | map { meta -> [*:meta, fasta_mmi: params[params.assembly].reference.fastaMmi] }
+        | map { meta -> [*:meta, fasta_mmi: params[meta.sample.assembly].reference.fastaMmi] }
         | branch { meta ->
             index: meta.fasta_mmi == null
             ready: true
@@ -85,11 +84,15 @@ workflow {
     | fastq
 }
 
-def validateParams() {
-  validateCommonParams()
+def validateParams(sampleSheet) {
+  def assemblies = getAssemblies(sampleSheet)
   
-  def fastaMmi = params[params.assembly].reference.fastaMmi
-  if(!fastaMmi.isEmpty() && !file(fastaMmi).exists() )   exit 1, "parameter '${params.assembly}.reference.fastaMmi' value '${fastaMmi}' does not exist"
+  validateCommonParams(assemblies)
+  
+  assemblies.each { assembly ->
+    def fastaMmi = params[assembly].reference.fastaMmi
+    if(!fastaMmi.isEmpty() && !file(fastaMmi).exists() )   exit 1, "parameter '${assembly}.reference.fastaMmi' value '${fastaMmi}' does not exist"
+  }  
 }
 
 def parseSampleSheet(csvFile) {
@@ -111,11 +114,12 @@ def parseSampleSheet(csvFile) {
       type: "file",
       list: true,
       regex: fastqRegex
+    ],
+    sequencing_platform: [
+      type: "string",
+      default: { 'illumina' },
+      enum: ['illumina', 'nanopore']
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)
-}
-
-def countFamilySamples(sample, sampleSheet) {
-    sampleSheet.count { thisSample -> sample.family_id == thisSample.family_id }
 }
