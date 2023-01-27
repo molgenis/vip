@@ -86,7 +86,7 @@ workflow vcf {
             [groupKey(key, size), meta]
           }
         | groupTuple
-        | map { key, group -> [project_id: key[0], assembly: key[1], chunk: key[2], sampleSheet: group] }
+        | map { key, group -> [project_id: key[0], assembly: key[1], chunk: key[2], sampleSheet: group.sort { it.sample.index } ] }
         | branch { meta ->
             merge_gvcfs: isGVcf(meta.sampleSheet.first().vcf)
             merge_vcfs: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1

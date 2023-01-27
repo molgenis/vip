@@ -80,7 +80,7 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     } catch(IllegalArgumentException e) {
       exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
     }
-    
+    sample.index = i
     samples << sample
   }
   
