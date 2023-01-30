@@ -1,6 +1,59 @@
 {
-  "rootNode": "filter",
+  "rootNode": "chrom",
   "nodes": {
+    "chrom": {
+      "type": "BOOL",
+      "query": {
+        "field": "#CHROM",
+        "operator": "in",
+        "value": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "X",
+          "Y",
+          "MT"
+        ]
+      },
+      "outcomeTrue": {
+        "nextNode": "gene"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "gene"
+      }
+    },
+    "gene": {
+      "type": "EXISTS",
+      "field": "INFO/CSQ/Gene",
+      "outcomeTrue": {
+        "nextNode": "filter"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      }
+    },
     "filter": {
       "type": "BOOL",
       "query": {
@@ -14,7 +67,7 @@
         "nextNode": "vkgl"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lq"
+        "nextNode": "exit_rm"
       },
       "outcomeMissing": {
         "nextNode": "vkgl"
@@ -163,37 +216,10 @@
         }
       },
       "outcomeMissing": {
-        "nextNode": "utr5"
-      },
-      "outcomeDefault": {
-        "nextNode": "utr5"
-      }
-    },
-    "utr5": {
-      "type": "EXISTS",
-      "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
-      "outcomeTrue": {
-        "nextNode": "exit_vus"
-      },
-      "outcomeFalse": {
-        "nextNode": "capice"
-      }
-    },
-    "capice": {
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/CAPICE_SC",
-        "operator": ">",
-        "value": 0.56
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lp"
-      },
-      "outcomeFalse": {
         "nextNode": "spliceAI"
       },
-      "outcomeMissing": {
-        "nextNode": "exit_vus"
+      "outcomeDefault": {
+        "nextNode": "spliceAI"
       }
     },
     "spliceAI": {
@@ -238,38 +264,65 @@
           "queries": [
             {
               "field": "INFO/CSQ/SpliceAI_pred_DS_AG",
-              "operator": "<",
+              "operator": ">",
               "value": 0.13
             },
             {
               "field": "INFO/CSQ/SpliceAI_pred_DS_AL",
-              "operator": "<",
+              "operator": ">",
               "value": 0.13
             },
             {
               "field": "INFO/CSQ/SpliceAI_pred_DS_DG",
-              "operator": "<",
+              "operator": ">",
               "value": 0.13
             },
             {
               "field": "INFO/CSQ/SpliceAI_pred_DS_DL",
-              "operator": "<",
+              "operator": ">",
               "value": 0.13
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_lb"
+            "nextNode": "exit_vus"
           }
         }
       ],
       "outcomeDefault": {
-        "nextNode": "exit_vus"
+        "nextNode": "utr5"
       },
       "outcomeMissing": {
-        "nextNode": "exit_lb"
+        "nextNode": "utr5"
       }
     },
-    "exit_lq": {
+    "utr5": {
+      "type": "EXISTS",
+      "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
+      "outcomeTrue": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeFalse": {
+        "nextNode": "capice"
+      }
+    },
+    "capice": {
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/CAPICE_SC",
+        "operator": ">",
+        "value": 0.56
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_vus"
+      }
+    },
+    "exit_rm": {
       "type": "LEAF",
       "class": "LQ"
     },
