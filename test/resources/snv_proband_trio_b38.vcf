@@ -1,7 +1,11 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-##contig=<ID=chr1,length=249698942,assembly=b38>
+##contig=<ID=chr22,length=50818468>
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	PROBAND0	MOTHER0	FATHER0
-chr1	17018960	.	T	C	.	PASS	.	GT	1/0	0/0	1/0
-chr1	17022646	.	A	T	.	PASS	.	GT	0/1	0/1	0/0
+chr22	17199629	chr22_17199629_A_C	A	C	15	PASS	.	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19134440	chr22_19134440_G_T	G	T	11	PASS	.	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19253958	chr22_19253958_C_A	C	A	11	PASS	.	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19718955	chr22_19718955_C_A	C	A	10	PASS	.	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
