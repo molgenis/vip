@@ -22,7 +22,7 @@ slice () {
     args+=("--reference" "!{refSeqPath}")
     # retrieve pairs even when the mate is outside of the requested region (note this also removes duplicate sequences)
     # FIXME disabled because of "[E::hts_itr_regions] Failed to create the multi-region iterator!" eror in some tests, e.g. test_snv_proband_trio
-    #args+=("--fetch-pairs")
+    args+=("--fetch-pairs")
     args+=("--output-fmt-option" "level=9")
     args+=("--output-fmt-option" "archive")
     # not supported by igv.js v2.13.3
