@@ -36,7 +36,7 @@ download() {
 }
 
 download_nextflow() {
-  local -r version="22.10.5"
+  local -r version="22.10.6"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 

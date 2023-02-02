@@ -88,7 +88,7 @@ execute_workflow() {
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
 
-  APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}"
+  APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="22.10.6" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}"
 }
 
 main() {
