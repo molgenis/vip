@@ -34,7 +34,6 @@ test_fastq_illumina_pairedend () {
   download_test_resource "NIST7086_CGTACTAG_L001_R2_001_s0_10000.fastq.gz"
   download_test_resource "NIST7086_CGTACTAG_L002_R1_001_s0_10000.fastq.gz"
   download_test_resource "NIST7086_CGTACTAG_L002_R2_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7086_TAAGGCGA_L001_R1_001_s0_10000.fastq.gz"
 
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
