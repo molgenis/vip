@@ -168,7 +168,7 @@ test_snv_proband_trio_b38 () {
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 3 ]; then
     return 1
   fi
 }
