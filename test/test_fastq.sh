@@ -83,12 +83,12 @@ run_tests () {
 
   TEST_ID="fastq_nanopore"
   before_each
-  #test_fastq_nanopore
+  test_fastq_nanopore
   after_each
 
   TEST_ID="fastq_illumina_pairedend"
   before_each
-  #test_fastq_illumina_pairedend
+  test_fastq_illumina_pairedend
   after_each
 
   TEST_ID="fastq_illumina_pairedend_trio"
