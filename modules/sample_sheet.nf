@@ -83,8 +83,28 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     sample.index = i
     samples << sample
   }
+
+  validate(samples);
   
   return samples
+}
+
+def validate(samples){
+  def sampleMap = [:]
+  samples.each{ sample ->
+    if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  exit 1, "Individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project."
+    sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id]
+  }
+  samples.each{ sample ->
+    if(sample.paternal_id != null){
+      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]] == null) exit 1, "Paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'."
+      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]].familyId != sample.family_id) exit 1, "Paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family."
+    }
+    if(sample.maternal_id != null){
+      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]] == null) exit 1, "Maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'."
+      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]].familyId != sample.family_id) exit 1, "Maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family."
+    }
+  }
 }
 
 def parseHeader(tokens, colMetaMap) {
