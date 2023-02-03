@@ -1,5 +1,9 @@
 #!/bin/bash
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+set -euo pipefail
+
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 trap abort SIGINT
 abort() {
