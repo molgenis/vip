@@ -64,11 +64,11 @@ execute_workflow() {
 
   local binds=()
   binds+=("/$(realpath "${paramInput}" | cut -f 2 -d "/")")
-  #if [[ -n "${TMPDIR}" ]]; then
-  #  binds+=("${TMPDIR}")
-  #elif [[ -d "/tmp" ]]; then
-  #  binds+=("/tmp")
-  #fi
+  if [[ -n "${TMPDIR}" ]]; then
+    binds+=("${TMPDIR}")
+  elif [[ -d "/tmp" ]]; then
+    binds+=("/tmp")
+  fi
 
   local envBind="$(IFS=, ; echo "${binds[*]}")"
   local envCacheDir="${SCRIPT_DIR}/images"
@@ -83,7 +83,7 @@ execute_workflow() {
   args+=("run")
   args+=("${SCRIPT_DIR}/vip_${paramWorkflow}.nf")
   args+=("-offline")
-  #args+=("-resume")
+  args+=("-resume")
   args+=("-profile" "${paramProfile}")
   args+=("-with-report" "${paramOutput}/nxf_report.html")
   args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
