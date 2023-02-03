@@ -1,5 +1,16 @@
 # Variant Interpretation Pipeline
 
+This is VIP with added non-coding functionality based on the [GREEN-DB](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8934622/) method. 
+It has extra annotations resources which includes:
+- TFBS regions (The TF that can bind the region)
+- UCNE regions
+- DNase regions
+- FATHMM-MKL scores
+- ReMM scores
+- ncER scores
+
+This branch has the annotations that are expected input for the [vip-decision-tree](https://github.com/molgenis/vip-decision-tree/tree/feat/annotation) score annotation branch. This score annotation tool calculates and annotates a variants score based on the added annotations. 
+
 ## Requirements
 - POSIX compatible system (Linux, OS X, etc) / Windows through [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 - Bash 3.2 (or later)
