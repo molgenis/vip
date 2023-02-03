@@ -80,7 +80,7 @@ main() {
   images+=("build/alpine-3.15.0")
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
-  images+=("annotsv-3.2.2")
+  images+=("annotsv-3.2.3")
   images+=("capice-5.0.0")
   images+=("minimap2-2.24")
   images+=("samtools-1.16")
