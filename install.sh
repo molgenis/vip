@@ -188,7 +188,7 @@ download_images() {
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
-  files+=("vcf-decision-tree-3.4.3.sif")
+  files+=("vcf-decision-tree-3.5.0.sif")
   files+=("vcf-inheritance-matcher-2.1.3.sif")
   files+=("vcf-report-5.1.2.sif")
   files+=("vep-107.0.sif")
