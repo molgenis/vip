@@ -85,10 +85,10 @@ sub parse_file_header {
         if ($tokens[$i] eq "pos") {
             $col_idx->{idx_pos} = $i;
         }
-        if ($tokens[$i] eq "REF") {
+        if ($tokens[$i] eq "ref") {
             $col_idx->{idx_ref} = $i;
         }
-        if ($tokens[$i] eq "ALT") {
+        if ($tokens[$i] eq "alt") {
             $col_idx->{idx_alt} = $i;
         }
         if ($tokens[$i] eq "feature_type") {
