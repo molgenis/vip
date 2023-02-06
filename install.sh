@@ -183,7 +183,7 @@ download_images() {
   local files=()
   files+=("annotsv-3.2.2.sif")
   files+=("bcftools-1.14.sif")
-  files+=("capice-5.0.0.sif")
+  files+=("capice-5.1.0.sif")
   files+=("clair3-v0.1-r12.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
