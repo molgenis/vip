@@ -1,8 +1,8 @@
 #!/bin/bash
-set -euo pipefail
 
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
 SCRIPT_NAME="$(basename "$0")"
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-a <arg>]
@@ -36,7 +36,7 @@ download() {
 }
 
 download_nextflow() {
-  local -r version="22.10.5"
+  local -r version="22.10.6"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
@@ -134,11 +134,11 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.2"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.3"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.2.tar.gz ..."
-    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.2.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.3.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.3.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
@@ -181,14 +181,14 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.2.2.sif")
+  files+=("annotsv-3.2.3.sif")
   files+=("bcftools-1.14.sif")
   files+=("capice-5.1.0.sif")
   files+=("clair3-v0.1-r12.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
-  files+=("vcf-decision-tree-3.4.3.sif")
+  files+=("vcf-decision-tree-3.5.0.sif")
   files+=("vcf-inheritance-matcher-2.1.3.sif")
   files+=("vcf-report-5.1.2.sif")
   files+=("vep-107.0.sif")

@@ -2,7 +2,9 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { findIndex; createPedigree } from './modules/utils'
+include { findVcfIndex; createPedigree } from './modules/utils'
+include { findCramIndex } from './modules/cram/utils'
+include { samtools_index } from './modules/cram/samtools'
 include { convert } from './modules/vcf/convert'
 include { index } from './modules/vcf/index'
 include { stats } from './modules/vcf/stats'
@@ -84,7 +86,7 @@ workflow vcf {
             [groupKey(key, size), meta]
           }
         | groupTuple
-        | map { key, group -> [project_id: key[0], assembly: key[1], chunk: key[2], sampleSheet: group] }
+        | map { key, group -> [project_id: key[0], assembly: key[1], chunk: key[2], sampleSheet: group.sort { it.sample.index } ] }
         | branch { meta ->
             merge_gvcfs: isGVcf(meta.sampleSheet.first().vcf)
             merge_vcfs: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1
@@ -236,7 +238,7 @@ workflow vcf {
 
         ch_output.slice
             | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram, meta.sample.cram_index] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
             | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
@@ -256,9 +258,24 @@ workflow {
   def sampleSheet = parseSampleSheet(params.input)
   validateParams(sampleSheet)
 
-  // create sample channel, detect vcf index and continue with vcf workflow   
+  // create sample channel, detect vcf and cram indexes
   Channel.from(sampleSheet)
-    | map { sample -> [sample: [*:sample, vcf_index: findIndex(sample.vcf)], sampleSheet: sampleSheet] }
+    | map { sample -> [sample: [*:sample, vcf_index: findVcfIndex(sample.vcf), cram_index: findCramIndex(sample.cram)], sampleSheet: sampleSheet] }
+    | branch { meta ->
+        index_cram: meta.sample.cram != null && meta.sample.cram_index == null
+        ready: true
+      }
+    | set { ch_sample }
+
+  // index cram
+  ch_sample.index_cram
+    | map { meta -> [meta, meta.sample.cram] }
+    | samtools_index
+    | map { meta, cramIndex -> [*:meta, sample: [*:meta.sample, cram_index: cramIndex]] }
+    | set { ch_sample_indexed_cram }
+
+  // run vcf workflow
+  ch_sample_indexed_cram.mix(ch_sample.ready)  
     | vcf
 }
 

@@ -15,7 +15,7 @@ From: sif/build/openjdk-17.sif
 %post
     version_major=3
     version_minor=2
-    version_patch=2
+    version_patch=3
 
     apk update
     apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
@@ -28,7 +28,7 @@ From: sif/build/openjdk-17.sif
 
     # AnnotSv
     curl -Ls -o annot-sv.tar.gz "https://github.com/lgmgeo/AnnotSV/archive/refs/tags/v${version_major}.${version_minor}.${version_patch}.tar.gz"
-    echo "ddeabb4b80c9475536271f42dd3353fa398caa9cfd4ae2c8a2f125031226530d  annot-sv.tar.gz" | sha256sum -c
+    echo "a191d295e4e24da00045b82d17b396a68a87bbb6b714c52a5e8c7e7001b5f57b  annot-sv.tar.gz" | sha256sum -c
     tar xf annot-sv.tar.gz -C /usr/share
 
     (

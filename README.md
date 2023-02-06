@@ -21,7 +21,11 @@ VIP is a flexible human variant interpretation pipeline for rare disease using s
 - [Acknowledgements](#acknowledgements)
 
 ## Introduction
-<mark>TODO</mark>
+The VIP pipeline can be used starting from either your [fastq](#input-fastq), [bam/cram](#input-cram) or [(g)VCF](#input-vcf) data, every entry point will result in a vcf.gz file with your annotated, classified and filtered variants as well as a [interactive html report](#report-template) with the same variants, prioritized by the CAPICE pathogenicity score and providing additional aids like a genome browser ([igv.js](https://github.com/igvteam/igv.js)) and a representation of the decisions leading to the [VIP classification](#classification-tree).
+
+The VIP pipeline can easily be [installed](#installation) on a POSIX compatible system by simply checking out the reporistory and running the install script.
+
+VIP can be used for single patients, families or cohort data.
 
 ## Prerequisites
 - [POSIX compatible system](https://en.wikipedia.org/wiki/POSIX#POSIX-oriented_operating_systems) (e.g. Linux, macOS, [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))
@@ -137,11 +141,19 @@ For the full list, see [config/nxf_cram.config](https://github.com/molgenis/vip/
 
 For the full list, see [config/nxf_fastq.config](https://github.com/molgenis/vip/tree/main/config/nxf_fastq.config)
 
+<mark>TODO default tree image</mark>
+
 ## Configuration
 <mark>TODO</mark>
 
 ### Classification Tree
-<mark>TODO</mark>
+VIP can classify variants on two separate steps in the workflow, the first one immediately after annotation, and the second after inheritance matching.
+The first classification is typically used to classify based on variant annotations, while the second provides the possibility to classify on combined variant and sample information.
+
+The trees to classify the variants can be specified via a json file, all information present in the vcf file can be used in these tree's and the classes used as end states are also user defined. For more information on the decision tree format see [vip-decision-tree](https://github.com/molgenis/vip-decision-tree)
+
+Based on this classification in combination with the classes stated in the configuration, VIP will filter the variants.
+
 
 ### Report Template
 <mark>TODO</mark>

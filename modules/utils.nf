@@ -47,11 +47,12 @@ def scatter(meta) {
     chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ])
 }
 
-def findIndex(vcf) {
-    def index
-    if(file(vcf + ".csi").exists()) index = vcf + ".csi"
-    else if(file(vcf + ".tbi").exists()) index = vcf + ".tbi"
-    index
+def findVcfIndex(vcf) {
+    def vcfIndex
+    if(vcf == null) vcfIndex = null
+    else if(file(vcf + ".csi").exists()) vcfIndex = vcf + ".csi"
+    else if(file(vcf + ".tbi").exists()) vcfIndex = vcf + ".tbi"
+    vcfIndex
 }
 
 def createPedigree(sampleSheet) {

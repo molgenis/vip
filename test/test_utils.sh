@@ -1,5 +1,8 @@
 #!/bin/bash
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 trap abort SIGINT
 abort() {
@@ -8,7 +11,6 @@ abort() {
 }
 
 CMD_VIP="$(realpath "${SCRIPT_DIR}/../vip")"
-NXF_VERSION="22.10.5"
 CMD_NEXTFLOW="$(realpath "${SCRIPT_DIR}/../nextflow")"
 
 TEST_DIR="${SCRIPT_DIR}"
@@ -35,21 +37,15 @@ before_all () {
   # make sure that this folder is always created in the output directory
   cd "${TEST_DIR}" || exit
 
-  export NXF_OFFLINE=true
-  export NXF_HOME="${TEST_DIR}/.nextflow"
-
-   if [ ${FAILED} -gt 0 ]; then
-     echo -e "${RED}FAILED${NC} ${TEST_ID}"
-   fi
+  if [ ${FAILED} -gt 0 ]; then
+    echo -e "${RED}FAILED${NC} ${TEST_ID}"
+  fi
 }
 
 before_each () {
   OUTPUT_DIR="${TEST_OUTPUT_DIR}/${TEST_ID}"
   OUTPUT_LOG="${TEST_OUTPUT_DIR}/${TEST_ID}/.nxf.log"
   mkdir -p "${OUTPUT_DIR}"
-
-  export NXF_WORK="${OUTPUT_DIR}/.nxf_work"
-  export NXF_TEMP="${OUTPUT_DIR}/.nxf_temp"
 }
 
 after_each () {

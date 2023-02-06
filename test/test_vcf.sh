@@ -1,10 +1,13 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
+
 source ${SCRIPT_DIR}/test_utils.sh
 
 test_gvcf () {
-  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
   args+=("--workflow" "vcf")
@@ -120,8 +123,11 @@ test_snv_proband () {
 }
 
 test_snv_proband_trio () {
+  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
   local args=()
   args+=("--workflow" "vcf")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
@@ -135,7 +141,7 @@ test_snv_proband_trio () {
 }
 
 test_snv_proband_trio_sample_filtering () {
-  echo -e "params { vcf.filter_samples.classes = \"K\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.filter_samples.classes = \"OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
   args+=("--workflow" "vcf")
@@ -153,8 +159,11 @@ test_snv_proband_trio_sample_filtering () {
 }
 
 test_snv_proband_trio_b38 () {
+  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
   local args=()
   args+=("--workflow" "vcf")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio_b38.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
@@ -162,7 +171,7 @@ test_snv_proband_trio_b38 () {
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ]; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 3 ]; then
     return 1
   fi
 }
@@ -180,7 +189,7 @@ test_lp () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2439 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2397 ]; then
     return 1
   fi
 }
@@ -198,7 +207,7 @@ test_lp_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2440 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2410 ]; then
     return 1
   fi
 }
@@ -216,7 +225,7 @@ test_lb () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 1150 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 263 ]; then
     return 1
   fi
 }
@@ -234,7 +243,7 @@ test_lb_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 1233 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 276 ]; then
     return 1
   fi
 }

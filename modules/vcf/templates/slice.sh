@@ -8,8 +8,9 @@ create_bed () {
     args+=("--no-version")
     args+=("--threads" "!{task.cpus}")
     args+=("!{vcf}")
-
-    ${CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1-250 "\t" $2-1+250 "\t"}' > "!{vcf.simpleName}.bed"
+    
+    # -1 because positions in .bed are 0-based and 1-based in .vcf
+    ${CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1 "\t" $2-1 "\t"}' > "!{vcf.simpleName}.bed"
 }
 
 slice () {

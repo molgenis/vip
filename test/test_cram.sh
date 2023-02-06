@@ -1,11 +1,17 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
+
 source ${SCRIPT_DIR}/test_utils.sh
 
 test_bam () {
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
   local args=()
   args+=("--workflow" "cram")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/bam.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
@@ -19,8 +25,11 @@ test_bam () {
 }
 
 test_cram () {
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  
   local args=()
   args+=("--workflow" "cram")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/cram.tsv")
   args+=("--output" "${OUTPUT_DIR}")
 
