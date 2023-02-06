@@ -141,8 +141,6 @@ For the full list, see [config/nxf_cram.config](https://github.com/molgenis/vip/
 
 For the full list, see [config/nxf_fastq.config](https://github.com/molgenis/vip/tree/main/config/nxf_fastq.config)
 
-<mark>TODO default tree image</mark>
-
 ## Configuration
 <mark>TODO</mark>
 
@@ -154,6 +152,8 @@ The trees to classify the variants can be specified via a json file, all informa
 
 Based on this classification in combination with the classes stated in the configuration, VIP will filter the variants.
 
+![Drag Racing](./docs/GRCh38_decision_tree.png)
+*Representation of the default tree for GRCh38*
 
 ### Report Template
 <mark>TODO</mark>
