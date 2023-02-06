@@ -2,6 +2,7 @@
   "rootNode": "chrom",
   "nodes": {
     "chrom": {
+      "description": "Chromosome 1-22-X-Y-MT",
       "type": "BOOL",
       "query": {
         "field": "#CHROM",
@@ -45,6 +46,7 @@
       }
     },
     "gene": {
+      "description": "Gene exists?",
       "type": "EXISTS",
       "field": "INFO/CSQ/Gene",
       "outcomeTrue": {
@@ -55,6 +57,7 @@
       }
     },
     "filter": {
+      "description": "Filter pass",
       "type": "BOOL",
       "query": {
         "field": "FILTER",
@@ -74,6 +77,7 @@
       }
     },
     "vkgl": {
+      "description": "VKGL classification",
       "type": "CATEGORICAL",
       "field": "INFO/CSQ/VKGL_CL",
       "outcomeMap": {
@@ -101,12 +105,14 @@
       }
     },
     "clinVar": {
+      "description": "ClinVar classification",
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/clinVar_CLNSIG"
       ],
       "outcomes": [
         {
+          "description": "Conflict",
           "queries": [
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
@@ -119,6 +125,7 @@
           }
         },
         {
+          "description": "LP/P",
           "queries": [
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
@@ -131,6 +138,7 @@
           }
         },
         {
+          "description": "VUS",
           "queries": [
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
@@ -143,6 +151,7 @@
           }
         },
         {
+          "description": "B/LB",
           "queries": [
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
@@ -163,6 +172,7 @@
       }
     },
     "gnomAD": {
+      "description": "gnomAD",
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/gnomAD_AF",
@@ -170,6 +180,7 @@
       ],
       "outcomes": [
         {
+          "description": "Allele Frequency >= 0.02 or Number of Homozygotes > 5",
           "operator": "OR",
           "queries": [
             {
@@ -196,6 +207,7 @@
       }
     },
     "annotSV": {
+      "description": "AnnotSV classification",
       "type": "CATEGORICAL",
       "field": "INFO/CSQ/ASV_ACMG_class",
       "outcomeMap": {
@@ -223,6 +235,7 @@
       }
     },
     "spliceAI": {
+      "description": "SpliceAI prediction",
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/SpliceAI_pred_DS_AG",
@@ -232,6 +245,7 @@
       ],
       "outcomes": [
         {
+          "description": "Delta score (acceptor/donor gain/loss) > 0.42",
           "operator": "OR",
           "queries": [
             {
@@ -260,6 +274,7 @@
           }
         },
         {
+          "description": "Delta score (acceptor/donor gain/loss) > 0.13",
           "operator": "OR",
           "queries": [
             {
@@ -296,6 +311,7 @@
       }
     },
     "utr5": {
+      "description": "5' UTR",
       "type": "EXISTS",
       "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
       "outcomeTrue": {
@@ -306,6 +322,7 @@
       }
     },
     "capice": {
+      "description": "CAPICE prediction > 0.56",
       "type": "BOOL",
       "query": {
         "field": "INFO/CSQ/CAPICE_SC",
@@ -323,26 +340,32 @@
       }
     },
     "exit_rm": {
+      "description": "Remove",
       "type": "LEAF",
       "class": "LQ"
     },
     "exit_b": {
+      "description": "Benign",
       "type": "LEAF",
       "class": "B"
     },
     "exit_lb": {
+      "description": "Likely Benign",
       "type": "LEAF",
       "class": "LB"
     },
     "exit_vus": {
+      "description": "Uncertain Significance",
       "type": "LEAF",
       "class": "VUS"
     },
     "exit_lp": {
+      "description": "Likely Pathogenic",
       "type": "LEAF",
       "class": "LP"
     },
     "exit_p": {
+      "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
     }
