@@ -60,7 +60,9 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
 <mark>TODO</mark>
 
 ### Workflow
-<mark>TODO</mark>
+The VIP workflow can be started from 3 different starting point: fastq, cram, of (g)vcf.
+
+for a schematic represeantation of the workflow [click here](./docs/vip_workflow.png).
 
 ### Input
 | column            | type            | required |                                        |
