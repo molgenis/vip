@@ -157,7 +157,7 @@ Based on this classification in combination with the classes stated in the confi
 
 ### Report Template
 By default, VIP produces an interactive report stored in a standalone HTML file:
-[Example Report](./docs/report_example.png)
+![Example Report](./docs/report_example.png)
 A report is created using a report template. The parameter `vcf.report.template` can be used to specify your own report template. For more details on reporting see the [VIP report](https://github.com/molgenis/vip-report) and [VIP report template](https://github.com/molgenis/vip-report-template) documentation.
 
 ## Examples
