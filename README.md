@@ -154,8 +154,11 @@ The trees to classify the variants can be specified via a json file, all informa
 
 Based on this classification in combination with the classes stated in the configuration, VIP will filter the variants.
 
-![Drag Racing](./docs/GRCh38_decision_tree.png)
+![GRCh38 tree](./docs/GRCh38_decision_tree.png)
 *Representation of the default tree for GRCh38*
+
+![Sample tree](./docs/sample_decision_tree.png)
+*Representation of the default sample decision tree*
 
 ### Report Template
 By default, VIP produces an interactive report stored in a standalone HTML file:
