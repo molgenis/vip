@@ -158,6 +158,7 @@ Based on this classification in combination with the classes stated in the confi
 *Representation of the default tree for GRCh38*
 
 ![Sample tree](./docs/sample_decision_tree.png)
+
 *Representation of the default sample decision tree*
 
 ### Report Template
