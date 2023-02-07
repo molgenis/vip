@@ -128,13 +128,12 @@ def parseSampleSheet(csvFile) {
 
 def validate(samples){
 
-def isAnyFastqPresent = false;
   samples.each { sample ->
-    if (!sample.fastq.isEmpty() || !sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty()) {
-      isAnyFastqPresent = true
+    if (sample.fastq.isEmpty() && sample.fastq_r1.isEmpty() && sample.fastq_r2.isEmpty()) {
+       exit 1, "A value in either the fastq or fastq_r1/fastq_r2 column(s) is required."
     }
     if (!sample.fastq.isEmpty() && (!sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty())) exit 1, "'fastq' column cannot be combined with 'fastq_r1' and/or 'fastq_r2'."
     if ((!sample.fastq_r1.isEmpty() && sample.fastq_r2.isEmpty()) || (sample.fastq_r1.isEmpty() && !sample.fastq_r2.isEmpty()))   exit 1, "Either both 'fastq_r1' and 'fastq_r2' should be present or neither should be present, use the 'fastq' column for single fastq files."
   }
-  if (!isAnyFastqPresent) exit 1, "At least one sample with a value in the fastq of fastq_r1/fastq_r2 column is required."
+ 
 }
