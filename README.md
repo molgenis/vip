@@ -159,7 +159,17 @@ Based on this classification in combination with the classes stated in the confi
 <mark>TODO</mark>
 
 ## Examples
-<mark>TODO</mark>
+### FASTQ: GIAB HG001 (Illumina HiSeq Exome)
+Input: [Sample sheet](./docs/sample_sheet_giab_hg001.tsv)
+Command: `vip --workflow fastq --input sample_sheet_giab_hg001.tsv --output report`
+Output: [Report](./docs/vip_giab_hg001.html)
+
+### VCF: Multi-project 
+Input: [Sample sheet](./test/resources/multiproject.tsv)
+Command: `vip --workflow vcf --input multiproject.tsv --output report`
+Output: [Report #0](./docs/vip0.html)
+Output: [Report #1](./docs/vip1.html)
+Output: [Report #2](./docs/vip2.html)
 
 ## License
 VIP is released under the [LGPL-3.0 license](https://www.gnu.org/licenses/lgpl-3.0.en.html).
