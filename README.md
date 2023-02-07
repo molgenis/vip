@@ -144,13 +144,16 @@ For the full list, see [config/nxf_cram.config](https://github.com/molgenis/vip/
 For the full list, see [config/nxf_fastq.config](https://github.com/molgenis/vip/tree/main/config/nxf_fastq.config)
 
 ## Configuration
-<mark>TODO</mark>
+Besides the technical configuration items described in the previous sections, VIP also offers functional configuration options.
+The main functional configuration options are the variant and sample decision trees and the report template.
 
 ### Classification Tree
 VIP can classify variants on two separate steps in the workflow, the first one immediately after annotation, and the second after inheritance matching.
 The first classification is typically used to classify based on variant annotations, while the second provides the possibility to classify on combined variant and sample information.
 
-The trees to classify the variants can be specified via a json file, all information present in the vcf file can be used in these tree's and the classes used as end states are also user defined. For more information on the decision tree format see [vip-decision-tree](https://github.com/molgenis/vip-decision-tree)
+The trees to classify the variants can be specified via a json file, all information present in the vcf file can be used in these tree's and the classes used as end states are also user defined. 
+The parameters `vcf.classify.[assembly].decision_tree` and `vcf.classify_samples.[assembly].decision_tree` can be used to specify your own report template.
+For more information on the decision tree format see [vip-decision-tree](https://github.com/molgenis/vip-decision-tree).
 
 Based on this classification in combination with the classes stated in the configuration, VIP will filter the variants.
 
