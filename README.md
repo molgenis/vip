@@ -57,7 +57,6 @@ usage: vip [-w <arg> -i <arg> -o <arg>]
   -p, --profile  <arg>  nextflow configuration profile (optional)
   -h, --help            print this message and exit
 ```  
-<mark>TODO</mark>
 
 ### Workflow
 The VIP workflow can be started from 3 different starting point: fastq, cram, of (g)vcf.
