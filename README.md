@@ -81,14 +81,14 @@ for a schematic represeantation of the workflow [click here](./docs/vip_workflow
 #### Input VCF
 | column  | type     | required |                                                               |
 |---------|----------|----------|---------------------------------------------------------------|
-| ``vcf`` | ``file`` |          | file extensions: [vcf, vcf.gz, vcf.bgz, bcf, bcf.gz, bcf.bgz] |
+| ``vcf`` | ``file`` | yes      | file extensions: [vcf, vcf.gz, vcf.bgz, bcf, bcf.gz, bcf.bgz] |
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                                  |
 
 #### Input CRAM
 | column                  | type          | required |                                              |
 |-------------------------|---------------|----------|----------------------------------------------|
-| ``cram``                | ``file``      |          | file extensions: [bam, cram]                 |
-| ``sequencing_platform`` | ``enum``      | yes      | default:illumina values: [illumina,nanopore] |
+| ``cram``                | ``file``      | yes      | file extensions: [bam, cram]                 |
+| ``sequencing_platform`` | ``enum``      |          | default:illumina values: [illumina,nanopore] |
 
 #### Input FASTQ
 | column                  | type          | required |                                               |
@@ -96,7 +96,7 @@ for a schematic represeantation of the workflow [click here](./docs/vip_workflow
 | ``fastq``               | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``fastq_r1``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``fastq_r2``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
-| ``sequencing_platform`` | ``enum``      | yes      | default:illumina values: [illumina,nanopore]  |                   |
+| ``sequencing_platform`` | ``enum``      |          | default:illumina values: [illumina,nanopore]  |                   |
 
 ### Profile
 By default, VIP detects whether [Slurm](https://slurm.schedmd.com/) is available on the system and use the <code>slurm</code> profile. Otherwise, the <code>local</code> profile is used which executes the workflow on this machine. You can override the profile or refer to a custom profile specified in your <code>--config</code>.
@@ -110,7 +110,7 @@ Examples:
 
 ### Config
 By default, VIP contains configuration that will allow all workflows to run on any machine assuming:
-- Whole Genome Sequencing (WGS) input data
+- Illumina sequencing platform
 - GRCh38 reference genome ([GCA_000001405.15 / GCF_000001405.26](https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.26/))
 
 An additional configuration file can be provided to override defaults:
