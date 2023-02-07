@@ -71,5 +71,17 @@ def parseSampleSheet(csvFile) {
       enum: ['illumina', 'nanopore']
     ]
   ]
-  return parseCommonSampleSheet(csvFile, cols)
+  def samples = parseCommonSampleSheet(csvFile, cols)
+  validate(samples)
+  return samples
+}
+
+def validate(samples){
+  def isAnyCramPresent = false;
+  samples.each { sample ->
+    if (!sample.cram.isEmpty()) {
+      isAnyCramPresent = true
+    }
+  }
+  if (!isAnyCramPresent) exit 1, "At least one sample with a value in the cram column is required."
 }

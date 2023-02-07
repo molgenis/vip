@@ -360,5 +360,17 @@ def parseSampleSheet(csvFile) {
       regex: /.+(?:\.bam|\.cram)/
     ],
   ]
-  return parseCommonSampleSheet(csvFile, cols)
+  def samples = parseCommonSampleSheet(csvFile, cols)
+  validate(samples)
+  return samples
+}
+
+def validate(samples){
+  def isAnyVcfPresent = false;
+  samples.each { sample ->
+    if (!sample.vcf.isEmpty()) {
+      isAnyVcfPresent = true
+    }
+  }
+  if (!isAnyVcfPresent) exit 1, "At least one sample with a value in the vcf column is required."
 }
