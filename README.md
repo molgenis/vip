@@ -32,7 +32,7 @@ VIP can be used for single patients, families or cohort data.
 - Bash ≥ 3.2
 - Java ≥ 11
 - [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages) (setuid installation)
-- 300GB disk space
+- ~400GB disk space
 
 ## Installation
 ```
