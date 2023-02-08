@@ -17,7 +17,8 @@ call_small_variants () {
     args+=("--sample_name=!{meta.sample.individual_id}")
     args+=("--longphase_for_phasing")
 
-    ${CMD_CLAIR3} "${args[@]}"
+    # Prevent Clair3 writing in home directory via samtools (https://www.htslib.org/doc/samtools.html#ENVIRONMENT_VARIABLES)
+    XDG_CACHE_HOME=$(realpath .) ${CMD_CLAIR3} "${args[@]}"
 
     mv "merge_output.vcf.gz" "!{vcfOut}"
     mv "merge_output.vcf.gz.tbi" "!{vcfOutIndex}"
