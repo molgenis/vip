@@ -71,7 +71,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh37/vkgl_consensus_20220901.tsv")
+    files+=("GRCh37/vkgl_consensus_20230101.tsv")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -94,7 +94,7 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh38/vkgl_consensus_20220901.tsv")
+    files+=("GRCh38/vkgl_consensus_20230101.tsv")
   fi
 
   for file in "${files[@]}"; do
