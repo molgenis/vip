@@ -18,6 +18,7 @@ test_fastq_nanopore () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_nanopore.tsv")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -45,6 +46,7 @@ test_fastq_illumina_pairedend () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina_pairedend.tsv")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -65,11 +67,12 @@ test_fastq_illumina_pairedend_trio () {
 
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
-local args=()
+  local args=()
   args+=("--workflow" "fastq")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina_pairedend_trio.tsv")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1

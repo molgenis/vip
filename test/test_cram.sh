@@ -14,6 +14,7 @@ test_bam () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/bam.tsv")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -32,6 +33,7 @@ test_cram () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/cram.tsv")
   args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
