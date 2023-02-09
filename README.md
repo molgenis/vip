@@ -49,12 +49,13 @@ bash vip/install.sh --assembly GRCh38
 
 ## Usage
 ```
-usage: vip [-w <arg> -i <arg> -o <arg>]
+usage: vip -w <arg> -i <arg> -o <arg>
   -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, vcf
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
   -p, --profile  <arg>  nextflow configuration profile (optional)
+  -r, --resume          resume execution using cached results (default: false)
   -h, --help            print this message and exit
 ```  
 
