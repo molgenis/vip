@@ -11,6 +11,7 @@ usage() {
   -o, --output            <arg>  output folder
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
+  -r, --resume                   resume execution using cached results (default: false)
   -h, --help                     print this message and exit"
 }
 
@@ -20,26 +21,36 @@ validate() {
   local -r output="${3}"
   local -r config="${4}"
   local -r profile="${5}"
+  local -r resume="${6}"
   
   if [[ -z "${workflow}" ]]; then
     >&2 echo -e "error: missing required -w / --workflow"
     usage
     exit 2
-  else
-    if [[ ! "${workflow}" =~ cram|fastq|vcf ]]; then
-      >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, vcf]"
-      usage
-      exit 2
-    fi
   fi
+  if [[ ! "${workflow}" =~ cram|fastq|vcf ]]; then
+    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, vcf]"
+    usage
+    exit 2
+  fi
+
   if [[ -z "${input}" ]]; then
     >&2 echo -e "error: missing required -i / --input"
     usage
     exit 2
   fi
+  if [[ ! -f "${input}" ]]; then
+    >&2 echo -e "error: input '${input}' does not exist"
+    exit 2
+  fi
+
   if [[ -z "${output}" ]]; then
     >&2 echo -e "error: missing required -o / --output"
     usage
+    exit 2
+  fi
+  if [[ "${resume}" == "false" ]] && [[ -d "${output}" ]]; then
+    >&2 echo -e "error: output '${output}' already exists. remove or use -r / --resume to resume execution"
     exit 2
   fi
   if [[ -n "${config}" ]] && [[ ! -f "${config}" ]]; then
@@ -53,6 +64,7 @@ execute_workflow() {
   local -r paramOutput="${3}"
   local -r paramConfig="${4}"
   local -r paramProfile="${5}"
+  local -r paramResume="${6}"
 
   rm -f "${paramOutput}/nxf_report.html"
   rm -f "${paramOutput}/nxf_timeline.html"
@@ -83,18 +95,20 @@ execute_workflow() {
   args+=("run")
   args+=("${SCRIPT_DIR}/vip_${paramWorkflow}.nf")
   args+=("-offline")
-  args+=("-resume")
   args+=("-profile" "${paramProfile}")
   args+=("-with-report" "${paramOutput}/nxf_report.html")
   args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
+  if [[ "${resume}" == "true" ]]; then
+    args+=("-resume")
+  fi
 
-  APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="22.10.6" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}"
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="22.10.6" NXF_HOME="${paramOutput}/.nxf.home" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}")
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o w:i:o:c:p:h --long workflow:,input:,output:,config:,profile:,help -- "$@")
+  local -r args=$(getopt -a -n pipeline -o w:i:o:c:p:rh --long workflow:,input:,output:,config:,profile:,resume,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -111,6 +125,7 @@ main() {
   else
     profile="local"
   fi
+  local resume="false"
 
   eval set -- "${args}"
   while :; do
@@ -125,20 +140,24 @@ main() {
       shift 2
       ;;
     -i | --input)
-      input="$2"
+      if [[ "$2" = /* ]]; then input="$2"; else input="${PWD}/$2"; fi
       shift 2
       ;;
     -o | --output)
-      output="$2"
+      if [[ "$2" = /* ]]; then output="$2"; else output="${PWD}/$2"; fi
       shift 2
       ;;
     -c | --config)
-      config="$2"
+      if [[ "$2" = /* ]]; then config="$2"; else config="${PWD}/$2"; fi
       shift 2
       ;;
     -p | --profile)
       profile="$2"
       shift 2
+      ;;
+    -r | --resume)
+      resume="true"
+      shift
       ;;
     --)
       shift
@@ -151,8 +170,16 @@ main() {
     esac
   done
 
-  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}"
-  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}"
+  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}"
+
+  if [[ "${resume}" == "true" ]] && ! [[ -d "${output}" ]]; then
+    resume="false"
+  fi
+  if ! [[ -d "${output}" ]]; then
+    mkdir -p "${output}"
+  fi
+  
+  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}"
 }
 
 main "${@}"
