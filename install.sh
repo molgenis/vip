@@ -52,7 +52,7 @@ download_resources_molgenis() {
   files+=("inheritance_20230116.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v5.0.0-v1.ubj")
+    files+=("GRCh37/capice_model_v5.0.0-v2.ubj")
     files+=("GRCh37/clinvar_20230115.vcf.gz")
     files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
@@ -75,7 +75,7 @@ download_resources_molgenis() {
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v5.0.0-v1.ubj")
+    files+=("GRCh38/capice_model_v5.0.0-v2.ubj")
     files+=("GRCh38/clinvar_20230115.vcf.gz")
     files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")

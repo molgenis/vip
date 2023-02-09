@@ -73,6 +73,7 @@ capice_vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
 
   ${CMD_VEP} vep "${args[@]}"
 }
@@ -146,6 +147,7 @@ vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
+  args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
   if [ -n "!{hpoIds}" ]; then
@@ -154,9 +156,6 @@ vep() {
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
-  fi
-  if [ -n "!{vepCustomGnomAdPath}" ]; then
-    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
   fi
   if [ -n "!{vepCustomClinVarPath}" ]; then
       args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")

@@ -322,12 +322,12 @@
       }
     },
     "capice": {
-      "description": "CAPICE prediction > 0.53",
+      "description": "CAPICE prediction > 0.71",
       "type": "BOOL",
       "query": {
         "field": "INFO/CSQ/CAPICE_SC",
         "operator": ">",
-        "value": 0.53
+        "value": 0.71
       },
       "outcomeTrue": {
         "nextNode": "exit_lp"
