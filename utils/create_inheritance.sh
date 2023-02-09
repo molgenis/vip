@@ -1,7 +1,8 @@
 #!/bin/bash
-set -euo pipefail
 
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
 main() {
   echo -e "downloading ..."
@@ -32,7 +33,7 @@ EOT
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  SINGULARITY_BIND="${SCRIPT_DIR}" singularity exec vcf-inheritance-3.0.0.sif java "${args[@]}"
+  APPTAINER_BIND="${SCRIPT_DIR}" apptainer exec vcf-inheritance-3.0.0.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 

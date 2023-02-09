@@ -1,10 +1,11 @@
 #!/bin/bash
-set -euo pipefail
 
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
-BCFTOOLS_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
-BGZIP_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
+BCFTOOLS_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
+BGZIP_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
 
 ASSEMBLY="GRCh37"
 THREADS=4
@@ -95,7 +96,7 @@ process() {
 		if [[ ! -f "${output_path}" ]]; then
 			if [[ "${chromosome}" != "Y" ]]; then
 				# workaround: undo rename fields
-				${BCFTOOLS_CMD} merge --no-version -m none -i GAC:sum,GAN:sum "${input_path_exomes}" "${input_path_genomes}" -Ou | \
+				${BCFTOOLS_CMD} merge --no-version -m none -i GAC:sum,GAN:sum,HN:sum "${input_path_exomes}" "${input_path_genomes}" -Ou | \
 				${BCFTOOLS_CMD} annotate --no-version --rename-annots "${rename_revert_path}" -Ou | \
 				${BCFTOOLS_CMD} +fill-tags --no-version -Ou -- -t AF | \
 				${BCFTOOLS_CMD} annotate --no-version -x ^INFO/AF,INFO/HN -Oz --threads "${THREADS}" -o "${output_path}"
@@ -115,7 +116,8 @@ process() {
 		echo "  processing chromosome ${chromosome} done"
 	done
 
-	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.vcf.gz"
+	# patch1: https://github.com/molgenis/vip/issues/305
+	local -r total_output_path="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz"
 	if [[ ! -f "${total_output_path}" ]]; then
 		${BCFTOOLS_CMD} concat --no-version -Ov "${output_files[@]}" | ${BGZIP_CMD} -l 9 -@ "${THREADS}" > "${total_output_path}"
 		${BCFTOOLS_CMD} index "${total_output_path}"

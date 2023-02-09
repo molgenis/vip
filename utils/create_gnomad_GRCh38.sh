@@ -1,10 +1,11 @@
 #!/bin/bash
-set -euo pipefail
 
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
+SCRIPT_NAME="$(basename "$0")"
 
-BCFTOOLS_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
-BGZIP_CMD="singularity exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
+BCFTOOLS_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
+BGZIP_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
 
 ASSEMBLY="GRCh38"
 THREADS=4

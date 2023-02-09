@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	fastq_r1	fastq_r2
+AshkenazimTrio	HG002	HG003	HG004	male	true	true	downloads/HG002.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz	downloads/HG002.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz
+AshkenazimTrio	HG003			male	false	false	downloads/HG003.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz	downloads/HG003.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz
+AshkenazimTrio	HG004			female	false	false	downloads/HG004.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz	downloads/HG004.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz

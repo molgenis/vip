@@ -5,22 +5,25 @@
 .IDEA/
 /vip.iml
 
-# Singularity images build folder.
+# Apptainer images build folder.
 /images
-/utils/singularity/sif
+/utils/apptainer/sif
 
 # Installed resource folders.
 /resources
-!/resources/decision_tree_GRCh37.json
-!/resources/decision_tree_GRCh38.json
+!/resources/decision_tree_*.json
 !/resources/vep/plugins
 
 # test
 /test/.nextflow
-/test/output
+/test/output*
 /test/nextflow.config
+/test/resources/downloads
 /test/test_wrapper.sh
 
 # nextflow
 nextflow
 nextflow-*-all
+
+# vip
+/vip

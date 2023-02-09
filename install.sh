@@ -1,8 +1,8 @@
 #!/bin/bash
-set -euo pipefail
 
+# Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
+if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
 SCRIPT_NAME="$(basename "$0")"
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-a <arg>]
@@ -36,7 +36,7 @@ download() {
 }
 
 download_nextflow() {
-  local -r version="22.10.2"
+  local -r version="22.10.6"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
@@ -48,32 +48,44 @@ download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20220712.tsv")
-  files+=("inheritance_20220712.tsv")
+  files+=("hpo_20230116.tsv")
+  files+=("inheritance_20230116.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v4.0.0-v2.pickle.dat")
-    files+=("GRCh37/clinvar_20220620.vcf.gz")
-    files+=("GRCh37/clinvar_20220620.vcf.gz.tbi")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.vcf.gz.csi")
+    files+=("GRCh37/capice_model_v5.0.0-v1.ubj")
+    files+=("GRCh37/clinvar_20230115.vcf.gz")
+    files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
     files+=("GRCh37/hg19.100way.phyloP100way.bw")
     files+=("GRCh37/human_g1k_v37.dict")
+    #FIXME: remove line below after clair 3 is fixed
+    files+=("GRCh37/human_g1k_v37.fasta.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
-    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/vkgl_consensus_20211201.tsv")
+    files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
+    files+=("GRCh37/vkgl_consensus_20230101.tsv")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v4.0.0-v2.pickle.dat")
-    files+=("GRCh38/clinvar_20220620.vcf.gz")
-    files+=("GRCh38/clinvar_20220620.vcf.gz.tbi")
+    files+=("GRCh38/capice_model_v5.0.0-v1.ubj")
+    files+=("GRCh38/clinvar_20230115.vcf.gz")
+    files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
+    #FIXME: remove line below after clair 3 is fixed
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
+    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
     files+=("GRCh38/hg38.phyloP100way.bw")
@@ -81,12 +93,8 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
-    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/vkgl_consensus_20211201.tsv")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+    files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
+    files+=("GRCh38/vkgl_consensus_20230101.tsv")
   fi
 
   for file in "${files[@]}"; do
@@ -126,26 +134,25 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.0.9"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.3"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.0.9.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.0.9.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.3.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.3.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
 
-  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2007"
+  local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2202"
   if [ ! -d "${annotsv_exomiser_dir}" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
     # workaround for ERROR: cannot verify certificate: Issued certificate has expired
-    echo -e "downloading from www.lbgi.fr: 2007_hg19.tar.gz ..."
-    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2007_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
-    echo -e "downloading from data.monarchinitiative.org: 2007_phenotype.zip ..."
-    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2007_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
-    unzip -qq "${annotsv_exomiser_dir}/2007_phenotype.zip" -d "${annotsv_exomiser_dir}"
-    rm "${annotsv_exomiser_dir}/2007_phenotype.zip"
+    echo -e "downloading from www.lbgi.fr: 2202_hg19.tar.gz ..."
+    wget --quiet --continue --no-check-certificate "https://www.lbgi.fr/~geoffroy/Annotations/2202_hg19.tar.gz" --output-document - | tar -xz -C "${annotsv_exomiser_dir}"
+    echo -e "downloading from data.monarchinitiative.org: 2202_phenotype.zip ..."
+    wget --quiet --continue "https://data.monarchinitiative.org/exomiser/data/2202_phenotype.zip" --directory-prefix "${annotsv_exomiser_dir}"
+    unzip -qq "${annotsv_exomiser_dir}/2202_phenotype.zip" -d "${annotsv_exomiser_dir}"
+    rm "${annotsv_exomiser_dir}/2202_phenotype.zip"
   else
     echo -e "skipping download annotsv exomiser annotations: already exists"
   fi
@@ -174,19 +181,48 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.0.9.sif")
+  files+=("annotsv-3.2.3.sif")
   files+=("bcftools-1.14.sif")
-  files+=("capice-4.0.0.sif")
-  files+=("gatk-4.2.5.0.sif")
+  files+=("capice-5.1.0.sif")
+  files+=("clair3-v0.1-r12.sif")
+  files+=("glnexus_v1.4.1.sif")
+  files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
-  files+=("vcf-decision-tree-3.4.3.sif")
+  files+=("vcf-decision-tree-3.5.0.sif")
   files+=("vcf-inheritance-matcher-2.1.3.sif")
-  files+=("vcf-report-5.1.2.sif")
+  files+=("vcf-report-5.1.4.sif")
   files+=("vep-107.0.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
   done
+}
+
+create_executable() {
+  chmod +x "${SCRIPT_DIR}/vip.sh"
+  if [ ! -f "${SCRIPT_DIR}/vip" ]; then
+    (cd "${SCRIPT_DIR}" && ln -s "vip.sh" "vip")
+  fi
+}
+
+unzip_reference() {
+  local -r assembly="${1}"
+  local -r download_dir="${SCRIPT_DIR}/resources"
+
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    if [ ! -f "${download_dir}/GRCh37/human_g1k_v37.fasta" ]; then
+      gunzip -c "${download_dir}/GRCh37/human_g1k_v37.fasta.gz" > "${download_dir}/GRCh37/human_g1k_v37.fasta"
+    else
+      echo -e "skipping extraction of reference for GRCh37: already exists"
+    fi
+  fi
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
+    if [ ! -f "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna" ]; then
+      gunzip -c "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" > "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
+    else
+      echo -e "skipping extraction of reference for GRCh38: already exists"
+    fi
+  fi
 }
 
 main() {
@@ -228,7 +264,11 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
+  #FIXME: remove after clair 3 is fixed
+  unzip_reference "${assembly}"
+  create_executable
   echo -e "installing done"
 }
 
 main "${@}"
+

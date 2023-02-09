@@ -1,61 +1,7 @@
 {
-  "rootNode": "inheritance",
+  "rootNode": "GQ",
   "nodes": {
-    "inheritance": {
-      "type": "BOOL",
-      "description": "Inheritance match",
-      "query": {
-        "field": "FORMAT/VIM",
-        "operator": "==",
-        "value": 1
-      },
-      "outcomeTrue": {
-        "nextNode": "depth"
-      },
-      "outcomeFalse": {
-        "nextNode": "denovo"
-      },
-      "outcomeMissing": {
-        "nextNode": "depth"
-      }
-    },
-    "denovo": {
-      "type": "BOOL",
-      "description": "Inheritance Denovo",
-      "query": {
-        "field": "FORMAT/VID",
-        "operator": "==",
-        "value": 1
-      },
-      "outcomeTrue": {
-        "nextNode": "depth"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_r"
-      },
-      "outcomeMissing": {
-        "nextNode": "depth"
-      }
-    },
-    "depth": {
-      "type": "BOOL",
-      "description": "Read Depth",
-      "query": {
-        "field": "FORMAT/DP",
-        "operator": ">=",
-        "value": 20
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_k"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_r"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_k"
-      }
-    },
-    "genotype_quality": {
+    "GQ": {
       "type": "BOOL",
       "description": "Genotype quality",
       "query": {
@@ -64,22 +10,80 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "exit_k"
+        "nextNode": "DP"
       },
       "outcomeFalse": {
-        "nextNode": "exit_r"
+        "nextNode": "exit_lq"
       },
       "outcomeMissing": {
-        "nextNode": "exit_k"
+        "nextNode": "DP"
       }
     },
-    "exit_k": {
-      "type": "LEAF",
-      "class": "K"
+    "DP": {
+      "type": "BOOL",
+      "description": "Sequencing depth",
+      "query": {
+        "field": "FORMAT/DP",
+        "operator": ">=",
+        "value": 10
+      },
+      "outcomeTrue": {
+        "nextNode": "VIM"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lq"
+      },
+      "outcomeMissing": {
+        "nextNode": "VIM"
+      }
     },
-    "exit_r": {
+    "VIM": {
+      "type": "BOOL",
+      "description": "Inheritance match",
+      "query": {
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_ok"
+      },
+      "outcomeFalse": {
+        "nextNode": "VID"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_ok"
+      }
+    },
+    "VID": {
+      "type": "BOOL",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_ok"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_mv"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_ok"
+      }
+    },
+    "exit_lq": {
       "type": "LEAF",
-      "class": "R"
+      "class": "LQ"
+    },
+    "exit_mv": {
+      "type": "LEAF",
+      "class": "MV"
+    },
+    "exit_ok": {
+      "type": "LEAF",
+      "class": "OK"
     }
   }
 }

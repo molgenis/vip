@@ -47,18 +47,16 @@ sub new {
         $self = $class->SUPER::new(@_);
         $self->{prefix} = "ASV_";
         my $file = $self->params->[0];
-        my $fields_arg = $self->params->[1];
 
         die("ERROR: input file not specified\n") unless $file;
         readFile($file);
-        getFieldIndices($fields_arg, $self->{headers});
     }
     return $self;
 }
 
 sub readFile {
     my @headers;
-    my @lines;
+    my %line_map;
     my @split;
 
     open(FH, '<', @_) or die $!;
@@ -76,12 +74,16 @@ sub readFile {
                 @split = split(/\t/, $_);
             }
         }
+
+        getFieldIndices($self->params->[1], \@headers);
+
         if(@split) {
-            push @lines, [ @split ];
+            my $key = create_key($split[$self->{chrom_idx}],$split[$self->{pos_idx}],$split[$self->{ref_idx}],$split[$self->{alt_idx}]);
+            $line_map{$key} = \@split;
         }
     }
     $self->{headers} = \@headers;
-    $self->{lines} = \@lines;
+    $self->{line_map} = \%line_map;
 }
 
 sub getFieldIndices{
@@ -126,38 +128,37 @@ sub mapAnnotations{
     my $result;
     my @line = @{$_[0]};
     my @vcf_line = @{$_[1]};
-    my %indices = %{$_[2]};
+    my %indices = %{$self->{indices}};
 
-    my $chrom = $vcf_line[0];
-    my $pos = $vcf_line[1];
-    my $ref = $vcf_line[3];
-    my $alt = $vcf_line[4];
-
-    if ($line[$self->{chrom_idx}] eq $chrom
-        && $line[$self->{pos_idx}] == $pos
-        && $line[$self->{ref_idx}] eq $ref
-        && $line[$self->{alt_idx}] eq $alt) {
-        foreach my $key (keys %indices) {
-            my $val = $line[$indices{$key}];
-            if (length $val) {
-                # escape characters with special meaning using VCFv4.3 percent encoding
-                $val =~ s/%/%25/g; # must be first
-                $val =~ s/:/%3A/g;
-                $val =~ s/;/%3B/g;
-                $val =~ s/=/%3D/g;
-                $val =~ s/,/%2C/g;
-                $val =~ s/\r/%0D/g;
-                $val =~ s/\n/%0A/g;
-                $val =~ s/\t/%09/g;
-            }
-            $result->{$self->{prefix} . $key} = $val;
+    foreach my $key (keys %indices) {
+         my $val = $line[$indices{$key}];
+        if (length $val) {
+            # escape characters with special meaning using VCFv4.3 percent encoding
+            $val =~ s/%/%25/g; # must be first
+            $val =~ s/:/%3A/g;
+            $val =~ s/;/%3B/g;
+            $val =~ s/=/%3D/g;
+            $val =~ s/,/%2C/g;
+            $val =~ s/\r/%0D/g;
+            $val =~ s/\n/%0A/g;
+            $val =~ s/\t/%09/g;
         }
+        $result->{$self->{prefix} . $key} = $val;
     }
     return $result;
 }
 
+sub create_key {
+    my $chr = $_[0];
+    my $pos = $_[1];
+    my $ref = $_[2];
+    my $alt = $_[3];
+    return "${chr}_${pos}_${ref}_${alt}";
+}
+
 sub run {
     my ($self, $bvfoa) = @_;
+    my %indices = %{$self->{indices}};
     my $result = ();
     my $annotations;
 
@@ -169,26 +170,25 @@ sub run {
         $symbol = $bvfoa->transcript->{_gene_symbol} || $bvfoa->transcript->{_gene_hgnc};
     }
 
-    my @lines = @{$self->{lines}};
-    my %indices = %{$self->{indices}};
-
     foreach my $key (keys %indices) {
         $result->{$self->{prefix} . $key} = undef;
     }
-    for my $line (@lines) {
+    my $vcf_key = create_key($vcf_line[0], $vcf_line[1], $vcf_line[3],$vcf_line[4]);
+    my $line = $self->{line_map}->{$vcf_key};
+    if(defined $line){
         my @line = @{$line};
         my @genes = split(";", $line[$self->{gene_idx}]);
         if ($symbol eq "") {
-            $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
-            if($annotations){
+            $annotations = mapAnnotations(\@line, \@vcf_line);
+            if(defined $annotations){
                 $result = $annotations;
             }
         }
         else {
             for my $gene (@genes) {
                 if ($gene eq $symbol) {
-                    $annotations = mapAnnotations(\@line, \@vcf_line, \%indices);
-                    if($annotations){
+                    $annotations = mapAnnotations(\@line, \@vcf_line);
+                    if(defined $annotations){
                         $result = $annotations;
                     }
                 }
