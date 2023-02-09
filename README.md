@@ -77,19 +77,19 @@ for a schematic represeantation of the workflow [click here](./docs/vip_workflow
 | ``hpo_ids``       | ``string list`` |          | regex: /HP:\d{7}/                      |
 | ``assembly``      | ``enum``        |          | default:GRCh38 values: [GRCh37,GRCh38] |
 
-#### Input VCF
+#### Input VCF ([example](#vcf-multi-project))
 | column  | type     | required |                                                               |
 |---------|----------|----------|---------------------------------------------------------------|
 | ``vcf`` | ``file`` | yes      | file extensions: [vcf, vcf.gz, vcf.bgz, bcf, bcf.gz, bcf.bgz] |
 | ``cram``| ``file`` |          | file extensions: [bam, cram]                                  |
 
-#### Input CRAM
+#### Input CRAM (example)
 | column                  | type          | required |                                              |
 |-------------------------|---------------|----------|----------------------------------------------|
 | ``cram``                | ``file``      | yes      | file extensions: [bam, cram]                 |
 | ``sequencing_platform`` | ``enum``      |          | default:illumina values: [illumina,nanopore] |
 
-#### Input FASTQ
+#### Input FASTQ ([example](#fastq-giab-hg001-illumina-hiseq-exome))
 | column                  | type          | required |                                               |
 |-------------------------|---------------|----------|-----------------------------------------------|
 | ``fastq``               | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
