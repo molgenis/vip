@@ -8,7 +8,7 @@ From: sif/build/openjdk-17.sif
 %post
     version_major=3
     version_minor=0
-    version_patch=0
+    version_patch=1
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/vcf-inheritance/lib
     curl -Ls -o /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
-    echo "47d6d95de4368ced31e03a863c758529e54c70f86102dcb9bd5cd53ceb0bdcfb  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
+    echo "7ac0620971ef595e03b42e56112e4dca7a6b77e60206920734f2cb858667e807  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
