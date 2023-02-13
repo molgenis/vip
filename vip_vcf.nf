@@ -340,7 +340,7 @@ def validateParams(sampleSheet) {
 
   // report
   def template = params.vcf.report.template
-  if(!template.isEmpty() && !file(decisionTree).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
+  if(!template.isEmpty() && !file(template).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
 
   assemblies.each { assembly ->
     def genes = params.vcf.report[assembly].genes
