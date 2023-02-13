@@ -6,7 +6,7 @@ SCRIPT_NAME="$(basename "$0")"
 
 main() {
   echo -e "downloading ..."
-  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.0.0.sif
+  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.0.1.sif
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/resources/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
   wget --quiet --continue http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
   wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
@@ -33,7 +33,7 @@ EOT
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  APPTAINER_BIND="${SCRIPT_DIR}" apptainer exec vcf-inheritance-3.0.0.sif java "${args[@]}"
+  APPTAINER_BIND="${SCRIPT_DIR}" apptainer exec vcf-inheritance-3.0.1.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 

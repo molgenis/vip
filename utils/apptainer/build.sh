@@ -85,9 +85,9 @@ main() {
   images+=("capice-5.0.0")
   images+=("minimap2-2.24")
   images+=("samtools-1.16")
-  images+=("vcf-decision-tree-3.5.0")
-  images+=("vcf-inheritance-matcher-2.1.3")
-  images+=("vcf-report-5.1.4")
+  images+=("vcf-decision-tree-3.5.1")
+  images+=("vcf-inheritance-matcher-2.1.4")
+  images+=("vcf-report-5.1.5")
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
