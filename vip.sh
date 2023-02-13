@@ -55,6 +55,7 @@ validate() {
   fi
   if [[ -n "${config}" ]] && [[ ! -f "${config}" ]]; then
     >&2 echo -e "error: config '${config}' does not exist"
+    exit 2
   fi
 }
 
