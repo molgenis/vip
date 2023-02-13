@@ -101,7 +101,7 @@ execute_workflow() {
   args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
-  if [[ "${resume}" == "true" ]]; then
+  if [[ "${paramResume}" == "true" ]]; then
     args+=("-resume")
   fi
 
