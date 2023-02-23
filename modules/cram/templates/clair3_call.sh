@@ -20,18 +20,19 @@ call_small_variants () {
     # Prevent Clair3 writing in home directory via samtools (https://www.htslib.org/doc/samtools.html#ENVIRONMENT_VARIABLES)
     XDG_CACHE_HOME=$(realpath .) ${CMD_CLAIR3} "${args[@]}"
 
-    mv "merge_output.vcf.gz" "!{vcfOut}"
-    mv "merge_output.vcf.gz.tbi" "!{vcfOutIndex}"
+    # Workaround for https://github.com/HKU-BAL/Clair3/issues/153
+    zcat "merge_output.vcf.gz" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{sub(/[RYSWKMBDHV]/, "N", $4) sub(/[RYSWKMBDHV]/, "N", $5)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}"
 }
 
-stats () {
+index () {
+  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {
     create_bed
     call_small_variants
-    stats
+    index
 }
 
 main "$@"
