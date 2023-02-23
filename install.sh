@@ -226,7 +226,7 @@ unzip_reference() {
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
+  local args=$(getopt -a -n pipeline -o a:h --long assembly:,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage

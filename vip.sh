@@ -109,7 +109,7 @@ execute_workflow() {
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o w:i:o:c:p:rh --long workflow:,input:,output:,config:,profile:,resume,help -- "$@")
+  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rh --long workflow:,input:,output:,config:,profile:,resume,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
