@@ -88,6 +88,8 @@ main() {
   images+=("vcf-decision-tree-3.5.1")
   images+=("vcf-inheritance-matcher-2.1.4")
   images+=("vcf-report-5.1.6")
+  images+=("manta-1.6.0")
+  images+=("sniffles2")
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"

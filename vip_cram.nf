@@ -6,7 +6,9 @@ include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { clair3_call } from './modules/cram/clair3'
+include { manta_call } from './modules/cram/manta'
 include { vcf } from './vip_vcf'
+include { merge_vcf } from './modules/vcf/merge_vcf'
 
 workflow cram {
   take: meta
@@ -29,18 +31,35 @@ workflow cram {
     // determine chunks for indexed crams
     ch_cram_indexed.mix(ch_cram.ready)
       | flatMap { meta -> scatter(meta) }
+      | multiMap { it -> snv: sv: it }
       | set { ch_cram_chunked }
 
-    // call variants
-    ch_cram_chunked    
+    // call regular variants
+    ch_cram_chunked.snv    
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | clair3_call
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+      | map { meta -> [meta.sample.cram, meta.chunk.index, meta] }
       | set { ch_vcf_chunked }
 
+    // call SV variants
+    ch_cram_chunked.sv   
+      | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
+      | manta_call
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+      | map { meta -> [meta.sample.cram, meta.chunk.index, meta] }
+      | set { ch_vcf_chunked_sv }
+
     // continue with vcf workflow
-    ch_vcf_chunked
-      | vcf
+    ch_vcf_chunked.mix(ch_vcf_chunked_sv)
+    | groupTuple(by:[0,1], size:2)
+    | map { grouped -> [grouped[2][0], [grouped[2][0].sample.vcf, grouped[2][1].sample.vcf],[grouped[2][0].sample.vcf_index, grouped[2][1].sample.vcf_index]]}
+    | merge_vcf
+    | view
+    // merge SV and SNV vcf
+    //| map { grouped, vcf, vcfIndex, vcfStats -> [*:grouped[0], sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+    // | view
+    // | vcf
 }
 
 workflow {
