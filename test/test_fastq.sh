@@ -84,7 +84,7 @@ test_fastq_illumina_pairedend_trio () {
 }
 
 run_tests () {
-  before_all
+  # before_all
 
   TEST_ID="fastq_nanopore"
   before_each

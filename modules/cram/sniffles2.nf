@@ -4,8 +4,8 @@ process sniffles2_sv_call {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    reference = params[params.assembly].reference.fasta
-    tandemRepeatAnnotations = params.cram.sniffles2[params.assembly].tandem_repeat_annotations
+    reference = params[meta.sample.assembly].reference.fasta
+    tandemRepeatAnnotations = params.cram.sniffles2[meta.sample.assembly].tandem_repeat_annotations
     bed = "${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
