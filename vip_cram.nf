@@ -7,6 +7,7 @@ include { findCramIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
 include { clair3_call } from './modules/cram/clair3'
 include { manta_call } from './modules/cram/manta'
+include { sniffles2_sv_call } from './modules/cram/sniffles2'
 include { vcf } from './vip_vcf'
 include { merge_vcf } from './modules/cram/merge_vcf'
 
@@ -43,15 +44,33 @@ workflow cram {
       | set { ch_vcf_chunked }
 
     // call SV variants
-    ch_cram_chunked.sv   
+    ch_cram_chunked.sv  
+      | branch {
+        meta ->
+          manta: meta.sample.sequencing_platform == 'illumina'
+          sniffles: meta.sample.sequencing_platform == 'nanopore'
+      }
+      | set { ch_cram_chunked_sv }
+
+    ch_cram_chunked_sv.manta
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | manta_call
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
       | map { meta -> [meta.sample.cram, meta.chunk.index, meta] }
-      | set { ch_vcf_chunked_sv }
+      | set { ch_vcf_chunked_sv_manta }
+
+    ch_cram_chunked_sv.sniffles
+      | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
+      | sniffles2_sv_call
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+      | map { meta -> [meta.sample.cram, meta.chunk.index, meta] }
+      | set { ch_vcf_chunked_sv_sniffles }
+
+    ch_vcf_chunked_sv_manta.mix(ch_vcf_chunked_sv_sniffles)
+      | set { ch_vcf_chunked_svs } 
 
     // continue with vcf workflow
-    ch_vcf_chunked.mix(ch_vcf_chunked_sv)
+    ch_vcf_chunked.mix(ch_vcf_chunked_svs)
     | groupTuple(by:[0,1], size:2)
     //grouped[0] an [1] are the cram and index; the fields we use to group on.
     | map { grouped -> [grouped[2], [grouped[2][0].sample.vcf, grouped[2][1].sample.vcf],[grouped[2][0].sample.vcf_index, grouped[2][1].sample.vcf_index]]}
