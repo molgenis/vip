@@ -11,8 +11,8 @@ process manta_call {
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
     vcfOut="${meta.sample.individual_id}_${meta.chunk.index}_sv.vcf.gz"
-    vcfOutIndex="${vcfOut}_sv.tbi"
-    vcfOutStats="${vcfOut}_sv.stats"
+    vcfOutIndex="${vcfOut}.tbi"
+    vcfOutStats="${vcfOut}.stats"
 
     template 'manta_call.sh'
 }
