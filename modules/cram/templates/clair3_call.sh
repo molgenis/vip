@@ -5,9 +5,14 @@ create_bed () {
   echo -e "!{bedContent}" > "!{bed}"
 }
 
+convert_to_bam () {
+  ${CMD_SAMTOOLS} view -T "!{reference}" -b -o !{cram}.bam !{cram}
+  ${CMD_SAMTOOLS} index "!{cram}.bam"
+}
+
 call_small_variants () {
     local args=()
-    args+=("--bam_fn=!{cram}")
+    args+=("--bam_fn=!{cram}.bam")
     args+=("--ref_fn=$(realpath "!{reference}")")
     args+=("--bed_fn=$(realpath "!{bed}")")
     args+=("--threads=!{task.cpus}")
@@ -31,6 +36,7 @@ index () {
 
 main() {
     create_bed
+    convert_to_bam
     call_small_variants
     index
 }
