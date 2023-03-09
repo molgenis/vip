@@ -2,7 +2,7 @@
 set -euo pipefail
 
 merge () {
-    ${CMD_BCFTOOLS} merge --merge none --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" !{vcfs}
+    ${CMD_BCFTOOLS} concat --allow-overlaps --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" !{vcfs}
 }
 
 index () {
