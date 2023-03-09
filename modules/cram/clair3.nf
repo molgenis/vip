@@ -10,7 +10,7 @@ process clair3_call {
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
     vcfOut="${meta.sample.individual_id}_${meta.chunk.index}.vcf.gz"
-    vcfOutIndex="${vcfOut}.tbi"
+    vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
     platform=meta.sample.sequencing_platform == "nanopore" ? "ont" : "ilmn"
