@@ -194,6 +194,8 @@ download_images() {
   files+=("vcf-inheritance-matcher-2.1.4.sif")
   files+=("vcf-report-5.1.6.sif")
   files+=("vep-107.0.sif")
+  files+=("manta-1.6.0.sif")
+  files+=("sniffles2.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
