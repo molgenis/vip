@@ -1,15 +1,15 @@
 include { basename } from './utils'
 
-process merge_vcf {  
+process concat_vcf {  
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     basename = basename(meta[0])
-    vcfOut = "${basename}_merged.vcf.gz"
+    vcfOut = "${basename}_concatted_${meta[0].sample.individual_id}.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
-    template 'merge_vcf.sh'
+    template 'concat_vcf.sh'
 }

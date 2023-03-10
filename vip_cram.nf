@@ -9,7 +9,7 @@ include { clair3_call } from './modules/cram/clair3'
 include { manta_call } from './modules/cram/manta'
 include { sniffles2_sv_call } from './modules/cram/sniffles2'
 include { vcf } from './vip_vcf'
-include { merge_vcf } from './modules/cram/merge_vcf'
+include { concat_vcf } from './modules/cram/concat_vcf'
 
 workflow cram {
   take: meta
@@ -74,7 +74,7 @@ workflow cram {
     | groupTuple(by:[0,1], size:2)
     //grouped[0] an [1] are the cram and index; the fields we use to group on.
     | map { grouped -> [grouped[2], [grouped[2][0].sample.vcf, grouped[2][1].sample.vcf],[grouped[2][0].sample.vcf_index, grouped[2][1].sample.vcf_index]]}
-    | merge_vcf
+    | concat_vcf
     //both metadata's in the group are the same, except for the unmerged vcf, we pick the first for the metadata to continue with
     | map { nested_meta, vcf, vcfIndex, vcfStats -> [*:nested_meta[0], sample: [*:nested_meta[0].sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]] }
     | vcf

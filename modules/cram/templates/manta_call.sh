@@ -25,8 +25,18 @@ run_manta () {
 
     ${CMD_MANTA} "${args[@]}"
 
-    mv "${TMPDIR}results/variants/diploidSV.vcf.gz" "!{vcfOut}"
     mv "${TMPDIR}results/variants/diploidSV.vcf.gz.tbi" "!{vcfOutIndex}"
+}
+
+reheader_manta_output () {
+  ${CMD_BCFTOOLS} query -l "${TMPDIR}results/variants/diploidSV.vcf.gz" > samples.tsv
+  local nr_samples=$(wc -l < samples.tsv)
+  if [ "$nr_samples" -gt 1 ]; then
+    echo -e "Unexpected number of samples in manta ouput, ${nr_samples} instead of 1."
+	  exit 1;
+  fi
+  echo "!{meta.sample.individual_id}" > sample_names.tsv
+  ${CMD_BCFTOOLS} reheader --samples sample_names.tsv -o "!{vcfOut}" "${TMPDIR}results/variants/diploidSV.vcf.gz"
 }
 
 stats () {
@@ -37,6 +47,7 @@ main() {
     create_bed
     config_manta
     run_manta
+    reheader_manta_output
     stats
 }
 

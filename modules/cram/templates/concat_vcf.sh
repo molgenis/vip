@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-merge () {
+concat () {
     ${CMD_BCFTOOLS} concat --allow-overlaps --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" !{vcfs}
 }
 
@@ -11,7 +11,7 @@ index () {
 }
 
 main() {    
-    merge
+    concat
     index
 }
 
