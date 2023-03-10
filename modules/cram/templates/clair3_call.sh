@@ -6,7 +6,7 @@ create_bed () {
 }
 
 convert_to_bam () {
-  ${CMD_SAMTOOLS} view -T "!{reference}" -b -o !{cram}.bam !{cram}
+  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
   ${CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
