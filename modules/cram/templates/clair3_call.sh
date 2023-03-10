@@ -5,9 +5,16 @@ create_bed () {
   echo -e "!{bedContent}" > "!{bed}"
 }
 
+# workaround for clair 3 issue where the ebi server is called to decode the cram
+# https://github.com/HKU-BAL/Clair3/issues/180
+convert_to_bam () {
+  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
+  ${CMD_SAMTOOLS} index "!{cram}.bam"
+}
+
 call_small_variants () {
     local args=()
-    args+=("--bam_fn=!{cram}")
+    args+=("--bam_fn=!{cram}.bam")
     args+=("--ref_fn=$(realpath "!{reference}")")
     args+=("--bed_fn=$(realpath "!{bed}")")
     args+=("--threads=!{task.cpus}")
@@ -31,6 +38,7 @@ index () {
 
 main() {
     create_bed
+    convert_to_bam
     call_small_variants
     index
 }
