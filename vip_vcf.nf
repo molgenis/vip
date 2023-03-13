@@ -13,6 +13,7 @@ include { merge_gvcf } from './modules/vcf/merge_gvcf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate } from './modules/vcf/annotate'
+include { annotate_publish } from './modules/vcf/annotate_publish'
 include { classify } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
 include { inheritance } from './modules/vcf/inheritance'
@@ -21,7 +22,7 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
 
 /*
  * input:
@@ -155,11 +156,18 @@ workflow vcf {
 
         ch_normalized
             | annotate
+            | multiMap { it -> done: publish: it }
             | set { ch_annotated }
 
-        ch_annotated
+        ch_annotated.done
             | classify
             | set { ch_classified }
+
+        ch_annotated.publish
+            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+            | groupTuple
+            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+            | annotate_publish
 
         ch_classified
             | filter
@@ -186,30 +194,9 @@ workflow vcf {
             | set { ch_filtered_samples }
 
         ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
+            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
-            | map { key, metaList -> 
-                def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
-                def meta, vcfs, vcfIndexes
-                if(filteredMetaList.size() == 0) {
-                  meta = metaList.first()
-                  vcfs = [meta.vcf]
-                  vcfIndexes = [meta.vcf_index]
-                }
-                else if(filteredMetaList.size() == 1) {
-                  meta = filteredMetaList.first()
-                  vcfs = [meta.vcf]
-                  vcfIndexes = [meta.vcf_index]
-                }
-                else {
-                  def sortedMetaList = filteredMetaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-                  meta = sortedMetaList.first()
-                  vcfs = sortedMetaList.collect { it.vcf }
-                  vcfIndexes = sortedMetaList.collect { it.vcf_index }
-                }
-                meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
-                return [meta, vcfs, vcfIndexes]
-              }
+            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
             | branch { meta, vcfs, vcfIndexes ->
                 concat: vcfs.size() > 1
                 ready: true
