@@ -21,7 +21,7 @@ process classify_samples {
 }
 
 process classify_samples_publish {
-  publishDir "$params.output", mode: 'link'
+  publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex)
@@ -33,7 +33,7 @@ process classify_samples_publish {
 }
 
 process classify_samples_publish_concat {
-  publishDir "$params.output", mode: 'link'
+  publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
