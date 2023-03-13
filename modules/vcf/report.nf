@@ -2,7 +2,7 @@ include { basename } from './utils'
 include { createPedigree } from '../utils'
 
 process report {
-  publishDir "$params.output", mode: 'link'
+  publishDir "$params.output", mode: 'move'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex), path(crams)
