@@ -12,12 +12,11 @@ include { merge_vcf } from './modules/vcf/merge_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
-include { annotate } from './modules/vcf/annotate'
-include { annotate_publish; annotate_publish_concat } from './modules/vcf/annotate_publish'
-include { classify } from './modules/vcf/classify'
+include { annotate; annotate_publish; annotate_publish_concat } from './modules/vcf/annotate'
+include { classify; classify_publish; classify_publish_concat } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
 include { inheritance } from './modules/vcf/inheritance'
-include { classify_samples } from './modules/vcf/classify_samples'
+include { classify_samples; classify_samples_publish; classify_samples_publish_concat } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
@@ -154,14 +153,11 @@ workflow vcf {
             | normalize
             | set { ch_normalized }
 
+        // annotate
         ch_normalized
             | annotate
             | multiMap { it -> done: publish: it }
             | set { ch_annotated }
-
-        ch_annotated.done
-            | classify
-            | set { ch_classified }
 
         ch_annotated.publish
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
@@ -171,16 +167,40 @@ workflow vcf {
                 concat: vcfs.size() > 1
                 single: true
               }
-            | ch_annotated_publish
-
-        ch_annotated_publish.concat
-            | annotate_publish_concat
+            | set { ch_annotated_publish }
 
         ch_annotated_publish.single
             | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
             | annotate_publish
 
-        ch_classified
+        ch_annotated_publish.concat
+            | annotate_publish_concat
+
+        // classify
+        ch_annotated.done
+            | classify
+            | multiMap { it -> done: publish: it }
+            | set { ch_classified }
+
+        ch_classified.publish
+            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+            | groupTuple
+            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+            | branch { meta, vcfs, vcfIndexes ->
+                concat: vcfs.size() > 1
+                single: true
+              }
+            | set { ch_classified_publish }
+
+        ch_classified_publish.single
+            | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
+            | classify_publish
+
+        ch_classified_publish.concat
+            | classify_publish_concat
+
+        // filter
+        ch_classified.done
             | filter
             | branch { meta, vcf, vcfIndex, vcfStats ->
                 process: nrRecords(vcfStats) > 0

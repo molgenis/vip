@@ -17,3 +17,30 @@ process classify {
     
     template 'classify.sh'
 }
+
+process classify_publish {
+  publishDir "$params.output", mode: 'link'
+
+  input:
+    tuple val(meta), path(vcf), path(vcfIndex)
+  output:
+    tuple val(meta), path(vcf), path(vcfIndex)
+  shell:
+    '''
+    '''
+}
+
+process classify_publish_concat {
+  publishDir "$params.output", mode: 'link'
+
+  input:
+    tuple val(meta), path(vcfs), path(vcfIndexes)
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex)
+  shell:
+    basename = basename(meta)
+    vcfOut="${basename}_classified.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+
+    template 'concat_publish.sh'
+}
