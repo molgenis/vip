@@ -27,7 +27,7 @@ process annotate {
 }
 
 process annotate_publish {
-  publishDir "$params.output/intermediates", mode: 'move'
+  publishDir "$params.output/intermediates", mode: 'copy'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex)
@@ -39,7 +39,7 @@ process annotate_publish {
 }
 
 process annotate_publish_concat {
-  publishDir "$params.output/intermediates", mode: 'move'
+  publishDir "$params.output/intermediates", mode: 'copy'
 
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)

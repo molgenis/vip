@@ -19,7 +19,7 @@ process classify {
 }
 
 process classify_publish {
-  publishDir "$params.output/intermediates", mode: 'move'
+  publishDir "$params.output/intermediates", mode: 'copy'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex)
@@ -31,7 +31,7 @@ process classify_publish {
 }
 
 process classify_publish_concat {
-  publishDir "$params.output/intermediates", mode: 'move'
+  publishDir "$params.output/intermediates", mode: 'copy'
 
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
