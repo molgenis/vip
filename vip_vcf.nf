@@ -13,7 +13,7 @@ include { merge_gvcf } from './modules/vcf/merge_gvcf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate } from './modules/vcf/annotate'
-include { annotate_publish } from './modules/vcf/annotate_publish'
+include { annotate_publish; annotate_publish_concat } from './modules/vcf/annotate_publish'
 include { classify } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
 include { inheritance } from './modules/vcf/inheritance'
@@ -167,6 +167,17 @@ workflow vcf {
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+            | branch { meta, vcfs, vcfIndexes ->
+                concat: vcfs.size() > 1
+                single: true
+              }
+            | ch_annotated_publish
+
+        ch_annotated_publish.concat
+            | annotate_publish_concat
+
+        ch_annotated_publish.single
+            | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
             | annotate_publish
 
         ch_classified
