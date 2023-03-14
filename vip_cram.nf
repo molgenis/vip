@@ -5,7 +5,8 @@ include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
-include { clair3_call } from './modules/cram/clair3'
+include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
+include { preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
 include { vcf } from './vip_vcf'
 
 workflow cram {
@@ -35,11 +36,18 @@ workflow cram {
     ch_cram_chunked    
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | clair3_call
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+      | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked }
 
+    ch_vcf_chunked.publish
+      | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      | groupTuple
+      | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      | clair3_call_publish
+
     // continue with vcf workflow
-    ch_vcf_chunked
+    ch_vcf_chunked.done
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
       | vcf
 }
 

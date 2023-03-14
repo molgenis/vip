@@ -18,3 +18,18 @@ process clair3_call {
 
     template 'clair3_call.sh'
 }
+
+process clair3_call_publish {
+  publishDir "$params.output/intermediates", mode: 'link'
+
+  input:
+    tuple val(meta), path(vcfs), path(vcfIndexes)
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex)
+  shell:
+    basename = basename(meta)
+    vcfOut="${basename}_small_variants.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+
+    template 'publish.sh'
+}
