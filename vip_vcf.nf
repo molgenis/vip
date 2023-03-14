@@ -200,18 +200,7 @@ workflow vcf {
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | branch { meta, vcfs, vcfIndexes ->
-                concat: vcfs.size() > 1
-                single: true
-              }
-            | set { ch_classified_samples_publish }
-
-        ch_classified_samples_publish.single
-            | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
             | classify_samples_publish
-
-        ch_classified_samples_publish.concat
-            | classify_samples_publish_concat
 
         // filter samples
         ch_classified_samples.done
