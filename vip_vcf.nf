@@ -163,18 +163,7 @@ workflow vcf {
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | branch { meta, vcfs, vcfIndexes ->
-                concat: vcfs.size() > 1
-                single: true
-              }
-            | set { ch_annotated_publish }
-
-        ch_annotated_publish.single
-            | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
             | annotate_publish
-
-        ch_annotated_publish.concat
-            | annotate_publish_concat
 
         // classify
         ch_annotated.done
@@ -186,18 +175,7 @@ workflow vcf {
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | branch { meta, vcfs, vcfIndexes ->
-                concat: vcfs.size() > 1
-                single: true
-              }
-            | set { ch_classified_publish }
-
-        ch_classified_publish.single
-            | map { meta, vcfs, vcfIndexes -> [meta, vcfs.first(), vcfIndexes.first()] }
             | classify_publish
-
-        ch_classified_publish.concat
-            | classify_publish_concat
 
         // filter
         ch_classified.done

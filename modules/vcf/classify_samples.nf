@@ -21,19 +21,7 @@ process classify_samples {
 }
 
 process classify_samples_publish {
-  publishDir "$params.output/intermediates", mode: 'copy'
-
-  input:
-    tuple val(meta), path(vcf), path(vcfIndex)
-  output:
-    tuple val(meta), path(vcf), path(vcfIndex)
-  shell:
-    '''
-    '''
-}
-
-process classify_samples_publish_concat {
-  publishDir "$params.output/intermediates", mode: 'copy'
+  publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(vcfs), path(vcfIndexes)
@@ -41,8 +29,8 @@ process classify_samples_publish_concat {
     tuple val(meta), path(vcfOut), path(vcfOutIndex)
   shell:
     basename = basename(meta)
-    vcfOut="${basename}_classified_samples.vcf.gz"
+    vcfOut="${basename}_sample_classifications.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
 
-    template 'concat_publish.sh'
+    template 'publish.sh'
 }
