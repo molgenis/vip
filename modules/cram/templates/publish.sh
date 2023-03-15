@@ -12,28 +12,12 @@ concat () {
   ${CMD_BCFTOOLS} "${args[@]}" !{vcfs}
 }
 
-view () {
-  local args=()
-  args+=("view")
-  args+=("--output-type" "z9")
-  args+=("--output" "!{vcfOut}")
-  args+=("--no-version")
-  args+=("--threads" "!{task.cpus}")
-
-  ${CMD_BCFTOOLS} "${args[@]}" "!{vcfs.first()}"
-}
-
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
 }
 
 main() {
-  if [[ "!{vcfs.size()}" -gt "1" ]]; then
-    concat
-  else
-    view
-  fi
-
+  concat
   index
 }
 

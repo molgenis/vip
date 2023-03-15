@@ -159,7 +159,7 @@ workflow vcf {
             | multiMap { it -> done: publish: it }
             | set { ch_annotated }
 
-        ch_annotated.publish
+        ch_annotated.publish.mix(ch_inputs.empty)
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
@@ -171,7 +171,7 @@ workflow vcf {
             | multiMap { it -> done: publish: it }
             | set { ch_classified }
 
-        ch_classified.publish
+        ch_classified.publish.mix(ch_inputs.empty)
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }
@@ -196,7 +196,7 @@ workflow vcf {
             | multiMap { it -> done: publish: it }
             | set { ch_classified_samples }
 
-        ch_classified_samples.publish
+        ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
             | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
             | groupTuple
             | map { key, metaList -> postGroupTupleConcat(key, metaList) }

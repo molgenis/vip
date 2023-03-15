@@ -27,8 +27,7 @@ process clair3_call_publish {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex)
   shell:
-    basename = basename(meta)
-    vcfOut="${basename}_small_variants.vcf.gz"
+    vcfOut="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}_small_variants.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
 
     template 'publish.sh'
