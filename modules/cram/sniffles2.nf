@@ -15,3 +15,17 @@ process sniffles2_call {
 
     template 'sniffles2_call.sh'
 }
+
+process sniffles_call_publish {
+  publishDir "$params.output/intermediates", mode: 'link'
+
+  input:
+    tuple val(meta), path(vcfs), path(vcfIndexes)
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex)
+  shell:
+    vcfOut="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}_long_read_sv.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+
+    template 'publish.sh'
+}
