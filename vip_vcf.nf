@@ -149,43 +149,93 @@ workflow vcf {
           }
         | set { ch_inputs }
 
-        ch_inputs.process
-            | normalize
-            | set { ch_normalized }
+      ch_inputs.process
+        | branch {
+            take: params.start <= 0
+            skip: true
+          }
+        | set { ch_normalize }
 
-        ch_normalized
-            | annotate
-            | set { ch_annotated }
+      ch_normalize.take
+        | normalize
+        | set { ch_normalized }
 
-        ch_annotated
-            | classify
-            | set { ch_classified }
+      ch_normalized.mix(ch_normalize.skip)
+        | branch {
+            take: params.start <= 1
+            skip: true
+          }
+        | set { ch_annotate }
 
-        ch_classified
-            | filter
-            | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: nrRecords(vcfStats) > 0
-                empty: true
-              }
-            | set { ch_filtered }
+      ch_annotate.take
+        | view
+        | annotate
+        | set { ch_annotated }
 
-        ch_filtered.process
-            | inheritance
-            | set { ch_inheritanced }
+      ch_annotated.mix(ch_annotate.skip)
+        | branch {
+            take: params.start <= 2
+            skip: true
+          }
+        | set { ch_classify }
 
-        ch_inheritanced
-            | classify_samples
-            | set { ch_classified_samples }
+      ch_classify.take
+        | classify
+        | set { ch_classified }
 
-        ch_classified_samples
-            | filter_samples
-            | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: nrRecords(vcfStats) > 0
-                empty: true
-              }
-            | set { ch_filtered_samples }
+      ch_classified.mix(ch_classify.skip)
+        | branch {
+            take: params.start <= 3
+            skip: true
+          }
+        | set { ch_filter }
 
-        ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+      ch_filter.take
+        | filter
+        | branch { meta, vcf, vcfIndex, vcfStats ->
+            process: nrRecords(vcfStats) > 0
+            empty: true
+          }
+        | set { ch_filtered }
+
+      ch_filtered.process.mix(ch_filter.skip)
+        | branch {
+            take: params.start <= 4
+            skip: true
+          }
+        | set { ch_inheritance }
+
+      ch_inheritance.take
+        | inheritance
+        | set { ch_inheritanced }
+
+      ch_inheritanced.mix(ch_inheritance.skip)
+        | branch {
+            take: params.start <= 5
+            skip: true
+          }
+        | set { ch_classify_samples }
+
+        ch_classify_samples.take
+          | classify_samples
+          | set { ch_classified_samples }
+
+        ch_classified_samples.mix(ch_classify_samples.skip)
+          | branch {
+            take: params.start <= 6
+            skip: true
+          }
+          | set { ch_filter_samples }
+
+        ch_filter_samples.take
+          | filter_samples
+          | branch { meta, vcf, vcfIndex, vcfStats ->
+              process: nrRecords(vcfStats) > 0
+              empty: true
+            }
+          | set { ch_filtered_samples }
+
+        ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
             | map { meta, vcf, vcfCsi, vcfStats -> [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
             | groupTuple
             | map { key, metaList -> 
