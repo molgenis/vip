@@ -1,4 +1,6 @@
 process minimap2_align {
+  publishDir "$params.output/intermediates", mode: 'link'
+
   input:
     tuple val(meta), path(fastq)
   output:
@@ -6,7 +8,7 @@ process minimap2_align {
   shell:
     reference=params[meta.sample.assembly].reference.fasta
     referenceMmi="${meta.fasta_mmi}"
-    cram="${meta.sample.individual_id}.cram"
+    cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
 
     preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : ""
@@ -15,6 +17,8 @@ process minimap2_align {
 }
 
 process minimap2_align_paired_end {
+  publishDir "$params.output/intermediates", mode: 'link'
+
   input:
     tuple val(meta), path(fastqR1), path(fastqR2)
   output:
@@ -22,7 +26,7 @@ process minimap2_align_paired_end {
   shell:
     reference=params[meta.sample.assembly].reference.fasta
     referenceMmi="${meta.fasta_mmi}"
-    cram="${meta.sample.individual_id}.cram"
+    cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
 
     template 'minimap2_align_paired_end.sh'
