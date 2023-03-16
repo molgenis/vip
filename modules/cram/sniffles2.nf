@@ -10,7 +10,7 @@ process sniffles2_sv_call {
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
     vcfOut="${meta.sample.individual_id}_${meta.chunk.index}_long_read_sv.vcf.gz"
-    vcfOutIndex="${vcfOut}.tbi"
+    vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
     template 'sniffles2_sv_call.sh'
