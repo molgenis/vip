@@ -2,7 +2,16 @@
 set -euo pipefail
 
 concat () {
-    ${CMD_BCFTOOLS} concat --allow-overlaps --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" !{vcfs}
+  local args=()
+  args+=("concat")
+  args+=("--allow-overlaps")
+  args+=("--output-type" "z")
+	args+=("--output" "!{vcfOut}")
+	args+=("--no-version")
+	args+=("--threads" "!{task.cpus}")
+	args+=(!{vcfs})
+
+  ${CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {

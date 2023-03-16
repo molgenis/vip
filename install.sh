@@ -195,7 +195,7 @@ download_images() {
   files+=("vcf-report-5.2.0.sif")
   files+=("vep-107.0.sif")
   files+=("manta-1.6.0.sif")
-  files+=("sniffles2.sif")
+  files+=("sniffles2-2.0.7.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"

@@ -35,7 +35,7 @@ workflow cram {
       | multiMap { it -> snv: sv: it }
       | set { ch_cram_chunked }
 
-    // call regular variants
+    // call short variants
     ch_cram_chunked.snv    
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | clair3_call
@@ -106,6 +106,11 @@ def parseSampleSheet(csvFile) {
       type: "string",
       default: { 'illumina' },
       enum: ['illumina', 'nanopore']
+    ],
+    analysis_type: [
+      type: "string",
+      default: { 'WGS' },
+      enum: ['WES', 'WGS']
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

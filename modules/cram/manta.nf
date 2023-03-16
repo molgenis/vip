@@ -9,7 +9,8 @@ process manta_call {
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedGz="${bed}.gz"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    
+    analysisType = meta.sample.analysis_type
+
     vcfOut="${meta.sample.individual_id}_${meta.chunk.index}_sv.vcf.gz"
     vcfOutIndex="${vcfOut}.tbi"
     vcfOutStats="${vcfOut}.stats"

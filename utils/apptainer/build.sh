@@ -89,7 +89,7 @@ main() {
   images+=("vcf-inheritance-matcher-2.1.4")
   images+=("vcf-report-5.2.0")
   images+=("manta-1.6.0")
-  images+=("sniffles2")
+  images+=("sniffles2-2.0.7")
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"

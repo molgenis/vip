@@ -5,6 +5,7 @@ create_bed () {
   echo -e "!{bedContent}" > "!{bed}"
 }
 
+# workaround for https://github.com/fritzsedlazeck/Sniffles/issues/373
 create_cram_slice () {
   local args=()
   args+=("view")
@@ -25,6 +26,7 @@ call_structural_variants () {
     args+=("--input" "!{cram.simpleName}_sliced.cram")
     args+=("--reference" "!{reference}")
     args+=("--tandem-repeats" "!{tandemRepeatAnnotations}")
+    #Currently there is no gvcf support in Sniffles: https://github.com/fritzsedlazeck/Sniffles/issues/385
     args+=("--vcf" "!{vcfOut}")
     args+=("--sample-id" "!{meta.sample.individual_id}")
     args+=("--threads" "!{task.cpus}")
