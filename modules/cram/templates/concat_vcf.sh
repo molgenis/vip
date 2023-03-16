@@ -5,11 +5,12 @@ concat () {
   local args=()
   args+=("concat")
   args+=("--allow-overlaps")
+  args+=("--remove-duplicates")
   args+=("--output-type" "z")
-	args+=("--output" "!{vcfOut}")
-	args+=("--no-version")
-	args+=("--threads" "!{task.cpus}")
-	args+=(!{vcfs})
+  args+=("--output" "!{vcfOut}")
+  args+=("--no-version")
+  args+=("--threads" "!{task.cpus}")
+  args+=(!{vcfs})
 
   ${CMD_BCFTOOLS} "${args[@]}"
 }
@@ -20,8 +21,8 @@ index () {
 }
 
 main() {    
-    concat
-    index
+  concat
+  index
 }
 
 main "$@"

@@ -1,4 +1,4 @@
-process sniffles2_sv_call {
+process sniffles2_call {
   input:
     tuple val(meta), path(cram), path(cramCrai)
   output:
@@ -13,5 +13,5 @@ process sniffles2_sv_call {
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    template 'sniffles2_sv_call.sh'
+    template 'sniffles2_call.sh'
 }

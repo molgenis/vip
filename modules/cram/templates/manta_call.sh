@@ -14,7 +14,7 @@ config_manta () {
     args+=("--bam" "!{cram}")
     args+=("--referenceFasta" "!{reference}")
     args+=("--runDir" "$(realpath .)")
-    if [ "!{analysisType}" == "WES" ]; then
+    if [ "!{sequencingMethod}" == "WES" ]; then
       args+=("--exome")
     fi
 
