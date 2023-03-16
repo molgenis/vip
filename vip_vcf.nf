@@ -156,10 +156,12 @@ workflow vcf {
           }
         | set { ch_normalize }
 
+      // normalize
       ch_normalize.take
         | normalize
         | set { ch_normalized }
 
+      // annotate
       ch_normalized.mix(ch_normalize.skip)
         | branch {
             take: params.start <= 1
@@ -168,11 +170,18 @@ workflow vcf {
         | set { ch_annotate }
 
       ch_annotate.take
-        | view
-        | annotate
-        | set { ch_annotated }
+          | annotate
+          | multiMap { it -> done: publish: it }
+          | set { ch_annotated }
 
-      ch_annotated.mix(ch_annotate.skip)
+      ch_annotated.publish.mix(ch_inputs.empty)
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | annotate_publish
+
+      // classify
+      ch_annotated.done.mix(ch_annotate.skip)
         | branch {
             take: params.start <= 2
             skip: true
@@ -181,50 +190,68 @@ workflow vcf {
 
       ch_classify.take
         | classify
+        | multiMap { it -> done: publish: it }
         | set { ch_classified }
 
-      ch_classified.mix(ch_classify.skip)
-        | branch {
-            take: params.start <= 3
-            skip: true
-          }
-        | set { ch_filter }
+      ch_classified.publish.mix(ch_inputs.empty)
+        | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+        | groupTuple
+        | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+        | classify_publish
 
-      ch_filter.take
-        | filter
-        | branch { meta, vcf, vcfIndex, vcfStats ->
-            process: nrRecords(vcfStats) > 0
-            empty: true
-          }
-        | set { ch_filtered }
+        // filter
+        ch_classified.done.mix(ch_classify.skip)
+          | branch {
+              take: params.start <= 3
+              skip: true
+            }
+          | set { ch_filter }
 
-      ch_filtered.process.mix(ch_filter.skip)
-        | branch {
-            take: params.start <= 4
-            skip: true
-          }
-        | set { ch_inheritance }
+        ch_filter.take
+          | filter
+          | branch { meta, vcf, vcfIndex, vcfStats ->
+              process: nrRecords(vcfStats) > 0
+              empty: true
+            }
+          | set { ch_filtered }
 
-      ch_inheritance.take
-        | inheritance
-        | set { ch_inheritanced }
+        // inheritance
+        ch_filtered.process.mix(ch_filter.skip)
+          | branch {
+              take: params.start <= 4
+              skip: true
+            }
+          | set { ch_inheritance }
 
-      ch_inheritanced.mix(ch_inheritance.skip)
-        | branch {
-            take: params.start <= 5
-            skip: true
-          }
-        | set { ch_classify_samples }
+        ch_inheritance.take
+            | inheritance
+            | set { ch_inheritanced }
+
+        // classify samples
+        ch_inheritanced.mix(ch_inheritance.skip)
+          | branch {
+              take: params.start <= 5
+              skip: true
+            }
+          | set { ch_classify_samples }
 
         ch_classify_samples.take
           | classify_samples
+          | multiMap { it -> done: publish: it }
           | set { ch_classified_samples }
 
-        ch_classified_samples.mix(ch_classify_samples.skip)
+        ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | classify_samples_publish
+
+        // filter samples
+        ch_classified_samples.done.mix(ch_classify_samples.skip)
           | branch {
-            take: params.start <= 6
-            skip: true
-          }
+              take: params.start <= 6
+              skip: true
+            }
           | set { ch_filter_samples }
 
         ch_filter_samples.take
@@ -235,38 +262,18 @@ workflow vcf {
             }
           | set { ch_filtered_samples }
 
+        // concat
         ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
-            | groupTuple
-            | map { key, metaList -> 
-                def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
-                def meta, vcfs, vcfIndexes
-                if(filteredMetaList.size() == 0) {
-                  meta = metaList.first()
-                  vcfs = [meta.vcf]
-                  vcfIndexes = [meta.vcf_index]
-                }
-                else if(filteredMetaList.size() == 1) {
-                  meta = filteredMetaList.first()
-                  vcfs = [meta.vcf]
-                  vcfIndexes = [meta.vcf_index]
-                }
-                else {
-                  def sortedMetaList = filteredMetaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-                  meta = sortedMetaList.first()
-                  vcfs = sortedMetaList.collect { it.vcf }
-                  vcfIndexes = sortedMetaList.collect { it.vcf_index }
-                }
-                meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
-                return [meta, vcfs, vcfIndexes]
-              }
-            | branch { meta, vcfs, vcfIndexes ->
-                concat: vcfs.size() > 1
-                ready: true
-              }
-            | set { ch_outputs }
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | branch { meta, vcfs, vcfIndexes ->
+              concat: vcfs.size() > 1
+              ready: true
+            }
+          | set { ch_outputs }
 
-          ch_outputs.concat
+        ch_outputs.concat
             | concat
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->

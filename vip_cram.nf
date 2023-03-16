@@ -5,7 +5,7 @@ include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
 include { samtools_index } from './modules/cram/samtools'
-include { clair3_call } from './modules/cram/clair3'
+include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { vcf } from './vip_vcf'
 
 workflow cram {
@@ -35,11 +35,22 @@ workflow cram {
     ch_cram_chunked    
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | clair3_call
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
+      | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked }
 
+    ch_vcf_chunked.publish
+      | map { meta, vcf, vcfCsi, vcfStats -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
+      | groupTuple
+      | map { key, metaList -> 
+          def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+          def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+          [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+        }
+      | clair3_call_publish
+
     // continue with vcf workflow
-    ch_vcf_chunked
+    ch_vcf_chunked.done
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
       | vcf
 }
 

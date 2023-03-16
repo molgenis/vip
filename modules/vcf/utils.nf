@@ -70,3 +70,30 @@ def getGVcfRegex() {
 def isGVcf(gVcf) {
   gVcf ==~ getGVcfRegex()
 }
+
+def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
+    [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
+}
+
+def postGroupTupleConcat(key, metaList) {
+  def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
+  def meta, vcfs, vcfIndexes
+  if(filteredMetaList.size() == 0) {
+    meta = metaList.first()
+    vcfs = [meta.vcf]
+    vcfIndexes = [meta.vcf_index]
+  }
+  else if(filteredMetaList.size() == 1) {
+    meta = filteredMetaList.first()
+    vcfs = [meta.vcf]
+    vcfIndexes = [meta.vcf_index]
+  }
+  else {
+    def sortedMetaList = filteredMetaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+    meta = sortedMetaList.first()
+    vcfs = sortedMetaList.collect { it.vcf }
+    vcfIndexes = sortedMetaList.collect { it.vcf_index }
+  }
+  meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+  return [meta, vcfs, vcfIndexes]
+}
