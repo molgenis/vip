@@ -16,7 +16,7 @@ test_gvcf () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
