@@ -12,16 +12,16 @@ include { merge_vcf } from './modules/vcf/merge_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
-include { annotate } from './modules/vcf/annotate'
-include { classify } from './modules/vcf/classify'
+include { annotate; annotate_publish } from './modules/vcf/annotate'
+include { classify; classify_publish } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
 include { inheritance } from './modules/vcf/inheritance'
-include { classify_samples } from './modules/vcf/classify_samples'
+include { classify_samples; classify_samples_publish } from './modules/vcf/classify_samples'
 include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
 
 /*
  * input:
@@ -151,7 +151,7 @@ workflow vcf {
 
       ch_inputs.process
         | branch {
-            take: params.start <= 0
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize/
             skip: true
           }
         | set { ch_normalize }
@@ -164,7 +164,7 @@ workflow vcf {
       // annotate
       ch_normalized.mix(ch_normalize.skip)
         | branch {
-            take: params.start <= 1
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate/
             skip: true
           }
         | set { ch_annotate }
@@ -183,7 +183,7 @@ workflow vcf {
       // classify
       ch_annotated.done.mix(ch_annotate.skip)
         | branch {
-            take: params.start <= 2
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify/
             skip: true
           }
         | set { ch_classify }
@@ -202,7 +202,7 @@ workflow vcf {
         // filter
         ch_classified.done.mix(ch_classify.skip)
           | branch {
-              take: params.start <= 3
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter/
               skip: true
             }
           | set { ch_filter }
@@ -218,7 +218,7 @@ workflow vcf {
         // inheritance
         ch_filtered.process.mix(ch_filter.skip)
           | branch {
-              take: params.start <= 4
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance/
               skip: true
             }
           | set { ch_inheritance }
@@ -230,7 +230,7 @@ workflow vcf {
         // classify samples
         ch_inheritanced.mix(ch_inheritance.skip)
           | branch {
-              take: params.start <= 5
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples/
               skip: true
             }
           | set { ch_classify_samples }
@@ -249,7 +249,7 @@ workflow vcf {
         // filter samples
         ch_classified_samples.done.mix(ch_classify_samples.skip)
           | branch {
-              take: params.start <= 6
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/
               skip: true
             }
           | set { ch_filter_samples }
@@ -343,6 +343,9 @@ def validateParams(sampleSheet) {
   // general
   def gvcfMergePreset = params.vcf.gvcf_merge_preset
   if (!(gvcfMergePreset ==~ /gatk|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
+
+  def start = params.vcf.start
+  if (!start.isEmpty() && !(start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/))  exit 1, "parameter 'vcf.start' value '${start}' is invalid. allowed values are [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]"
 
   // annotate
   def annotSvCacheDir = params.vcf.annotate.annotsv_cache_dir
