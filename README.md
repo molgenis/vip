@@ -77,7 +77,6 @@ for a schematic represeantation of the workflow [click here](./docs/vip_workflow
 | ``proband``           | ``boolean``     |          |                                        |
 | ``hpo_ids``           | ``string list`` |          | regex: /HP:\d{7}/                      |
 | ``assembly``          | ``enum``        |          | default:GRCh38 values: [GRCh37,GRCh38] |
-| ``sequencing_method`` | ``enum``        |          | default:WGS values: [WES,WGS]          |
 
 #### Input VCF
 | column  | type     | required |                                                               |
@@ -92,7 +91,7 @@ See [example](#vcf-multi-project)
 |-------------------------|---------------|----------|----------------------------------------------|
 | ``cram``                | ``file``      | yes      | file extensions: [bam, cram]                 |
 | ``sequencing_platform`` | ``enum``      |          | default:illumina values: [illumina,nanopore] |
-| ``sequencing_method``   | ``enum``        |          | default:WGS values: [WES,WGS]                |
+| ``sequencing_method``   | ``enum``      |          | default:WGS values: [WES,WGS]                |
 
 #### Input FASTQ
 | column                  | type          | required |                                               |
@@ -101,6 +100,7 @@ See [example](#vcf-multi-project)
 | ``fastq_r1``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``fastq_r2``            | ``file list`` |          | file extensions: [fastq, fastq.gz, fq, fq.gz] |
 | ``sequencing_platform`` | ``enum``      |          | default:illumina values: [illumina,nanopore]  |   
+| ``sequencing_method``   | ``enum``      |          | default:WGS values: [WES,WGS]                 |
 
 See [example](#fastq-giab-hg001-illumina-hiseq-exome)
 
