@@ -141,11 +141,6 @@ def parseSampleSheet(csvFile) {
       type: "string",
       default: { 'illumina' },
       enum: ['illumina', 'nanopore']
-    ],
-    sequencing_method: [
-      type: "string",
-      default: { 'WGS' },
-      enum: ['WES', 'WGS']
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

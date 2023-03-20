@@ -46,6 +46,11 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       type: "string",
       default: { 'GRCh38' },
       enum: ['GRCh37', 'GRCh38']
+    ],
+    sequencing_method: [
+      type: "string",
+      default: { 'WGS' },
+      enum: ['WES', 'WGS']
     ]
   ]
 
