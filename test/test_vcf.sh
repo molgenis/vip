@@ -101,6 +101,29 @@ test_multiproject () {
   fi
 }
 
+test_multiproject_classify () {
+  echo -e "params { vcf.start=\"classify\"\nvcf.gvcf_merge_preset = \"DeepVariant\" }" > "${OUTPUT_DIR}/custom.cfg"
+
+  local args=()
+  args+=("--workflow" "vcf")
+  args+=("--input" "${TEST_RESOURCES_DIR}/multiproject_classify.tsv")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
+  args+=("--profile" "local")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip0.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+    return 1
+  fi
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip1.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
+    return 1
+  fi
+}
+
 test_corner_cases () {
   local args=()
   args+=("--workflow" "vcf")
@@ -288,6 +311,11 @@ run_tests () {
   TEST_ID="test_multiproject"
   before_each
   test_multiproject
+  after_each
+
+  TEST_ID="test_multiproject_classify"
+  before_each
+  test_multiproject_classify
   after_each
 
   TEST_ID="test_corner_cases"

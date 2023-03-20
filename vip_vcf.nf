@@ -149,79 +149,131 @@ workflow vcf {
           }
         | set { ch_inputs }
 
-        ch_inputs.process
-            | normalize
-            | set { ch_normalized }
+      ch_inputs.process
+        | branch {
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize/
+            skip: true
+          }
+        | set { ch_normalize }
 
-        // annotate
-        ch_normalized
-            | annotate
-            | multiMap { it -> done: publish: it }
-            | set { ch_annotated }
+      // normalize
+      ch_normalize.take
+        | normalize
+        | set { ch_normalized }
 
-        ch_annotated.publish.mix(ch_inputs.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-            | groupTuple
-            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | annotate_publish
+      // annotate
+      ch_normalized.mix(ch_normalize.skip)
+        | branch {
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate/
+            skip: true
+          }
+        | set { ch_annotate }
 
-        // classify
-        ch_annotated.done
-            | classify
-            | multiMap { it -> done: publish: it }
-            | set { ch_classified }
+      ch_annotate.take
+          | annotate
+          | multiMap { it -> done: publish: it }
+          | set { ch_annotated }
 
-        ch_classified.publish.mix(ch_inputs.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-            | groupTuple
-            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | classify_publish
+      ch_annotated.publish.mix(ch_inputs.empty)
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | annotate_publish
+
+      // classify
+      ch_annotated.done.mix(ch_annotate.skip)
+        | branch {
+            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify/
+            skip: true
+          }
+        | set { ch_classify }
+
+      ch_classify.take
+        | classify
+        | multiMap { it -> done: publish: it }
+        | set { ch_classified }
+
+      ch_classified.publish.mix(ch_inputs.empty)
+        | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+        | groupTuple
+        | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+        | classify_publish
 
         // filter
-        ch_classified.done
-            | filter
-            | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: nrRecords(vcfStats) > 0
-                empty: true
-              }
-            | set { ch_filtered }
+        ch_classified.done.mix(ch_classify.skip)
+          | branch {
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter/
+              skip: true
+            }
+          | set { ch_filter }
 
-        ch_filtered.process
+        ch_filter.take
+          | filter
+          | branch { meta, vcf, vcfIndex, vcfStats ->
+              process: nrRecords(vcfStats) > 0
+              empty: true
+            }
+          | set { ch_filtered }
+
+        // inheritance
+        ch_filtered.process.mix(ch_filter.skip)
+          | branch {
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance/
+              skip: true
+            }
+          | set { ch_inheritance }
+
+        ch_inheritance.take
             | inheritance
             | set { ch_inheritanced }
 
         // classify samples
-        ch_inheritanced
-            | classify_samples
-            | multiMap { it -> done: publish: it }
-            | set { ch_classified_samples }
+        ch_inheritanced.mix(ch_inheritance.skip)
+          | branch {
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples/
+              skip: true
+            }
+          | set { ch_classify_samples }
+
+        ch_classify_samples.take
+          | classify_samples
+          | multiMap { it -> done: publish: it }
+          | set { ch_classified_samples }
 
         ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-            | groupTuple
-            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | classify_samples_publish
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | classify_samples_publish
 
         // filter samples
-        ch_classified_samples.done
-            | filter_samples
-            | branch { meta, vcf, vcfIndex, vcfStats ->
-                process: nrRecords(vcfStats) > 0
-                empty: true
-              }
-            | set { ch_filtered_samples }
+        ch_classified_samples.done.mix(ch_classify_samples.skip)
+          | branch {
+              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/
+              skip: true
+            }
+          | set { ch_filter_samples }
 
-        ch_filtered_samples.process.mix(ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
-            | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-            | groupTuple
-            | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-            | branch { meta, vcfs, vcfIndexes ->
-                concat: vcfs.size() > 1
-                ready: true
-              }
-            | set { ch_outputs }
+        ch_filter_samples.take
+          | filter_samples
+          | branch { meta, vcf, vcfIndex, vcfStats ->
+              process: nrRecords(vcfStats) > 0
+              empty: true
+            }
+          | set { ch_filtered_samples }
 
-          ch_outputs.concat
+        // concat
+        ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+          | groupTuple
+          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+          | branch { meta, vcfs, vcfIndexes ->
+              concat: vcfs.size() > 1
+              ready: true
+            }
+          | set { ch_outputs }
+
+        ch_outputs.concat
             | concat
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->
@@ -291,6 +343,9 @@ def validateParams(sampleSheet) {
   // general
   def gvcfMergePreset = params.vcf.gvcf_merge_preset
   if (!(gvcfMergePreset ==~ /gatk|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
+
+  def start = params.vcf.start
+  if (!start.isEmpty() && !(start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/))  exit 1, "parameter 'vcf.start' value '${start}' is invalid. allowed values are [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]"
 
   // annotate
   def annotSvCacheDir = params.vcf.annotate.annotsv_cache_dir
