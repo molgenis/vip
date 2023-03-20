@@ -65,18 +65,19 @@ The VIP workflow can be started from 3 different starting point: fastq, cram, of
 for a schematic represeantation of the workflow [click here](./docs/vip_workflow.png).
 
 ### Input
-| column            | type            | required |                                        |
-|-------------------|-----------------|----------|----------------------------------------|
-| ``project_id``    | ``string``      |          | default:vip                            |
-| ``family_id``     | ``string``      |          | default:vip_fam&#60;index&#62;         |
-| ``individual_id`` | ``string``      | yes      |                                        |
-| ``paternal_id``   | ``string``      |          |                                        |
-| ``maternal_id``   | ``string``      |          |                                        |
-| ``sex``           | ``enum``        |          | values: [male,female]                  |
-| ``affected``      | ``boolean``     |          |                                        |
-| ``proband``       | ``boolean``     |          |                                        |
-| ``hpo_ids``       | ``string list`` |          | regex: /HP:\d{7}/                      |
-| ``assembly``      | ``enum``        |          | default:GRCh38 values: [GRCh37,GRCh38] |
+| column                | type            | required |                                        |
+|-----------------------|-----------------|----------|----------------------------------------|
+| ``project_id``        | ``string``      |          | default:vip                            |
+| ``family_id``         | ``string``      |          | default:vip_fam&#60;index&#62;         |
+| ``individual_id``     | ``string``      | yes      |                                        |
+| ``paternal_id``       | ``string``      |          |                                        |
+| ``maternal_id``       | ``string``      |          |                                        |
+| ``sex``               | ``enum``        |          | values: [male,female]                  |
+| ``affected``          | ``boolean``     |          |                                        |
+| ``proband``           | ``boolean``     |          |                                        |
+| ``hpo_ids``           | ``string list`` |          | regex: /HP:\d{7}/                      |
+| ``assembly``          | ``enum``        |          | default:GRCh38 values: [GRCh37,GRCh38] |
+| ``sequencing_method`` | ``enum``        |          | default:WGS values: [WES,WGS]          |
 
 #### Input VCF
 | column  | type     | required |                                                               |

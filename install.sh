@@ -72,6 +72,7 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh37/vkgl_consensus_20230101.tsv")
+    files+=("GRCh37/human_hs37d5.trf.bed")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -95,6 +96,7 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20230101.tsv")
+    files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
   fi
 
   for file in "${files[@]}"; do
@@ -192,6 +194,8 @@ download_images() {
   files+=("vcf-inheritance-matcher-2.1.4.sif")
   files+=("vcf-report-5.2.0.sif")
   files+=("vep-107.0.sif")
+  files+=("manta-1.6.0.sif")
+  files+=("sniffles2-2.0.7.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
