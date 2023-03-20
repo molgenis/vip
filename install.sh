@@ -191,7 +191,7 @@ download_images() {
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.16.sif")
   files+=("vcf-decision-tree-3.5.1.sif")
-  files+=("vcf-inheritance-matcher-2.1.4.sif")
+  files+=("vcf-inheritance-matcher-2.1.5.sif")
   files+=("vcf-report-5.2.1.sif")
   files+=("vep-107.0.sif")
   files+=("manta-1.6.0.sif")
