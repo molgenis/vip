@@ -27,3 +27,6 @@ nextflow-*-all
 
 # vip
 /vip
+
+# mkdocs
+/site

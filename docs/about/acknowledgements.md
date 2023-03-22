@@ -1,0 +1,20 @@
+# Acknowledgements
+Standing on the shoulders of giants. This project could not have possible without the existence of many other tools and resources. Among them we would like to thank the people behind the following projects:
+
+- [Ensembl Variant Effect Predictor (VEP)](https://grch38.ensembl.org/info/docs/tools/vep/index.html)
+- [Nextflow](https://www.nextflow.io/)
+- [AnnotSV](https://lbgi.fr/AnnotSV/)
+- [Illumina Manta](https://github.com/Illumina/manta)
+- [Illumina SpliceAI](https://github.com/Illumina/SpliceAI)
+- [igv.js](https://github.com/igvteam/igv.js)
+- [Clair3](https://github.com/HKU-BAL/Clair3)
+- [Minimap2](https://github.com/lh3/minimap2)
+- [GLnexus](https://github.com/dnanexus-rnd/GLnexus)
+- [Samtools formats and tools](http://samtools.github.io/)
+- [Human Phenotype Ontology Consortium](https://hpo.jax.org/)
+- [Clinical Genomic Database](https://www.research.nhgri.nih.gov/CGD)
+- [gnomAD](https://gnomad.broadinstitute.org/)
+- [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar)
+- [VKGL](https://vkgl.molgeniscloud.org/)
+- [phyloP](http://compgen.cshl.edu/phast)
+- [Sniffles2](https://github.com/fritzsedlazeck/Sniffles)
