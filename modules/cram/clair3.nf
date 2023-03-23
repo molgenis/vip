@@ -9,7 +9,7 @@ process clair3_call {
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
-    vcfOut="${meta.sample.individual_id}_${meta.chunk.index}.vcf.gz"
+    vcfOut="${meta.sample.individual_id}_${meta.chunk.index}.g.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
@@ -27,7 +27,7 @@ process clair3_call_publish {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex)
   shell:
-    vcfOut="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}_small_variants.vcf.gz"
+    vcfOut="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}_small_variants.g.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
 
     template 'publish.sh'
