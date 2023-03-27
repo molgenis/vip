@@ -26,11 +26,11 @@ process manta_call_publish {
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
-    tuple val(meta), path(vcfs), path(vcfIndexes)
+    tuple val(project_id), path(vcfs), path(vcfIndexes)
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex)
+    tuple path(vcfOut), path(vcfOutIndex)
   shell:
-    vcfOut="${meta.sample.project_id}_sv.vcf.gz"
+    vcfOut="${project_id}_sv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
 
     template 'publish.sh'

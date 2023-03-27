@@ -2,6 +2,8 @@
 set -euo pipefail
 
 convert () {
+  exit 1
+  
     ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "!{vcf}"
 }
 

@@ -85,35 +85,43 @@ workflow cram {
           [groupKey(key, size), meta]
         }
       | groupTuple
-      //sniffles2_combined_call takes meta, project_id, chunk, assembly, snf[]
-      | map{ key, group -> [key, group, key[0], key[1], key[2], group.sample.snf] }//FIXME: get arguments from key
+      | map{ key, group -> [key, group, group.sample.snf] }
       | sniffles2_combined_call
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_sniffles_combined }
 
     ch_vcf_chunked_sv_manta.publish
-      /**| map { key, metaList -> 
-          def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-          def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
-          [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+      //project_id: key[0], chunk: key[1]
+      | map { key, meta, vcf, vcfIndex, vcfStats ->
+          [groupKey(key[0], key[1].total), [vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk: key[1]]]
         }
-      | manta_call_publish**/
+      | groupTuple
+      | map { key, metaList -> 
+          def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+          [key, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+        }
+      | manta_call_publish
 
-      ch_vcf_chunked_sv_sniffles_combined.publish
-      /**| map { key, metaList -> 
-          def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-          def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
-          [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+    ch_vcf_chunked_sv_sniffles_combined.publish
+      | map { key, meta, vcf, vcfIndex, vcfStats ->
+          [groupKey(key[0], key[1].total), [vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk: key[1]]]
         }
-      | sniffles_call_publish**/
+      | groupTuple
+      | map { key, metaList -> 
+          def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+          [key, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+        }
+      | sniffles_call_publish
     
     ch_vcf_chunked_snvs.publish
-      /**| map { key, metaList -> 
+      | map { meta, vcf, vcfCsi, vcfStats -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
+      | groupTuple
+      | map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
-      | clair3_call_publish**/
+      | clair3_call_publish
 
     ch_vcf_chunked_snvs.done
     | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
