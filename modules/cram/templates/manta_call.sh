@@ -11,7 +11,10 @@ config_manta () {
     local args=()
     args+=("/opt/manta/bin/configManta.py")
     args+=("--callRegions" $(realpath "!{bedGz}"))
-    args+=("--bam" "!{cram}")
+    for cram in !{crams}
+    do
+      args+=("--bam" $cram)
+    done
     args+=("--referenceFasta" "!{reference}")
     args+=("--runDir" "$(realpath .)")
     if [ "!{sequencingMethod}" == "WES" ]; then
@@ -27,17 +30,8 @@ run_manta () {
     args+=("-j" "!{task.cpus}")
 
     ${CMD_MANTA} "${args[@]}"
-}
 
-reheader_manta_output () {
-  ${CMD_BCFTOOLS} query --list-samples "$(realpath .)/results/variants/diploidSV.vcf.gz" > samples.tsv
-  local nr_samples=$(wc -l < samples.tsv)
-  if [ "$nr_samples" -gt 1 ]; then
-    echo -e "Unexpected number of samples in manta ouput, ${nr_samples} instead of 1."
-	  exit 1;
-  fi
-  echo "!{meta.sample.individual_id}" > sample_names.tsv
-  ${CMD_BCFTOOLS} reheader --samples sample_names.tsv --output "!{vcfOut}" "$(realpath .)/results/variants/diploidSV.vcf.gz"
+    mv "$(realpath .)/results/variants/diploidSV.vcf.gz" "!{vcfOut}"
 }
 
 stats () {
@@ -49,7 +43,6 @@ main() {
     create_bed
     config_manta
     run_manta
-    reheader_manta_output
     stats
 }
 

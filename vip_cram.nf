@@ -4,7 +4,7 @@ include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
-include { samtools_index } from './modules/cram/samtools'
+include { samtools_index; samtools_addreplacerg } from './modules/cram/samtools'
 include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
 include { sniffles2_call; sniffles2_combined_call; sniffles_call_publish } from './modules/cram/sniffles2'
@@ -54,7 +54,18 @@ workflow cram {
       | set { ch_cram_chunked_sv }
 
     ch_cram_chunked_sv.manta
-      | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
+      |map {meta -> [meta, meta.sample.cram]}
+      |samtools_addreplacerg //to make Manta output the correct sample names
+      |map { meta, cram, cramIndex -> [*:meta, sample: [*:meta.sample, manta_cram: cram, manta_cram_index: cramIndex]]}
+      |map { meta ->
+          def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
+          def size = meta.sampleSheet.count { sample ->
+            sample.project_id == meta.sample.project_id
+          }
+          [groupKey(key, size), meta]
+        }
+      | groupTuple
+      | map { key, group -> [key, group, group.sample.manta_cram, group.sample.manta_cram_index] }
       | manta_call
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_manta }
@@ -65,7 +76,7 @@ workflow cram {
       | map { meta, snf -> [*:meta, sample: [*:meta.sample, snf: snf] ] }
       | set { ch_vcf_chunked_sv_sniffles }
 
-      ch_vcf_chunked_sv_sniffles
+    ch_vcf_chunked_sv_sniffles
       |map { meta ->
           def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
           def size = meta.sampleSheet.count { sample ->
@@ -75,71 +86,58 @@ workflow cram {
         }
       | groupTuple
       //sniffles2_combined_call takes meta, project_id, chunk, assembly, snf[]
-      | map{ key, group -> [group, key[0], key[1], key[2], group.sample.snf] }
+      | map{ key, group -> [key, group, key[0], key[1], key[2], group.sample.snf] }//FIXME: get arguments from key
       | sniffles2_combined_call
-      //FIXME: map to keyed map
+      | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_sniffles_combined }
-    /**
+
     ch_vcf_chunked_sv_manta.publish
-      | map { meta, vcf, vcfCsi, vcfStats -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
-      | groupTuple
-      | map { key, metaList -> 
+      /**| map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
-      | manta_call_publish
+      | manta_call_publish**/
 
-      /**ch_vcf_chunked_sv_sniffles.publish
-      | map { meta, vcf, vcfCsi, vcfStats -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
-      | groupTuple
-      | map { key, metaList -> 
+      ch_vcf_chunked_sv_sniffles_combined.publish
+      /**| map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
-      | sniffles_call_publish
-
-    ch_vcf_chunked_sv_manta.done.mix(ch_vcf_chunked_sv_sniffles_combined)//FIXME
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
-      | map { meta -> [meta.sample.cram, meta.chunk.index, meta.sample.project_id, meta] }
-      | set { ch_vcf_chunked_svs } 
-
+      | sniffles_call_publish**/
+    
     ch_vcf_chunked_snvs.publish
-      | map { meta, vcf, vcfCsi, vcfStats -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]] }
-      | groupTuple
-      | map { key, metaList -> 
+      /**| map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
-      | clair3_call_publish
-    **/
+      | clair3_call_publish**/
+
     ch_vcf_chunked_snvs.done
     | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
     | map { meta ->
-        def key = [meta.sample.project_id, meta.chunk]
+        def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
         def size = meta.sampleSheet.count { sample ->
           sample.project_id == meta.sample.project_id
         }
         [groupKey(key, size), meta]
       }
     | groupTuple
-    | map { key, group -> [meta: group, gVcfs:group.sample.vcf, gVcfIndexes: group.sample.vcf_index] }
+    | map { key, group -> [key: key, meta: group, gVcfs:group.sample.vcf, gVcfIndexes: group.sample.vcf_index] }
     | merge_gvcf
-    //FIXME: map to keyed map
     | set { ch_vcf_chunked_snvs_merged }
 
-    ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_sv_sniffles_combined)
-    | view
-    /**
-      | groupTuple(by:[0,1,2], size:2)
-      //grouped[0], [1] and [2] are the cram,index and project_id; the fields we use to group on. Size should be 2: a sv file and a snv file.
-      | map { grouped -> [grouped[3], [grouped[3][0].sample.vcf, grouped[3][1].sample.vcf],[grouped[3][0].sample.vcf_index, grouped[3][1].sample.vcf_index]]}
-      | concat_vcf
-      //both metadata's in the group are the same, except for the unmerged vcf, we pick the first for the metadata to continue with
-      | map { nested_meta, vcf, vcfIndex, vcfStats -> [*:nested_meta[0], sample: [*:nested_meta[0].sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]] }
-      | vcf**/
+    ch_vcf_chunked_sv_sniffles_combined.done.mix(ch_vcf_chunked_sv_manta.done)
+    | set { ch_vcf_chunked_svs_done }
+
+    ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_svs_done)
+    | groupTuple(by:[0], size:2)
+    | map{ group -> [meta: group, vcf: group[2], vcf_index: group[3]]}
+    | concat_vcf
+    | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
+    | vcf
 }
 
 workflow {

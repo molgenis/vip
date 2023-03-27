@@ -6,7 +6,12 @@ merge () {
   args+=("--dir" "glnexus")
   args+=("--config" "!{config}")
   args+=("--threads" "!{task.cpus}")
-  ${CMD_GLNEXUS} "${args[@]}" !{gVcfs} | ${CMD_BCFTOOLS} view --output-type z --output-file "!{vcfOut}" --no-version --threads "!{task.cpus}"
+  ${CMD_GLNEXUS} "${args[@]}" !{gVcfs} | ${CMD_BCFTOOLS} view --output-type z --output-file "unordered_!{vcfOut}" --no-version --threads "!{task.cpus}"
+}
+
+order_samples () {
+  ${CMD_BCFTOOLS} query -l "unordered_!{vcfOut}" | sort > samples.txt
+  ${CMD_BCFTOOLS} view -O z -S samples.txt "unordered_!{vcfOut}" > !{vcfOut}
 }
 
 index () {
@@ -16,6 +21,7 @@ index () {
 
 main () {
   merge
+  order_samples
   index
 }
 

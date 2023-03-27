@@ -7,12 +7,19 @@ concat () {
   args+=("--allow-overlaps")
   args+=("--remove-duplicates")
   args+=("--output-type" "z")
-  args+=("--output" "!{vcfOut}")
+  args+=("--output" "unsorted_!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
-  args+=(!{vcfs})
+  for vcf in !{vcfs}
+  do
+    args+=("sorted_${vcf}")
+  done
 
   ${CMD_BCFTOOLS} "${args[@]}"
+}
+
+bcftools_sort () {
+  ${CMD_BCFTOOLS} sort -O z "unsorted_!{vcfOut}" --output "!{vcfOut}"
 }
 
 index () {
@@ -20,8 +27,19 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+order_samples () {
+  for vcf in !{vcfs}
+  do
+    ${CMD_BCFTOOLS} query -l ${vcf} | sort > sorted_samples.txt
+    ${CMD_BCFTOOLS} view -O z -S "sorted_samples.txt" ${vcf} > "sorted_${vcf}" 
+    ${CMD_BCFTOOLS} index --csi --output "sorted_${vcf}.csi" --threads "!{task.cpus}" "sorted_${vcf}"
+  done
+}
+
 main() {    
+  order_samples
   concat
+  bcftools_sort
   index
 }
 

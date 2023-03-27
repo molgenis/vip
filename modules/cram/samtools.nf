@@ -8,3 +8,16 @@ process samtools_index {
 
     template 'samtools_index.sh'
 }
+
+process samtools_addreplacerg
+ {
+  input:
+    tuple val(meta), path(cram)
+  output:
+    tuple val(meta), path(cramOut), path(cramIndex)
+  shell:
+    cramOut="rg_added_${cram}"
+    cramIndex="rg_added_${cram}.crai"
+
+    template 'samtools_addreplacerg.sh'
+}

@@ -2,12 +2,15 @@ include { basename } from './utils'
 
 process concat_vcf {  
   input:
-    tuple val(meta), path(vcfs), path(vcfIndexes)
+    tuple val(group), path(vcfs), path(vcfIndexes)
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    basename = basename(meta[0])
-    vcfOut = "${basename}_concatted_${meta[0].sample.individual_id}.vcf.gz"
+    key = group[0]
+    meta = group[1][0]
+    
+    basename = basename(key[0],key[1])
+    vcfOut = "${basename}_concatted_sorted.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     

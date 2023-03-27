@@ -3,9 +3,9 @@ include { basename } from './utils'
 // TODO --bed seems to be broken: https://github.com/dnanexus-rnd/GLnexus/issues/279
 process merge_gvcf {
   input:
-    tuple val(meta), path(gVcfs), path(gVcfIndexes)
+    tuple val(key), val(meta), path(gVcfs), path(gVcfIndexes)
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+    tuple val(key), val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     basename = basename(meta[0])
     vcfOut = "${basename}_merged.vcf.gz"

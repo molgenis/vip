@@ -34,9 +34,9 @@ process sniffles2_call {
 
 process sniffles2_combined_call {
   input:
-    tuple val(meta), val(project_id), val(chunk), val(assembly), path(snfs)
+    tuple val(key), val(meta), val(project_id), val(chunk), val(assembly), path(snfs)
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+    tuple val(key), val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     reference = params[assembly].reference.fasta
     tandemRepeatAnnotations = params.cram.sniffles2[assembly].tandem_repeat_annotations
