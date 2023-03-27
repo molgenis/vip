@@ -17,7 +17,7 @@ process samtools_addreplacerg
     tuple val(meta), path(cramOut), path(cramIndex)
   shell:
     cramOut="rg_added_${cram}"
-    cramIndex="rg_added_${cram}.crai"
+    cramIndex=cram.name.endsWith('.cram') ? "rg_added_${cram}.crai" : "rg_added_${cram}.bai"
 
     template 'samtools_addreplacerg.sh'
 }
