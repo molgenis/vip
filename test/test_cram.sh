@@ -68,7 +68,7 @@ test_cram_multiproject () {
 
 test_cram_trio () {
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
-  ln -s ${TEST_RESOURCES_DIR}/test.cram ${TEST_RESOURCES_DIR}/test2.cram
+  ln -sf ${TEST_RESOURCES_DIR}/test1.cram ${TEST_RESOURCES_DIR}/test2.cram
 
   local args=()
   args+=("--workflow" "cram")
