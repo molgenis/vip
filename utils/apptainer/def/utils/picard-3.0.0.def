@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.17.2.sif
+From: sif/build/alpine-3.15.0.sif
 
 %help
     A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats..
