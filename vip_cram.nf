@@ -56,13 +56,12 @@ workflow cram {
     ch_cram_chunked_sv.manta
       |map {meta -> [meta, meta.sample.cram]}
       |samtools_addreplacerg //to make Manta output the correct sample names
-      |map { meta, cram, cramIndex -> [*:meta, sample: [*:meta.sample, manta_cram: cram, manta_cram_index: cramIndex]]}
-      |map { meta ->
+      |map { meta, cram, cramIndex ->
           def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
           def size = meta.sampleSheet.count { sample ->
             sample.project_id == meta.sample.project_id
           }
-          [groupKey(key, size), meta]
+          [groupKey(key, size), [*:meta, sample: [*:meta.sample, manta_cram: cram, manta_cram_index: cramIndex]]]
         }
       | groupTuple
       | map { key, group -> [key, group, group.sample.manta_cram, group.sample.manta_cram_index] }
@@ -124,13 +123,12 @@ workflow cram {
       | clair3_call_publish
 
     ch_vcf_chunked_snvs.done
-    | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ] }
-    | map { meta ->
+    | map { meta, vcf, vcfIndex, vcfStats ->
         def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
         def size = meta.sampleSheet.count { sample ->
           sample.project_id == meta.sample.project_id
         }
-        [groupKey(key, size), meta]
+        [groupKey(key, size), [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ]]
       }
     | groupTuple
     | map { key, group -> [key: key, meta: group, gVcfs:group.sample.vcf, gVcfIndexes: group.sample.vcf_index] }
