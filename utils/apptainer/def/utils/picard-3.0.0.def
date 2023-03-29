@@ -1,14 +1,11 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.15.0.sif
+From: sif/build/openjdk-17.sif
 
 %help
     A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats..
     Usage: java -jar /opt/picard/lib/picard.jar
 
-%post
-    # Adding testing branch to install openjdk18-jre-headless
-    echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-    
+%post    
     version_major=3
     version_minor=0
     version_patch=0
@@ -16,7 +13,6 @@ From: sif/build/alpine-3.15.0.sif
     # install
     apk update
     apk --no-cache add gcompat
-	apk --no-cache add openjdk18-jre-headless
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/picard/lib
