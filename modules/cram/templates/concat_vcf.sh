@@ -19,7 +19,7 @@ concat () {
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} sort -O z "unsorted_!{vcfOut}" --output "!{vcfOut}"
+  ${CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
 }
 
 index () {
@@ -28,10 +28,12 @@ index () {
 }
 
 order_samples () {
-  for vcf in !{vcfs}
+  local -a vcf_array=(!{vcfs})
+  for (( i=0; i<${${#vcf_array[@]}}; i++ ));
   do
-    ${CMD_BCFTOOLS} query -l ${vcf} | sort > sorted_samples.txt
-    ${CMD_BCFTOOLS} view -O z -S "sorted_samples.txt" ${vcf} > "sorted_${vcf}" 
+    vcf=${vcf_array[$i]}
+    ${CMD_BCFTOOLS} query --list-samples "${vcf}" | sort > sorted_samples.txt
+    ${CMD_BCFTOOLS} view --output-type z --samples-file "sorted_samples.txt" "${vcf}" > "sorted_${vcf}" 
     ${CMD_BCFTOOLS} index --csi --output "sorted_${vcf}.csi" --threads "!{task.cpus}" "sorted_${vcf}"
   done
 }

@@ -9,6 +9,8 @@ process samtools_index {
     template 'samtools_index.sh'
 }
 
+//add sample name to cram by replacing the read group:
+//to make Manta output the correct sample names
 process samtools_addreplacerg
  {
   input:

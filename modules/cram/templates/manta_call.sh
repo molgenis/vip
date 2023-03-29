@@ -11,9 +11,11 @@ config_manta () {
     local args=()
     args+=("/opt/manta/bin/configManta.py")
     args+=("--callRegions" $(realpath "!{bedGz}"))
-    for cram in !{crams}
+    local -a cram_array=(!{crams})
+    for (( i=0; i<${${#cram_array[@]}}; i++ ));
     do
-      args+=("--bam" $cram)
+      cram=${cram_array[$i]}
+      args+=("--bam" "$cram")
     done
     args+=("--referenceFasta" "!{reference}")
     args+=("--runDir" "$(realpath .)")

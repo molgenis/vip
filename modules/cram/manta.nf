@@ -1,6 +1,6 @@
 process manta_call {
   input:
-    tuple val(key), val(meta), path(crams), path(cramCrai)
+    tuple val(key), val(meta), path(crams), path(cramCrais)
   output:
     tuple val(key), val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
