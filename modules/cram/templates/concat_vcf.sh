@@ -29,7 +29,7 @@ index () {
 
 order_samples () {
   local -a vcf_array=(!{vcfs})
-  for (( i=0; i<${${#vcf_array[@]}}; i++ ));
+  for (( i=0; i<${#vcf_array[@]}; i++ ));
   do
     vcf=${vcf_array[$i]}
     ${CMD_BCFTOOLS} query --list-samples "${vcf}" | sort > sorted_samples.txt
