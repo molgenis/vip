@@ -1,0 +1,42 @@
+site_name: Variant Interpretation Pipeline
+site_url: https://example.com/
+repo_url: https://github.com/molgenis/vip/
+nav:
+  - 'Home':
+    - 'Introduction': 'index.md'
+    - 'Key features': 'home/key_features.md'
+  - 'Get Started':
+    - 'Requirements': 'get_started/requirements.md'
+    - 'Installation': 'get_started/installation.md'
+    - 'Start running': 'get_started/start_running.md'
+  - 'Usage':
+      - 'Command-line options': 'usage/command-line-options.md'
+      - 'Workflow': 'usage/workflow.md'
+      - 'Input': 'usage/input.md'
+      - 'Output': 'usage/output.md'
+      - 'Config': 'usage/config.md'
+  - 'Examples':
+      - 'Nanopore': 'examples/nanopore.md'
+      - 'Multi-project': 'examples/multi-project.md'
+      - 'Reanalysis': 'examples/reanalysis.md'
+  - 'Advanced':
+      - 'Classification trees': 'advanced/classification_trees.md'
+      - 'Report templates': 'advanced/report_templates.md'
+  - 'Help':
+       - 'Issues': 'help/issues.md'
+       - 'Frequently asked questions': 'help/frequently_asked_questions.md'
+  - 'About':
+    - 'License': 'about/license.md'
+    - 'Acknowledgements': 'about/acknowledgements.md'
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: True
+plugins:
+  - search
+  - mermaid2
+theme: readthedocs
+strict: true
+extra_css: [custom.css]
+extra_javascript: [js/mermaid.min.js]
+copyright: Copyright © 2023 University Medical Center Groningen All rights reserved
