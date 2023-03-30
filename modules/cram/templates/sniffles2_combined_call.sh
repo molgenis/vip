@@ -7,7 +7,6 @@ call_structural_variants () {
     args+=("--reference" "!{reference}")
     args+=("--tandem-repeats" "!{tandemRepeatAnnotations}")
     args+=("--vcf" "!{vcfOut}")
-    args+=("--sample-id" "!{meta.sample.individual_id}")
     args+=("--threads" "!{task.cpus}")
 
     ${CMD_SNIFFLES2} "${args[@]}"

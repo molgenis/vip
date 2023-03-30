@@ -34,20 +34,16 @@ process sniffles2_call {
 
 process sniffles2_combined_call {
   input:
-    tuple val(key), val(meta), path(snfs)
+    tuple val(meta), path(snfs)
   output:
-    tuple val(key), val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    project_id = key[0]
-    chunk = key[1]
-    assembly = key[2]
-
-    reference = params[assembly].reference.fasta
-    tandemRepeatAnnotations = params.cram.sniffles2[assembly].tandem_repeat_annotations
-    bed = "${project_id}_${chunk.index}.bed"
-    bedContent = chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    reference = params[meta.assembly].reference.fasta
+    tandemRepeatAnnotations = params.cram.sniffles2[meta.assembly].tandem_repeat_annotations
+    bed = "${meta.project_id}_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     
-    vcfOut="${project_id}_${chunk.index}_long_read_sv.vcf.gz"
+    vcfOut="${meta.project_id}_${meta.chunk.index}_long_read_sv.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
     
@@ -58,11 +54,11 @@ process sniffles_call_publish {
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
-    tuple val(project_id), path(vcfs), path(vcfIndexes)
+    tuple val(meta), path(vcfs), path(vcfIndexes)
   output:
     tuple path(vcfOut), path(vcfOutIndex)
   shell:
-    vcfOut="${project_id}_long_read_sv.vcf.gz"
+    vcfOut="${meta.project_id}_long_read_sv.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 

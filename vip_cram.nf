@@ -57,14 +57,14 @@ workflow cram {
       |map {meta -> [meta, meta.sample.cram]}
       |samtools_addreplacerg //to make Manta output the correct sample names
       |map { meta, cram, cramIndex ->
-          def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
+          def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
           def size = meta.sampleSheet.count { sample ->
             sample.project_id == meta.sample.project_id
           }
           [groupKey(key, size), [*:meta, sample: [*:meta.sample, manta_cram: cram, manta_cram_index: cramIndex]]]
         }
       | groupTuple
-      | map { key, group -> [key, group, group.sample.manta_cram, group.sample.manta_cram_index] }
+      | map{ key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.sample.manta_cram, group.sample.manta_cram_index] }
       | manta_call
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_manta }
@@ -84,31 +84,32 @@ workflow cram {
           [groupKey(key, size), meta]
         }
       | groupTuple
-      | map{ key, group -> [key, group, group.sample.snf] }
+      | map{ key, group -> [[project_id:key[0],chunk:key[1],assembly:key[2], samples:group], group.sample.snf] }
       | sniffles2_combined_call
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_sniffles_combined }
 
     ch_vcf_chunked_sv_manta.publish
-      //project_id: key[0], chunk: key[1]
-      | map { key, meta, vcf, vcfIndex, vcfStats ->
-          [groupKey(key[0], key[1].total), [vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk: key[1]]]
+      | map {group, vcf, vcfIndex, vcfStats ->
+          [groupKey(group.project_id, group.chunk.total), [group:group, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk:group.chunk]]
         }
       | groupTuple
       | map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-          [key, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+          def meta = metaList.first().group.findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+          [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
       | manta_call_publish
 
     ch_vcf_chunked_sv_sniffles_combined.publish
-      | map { key, meta, vcf, vcfIndex, vcfStats ->
-          [groupKey(key[0], key[1].total), [vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk: key[1]]]
+      | map {group, vcf, vcfIndex, vcfStats ->
+          [groupKey(group.project_id, group.chunk.total), [group:group, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, chunk:group.chunk]]
         }
       | groupTuple
       | map { key, metaList -> 
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-          [key, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+          def meta = metaList.first().group.findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+          [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
       | sniffles_call_publish
     
@@ -124,14 +125,14 @@ workflow cram {
 
     ch_vcf_chunked_snvs.done
     | map { meta, vcf, vcfIndex, vcfStats ->
-        def key = [meta.sample.project_id, meta.chunk, meta.sample.assembly]
+        def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
         def size = meta.sampleSheet.count { sample ->
           sample.project_id == meta.sample.project_id
         }
         [groupKey(key, size), [*:meta, sample: [*:meta.sample, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] ]]
       }
     | groupTuple
-    | map { key, group -> [key: key, meta: group, gVcfs:group.sample.vcf, gVcfIndexes: group.sample.vcf_index] }
+    | map { key, group -> [meta:[project_id:key.project_id, chunk:key.chunk, samples:group], gVcfs:group.sample.vcf, gVcfIndexes: group.sample.vcf_index] }
     | merge_gvcf
     | set { ch_vcf_chunked_snvs_merged }
 
@@ -139,10 +140,11 @@ workflow cram {
     | set { ch_vcf_chunked_svs_done }
 
     ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_svs_done)
+    | map { meta, vcf, vcfIndex, vcfStats -> [groupKey([project_id: meta.project_id, chunk: meta.chunk],2),[*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]]}
     | groupTuple(by:[0], size:2)
-    | map{ group -> [meta: group, vcf: group[2], vcf_index: group[3]]}
+    | map{ key, group -> [meta: [*:group, project_id: key.project_id, chunk: key.chunk], vcfs: group.vcf, vcf_indeces: group.vcf_index]}
     | concat_vcf
-    | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
+    | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.samples.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
     | vcf
 }
 
