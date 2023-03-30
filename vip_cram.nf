@@ -10,7 +10,7 @@ include { manta_call; manta_call_publish } from './modules/cram/manta'
 include { sniffles2_call; sniffles2_combined_call; sniffles_call_publish } from './modules/cram/sniffles2'
 include { vcf } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
-include { merge_gvcf } from './modules/cram/merge_gvcf'
+include { merge_gvcf } from './modules/vcf/merge_gvcf'
 
 workflow cram {
   take: meta
