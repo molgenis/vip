@@ -1,9 +1,10 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
 # Retrieve directory containing the collection of scripts (allows using other scripts with & without Slurm).
 if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
 SCRIPT_NAME="$(basename "$0")"
+set -u
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} -f
@@ -82,7 +83,7 @@ main() {
   images+=("build/openjdk-17")
   images+=("bcftools-1.14")
   images+=("annotsv-3.2.3")
-  images+=("capice-5.0.0")
+  images+=("capice-5.1.0")
   images+=("minimap2-2.24")
   images+=("samtools-1.16")
   images+=("vcf-decision-tree-3.5.2")
