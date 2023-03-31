@@ -5,18 +5,19 @@ From: sif/build/openjdk-17.sif
     A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats..
     Usage: java -jar /opt/picard/lib/picard.jar
 
-%post
-    version_major=2
-    version_minor=26
-    version_patch=11
+%post    
+    version_major=3
+    version_minor=0
+    version_patch=0
 
     # install
     apk update
+    apk --no-cache add gcompat
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/picard/lib
     curl -Ls -o /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
-    echo "d2cc20828d5ae60131a63dd581a58a4ff4d877badf48505ca91ac05119d33e33  /opt/picard/lib/picard.jar" | sha256sum -c
+    echo "0d5e28ab301fad3b02030d01923888129ba82c5f722ac5ccb2d418ab76ac5499  /opt/picard/lib/picard.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
