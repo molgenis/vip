@@ -8,9 +8,10 @@ concat () {
   args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
-  for vcf in !{vcfs}
+  local -a vcf_array=(!{vcfs})
+  for (( i=0; i<${#vcf_array[@]}; i++ ));
   do
-    args+=("sorted_${vcf}")
+    args+=("sorted_${vcf_array[$i]}")
   done
 
   ${CMD_BCFTOOLS} "${args[@]}"
