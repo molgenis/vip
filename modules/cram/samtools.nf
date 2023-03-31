@@ -17,7 +17,11 @@ process samtools_addreplacerg
     tuple val(meta), path(cram)
   output:
     tuple val(meta), path(cramOut), path(cramIndex)
-  shell:
+  shell:    
+    reference = params[meta.sample.assembly].reference.fasta
+    bed = "${meta.sample.individual_id}_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+
     cramOut="rg_added_${cram}"
     cramIndex=cram.name.endsWith('.cram') ? "rg_added_${cram}.crai" : "rg_added_${cram}.bai"
 
