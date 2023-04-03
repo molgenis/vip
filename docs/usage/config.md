@@ -98,12 +98,14 @@ The following sections list all processes and their non-default configuration.
 ### CRAM
 | process                | configuration                 |
 |------------------------|-------------------------------|
+| samtools_addreplacerg  | *default*                     |
 | clair3_call            | cpus=4 memory='8GB' time='5h' |
 | clair3_call_publish    | *default*                     |
 | manta_call             | cpus=4 memory='8GB' time='5h' |
 | manta_call_publish     | *default*                     |
 | samtools_index         | *default*                     |
-| sniffles2_call         | *default*                     |
+| sniffles2_call         | cpus=4 memory='8GB' time='5h' |
+| sniffles2_combined_call| cpus=4 memory='8GB' time='5h' |
 | sniffles2_call_publish | *default*                     |
 
 ### VCF
