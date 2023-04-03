@@ -19,7 +19,7 @@ concat () {
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} sort add --no-version --threads "!{task.cpus}" --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
+  ${CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
 }
 
 index () {
