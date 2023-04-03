@@ -19,8 +19,7 @@ test_fastq_pacbio_hifi () {
   args+=("--profile" "local")
   args+=("--resume")
 
-  #if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
