@@ -16,7 +16,6 @@ test_fastq_pacbio_hifi () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--input" "${TEST_RESOURCES_DIR}/fastq_pacbio_hifi.tsv")
   args+=("--output" "${OUTPUT_DIR}")
-  args+=("--profile" "local")
   args+=("--resume")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
