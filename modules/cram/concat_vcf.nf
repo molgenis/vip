@@ -6,8 +6,8 @@ process concat_vcf {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    basename = basename(meta[0])
-    vcfOut = "${basename}_concatted_${meta[0].sample.individual_id}.vcf.gz"
+    basename = basename(meta.samples[0])
+    vcfOut = "${basename}_concatted_sorted.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     

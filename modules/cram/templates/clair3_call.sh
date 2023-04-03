@@ -23,12 +23,13 @@ call_small_variants () {
     args+=("--output=$(realpath .)")
     args+=("--sample_name=!{meta.sample.individual_id}")
     args+=("--longphase_for_phasing")
+    args+=("--gvcf")
 
     # Prevent Clair3 writing in home directory via samtools (https://www.htslib.org/doc/samtools.html#ENVIRONMENT_VARIABLES)
     XDG_CACHE_HOME=$(realpath .) ${CMD_CLAIR3} "${args[@]}"
 
     # Workaround for https://github.com/HKU-BAL/Clair3/issues/153
-    zcat "merge_output.vcf.gz" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{sub(/[RYSWKMBDHV]/, "N", $4) sub(/[RYSWKMBDHV]/, "N", $5)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}"
+    zcat "merge_output.gvcf.gz" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{sub(/[RYSWKMBDHV]/, "N", $4) sub(/[RYSWKMBDHV]/, "N", $5)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}"
 }
 
 index () {

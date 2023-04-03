@@ -66,6 +66,26 @@ test_cram_multiproject () {
   fi
 }
 
+test_cram_trio () {
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  ln -sf ${TEST_RESOURCES_DIR}/test1.cram ${TEST_RESOURCES_DIR}/test2.cram
+
+  local args=()
+  args+=("--workflow" "cram")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--input" "${TEST_RESOURCES_DIR}/cram_trio.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+    return 1
+  fi
+}
+
 run_tests () {
   before_all
 
@@ -82,6 +102,11 @@ run_tests () {
   TEST_ID="cram_multiproject"
   before_each
   test_cram_multiproject
+  after_each
+
+  TEST_ID="cram_trio"
+  before_each
+  test_cram_trio
   after_each
 
   after_all
