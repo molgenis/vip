@@ -22,7 +22,7 @@ create_cram_slice () {
 
 add_replace_read_group () {
   tab=$'\t';
-  ${CMD_SAMTOOLS} addreplacerg -r "@RG${tab}ID:!{meta.sample.individual_id}${tab}SM:!{meta.sample.individual_id}" -o "!{cramOut}" --threads !{task.cpus} !{cram.simpleName}_sliced.cram
+  ${CMD_SAMTOOLS} addreplacerg -r "@RG${tab}ID:!{meta.sample.individual_id}${tab}SM:!{meta.sample.individual_id}" -o "!{cramOut}" --threads "!{task.cpus}" "!{cram.simpleName}_sliced.cram"
 }
 
 index () {
