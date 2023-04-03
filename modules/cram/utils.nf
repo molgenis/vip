@@ -10,7 +10,3 @@ def findCramIndex(cram) {
 def basename(meta) {
   return meta.chunk && meta.chunk.total > 1 ? "${meta.sample.project_id}_chunk_${meta.chunk.index}" : meta.sample.project_id
 }
-
-def basename(project_id, chunk) {
-  return chunk && chunk.total > 1 ? "${project_id}_chunk_${chunk.index}" : project_id
-}
