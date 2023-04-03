@@ -6,12 +6,33 @@ SCRIPT_NAME="$(basename "$0")"
 
 source ${SCRIPT_DIR}/test_utils.sh
 
+test_fastq_pacbio_hifi () {
+  download_test_resource "m54238_180628_014238_s0_10000.Q20.fastq.gz"
+
+  echo -e "params { vcf.filter.classes = \"B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
+  local args=()
+  args+=("--workflow" "fastq")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--input" "${TEST_RESOURCES_DIR}/fastq_pacbio_hifi.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+    return 1
+  fi
+}
+
 test_fastq_nanopore () {
   download_test_resource "GM24385_1_s0_10000.fastq.gz"
   download_test_resource "GM24385_2_s0_10000.fastq.gz"
   download_test_resource "GM24385_3_s0_10000.fastq.gz"
   
-  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
   args+=("--workflow" "fastq")
@@ -85,6 +106,11 @@ test_fastq_illumina_pairedend_trio () {
 
 run_tests () {
   before_all
+
+  TEST_ID="fastq_pacbio_hifi"
+  before_each
+  test_fastq_pacbio_hifi
+  after_each
 
   TEST_ID="fastq_nanopore"
   before_each

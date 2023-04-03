@@ -45,7 +45,7 @@ The following sections describe the columns that can be used in every sample-she
 | ``fastq``               | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)        |
 | ``fastq_r1``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1 |
 | ``fastq_r2``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2 |
-| ``sequencing_platform`` | ``enum``      |                 | ``illumina`` | allowed values: [``illumina``,``nanopore``]                                                        |
+| ``sequencing_platform`` | ``enum``      |                 | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                        |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.  
 
@@ -53,7 +53,7 @@ The following sections describe the columns that can be used in every sample-she
 | column                  | type     | required | default      | description                                  |
 |-------------------------|----------|----------|--------------|----------------------------------------------|
 | ``cram``                | ``file`` | yes      |              | allowed file extensions: [``bam``, ``cram``] |
-| ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``]  |
+| ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]  |
 
 ## Columns: VCF
 | column   | type     | required | default | description                                                                                   |

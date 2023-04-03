@@ -4,7 +4,7 @@ Features include:
 
 - Workflows for a broad range of input file types: `bam`, `cram`, `fastq`, `g.vcf`, `vcf`
 - Produces stand-alone variant interpretation HTML report with integrated genome browser  
-- Long-read sequencing support (Oxford Nanopore)
+- Long-read sequencing support (Oxford Nanopore, PacBio HiFi)
 - Short-read sequencing support (Illumina, both single and paired-end reads)
 - Supports GRCh37 and GRCh38
 - Short variant detection

@@ -1,2 +1,2 @@
 individual_id	sequencing_platform	fastq
-HG002	nanopore	downloads/GM24385_1_s0_10000.fastq.gz,downloads/GM24385_2_s0_10000.fastq.gz,downloads/GM24385_3_s0_10000.fastq.gz
+HG002	nanopore	downloads/m54238_180628_014238_s0_10000.Q20.fastq.gz
