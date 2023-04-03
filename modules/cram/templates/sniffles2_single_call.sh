@@ -21,27 +21,27 @@ create_cram_slice () {
   ${CMD_SAMTOOLS} "${args[@]}"
 }
 
-create_cram_slice_cleanup () {
-  rm "!{cram.simpleName}_sliced.cram" "!{cram.simpleName}_sliced.cram.crai"
-}
-
 call_structural_variants () {
     local args=()
     args+=("--input" "!{cram.simpleName}_sliced.cram")
     args+=("--reference" "!{reference}")
     args+=("--tandem-repeats" "!{tandemRepeatAnnotations}")
-    args+=("--snf" "!{snfOut}")
+    args+=("--vcf" "!{vcfOut}")
     args+=("--sample-id" "!{meta.sample.individual_id}")
     args+=("--threads" "!{task.cpus}")
 
     ${CMD_SNIFFLES2} "${args[@]}"
 }
 
+stats () {
+  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
 main() {
     create_bed
     create_cram_slice
     call_structural_variants
-    create_cram_slice_cleanup
     stats
 }
 
