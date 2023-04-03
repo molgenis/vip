@@ -24,6 +24,7 @@ An additional configuration file can be supplied on the command-line to overwrit
 |-------------------------------------------------|---------------------|-------------------------------------------------------------------------------|
 | cram.clair3.illumina.model_name                 | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
 | cram.clair3.nanopore.model_name                 | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
+| cram.clair3.pacbio_hifi.model_name              | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
 | cram.sniffles2.GRCh37.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
 | cram.sniffles2.GRCh38.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
 

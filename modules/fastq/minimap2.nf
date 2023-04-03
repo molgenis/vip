@@ -11,7 +11,7 @@ process minimap2_align {
     cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
 
-    preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : ""
+    preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : (meta.sample.sequencing_platform == "pacbio_hifi" ? "map-hifi" : "")
 
     template 'minimap2_align.sh'
 }

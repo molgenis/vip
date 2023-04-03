@@ -49,7 +49,7 @@ workflow cram {
       | branch {
         meta ->
           manta: meta.sample.sequencing_platform == 'illumina'
-          sniffles: meta.sample.sequencing_platform == 'nanopore'
+          sniffles: meta.sample.sequencing_platform == 'nanopore' || meta.sample.sequencing_platform == 'pacbio_hifi'
       }
       | set { ch_cram_chunked_sv }
 
@@ -140,7 +140,7 @@ def parseSampleSheet(csvFile) {
     sequencing_platform: [
       type: "string",
       default: { 'illumina' },
-      enum: ['illumina', 'nanopore']
+      enum: ['illumina', 'nanopore', 'pacbio_hifi']
     ]
   ]
   return parseCommonSampleSheet(csvFile, cols)

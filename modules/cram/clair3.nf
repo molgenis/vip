@@ -13,7 +13,7 @@ process clair3_call {
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    platform=meta.sample.sequencing_platform == "nanopore" ? "ont" : "ilmn"
+    platform=meta.sample.sequencing_platform == "nanopore" ? "ont" : (meta.sample.sequencing_platform == "pacbio_hifi" ? "hifi" : "ilmn")
     modelName=params.cram.clair3[meta.sample.sequencing_platform].model_name
 
     template 'clair3_call.sh'
