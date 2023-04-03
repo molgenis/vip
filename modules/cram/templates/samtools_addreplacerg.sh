@@ -29,11 +29,16 @@ index () {
   ${CMD_SAMTOOLS} index "!{cramOut}"
 }
 
+create_cram_slice_cleanup () {
+  rm "!{cram.simpleName}_sliced.cram" "!{cram.simpleName}_sliced.cram.crai"
+}
+
 main() {  
   create_bed  
   create_cram_slice
   add_replace_read_group
   index
+  create_cram_slice_cleanup
 }
 
 main "$@"
