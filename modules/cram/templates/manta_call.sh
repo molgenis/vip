@@ -14,7 +14,7 @@ config_manta () {
     local -a cram_array=(!{crams})
     for (( i=0; i<${#cram_array[@]}; i++ ));
     do
-      cram=${cram_array[$i]}
+      cram="${cram_array["${i}"]}"
       args+=("--bam" "$cram")
     done
     args+=("--referenceFasta" "!{reference}")

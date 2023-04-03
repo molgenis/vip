@@ -27,7 +27,7 @@ order_samples () {
   do
     vcf=${vcf_array[$i]}
     ${CMD_BCFTOOLS} query --list-samples ${vcf} | sort > sorted_samples.txt
-    ${CMD_BCFTOOLS} view --output-type "z" --samples-file "sorted_samples.txt" ${vcf} > "sorted_${vcf}" 
+    ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --samples-file "sorted_samples.txt" ${vcf} > "sorted_${vcf}" 
     ${CMD_BCFTOOLS} index --csi --output "sorted_${vcf}.csi" --threads "!{task.cpus}" "sorted_${vcf}"
   done
 }
