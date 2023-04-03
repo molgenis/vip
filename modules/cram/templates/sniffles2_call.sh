@@ -21,6 +21,10 @@ create_cram_slice () {
   ${CMD_SAMTOOLS} "${args[@]}"
 }
 
+create_cram_slice_cleanup () {
+  rm "!{cram.simpleName}_sliced.cram" "!{cram.simpleName}_sliced.cram.crai"
+}
+
 call_structural_variants () {
     local args=()
     args+=("--input" "!{cram.simpleName}_sliced.cram")
@@ -37,6 +41,8 @@ main() {
     create_bed
     create_cram_slice
     call_structural_variants
+    create_cram_slice_cleanup
+    stats
 }
 
 main "$@"
