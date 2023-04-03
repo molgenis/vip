@@ -109,16 +109,12 @@ workflow cram {
     ch_cram_chunked_sv.sniffles
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | sniffles2_call
-      | map { meta, snf -> [*:meta, sample: [*:meta.sample, snf: snf] ] }
-      | set { ch_vcf_chunked_sv_sniffles }
-
-    ch_vcf_chunked_sv_sniffles
-      |map { meta ->
+      | map { meta, snf ->
           def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
           def size = meta.sampleSheet.count { sample ->
             sample.project_id == meta.sample.project_id
           }
-          [groupKey(key, size), meta]
+          [groupKey(key, size), [*:meta, sample: [*:meta.sample, snf: snf] ]]
         }
       | groupTuple
       | map{ key, group -> [[project_id:key.project_id,chunk:key.chunk,assembly:key.assembly, samples:group], group.sample.snf] }
