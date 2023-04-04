@@ -42,7 +42,6 @@ main() {
     create_cram_slice
     call_structural_variants
     create_cram_slice_cleanup
-    stats
 }
 
 main "$@"
