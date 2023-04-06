@@ -9,7 +9,7 @@ reheader () {
 
 
   for gVcf in !{gVcfs}; do
-    ${CMD_BCFTOOLS} concat --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf "${gVcf}"
+    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf "${gVcf}"
   done
 }
 
