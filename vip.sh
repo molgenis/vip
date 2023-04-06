@@ -104,7 +104,6 @@ execute_workflow() {
   if [[ "${paramResume}" == "true" ]]; then
     args+=("-resume")
   fi
-   args+=("-with-dag" "${paramOutput}/test.mmd")
 
 
   (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="22.10.6" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}")
