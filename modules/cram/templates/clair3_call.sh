@@ -33,11 +33,12 @@ call_small_variants () {
     # Prevent Clair3 writing in home directory via samtools (https://www.htslib.org/doc/samtools.html#ENVIRONMENT_VARIABLES)
     XDG_CACHE_HOME=$(realpath .) ${CMD_CLAIR3} "${args[@]}"
 
-    mv "merge_output.vcf.gz" "!{vcfOut}"
-    mv "merge_output.vcf.gz.tbi" "!{vcfOutIndex}"
+    mv "merge_output.gvcf.gz" "!{vcfOut}"
+    mv "merge_output.gvcf.gz.tbi" "!{vcfOutIndex}"
 }
 
-stats () {
+index () {
+  #${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
@@ -46,7 +47,7 @@ main() {
     convert_to_bam
     call_small_variants
     convert_to_bam_cleanup
-    stats
+    index
 }
 
 main "$@"
