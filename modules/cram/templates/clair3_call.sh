@@ -37,8 +37,7 @@ call_small_variants () {
     mv "merge_output.gvcf.gz.tbi" "!{vcfOutIndex}"
 }
 
-index () {
-  #${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+stats () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
@@ -47,7 +46,7 @@ main() {
     convert_to_bam
     call_small_variants
     convert_to_bam_cleanup
-    index
+    stats
 }
 
 main "$@"
