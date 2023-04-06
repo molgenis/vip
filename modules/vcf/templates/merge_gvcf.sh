@@ -5,11 +5,11 @@ set -euo pipefail
 # workaround contains a workaround for https://github.com/samtools/bcftools/issues/1425
 reheader () {
   echo -e "##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO" > empty.vcf
-  ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --output "empty_contigs.vcf" --threads "!{task.cpus}" empty.vcf
-
+  ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --output-type z --threads "!{task.cpus}" empty.vcf | ${CMD_BGZIP} -c > empty_contigs.vcf.gz
+  ${CMD_BCFTOOLS} index --csi --threads "!{task.cpus}" empty_contigs.vcf.gz
 
   for gVcf in !{gVcfs}; do
-    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf "${gVcf}"
+    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf.gz "${gVcf}"
   done
 }
 
