@@ -9,7 +9,9 @@ set -u
 usage() {
   echo -e "usage: ${SCRIPT_NAME} -f
 
--f, --force               optional: Override the output file if it already exists."
+-f, --force               optional: Override the output file if it already exists.
+
+note: user must be allowed to run 'sudo apptainer build'."
 }
 
 # arguments:
@@ -27,11 +29,6 @@ validate() {
   if ! command -v apptainer &>/dev/null; then
     echo "error: 'apptainer' could not be found"
     exit 1
-  fi
-
-  if [ "$EUID" -ne 0 ]
-    then echo "error: 'apptainer' requires to run as as root, use 'sudo build.sh' to run as root."
-    exit
   fi
 }
 
@@ -94,7 +91,7 @@ main() {
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
-    apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
+    sudo apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
     echo "---Done building ${images[$i]}---"
   done
 
@@ -105,7 +102,7 @@ main() {
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
-    apptainer build "${outputDir}/${uris[${i}]}.sif" "${i}" | tee "${outputDir}/build.log"
+    sudo apptainer build "${outputDir}/${uris[${i}]}.sif" "${i}" | tee "${outputDir}/build.log"
     echo "---Done building ${uris[${i}]}---"
   done
 }
