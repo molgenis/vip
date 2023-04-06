@@ -39,7 +39,7 @@ reheader_cleanup () {
 main () {
   reheader
   merge
-  #reheader_cleanup
+  reheader_cleanup
   index
 }
 
