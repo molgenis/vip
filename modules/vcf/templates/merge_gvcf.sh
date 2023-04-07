@@ -2,19 +2,19 @@
 set -euo pipefail
 
 # workaround for https://github.com/dnanexus-rnd/GLnexus/issues/238
+# workaround contains a workaround for https://github.com/samtools/bcftools/issues/1425
 reheader () {
+  echo -e "##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO" > empty.vcf
+  ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --threads "!{task.cpus}" empty.vcf | ${CMD_BGZIP} -c > empty_contigs.vcf.gz
+  ${CMD_BCFTOOLS} index --csi --threads "!{task.cpus}" empty_contigs.vcf.gz
+
   for gVcf in !{gVcfs}; do
-    ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --output "reheadered_${gVcf}" --threads "!{task.cpus}" "${gVcf}"
+    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf.gz "${gVcf}"
   done
 }
 
 # cannot use --bed because it is broken: https://github.com/dnanexus-rnd/GLnexus/issues/279
 merge () {
-  local gVcfsReheadered=()
-  for gVcf in !{gVcfs}; do
-    gVcfsReheadered+=("reheadered_${gVcf}")
-  done
-
   local args=()
   args+=("--dir" "glnexus")
   args+=("--config" "!{config}")
