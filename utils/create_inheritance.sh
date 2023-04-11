@@ -26,7 +26,6 @@ main() {
   local args=$(getopt -a -n pipeline -o ih --long input_omim:,help -- "$@")
 
   local geneMapFilePath
-  echo "getopts"
   eval set -- "${args}"
   while :; do
     case "$1" in
