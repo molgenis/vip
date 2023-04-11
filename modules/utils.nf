@@ -26,12 +26,12 @@ def determineChunks(meta) {
     def chunks = []
     def regions = []
     records.each { record -> 
-        size += record.size
-        if(size > sizeMax) {
+        if(size + record.size > sizeMax) {
             chunks.add(regions)
             regions = []
             size = 0L
         }
+        size += record.size
         regions.add([chrom: record.contig, chromStart: 0, chromEnd: record.size])
     }
     if(regions.size() > 0) {
