@@ -23,7 +23,7 @@ EOT
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o ih --long input_omim:,help -- "$@")
+  local args=$(getopt -a -n pipeline -o i:h --long input_omim:,help -- "$@")
 
   local geneMapFilePath
   eval set -- "${args}"
@@ -75,7 +75,7 @@ main() {
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  APPTAINER_BIND="${SCRIPT_DIR},${geneMapFilePath}" apptainer exec vcf-inheritance-3.1.0.sif java "${args[@]}"
+  apptainer exec vcf-inheritance-3.1.0.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 
