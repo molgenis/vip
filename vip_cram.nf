@@ -8,6 +8,7 @@ include { samtools_index; samtools_addreplacerg } from './modules/cram/samtools'
 include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
 include { sniffles2_call; sniffles2_combined_call; sniffles_call_publish } from './modules/cram/sniffles2'
+include { call_publish } from './modules/cram/publish'
 include { vcf } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
@@ -145,8 +146,15 @@ workflow cram {
     //metadata for both sv and snv should be identical except for the vcf related content, just pick the first
     | map{ key, group -> [group[0], group.vcf, group.vcf_index]}
     | concat_vcf
-    | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.samples.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
-    | vcf
+    | multiMap { it -> done: publish: it }
+    | set { ch_cram_output }
+
+    ch_cram_output.publish
+    | call_publish
+
+  ch_cram_output.done
+  | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.samples.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
+  | vcf
 }
 
 workflow {
