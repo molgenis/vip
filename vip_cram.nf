@@ -152,9 +152,9 @@ workflow cram {
     ch_cram_output.publish
     | call_publish
 
-  ch_cram_output.done
-  | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.samples.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
-  | vcf
+    ch_cram_output.done
+    | flatMap { meta, vcf, vcfIndex, vcfStats -> {meta.samples.collect(entry -> [sample: [*:entry.sample, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats], chunk: entry.chunk, sampleSheet: entry.sampleSheet]) } }
+    | vcf
 }
 
 workflow {
