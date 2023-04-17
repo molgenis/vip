@@ -17,12 +17,12 @@ classify () {
 
   args+=("--output" "!{vcfOut}")
 
-  ${CMD_VCFDECISIONTREE} java "${args[@]}"
+  !{params.CMD_VCFDECISIONTREE} java "${args[@]}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main () {

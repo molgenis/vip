@@ -14,12 +14,12 @@ filter () {
     args+=("--only_matched")
   fi
 
-  ${CMD_FILTERVEP} filter_vep "${args[@]}"  | ${CMD_BGZIP} -c > "!{vcfOut}"
+  !{params.CMD_FILTERVEP} filter_vep "${args[@]}"  | !{params.CMD_BGZIP} -c > "!{vcfOut}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

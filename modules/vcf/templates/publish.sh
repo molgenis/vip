@@ -9,7 +9,7 @@ concat () {
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
-  ${CMD_BCFTOOLS} "${args[@]}" !{vcfs}
+  !{params.CMD_BCFTOOLS} "${args[@]}" !{vcfs}
 }
 
 view () {
@@ -20,11 +20,11 @@ view () {
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
-  ${CMD_BCFTOOLS} "${args[@]}" "!{vcfs.first()}"
+  !{params.CMD_BCFTOOLS} "${args[@]}" "!{vcfs.first()}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
 }
 
 main() {

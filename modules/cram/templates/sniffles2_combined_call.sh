@@ -9,12 +9,12 @@ call_structural_variants () {
     args+=("--vcf" "!{vcfOut}")
     args+=("--threads" "!{task.cpus}")
 
-    ${CMD_SNIFFLES2} "${args[@]}"
+    !{params.CMD_SNIFFLES2} "${args[@]}"
 }
 
 stats () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

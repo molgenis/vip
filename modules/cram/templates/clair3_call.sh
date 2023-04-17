@@ -8,8 +8,8 @@ create_bed () {
 # workaround for clair 3 issue where the ebi server is called to decode the cram
 # https://github.com/HKU-BAL/Clair3/issues/180
 convert_to_bam () {
-  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
-  ${CMD_SAMTOOLS} index "!{cram}.bam"
+  !{params.CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
+  !{params.CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
 convert_to_bam_cleanup () {
@@ -31,14 +31,14 @@ call_small_variants () {
     args+=("--gvcf")
 
     # Prevent Clair3 writing in home directory via samtools (https://www.htslib.org/doc/samtools.html#ENVIRONMENT_VARIABLES)
-    XDG_CACHE_HOME=$(realpath .) ${CMD_CLAIR3} "${args[@]}"
+    XDG_CACHE_HOME=$(realpath .) !{params.CMD_CLAIR3} "${args[@]}"
 
     mv "merge_output.gvcf.gz" "!{vcfOut}"
     mv "merge_output.gvcf.gz.tbi" "!{vcfOutIndex}"
 }
 
 stats () {
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

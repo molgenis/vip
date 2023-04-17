@@ -2,7 +2,7 @@
 set -euo pipefail
 
 main() {
-    ${CMD_SAMTOOLS} index "!{cram}"
+    !{params.CMD_SAMTOOLS} index "!{cram}"
 }
 
 main "$@"

@@ -17,7 +17,7 @@ annot_sv() {
   if [ -n "!{hpoIds}" ]; then
     args+=("-hpo" "!{hpoIds}")
   fi
-  ${CMD_ANNOTSV} "${args[@]}"
+  !{params.CMD_ANNOTSV} "${args[@]}"
   
   # AnnotSV potentially exists with the following message without creating a .tsv file
   # ############################################################################
@@ -74,7 +74,7 @@ capice_vep() {
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  ${CMD_VEP} vep "${args[@]}"
+  !{params.CMD_VEP} vep "${args[@]}"
 }
 
 capice_bcftools() {
@@ -90,9 +90,9 @@ capice_bcftools() {
   args+=("-o" "${capiceInputPathHeaderless}")
   args+=("${vcfCapiceAnnotatedPath}")
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  !{params.CMD_BCFTOOLS} "${args[@]}"
 
-  echo -e "${header}$(${CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "${capiceInputPath}"
+  echo -e "${header}$(!{params.CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "${capiceInputPath}"
 }
 
 capice_predict() {
@@ -102,7 +102,7 @@ capice_predict() {
   args+=("--output" "${capiceOutputPath}")
   args+=("--model" "!{capiceModelPath}")
 
-  ${CMD_CAPICE} "${args[@]}"
+  !{params.CMD_CAPICE} "${args[@]}"
   if [ ! -f "${capiceOutputPath}" ]; then
     echo -e "CAPICE error: failed to produce output" 1>&2
     exit 1
@@ -166,12 +166,12 @@ vep() {
     args+=("--plugin" "AnnotSV,!{vcf}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
 
-  ${CMD_VEP} "${args[@]}"
+  !{params.CMD_VEP} "${args[@]}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main () {

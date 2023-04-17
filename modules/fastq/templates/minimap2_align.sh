@@ -12,9 +12,9 @@ main() {
     args+=("!{fastq}")
 
     if [[ -n "!{preset}" ]] && [[ "!{preset}" == "map-ont" ]]; then
-      ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
+      !{params.CMD_MINIMAP2} "${args[@]}" | !{params.CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
     else
-      ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
+      !{params.CMD_MINIMAP2} "${args[@]}" | !{params.CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | !{params.CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
     fi    
 }
 

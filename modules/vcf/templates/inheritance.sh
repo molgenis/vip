@@ -19,12 +19,12 @@ inheritance () {
     args+=("--probands" "!{probands}")
   fi
 
-  ${CMD_VCFINHERITANCEMATCHER} java "${args[@]}"
+  !{params.CMD_VCFINHERITANCEMATCHER} java "${args[@]}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

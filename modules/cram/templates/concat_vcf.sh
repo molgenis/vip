@@ -15,16 +15,16 @@ concat () {
     args+=("sorted_${vcf}")
   done
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  !{params.CMD_BCFTOOLS} "${args[@]}"
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 order_samples () {
@@ -32,9 +32,9 @@ order_samples () {
   for (( i=0; i<${#vcf_array[@]}; i++ ));
   do
     vcf="${vcf_array["${i}"]}"
-    ${CMD_BCFTOOLS} query --list-samples "${vcf}" | sort > sorted_samples.txt
-    ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z --samples-file "sorted_samples.txt" "${vcf}" > "sorted_${vcf}" 
-    ${CMD_BCFTOOLS} index --csi --output "sorted_${vcf}.csi" --threads "!{task.cpus}" "sorted_${vcf}"
+    !{params.CMD_BCFTOOLS} query --list-samples "${vcf}" | sort > sorted_samples.txt
+    !{params.CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z --samples-file "sorted_samples.txt" "${vcf}" > "sorted_${vcf}"
+    !{params.CMD_BCFTOOLS} index --csi --output "sorted_${vcf}.csi" --threads "!{task.cpus}" "sorted_${vcf}"
   done
 }
 

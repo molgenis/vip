@@ -3,8 +3,8 @@ set -euo pipefail
 
 create_bed () {
   echo -e "!{bedContent}" > "!{bed}"
-  ${CMD_BGZIP} -c "!{bed}" > "!{bedGz}"
-  ${CMD_TABIX} "!{bedGz}"
+  !{params.CMD_BGZIP} -c "!{bed}" > "!{bedGz}"
+  !{params.CMD_TABIX} "!{bedGz}"
 }
 
 config_manta () {
@@ -23,7 +23,7 @@ config_manta () {
       args+=("--exome")
     fi
 
-    ${CMD_MANTA} "${args[@]}"
+    !{params.CMD_MANTA} "${args[@]}"
 }
 
 run_manta () {
@@ -31,14 +31,14 @@ run_manta () {
     args+=("$(realpath .)/runWorkflow.py")
     args+=("-j" "!{task.cpus}")
 
-    ${CMD_MANTA} "${args[@]}"
+    !{params.CMD_MANTA} "${args[@]}"
 
     mv "$(realpath .)/results/variants/diploidSV.vcf.gz" "!{vcfOut}"
 }
 
 stats () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

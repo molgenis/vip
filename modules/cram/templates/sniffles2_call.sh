@@ -18,7 +18,7 @@ create_cram_slice () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{cram}")
 
-  ${CMD_SAMTOOLS} "${args[@]}"
+  !{params.CMD_SAMTOOLS} "${args[@]}"
 }
 
 create_cram_slice_cleanup () {
@@ -34,7 +34,7 @@ call_structural_variants () {
     args+=("--sample-id" "!{meta.sample.individual_id}")
     args+=("--threads" "!{task.cpus}")
 
-    ${CMD_SNIFFLES2} "${args[@]}"
+    !{params.CMD_SNIFFLES2} "${args[@]}"
 }
 
 main() {

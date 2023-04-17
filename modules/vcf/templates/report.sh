@@ -13,12 +13,12 @@ create_vcf () {
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcf}")
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  !{params.CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  !{params.CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  !{params.CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 report() {
@@ -59,7 +59,7 @@ report() {
     args+=("--cram" "!{crams}")
   fi
 
-  ${CMD_VCFREPORT} java "${args[@]}"
+  !{params.CMD_VCFREPORT} java "${args[@]}"
 }
 
 main() {
