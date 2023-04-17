@@ -110,7 +110,6 @@ test_multiproject_classify () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
-  args+=("--profile" "local")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
