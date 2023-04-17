@@ -167,6 +167,12 @@ vep() {
   fi
 
   ${CMD_VEP} "${args[@]}"
+
+  if grep --quiet "Failed to instantiate plugin" ".command.err"
+  then
+      echo "VEP encountered a problem in one of the plugins"
+      exit 1
+  fi
 }
 
 index () {
