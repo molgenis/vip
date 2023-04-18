@@ -74,7 +74,7 @@ capice_vep() {
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  ${CMD_VEP} vep "${args[@]}"
+  ${CMD_VEP} "${args[@]}"
 }
 
 capice_bcftools() {
