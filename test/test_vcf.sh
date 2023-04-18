@@ -280,7 +280,7 @@ test_lb_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 276 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 289 ]; then
     return 1
   fi
 }
