@@ -110,7 +110,6 @@ test_multiproject_classify () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
-  args+=("--profile" "local")
 
   if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
@@ -280,7 +279,7 @@ test_lb_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 276 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 289 ]; then
     return 1
   fi
 }

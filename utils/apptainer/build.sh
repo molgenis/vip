@@ -76,16 +76,16 @@ main() {
   mkdir -p "${outputDir}/build"
 
   local images=()
-  images+=("build/alpine-3.15.0")
+  images+=("build/alpine-3.17.3")
   images+=("build/openjdk-17")
-  images+=("bcftools-1.14")
-  images+=("annotsv-3.2.3")
-  images+=("capice-5.1.0")
+  images+=("bcftools-1.17")
+  images+=("annotsv-3.3.5")
+  images+=("capice-5.1.1")
   images+=("minimap2-2.24")
-  images+=("samtools-1.16")
-  images+=("vcf-decision-tree-3.5.2")
-  images+=("vcf-inheritance-matcher-2.1.5")
-  images+=("vcf-report-5.2.1")
+  images+=("samtools-1.17")
+  images+=("vcf-decision-tree-3.5.3")
+  images+=("vcf-inheritance-matcher-2.1.6")
+  images+=("vcf-report-5.2.2")
   images+=("manta-1.6.0")
   images+=("sniffles2-2.0.7")
   
@@ -96,7 +96,7 @@ main() {
   done
 
   declare -A uris
-  uris["docker://ensemblorg/ensembl-vep:release_107.0"]="vep-107.0"
+  uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
   uris["docker://hkubal/clair3:latest"]="clair3-v1.0.0"
   uris["docker://ghcr.io/dnanexus-rnd/glnexus:v1.4.1"]="glnexus_v1.4.1"
   
