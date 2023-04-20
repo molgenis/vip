@@ -342,7 +342,7 @@ def validateParams(sampleSheet) {
   
   // general
   def gvcfMergePreset = params.vcf.gvcf_merge_preset
-  if (!(gvcfMergePreset ==~ /gatk|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
+  if (!(gvcfMergePreset ==~ /gatk|gatk_unfiltered|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
 
   def start = params.vcf.start
   if (!start.isEmpty() && !(start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/))  exit 1, "parameter 'vcf.start' value '${start}' is invalid. allowed values are [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]"
