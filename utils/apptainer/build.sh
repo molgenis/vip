@@ -97,7 +97,7 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
-  uris["docker://hkubal/clair3:latest"]="clair3-v1.0.0"
+  uris["docker://hkubal/clair3:v1.0.1"]="clair3-v1.0.1"
   uris["docker://ghcr.io/dnanexus-rnd/glnexus:v1.4.1"]="glnexus_v1.4.1"
   
   for i in "${!uris[@]}"; do
