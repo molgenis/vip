@@ -6,6 +6,27 @@ SCRIPT_NAME="$(basename "$0")"
 
 source ${SCRIPT_DIR}/test_utils.sh
 
+test_cram_nanopore () {
+  download_test_resource "nanopore.cram"
+
+  echo -e "params { vcf.filter.classes = \"B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  
+  local args=()
+  args+=("--workflow" "cram")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--input" "${TEST_RESOURCES_DIR}/cram_nanopore.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+    return 1
+  fi
+}
+
 test_bam () {
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
@@ -88,6 +109,10 @@ test_cram_trio () {
 
 run_tests () {
   before_all
+  TEST_ID="cram_nanopore"
+  before_each
+  test_cram_nanopore
+  after_each
 
   TEST_ID="bam"
   before_each
