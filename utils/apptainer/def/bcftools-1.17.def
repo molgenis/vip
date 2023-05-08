@@ -1,16 +1,16 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.15.0.sif
+From: sif/build/alpine-3.17.3.sif
 Stage: build
 
 %post
     version_major=1
-    version_minor=14
+    version_minor=17
 
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
     
     # download
     curl -Ls -o bcftools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/bcftools/releases/download/${version_major}.${version_minor}/bcftools-${version_major}.${version_minor}.tar.bz2
-    echo "b7ef88ae89fcb55658c5bea2e8cb8e756b055e13860036d6be13756782aa19cb  bcftools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+    echo "01f75d8e701d85b2c759172412009cc04f29b61616ace2fa75116123de4596cc  bcftools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
     tar xf bcftools-${version_major}.${version_minor}.tar.bz2
@@ -20,12 +20,12 @@ Stage: build
     make install
 
 Bootstrap: localimage
-From: sif/build/alpine-3.15.0.sif
+From: sif/build/alpine-3.17.3.sif
 Stage: final
 
 %files from build
     /usr/local/bin/bcftools
-    /usr/local/libexec/bcftools/split-vep.so
+    /usr/local/libexec/bcftools
 
 %post
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate

@@ -121,7 +121,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "sv"
           }
         },
         {
@@ -147,7 +147,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "sv"
           }
         },
         {
@@ -165,9 +165,20 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "gnomAD"
+        "nextNode": "sv"
       },
       "outcomeMissing": {
+        "nextNode": "sv"
+      }
+    },
+    "sv": {
+      "description": "Structural Variant?",
+      "type": "EXISTS",
+      "field": "INFO/SVTYPE",
+      "outcomeTrue": {
+        "nextNode": "annotSV"
+      },
+      "outcomeFalse": {
         "nextNode": "gnomAD"
       }
     },
@@ -200,10 +211,10 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "annotSV"
+        "nextNode": "spliceAI"
       },
       "outcomeMissing": {
-        "nextNode": "annotSV"
+        "nextNode": "spliceAI"
       }
     },
     "annotSV": {

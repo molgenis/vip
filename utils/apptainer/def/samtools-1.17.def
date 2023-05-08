@@ -1,16 +1,16 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.15.0.sif
+From: sif/build/alpine-3.17.3.sif
 Stage: build
 
 %post
     version_major=1
-    version_minor=16
+    version_minor=17
 
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
 
     # download
     curl -Ls -o samtools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/samtools/releases/download/${version_major}.${version_minor}/samtools-${version_major}.${version_minor}.tar.bz2
-    echo "6106b27fea5a6962cf5f257d68219e20235cce46039572afeff2c6cf11554764  samtools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+    echo "3adf390b628219fd6408f14602a4c4aa90e63e18b395dad722ab519438a2a729  samtools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
     tar xf samtools-${version_major}.${version_minor}.tar.bz2
@@ -20,7 +20,7 @@ Stage: build
     make install
 
 Bootstrap: localimage
-From: sif/build/alpine-3.15.0.sif
+From: sif/build/alpine-3.17.3.sif
 Stage: final
 
 %files from build

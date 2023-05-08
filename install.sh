@@ -36,7 +36,7 @@ download() {
 }
 
 download_nextflow() {
-  local -r version="22.10.6"
+  local -r version="23.04.1"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
@@ -113,15 +113,15 @@ download_resources_vep() {
 
   local vep_files=()
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_107_GRCh37.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh37" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_109_GRCh37.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh37: already exists"
     fi
   fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/107_GRCh38" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_107_GRCh38.tar.gz")
+    if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh38" ]; then
+      vep_files+=("homo_sapiens_refseq_vep_109_GRCh38.tar.gz")
     else
       echo -e "skipping download vep cache for GRCh38: already exists"
     fi
@@ -130,17 +130,17 @@ download_resources_vep() {
   if [ ${#vep_files[@]} != 0 ]; then
     for vep_file in "${vep_files[@]}"; do
       echo -e "downloading from ftp.ensembl.org: ${vep_file} ..."
-      wget --quiet --continue "http://ftp.ensembl.org/pub/release-107/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
+      wget --quiet --continue "http://ftp.ensembl.org/pub/release-109/variation/indexed_vep_cache/${vep_file}" --output-document - | tar -xz -C "${vep_dir}"
     done
   fi
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.2.3"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.3.5"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.2.3.tar.gz ..."
-    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.2.3.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.3.5.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.3.5.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
@@ -183,17 +183,17 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.2.3.sif")
-  files+=("bcftools-1.14.sif")
-  files+=("capice-5.1.0.sif")
-  files+=("clair3-v1.0.0.sif")
+  files+=("annotsv-3.3.5.sif")
+  files+=("bcftools-1.17.sif")
+  files+=("capice-5.1.1.sif")
+  files+=("clair3-v1.0.1.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
-  files+=("samtools-1.16.sif")
-  files+=("vcf-decision-tree-3.5.2.sif")
-  files+=("vcf-inheritance-matcher-2.1.5.sif")
-  files+=("vcf-report-5.2.1.sif")
-  files+=("vep-107.0.sif")
+  files+=("samtools-1.17.sif")
+  files+=("vcf-decision-tree-3.5.3.sif")
+  files+=("vcf-inheritance-matcher-2.1.6.sif")
+  files+=("vcf-report-5.2.2.sif")
+  files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
   files+=("sniffles2-2.0.7.sif")
 

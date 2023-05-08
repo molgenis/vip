@@ -75,7 +75,7 @@ capice_vep() {
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
 
-  ${CMD_VEP} vep "${args[@]}"
+  ${CMD_VEP} "${args[@]}"
 }
 
 capice_bcftools() {
@@ -168,6 +168,12 @@ vep() {
   fi
 
   ${CMD_VEP} "${args[@]}"
+
+  if grep --quiet "Failed to instantiate plugin" ".command.err"
+  then
+      echo "VEP encountered a problem in one of the plugins"
+      exit 1
+  fi
 }
 
 index () {

@@ -57,11 +57,11 @@ sub new {
 sub readFile {
     my @headers;
     my %line_map;
-    my @split;
 
     open(FH, '<', @_) or die $!;
     while (<FH>) {
         chomp;
+        my @split;
         my @list = split(/\t/); ## Collect the elements of this line
         for (my $i = 0; $i <= $#list; $i++) {
             ## If this is the 1st line, collect the names
