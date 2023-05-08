@@ -186,7 +186,7 @@ download_images() {
   files+=("annotsv-3.3.5.sif")
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
-  files+=("clair3-v1.0.0.sif")
+  files+=("clair3-v1.0.1.sif")
   files+=("glnexus_v1.4.1.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17.sif")
