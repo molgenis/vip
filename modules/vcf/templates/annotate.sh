@@ -13,6 +13,7 @@ annot_sv() {
   args+=("-outputFile" "!{vcf}.tsv")
   args+=("-genomeBuild" "!{meta.assembly}")
   args+=("-annotationMode" "full")
+  args+=("-snvIndelPASS")
   args+=("-annotationsDir" "!{params.vcf.annotate.annotsv_cache_dir}")
   if [ -n "!{hpoIds}" ]; then
     args+=("-hpo" "!{hpoIds}")
