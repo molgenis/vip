@@ -6,14 +6,23 @@ vcfCapiceAnnotatedPath="!{basename}_capice_annotated.vcf.gz"
 capiceInputPath="!{basename}_capice_input.tsv"
 capiceOutputPath="!{basename}_capice_output.tsv.gz"
 
-annot_sv() {
+annot_sv_filter() {
   local args=()
-  args+=("-SVinputFile" "!{vcf}")
+  args+=("filter")
+  args+=("--include" 'FILTER="PASS"')
+  args+=("--output " "filtered_!{vcf}")
+  args+=("--output-type" "z")
+
+  ${CMD_BCFTOOLS} "${args[@]}"
+}
+
+annot_sv_run() {
+  local args=()
+  args+=("-SVinputFile" "filtered_!{vcf}")
   args+=("-outputDir" ".")
   args+=("-outputFile" "!{vcf}.tsv")
   args+=("-genomeBuild" "!{meta.assembly}")
   args+=("-annotationMode" "full")
-  args+=("-snvIndelPASS")
   args+=("-annotationsDir" "!{params.vcf.annotate.annotsv_cache_dir}")
   if [ -n "!{hpoIds}" ]; then
     args+=("-hpo" "!{hpoIds}")
@@ -33,6 +42,11 @@ annot_sv() {
     mv "!{vcf}.tsv" "!{vcf}.tsv.tmp"
     awk -v FS='\t' -v OFS='\t' 'NR>1 {$2 = "chr"$2; print} 1' "!{vcf}.tsv.tmp" > "!{vcf}.tsv"
   fi
+}
+
+annot_sv() {
+  annot_sv_filter
+  annot_sv_run
 }
 
 capice() {
