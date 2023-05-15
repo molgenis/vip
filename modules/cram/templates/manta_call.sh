@@ -36,7 +36,7 @@ run_manta () {
 
 # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
 filter_manta () {
-  ${CMD_BCFTOOLS} view -i 'FILTER="PASS"|FILTER="."' --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "results/variants/diploidSV.vcf.gz"
+  ${CMD_BCFTOOLS} view --include 'FILTER="PASS"|FILTER="."' --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "results/variants/diploidSV.vcf.gz"
 }
 
 stats () {
