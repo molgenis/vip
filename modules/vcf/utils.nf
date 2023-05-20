@@ -29,7 +29,12 @@ def determineChunks(meta) {
   def regions=[]
   def chunks=[]
   records.each { record ->
-    def fastaContig = fastaContigs[record[0]]
+    def vcfContig = record[0]
+    def fastaContig = fastaContigs[vcfContig]
+    if(fastaContig) {
+        def fasta = params[meta.assembly].reference.fasta
+        throw new IllegalArgumentException("vcf chromosome '${vcfContig}' does not exist in reference genome '${fasta}' (assembly '${meta.assembly}'). are you using the correct reference genome?")
+    }
     int contigNrRecords = record[2] as int
     if(regionNrRecords + contigNrRecords <= maxNrRecords) {
       regions.add([chrom: fastaContig.contig, chromStart: 0, chromEnd: fastaContig.size])
