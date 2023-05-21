@@ -147,6 +147,7 @@ vep() {
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
@@ -167,12 +168,6 @@ vep() {
   fi
 
   ${CMD_VEP} "${args[@]}"
-
-  if grep --quiet "Failed to instantiate plugin" ".command.err"
-  then
-      echo "VEP encountered a problem in one of the plugins"
-      exit 1
-  fi
 }
 
 index () {
