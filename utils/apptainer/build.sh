@@ -86,7 +86,7 @@ main() {
   images+=("samtools-1.17")
   images+=("vcf-decision-tree-3.5.3")
   images+=("vcf-inheritance-matcher-2.1.6")
-  images+=("vcf-report-5.2.2")
+  images+=("vcf-report-5.3.0")
   images+=("manta-1.6.0")
   images+=("sniffles2-2.0.7")
   

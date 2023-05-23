@@ -192,7 +192,7 @@ download_images() {
   files+=("samtools-1.17.sif")
   files+=("vcf-decision-tree-3.5.3.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")
-  files+=("vcf-report-5.2.2.sif")
+  files+=("vcf-report-5.3.0.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
   files+=("sniffles2-2.0.7.sif")
