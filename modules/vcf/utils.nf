@@ -31,7 +31,7 @@ def determineChunks(meta) {
   records.each { record ->
     def vcfContig = record[0]
     def fastaContig = fastaContigs[vcfContig]
-    if(fastaContig) {
+    if(!fastaContig) {
         def fasta = params[meta.assembly].reference.fasta
         throw new IllegalArgumentException("vcf chromosome '${vcfContig}' does not exist in reference genome '${fasta}' (assembly '${meta.assembly}'). are you using the correct reference genome?")
     }
