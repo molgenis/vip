@@ -40,5 +40,5 @@ mkdocs serve
 
 To publish the documentation pages:
 ```
-mkdocs gh-pages
+mkdocs gh-deploy
 ```
