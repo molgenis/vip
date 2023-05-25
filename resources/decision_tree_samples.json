@@ -1,6 +1,41 @@
 {
-  "rootNode": "GQ",
+  "rootNode": "PHR",
   "nodes": {
+    "PHR": {
+      "description": "Proband homozygous reference call",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "SAMPLE/PROBAND",
+        "GENOTYPE/TYPE"
+      ],
+      "outcomes": [
+        {
+          "description": "Proband homozygous reference call",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "SAMPLE/PROBAND",
+              "operator": "==",
+              "value": true
+            },
+            {
+              "field": "GENOTYPE/TYPE",
+              "operator": "==",
+              "value": "HOM_REF"
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_phr"
+          },
+          "outcomeFalse": {
+            "nextNode": "GQ"
+          },
+          "outcomeMissing": {
+            "nextNode": "GQ"
+          }
+        }
+      ]
+    },
     "GQ": {
       "type": "BOOL",
       "description": "Genotype quality",
@@ -73,15 +108,23 @@
         "nextNode": "exit_ok"
       }
     },
+    "exit_phr": {
+      "description": "Proband homozygous reference call",
+      "type": "LEAF",
+      "class": "LQ"
+    },
     "exit_lq": {
+      "description": "Low quality",
       "type": "LEAF",
       "class": "LQ"
     },
     "exit_mv": {
+      "description": "Mendelian violation",
       "type": "LEAF",
       "class": "MV"
     },
     "exit_ok": {
+      "description": "Ok",
       "type": "LEAF",
       "class": "OK"
     }
