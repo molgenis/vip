@@ -81,12 +81,13 @@ main() {
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.5")
   images+=("capice-5.1.1")
-  images+=("glnexus_v1.4.5-patched")
+  #see ./def/glnexus_v1.4.5-patched.txt
+  #images+=("glnexus_v1.4.5-patched")
   images+=("minimap2-2.24")
   images+=("samtools-1.17")
-  images+=("vcf-decision-tree-3.5.3")
+  images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")
-  images+=("vcf-report-5.2.2")
+  images+=("vcf-report-5.3.0")
   images+=("manta-1.6.0")
   images+=("sniffles2-2.0.7")
   
