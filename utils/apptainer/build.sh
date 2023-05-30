@@ -85,7 +85,7 @@ main() {
   #images+=("glnexus_v1.4.5-patched")
   images+=("minimap2-2.24")
   images+=("samtools-1.17")
-  images+=("vcf-decision-tree-3.5.3")
+  images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")
   images+=("vcf-report-5.3.0")
   images+=("manta-1.6.0")
