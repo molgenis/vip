@@ -111,7 +111,7 @@
     "exit_phr": {
       "description": "Proband homozygous reference call",
       "type": "LEAF",
-      "class": "LQ"
+      "class": "PHR"
     },
     "exit_lq": {
       "description": "Low quality",
