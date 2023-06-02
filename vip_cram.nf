@@ -150,6 +150,15 @@ workflow cram {
     | set { ch_cram_output }
 
     ch_cram_output.publish
+    | map {meta, vcf, vcfIndex, vcfStats ->
+        [groupKey(meta.project_id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]]
+      }
+    | groupTuple
+    | map { key, metaList -> 
+        def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
+        def meta = metaList.first().findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+        [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
+      }
     | call_publish
 
     ch_cram_output.done
