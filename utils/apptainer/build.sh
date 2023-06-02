@@ -81,11 +81,13 @@ main() {
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.5")
   images+=("capice-5.1.1")
+  #see ./def/glnexus_v1.4.5-patched.txt
+  #images+=("glnexus_v1.4.5-patched")
   images+=("minimap2-2.24")
   images+=("samtools-1.17")
-  images+=("vcf-decision-tree-3.5.3")
+  images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")
-  images+=("vcf-report-5.2.2")
+  images+=("vcf-report-5.3.0")
   images+=("manta-1.6.0")
   images+=("sniffles2-2.0.7")
   
@@ -97,8 +99,7 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
-  uris["docker://hkubal/clair3:v1.0.1"]="clair3-v1.0.1"
-  uris["docker://ghcr.io/dnanexus-rnd/glnexus:v1.4.1"]="glnexus_v1.4.1"
+  uris["docker://hkubal/clair3:v1.0.2"]="clair3-v1.0.2"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

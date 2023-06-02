@@ -9,7 +9,7 @@ source ${SCRIPT_DIR}/test_utils.sh
 test_fastq_pacbio_hifi () {
   download_test_resource "m54238_180628_014238_s0_10000.Q20.fastq.gz"
 
-  echo -e "params { vcf.filter.classes = \"B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
   args+=("--workflow" "fastq")

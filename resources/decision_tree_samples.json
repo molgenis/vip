@@ -1,6 +1,24 @@
 {
-  "rootNode": "GQ",
+  "rootNode": "HR",
   "nodes": {
+    "HR": {
+      "description": "Homozygous reference call",
+      "type": "BOOL",
+      "query": {
+        "field": "FORMAT/GENOTYPE/TYPE",
+        "operator": "==",
+        "value": "HOM_REF"
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_hr"
+      },
+      "outcomeFalse": {
+        "nextNode": "GQ"
+      },
+      "outcomeMissing": {
+        "nextNode": "GQ"
+      }
+    },
     "GQ": {
       "type": "BOOL",
       "description": "Genotype quality",
@@ -73,15 +91,23 @@
         "nextNode": "exit_ok"
       }
     },
+    "exit_hr": {
+      "description": "Homozygous reference call",
+      "type": "LEAF",
+      "class": "HR"
+    },
     "exit_lq": {
+      "description": "Low quality",
       "type": "LEAF",
       "class": "LQ"
     },
     "exit_mv": {
+      "description": "Mendelian violation",
       "type": "LEAF",
       "class": "MV"
     },
     "exit_ok": {
+      "description": "Ok",
       "type": "LEAF",
       "class": "OK"
     }
