@@ -83,6 +83,7 @@ main() {
   images+=("capice-5.1.1")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
+  images+=("gado-1.0.1")
   images+=("minimap2-2.24")
   images+=("samtools-1.17")
   images+=("vcf-decision-tree-3.5.4")
