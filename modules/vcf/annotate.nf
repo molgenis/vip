@@ -22,7 +22,12 @@ process annotate {
     vepPluginVkglPath = params.vcf.annotate[meta.assembly].vep_plugin_vkgl
     vepPluginUtrAnnotatorPath = params.vcf.annotate[meta.assembly].vep_plugin_utrannotator
     capiceModelPath = params.vcf.annotate[meta.assembly].capice_model
-    
+
+    gadoGenesPath = params.vcf.annotate.gado_genes
+    gadoHpoPath = params.vcf.annotate.gado_hpo
+    gadoPredictInfoPath = params.vcf.annotate.gado_predict_info
+    gadoPredictMatrixPath = params.vcf.annotate.gado_predict_matrix
+
     template 'annotate.sh'
 }
 

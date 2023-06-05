@@ -34,6 +34,39 @@ annot_sv() {
   fi
 }
 
+gado() {
+  gado_process
+  gado_prioritize
+}
+
+gado_process() {
+  echo -e -n "all_samples" > gadoProcessInput.tsv
+  for i in ${!{hpoIds}//,/}
+  do
+      echo -e -n "\t${i}" >> gadoProcessInput.tsv
+  done
+
+  local args=()
+  args+=("mode" "PROCESS")
+  args+=("--output" "gadoProcessOutput.tsv")
+  args+=("--caseHpo" "gadoProcessInput.tsv")
+  args+=("--hpoOntology" "!{gadoHpoPath}")
+  args+=("--hpoPredictionsInfo" "!{gadoPredictInfoPath}")
+
+  ${CMD_GADO} "${args[@]}"
+}
+
+gado_prioritize() {
+  local args=()
+  args+=("mode" "PRIORITIZE")
+  args+=("--output" "./gado")
+  args+=("--caseHpoProcessed" "gadoProcessOutput.tsv")
+  args+=("--genes" "!{gadoGenesPath}")
+  args+=("--hpoPredictions" "!{gadoPredictMatrixPath}")
+
+  ${CMD_GADO} "${args[@]}"
+}
+
 capice() {
   capice_vep
   capice_bcftools
@@ -180,9 +213,13 @@ main () {
     annot_sv
   fi
 
+  if [ -n "!{hpoIds}" ]; then
+    gado
+  fi
   capice
   vep
   index
 }
 
 main "$@"
+}
