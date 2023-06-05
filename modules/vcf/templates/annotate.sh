@@ -42,7 +42,7 @@ gado() {
 gado_process() {
   echo -e -n "all_samples" > gadoProcessInput.tsv
   local -r hpo_ids="!{hpoIds}"
-  for i in ${hpo_ids//,/}
+  for i in ${hpo_ids//,/ }
   do
       echo -e -n "\t${i}" >> gadoProcessInput.tsv
   done
@@ -51,13 +51,13 @@ gado_process() {
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/gado/lib/GADO.jar")
-  args+=("mode" "PROCESS")
+  args+=("--mode" "PROCESS")
   args+=("--output" "gadoProcessOutput.tsv")
   args+=("--caseHpo" "gadoProcessInput.tsv")
   args+=("--hpoOntology" "!{gadoHpoPath}")
   args+=("--hpoPredictionsInfo" "!{gadoPredictInfoPath}")
 
-  ${CMD_GADO} "${args[@]}"
+  ${CMD_GADO} java "${args[@]}"
 }
 
 gado_prioritize() {
@@ -65,13 +65,13 @@ gado_prioritize() {
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-jar" "/opt/gado/lib/GADO.jar")
-  args+=("mode" "PRIORITIZE")
+  args+=("--mode" "PRIORITIZE")
   args+=("--output" "./gado")
   args+=("--caseHpoProcessed" "gadoProcessOutput.tsv")
   args+=("--genes" "!{gadoGenesPath}")
   args+=("--hpoPredictions" "!{gadoPredictMatrixPath}")
 
-  ${CMD_GADO} "${args[@]}"
+  ${CMD_GADO} java "${args[@]}"
 }
 
 capice() {
@@ -191,6 +191,7 @@ vep() {
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
+    args+=("--plugin" "GADO,gado/all_samples.txt")
   fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
@@ -229,4 +230,3 @@ main () {
 }
 
 main "$@"
-}
