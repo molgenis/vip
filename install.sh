@@ -169,12 +169,12 @@ download_resources_annotsv() {
 download_resources_gado() {
   local -r gado_dir="${SCRIPT_DIR}/resources_dev/gado/v1.0.1"
     if [ ! -d "${gado_dir}" ]; then
-      mkdir -p "${gado_dir}/genenetwork_bonf_spiked"
+      mkdir -p "${gado_dir}"
 
       local files=()
-      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.cols.txt")
-      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.dat")
-      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.rows.txt")
+      files+=("genenetwork_bonf_spiked.cols.txt")
+      files+=("genenetwork_bonf_spiked.dat")
+      files+=("genenetwork_bonf_spiked.rows.txt")
       files+=("hp.obo")
       files+=("hpo_prediction_genes.txt")
       files+=("predictions_auc_bonf.txt")
