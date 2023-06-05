@@ -173,7 +173,7 @@ download_resources_gado() {
       files+=("predictions_auc_bonf.txt")
 
       for file in "${files[@]}"; do
-        download "https://download.molgeniscloud.org/downloads/vip_dev/resources/gado/v1.0.1/${file}" "${download_dir}/${file}"
+        download "https://download.molgeniscloud.org/downloads/vip_dev/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
       done
     else
       echo -e "skipping download gado resources: already exists"
