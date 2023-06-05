@@ -421,7 +421,7 @@ The `cram` workflow consists of the following steps:
 2. Discover cram index files and create missing indices
 3. Parallelize cram in chunks consisting of one or more contigs and for each chunk
     1. Perform short variant calling with [Clair3](https://github.com/HKU-BAL/Clair3) producing a `gvcf` file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using [GLnexus](https://github.com/dnanexus-rnd/GLnexus).
-    2. Perform structural variant calling with [Manta](https://github.com/Illumina/manta) or [Sniffles2](https://github.com/fritzsedlazeck/Sniffles) producing a `vcf` file per chunk per project.
+    2. Perform structural variant calling with [Manta](https://github.com/Illumina/manta) or [cuteSV](https://github.com/tjiangHIT/cuteSV) producing a `vcf` file per chunk per project.
 4. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
 5. Continue with step 3. of the `vcf` workflow
 

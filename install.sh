@@ -187,6 +187,7 @@ download_images() {
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
   files+=("clair3-v1.0.2.sif")
+  files+=("cutesv-2.0.3.sif")
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17.sif")
@@ -195,7 +196,6 @@ download_images() {
   files+=("vcf-report-5.3.0.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
-  files+=("sniffles2-2.0.7.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
