@@ -302,7 +302,6 @@ main() {
   download_images
   download_images_dev
   download_resources "${assembly}"
-  download_resources_dev "${assembly}"
   #FIXME: remove after clair 3 is fixed
   unzip_reference "${assembly}"
   create_executable
