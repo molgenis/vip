@@ -169,6 +169,7 @@ download_resources_gado() {
       files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.cols.txt")
       files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.dat")
       files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.rows.txt")
+      files+=("hp.obo")
       files+=("hpo_prediction_genes.txt")
       files+=("predictions_auc_bonf.txt")
 
