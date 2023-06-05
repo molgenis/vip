@@ -41,12 +41,16 @@ gado() {
 
 gado_process() {
   echo -e -n "all_samples" > gadoProcessInput.tsv
-  for i in ${!{hpoIds}//,/}
+  local -r hpo_ids="!{hpoIds}"
+  for i in ${hpo_ids//,/}
   do
       echo -e -n "\t${i}" >> gadoProcessInput.tsv
   done
 
   local args=()
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "/opt/gado/lib/GADO.jar")
   args+=("mode" "PROCESS")
   args+=("--output" "gadoProcessOutput.tsv")
   args+=("--caseHpo" "gadoProcessInput.tsv")
@@ -58,6 +62,9 @@ gado_process() {
 
 gado_prioritize() {
   local args=()
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "/opt/gado/lib/GADO.jar")
   args+=("mode" "PRIORITIZE")
   args+=("--output" "./gado")
   args+=("--caseHpoProcessed" "gadoProcessOutput.tsv")
