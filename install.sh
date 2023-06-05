@@ -166,6 +166,26 @@ download_resources_annotsv() {
   fi
 }
 
+download_resources_gado() {
+  local -r gado_dir="${SCRIPT_DIR}/resources_dev/gado/v1.0.1"
+    if [ ! -d "${gado_dir}" ]; then
+      mkdir -p "${gado_dir}/genenetwork_bonf_spiked"
+
+      local files=()
+      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.cols.txt")
+      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.dat")
+      files+=("genenetwork_bonf_spiked/genenetwork_bonf_spiked.rows.txt")
+      files+=("hpo_prediction_genes.txt")
+      files+=("predictions_auc_bonf.txt")
+
+      for file in "${files[@]}"; do
+        download "https://download.molgeniscloud.org/downloads/vip_dev/resources/gado/v1.0.1/${file}" "${download_dir}/${file}"
+      done
+    else
+      echo -e "skipping download gado resources: already exists"
+    fi
+}
+
 download_resources() {
   local -r assembly="${1}"
 
@@ -182,6 +202,7 @@ download_resources() {
   download_resources_molgenis "${assembly}"
   download_resources_vep "${assembly}"
   download_resources_annotsv
+  download_resources_gado
 }
 
 download_images() {
@@ -206,6 +227,18 @@ download_images() {
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
+  done
+}
+
+download_images_dev() {
+  local -r download_dir="${SCRIPT_DIR}/images"
+  mkdir -p "${download_dir}"
+
+  local files=()
+  files+=("gado-1.0.1.sif")
+
+  for file in "${files[@]}"; do
+    download "https://download.molgeniscloud.org/downloads/vip_dev/images/${file}" "${download_dir}/${file}"
   done
 }
 
@@ -274,7 +307,9 @@ main() {
   echo -e "installing ..."
   download_nextflow
   download_images
+  download_images_dev
   download_resources "${assembly}"
+  download_resources_dev "${assembly}"
   #FIXME: remove after clair 3 is fixed
   unzip_reference "${assembly}"
   create_executable
