@@ -313,7 +313,8 @@ workflow vcf {
 
 workflow {
   def sampleSheet = parseSampleSheet(params.input)
-  validateParams(sampleSheet)
+  def assemblies = getAssemblies(sampleSheet)
+  validateVcfParams(assemblies)
 
   // create sample channel, detect vcf and cram indexes
   Channel.from(sampleSheet)
@@ -336,8 +337,7 @@ workflow {
     | vcf
 }
 
-def validateParams(sampleSheet) {
-  def assemblies = getAssemblies(sampleSheet)
+def validateVcfParams(assemblies) {
   validateCommonParams(assemblies)
   
   // general
