@@ -1,0 +1,24 @@
+Bootstrap: localimage
+From: sif/build/openjdk-17.sif
+
+%help
+    Command-line application to call MT variants.
+    Usage: /usr/bin/mutServe
+
+%post
+    version_major=2
+    version_minor=0
+    version_patch=0
+    version_rc=_rc15
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl
+
+    echo $(pwd)
+
+    curl -sL mutserve.vercel.app | bash
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
