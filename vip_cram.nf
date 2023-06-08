@@ -1,6 +1,5 @@
 nextflow.enable.dsl=2
 
-include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
@@ -9,7 +8,7 @@ include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
 include { sniffles2_call; sniffles2_combined_call; sniffles_call_publish } from './modules/cram/sniffles2'
 include { call_publish } from './modules/cram/publish'
-include { vcf } from './vip_vcf'
+include { vcf; validateVcfParams } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
 
@@ -168,7 +167,8 @@ workflow cram {
 
 workflow {
   def sampleSheet = parseSampleSheet(params.input)
-  validateParams(sampleSheet)
+  def assemblies = getAssemblies(sampleSheet)
+  validateCramParams(assemblies)
 
   // create sample channel, detect cram index and continue with cram workflow   
   Channel.from(sampleSheet)
@@ -176,9 +176,8 @@ workflow {
     | cram
 }
 
-def validateParams(sampleSheet) {
-  def assemblies = getAssemblies(sampleSheet)
-  validateCommonParams(assemblies)
+def validateCramParams(assemblies) {
+  validateVcfParams(assemblies)
 }
 
 def parseSampleSheet(csvFile) {

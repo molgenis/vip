@@ -1,10 +1,9 @@
 nextflow.enable.dsl=2
 
-include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { concat_fastq; concat_fastq_paired_end } from './modules/fastq/concat'
 include { minimap2_align; minimap2_align_paired_end; minimap2_index } from './modules/fastq/minimap2'
-include { cram } from './vip_cram'
+include { cram; validateCramParams } from './vip_cram'
 
 //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
 workflow fastq {
@@ -64,7 +63,8 @@ workflow fastq {
 
 workflow {
     def sampleSheet = parseSampleSheet(params.input)
-    validateParams(sampleSheet)
+    def assemblies = getAssemblies(sampleSheet)
+    validateFastqParams(assemblies)
 
     Channel.from(sampleSheet)
         | map { sample -> [sample: sample, sampleSheet: sampleSheet] }
@@ -84,10 +84,8 @@ workflow {
     | fastq
 }
 
-def validateParams(sampleSheet) {
-  def assemblies = getAssemblies(sampleSheet)
-  
-  validateCommonParams(assemblies)
+def validateFastqParams(assemblies) {
+  validateCramParams(assemblies)
   
   assemblies.each { assembly ->
     def fastaMmi = params[assembly].reference.fastaMmi
