@@ -17,7 +17,7 @@ From: sif/build/openjdk-17.sif
 
     echo $(pwd)
 
-    //FIXM: specific version?
+    #FIXME: specific version?
     curl -sL mutserve.vercel.app | bash
 
     # cleanup
