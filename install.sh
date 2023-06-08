@@ -58,7 +58,9 @@ download_resources_molgenis() {
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
-    files+=("GRCh37/hg19.100way.phyloP100way.bw")
+    # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
+    files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
+    files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
     files+=("GRCh37/human_g1k_v37.dict")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh37/human_g1k_v37.fasta.fai")
@@ -89,7 +91,9 @@ download_resources_molgenis() {
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
-    files+=("GRCh38/hg38.phyloP100way.bw")
+    # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
+    files+=("GRCh38/hg38.phyloP100way.bed.gz")
+    files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
@@ -187,6 +191,7 @@ download_images() {
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
   files+=("clair3-v1.0.2.sif")
+  files+=("cutesv-2.0.3.sif")
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17.sif")
@@ -195,7 +200,6 @@ download_images() {
   files+=("vcf-report-5.3.0.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
-  files+=("sniffles2-2.0.7.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"

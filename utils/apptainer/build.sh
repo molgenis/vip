@@ -81,6 +81,7 @@ main() {
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
   images+=("capice-5.1.1")
+  images+=("cutesv-2.0.3")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("minimap2-2.24")
@@ -89,7 +90,6 @@ main() {
   images+=("vcf-inheritance-matcher-2.1.6")
   images+=("vcf-report-5.3.0")
   images+=("manta-1.6.0")
-  images+=("sniffles2-2.0.7")
   
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
