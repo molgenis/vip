@@ -13,7 +13,8 @@ From: sif/build/openjdk-17.sif
 
     # install
     apk update
-    apk add --virtual=.build-dependencies curl bash
+    apk add --virtual=.build-dependencies curl
+    apk add bash
 
     echo $(pwd)
 

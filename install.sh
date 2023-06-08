@@ -200,6 +200,9 @@ download_images() {
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
   done
+
+  #FIXME:
+  download "https://download.molgeniscloud.org/downloads/vip_dev/images/mutServe_2.0.0_rc15.sif" "${download_dir}/mutServe_2.0.0_rc15.sif"
 }
 
 create_executable() {
