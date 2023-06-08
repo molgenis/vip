@@ -79,7 +79,7 @@ main() {
   images+=("build/alpine-3.17.3")
   images+=("build/openjdk-17")
   images+=("bcftools-1.17")
-  images+=("annotsv-3.3.5")
+  images+=("annotsv-3.3.6")
   images+=("capice-5.1.1")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")

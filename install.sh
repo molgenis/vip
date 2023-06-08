@@ -48,13 +48,13 @@ download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20230116.tsv")
-  files+=("inheritance_20230116.tsv")
+  files+=("hpo_20230608.tsv")
+  files+=("inheritance_20230608.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v5.0.0-v1.ubj")
-    files+=("GRCh37/clinvar_20230115.vcf.gz")
-    files+=("GRCh37/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh37/clinvar_20230604.vcf.gz")
+    files+=("GRCh37/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
@@ -71,14 +71,14 @@ download_resources_molgenis() {
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
     files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
     files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh37/vkgl_consensus_20230101.tsv")
+    files+=("GRCh37/vkgl_consensus_20230401.tsv")
     files+=("GRCh37/human_hs37d5.trf.bed")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v5.0.0-v1.ubj")
-    files+=("GRCh38/clinvar_20230115.vcf.gz")
-    files+=("GRCh38/clinvar_20230115.vcf.gz.tbi")
+    files+=("GRCh38/clinvar_20230604.vcf.gz")
+    files+=("GRCh38/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
@@ -95,7 +95,7 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh38/vkgl_consensus_20230101.tsv")
+    files+=("GRCh38/vkgl_consensus_20230401.tsv")
     files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
   fi
 
@@ -136,11 +136,11 @@ download_resources_vep() {
 }
 
 download_resources_annotsv() {
-  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.3.5"
+  local -r annotsv_dir="${SCRIPT_DIR}/resources/annotsv/v3.3.6"
   if [ ! -d "${annotsv_dir}" ]; then
     mkdir -p "${annotsv_dir}"
-    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.3.5.tar.gz ..."
-    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.3.5.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
+    echo -e "downloading from www.lbgi.fr: Annotations_Human_3.3.6.tar.gz ..."
+    wget --quiet --continue "https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.3.6.tar.gz" --output-document - | tar -xz -C "${annotsv_dir}"
   else
     echo -e "skipping download annotsv annotations: already exists"
   fi
@@ -183,7 +183,7 @@ download_images() {
   mkdir -p "${download_dir}"
 
   local files=()
-  files+=("annotsv-3.3.5.sif")
+  files+=("annotsv-3.3.6.sif")
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
   files+=("clair3-v1.0.2.sif")
