@@ -86,7 +86,7 @@ workflow cram {
       | samtools_addreplacerg //to make Manta output the correct sample names
       | map { meta, cram, cramIndex ->
           def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
-           def size = meta.sampleSheet.count { sample ->
+          def size = meta.sampleSheet.count { sample ->
             sample.project_id == meta.sample.project_id
           }
           [groupKey(key, size), [*:meta, sample: [*:meta.sample, manta_cram: cram, manta_cram_index: cramIndex]]]
