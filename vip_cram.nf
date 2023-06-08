@@ -6,11 +6,12 @@ include { findCramIndex } from './modules/cram/utils'
 include { samtools_index; samtools_addreplacerg } from './modules/cram/samtools'
 include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
-include { sniffles2_call; sniffles2_combined_call; sniffles_call_publish } from './modules/cram/sniffles2'
+include { cutesv_call; cutesv_call_publish } from './modules/cram/cutesv'
 include { call_publish } from './modules/cram/publish'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
+include { merge_vcf } from './modules/vcf/merge_vcf'
 
 workflow cram {
   take: meta
@@ -69,15 +70,16 @@ workflow cram {
         }
       | clair3_call_publish
 
-   // call SV variants
+    // call SV variants
     ch_cram_chunked.sv  
       | branch {
         meta ->
           manta: meta.sample.sequencing_platform == 'illumina'
-          sniffles: meta.sample.sequencing_platform == 'nanopore' || meta.sample.sequencing_platform == 'pacbio_hifi'
+          cutesv: meta.sample.sequencing_platform == 'nanopore' || meta.sample.sequencing_platform == 'pacbio_hifi'
       }
       | set { ch_cram_chunked_sv }
 
+    // call SV variants: Manta
     ch_cram_chunked_sv.manta
       | map {meta -> [meta, meta.sample.cram]}
       | samtools_addreplacerg //to make Manta output the correct sample names
@@ -106,37 +108,53 @@ workflow cram {
         }
       | manta_call_publish
 
-    ch_cram_chunked_sv.sniffles
+    // call SV variants: cuteSV
+    ch_cram_chunked_sv.cutesv
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
-      | sniffles2_call
-      | map { meta, snf ->
-          def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
-          def size = meta.sampleSheet.count { sample ->
-            sample.project_id == meta.sample.project_id
-          }
-          [groupKey(key, size), [*:meta, sample: [*:meta.sample, snf: snf] ]]
-        }
-      | groupTuple
-      | map{ key, group -> [[project_id:key.project_id,chunk:key.chunk,assembly:key.assembly, samples:group], group.sample.snf] }
-      | sniffles2_combined_call
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
+      | cutesv_call
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]}
       | multiMap { it -> done: publish: it }
-      | set { ch_vcf_chunked_sv_sniffles_combined }
+      | set { ch_vcf_chunked_sv_cutesv }
 
-    ch_vcf_chunked_sv_sniffles_combined.publish
-      | map {meta ->
-          [groupKey(meta.project_id, meta.chunk.total), meta]
-        }
+    ch_vcf_chunked_sv_cutesv.publish
+      | map { meta -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), meta] }
       | groupTuple
-      | map { key, metaList -> 
+      | map { key, metaList ->
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
-          def meta = metaList.first().findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+          def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
         }
-      | sniffles_call_publish
+      | cutesv_call_publish
 
-    ch_vcf_chunked_sv_sniffles_combined.done.mix(ch_vcf_chunked_sv_manta.done)
-    | set { ch_vcf_chunked_svs_done }
+    ch_vcf_chunked_sv_cutesv.done
+      | map { meta ->
+        def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
+        def size = meta.sampleSheet.count { sample -> sample.project_id == meta.sample.project_id }
+        [groupKey(key, size), meta]
+      }
+      | groupTuple
+      | branch { key, group ->
+          merge: group.size() > 1
+          ready: true
+        }
+      | set { ch_vcf_chunked_sv_cutesv_group }
+
+    ch_vcf_chunked_sv_cutesv_group.merge
+      | map { key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.vcf, group.vcf_index]}
+      | merge_vcf
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
+      | set { ch_vcf_chunked_sv_cutesv_group_merged }
+
+    ch_vcf_chunked_sv_cutesv_group.ready
+      | map { key, group -> [project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group, vcf:group[0].vcf, vcf_index:group[0].vcf_index, vcf_stats:group[0].vcf_stats] }
+      | set { ch_vcf_chunked_sv_cutesv_group_readied }
+
+    ch_vcf_chunked_sv_cutesv_group_merged.mix(ch_vcf_chunked_sv_cutesv_group_readied)
+      | set { ch_vcf_chunked_sv_cutesv_merged }
+
+    // call SV variants: mix Manta and cuteSV
+    ch_vcf_chunked_sv_cutesv_merged.mix(ch_vcf_chunked_sv_manta.done)
+      | set { ch_vcf_chunked_svs_done }
 
     //mix and merge the svs and the snvs
     ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_svs_done)

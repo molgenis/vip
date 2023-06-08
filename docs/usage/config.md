@@ -25,8 +25,6 @@ An additional configuration file can be supplied on the command-line to overwrit
 | cram.clair3.illumina.model_name                 | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
 | cram.clair3.nanopore.model_name                 | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
 | cram.clair3.pacbio_hifi.model_name              | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.sniffles2.GRCh37.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
-| cram.sniffles2.GRCh38.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                               |
@@ -97,17 +95,15 @@ The following sections list all processes and their non-default configuration.
 | minimap2_index            | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
-| process                | configuration                 |
-|------------------------|-------------------------------|
-| samtools_addreplacerg  | *default*                     |
-| clair3_call            | cpus=4 memory='8GB' time='5h' |
-| clair3_call_publish    | *default*                     |
-| manta_call             | cpus=4 memory='8GB' time='5h' |
-| manta_call_publish     | *default*                     |
-| samtools_index         | *default*                     |
-| sniffles2_call         | cpus=4 memory='8GB' time='5h' |
-| sniffles2_combined_call| cpus=4 memory='8GB' time='5h' |
-| sniffles2_call_publish | *default*                     |
+| process               | configuration                 |
+|-----------------------|-------------------------------|
+| samtools_addreplacerg | *default*                     |
+| clair3_call           | cpus=4 memory='8GB' time='5h' |
+| clair3_call_publish   | *default*                     |
+| manta_call            | cpus=4 memory='8GB' time='5h' |
+| manta_call_publish    | *default*                     |
+| samtools_index        | *default*                     |
+| cutesv_call           | cpus=4 memory='8GB' time='5h' |
 
 ### VCF
 | process                  | configuration                 |
