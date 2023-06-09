@@ -6,12 +6,11 @@ include { findCramIndex } from './modules/cram/utils'
 include { samtools_index; samtools_addreplacerg } from './modules/cram/samtools'
 include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
-include { cutesv_call; cutesv_call_publish } from './modules/cram/cutesv'
+include { cutesv_call; cutesv_call_publish; cutesv_merge } from './modules/cram/cutesv'
 include { call_publish } from './modules/cram/publish'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
-include { merge_vcf } from './modules/vcf/merge_vcf'
 
 workflow cram {
   take: meta
@@ -141,7 +140,7 @@ workflow cram {
 
     ch_vcf_chunked_sv_cutesv_group.merge
       | map { key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.vcf, group.vcf_index]}
-      | merge_vcf
+      | cutesv_merge
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
       | set { ch_vcf_chunked_sv_cutesv_group_merged }
 

@@ -27,6 +27,27 @@ test_cram_nanopore () {
   fi
 }
 
+test_cram_nanopore_duo () {
+  download_test_resource "nanopore.cram"
+  ln -sf ${TEST_RESOURCES_DOWNLOADS_DIR}/nanopore.cram ${TEST_RESOURCES_DOWNLOADS_DIR}/nanopore_copy.cram
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+
+  local args=()
+  args+=("--workflow" "cram")
+  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
+  args+=("--input" "${TEST_RESOURCES_DIR}/cram_nanopore_duo.tsv")
+  args+=("--output" "${OUTPUT_DIR}")
+  args+=("--resume")
+
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
+    return 1
+  fi
+}
+
 test_bam () {
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
@@ -112,6 +133,11 @@ run_tests () {
   TEST_ID="cram_nanopore"
   before_each
   test_cram_nanopore
+  after_each
+
+  TEST_ID="cram_nanopore_duo"
+  before_each
+  test_cram_nanopore_duo
   after_each
 
   TEST_ID="bam"

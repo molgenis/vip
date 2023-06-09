@@ -19,6 +19,19 @@ process cutesv_call {
     template 'cutesv_call.sh'
 }
 
+process cutesv_merge {
+  input:
+    tuple val(meta), path(vcfs), path(vcfIndexes)
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+  shell:
+    vcfOut = (meta.chunk && meta.chunk.total > 1 ? "${meta.project_id}_chunk_${meta.chunk.index}" : meta.project_id) + "_cutesv_merged.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    template 'cutesv_merge.sh'
+}
+
 process cutesv_call_publish {
   publishDir "$params.output/intermediates", mode: 'link'
 
