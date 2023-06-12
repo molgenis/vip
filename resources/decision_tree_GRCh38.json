@@ -121,7 +121,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "sv"
+            "nextNode": "gnomAD"
           }
         },
         {
@@ -147,7 +147,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "sv"
+            "nextNode": "gnomAD"
           }
         },
         {
