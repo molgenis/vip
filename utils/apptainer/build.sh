@@ -78,6 +78,7 @@ main() {
   local images=()
   images+=("build/alpine-3.17.3")
   images+=("build/openjdk-17")
+  images+=("build/ubuntu-22.04")
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
   images+=("capice-5.1.1")
@@ -85,7 +86,7 @@ main() {
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("minimap2-2.24")
-  images+=("samtools-1.17")
+  images+=("samtools-1.17-patch1")
   images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")
   images+=("vcf-report-5.3.0")
