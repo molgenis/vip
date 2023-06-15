@@ -46,14 +46,14 @@ workflow cram {
 
     ch_vcf_chunked_snvs.done
      | map { meta ->
-        def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
+        def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly, sequencing_platform:meta.sample.sequencing_platform]
         def size = meta.sampleSheet.count { sample ->
           sample.project_id == meta.sample.project_id
         }
         [groupKey(key, size), meta]
       }
     | groupTuple
-    | map { key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.vcf, group.vcf_index]}
+    | map { key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group, sequencing_platform:key.sequencing_platform], group.vcf, group.vcf_index]}
     | merge_gvcf
     | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
     | set { ch_vcf_chunked_snvs_merged }
@@ -92,7 +92,7 @@ workflow cram {
       | groupTuple
       | map{ key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.sample.manta_cram, group.sample.manta_cram_index] }
       | manta_call
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, sequencing_platform:"illumina"]}
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_manta }
       
@@ -112,10 +112,13 @@ workflow cram {
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | cutesv_call
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]}
-      | multiMap { it -> done: publish: it }
-      | set { ch_vcf_chunked_sv_cutesv }
+      // Only publish the intermediate result until this issues:
+      // - https://github.com/tjiangHIT/cuteSV/issues/124 
+      // - calls outside the regions of the bed file 
+      // are resolved 
+      | set { ch_vcf_chunked_sv_cutesv_publish }
 
-    ch_vcf_chunked_sv_cutesv.publish
+    ch_vcf_chunked_sv_cutesv_publish
       | map { meta -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), meta] }
       | groupTuple
       | map { key, metaList ->
@@ -125,40 +128,11 @@ workflow cram {
         }
       | cutesv_call_publish
 
-    ch_vcf_chunked_sv_cutesv.done
-      | map { meta ->
-        def key = [project_id:meta.sample.project_id, chunk:meta.chunk, assembly:meta.sample.assembly]
-        def size = meta.sampleSheet.count { sample -> sample.project_id == meta.sample.project_id }
-        [groupKey(key, size), meta]
-      }
-      | groupTuple
-      | branch { key, group ->
-          merge: group.size() > 1
-          ready: true
-        }
-      | set { ch_vcf_chunked_sv_cutesv_group }
-
-    ch_vcf_chunked_sv_cutesv_group.merge
-      | map { key, group -> [[project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group], group.vcf, group.vcf_index]}
-      | cutesv_merge
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats]}
-      | set { ch_vcf_chunked_sv_cutesv_group_merged }
-
-    ch_vcf_chunked_sv_cutesv_group.ready
-      | map { key, group -> [project_id:key.project_id, chunk:key.chunk, assembly:key.assembly, samples:group, vcf:group[0].vcf, vcf_index:group[0].vcf_index, vcf_stats:group[0].vcf_stats] }
-      | set { ch_vcf_chunked_sv_cutesv_group_readied }
-
-    ch_vcf_chunked_sv_cutesv_group_merged.mix(ch_vcf_chunked_sv_cutesv_group_readied)
-      | set { ch_vcf_chunked_sv_cutesv_merged }
-
-    // call SV variants: mix Manta and cuteSV
-    ch_vcf_chunked_sv_cutesv_merged.mix(ch_vcf_chunked_sv_manta.done)
-      | set { ch_vcf_chunked_svs_done }
-
     //mix and merge the svs and the snvs
-    ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_svs_done)
-    | map { meta -> [groupKey([project_id: meta.project_id, chunk: meta.chunk],2), meta]}
-    | groupTuple(by:[0], size:2)
+    ch_vcf_chunked_snvs_merged.mix(ch_vcf_chunked_sv_manta.done)
+    //Group size 2 for Illumina (SV + SNV), size 1 for Nanopore/PacBio (SNV only)
+    | map { meta -> [groupKey([project_id: meta.project_id, chunk: meta.chunk],meta.sequencing_platform=="illumina"?2:1), meta]}
+    | groupTuple
     //metadata for both sv and snv should be identical except for the vcf related content, just pick the first
     | map{ key, group -> [group[0], group.vcf, group.vcf_index]}
     | concat_vcf

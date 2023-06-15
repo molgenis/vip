@@ -39,9 +39,12 @@ call_structural_variants () {
 }
 
 postprocess () {
-  ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "cutesv_output.vcf"
+  ${CMD_BCFTOOLS} view --output-type z --output "unfiltered_!{vcfOut}" --no-version --threads "!{task.cpus}" "cutesv_output.vcf"
+  ${CMD_BCFTOOLS} index --csi --output "unfiltered_!{vcfOutIndex}" --threads "!{task.cpus}" "unfiltered_!{vcfOut}"
+  ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --regions-file "!{bed}" --no-version --threads "!{task.cpus}" "unfiltered_!{vcfOut}"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  rm "unfiltered_!{vcfOutIndex}" "unfiltered_!{vcfOut}"
 }
 
 main() {
