@@ -8,10 +8,14 @@ An additional configuration file can be supplied on the command-line to overwrit
 |---------------------------|-------------|---------------------------------------------|
 | GRCh37.reference.fasta    | *installed* | human_g1k_v37                               |
 | GRCh37.reference.fastaFai | *installed* |                                             |
- | GRCh37.reference.fastaGzi | *installed* |                                             |
- | GRCh38.reference.fasta    | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
- | GRCh38.reference.fastaFai | *installed* |                                             |
- | GRCh38.reference.fastaGzi | *installed* |                                             |
+| GRCh37.reference.fastaGzi | *installed* |                                             |
+| GRCh38.reference.fasta    | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
+| GRCh38.reference.fastaFai | *installed* |                                             |
+| GRCh38.reference.fastaGzi | *installed* |                                             |
+
+**Warning:**
+Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
+
 
 ### FASTQ
 | key                       | default     | description                                              |
