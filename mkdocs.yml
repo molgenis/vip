@@ -1,4 +1,5 @@
 site_name: Variant Interpretation Pipeline
+site_description: VIP is a flexible human variant interpretation pipeline for rare disease using state-of-the-art pathogenicity prediction (CAPICE) and template-based interactive reporting to facilitate decision support.
 site_url: https://example.com/
 repo_url: https://github.com/molgenis/vip/
 nav:
