@@ -18,5 +18,3 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [VKGL](https://vkgl.molgeniscloud.org/)
 - [phyloP](http://compgen.cshl.edu/phast)
 - [cuteSV](https://github.com/tjiangHIT/cuteSV)
-
-TEST
