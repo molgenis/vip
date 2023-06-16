@@ -39,12 +39,13 @@ call_structural_variants () {
 }
 
 postprocess () {
-  ${CMD_BCFTOOLS} view --output-type z --output "unfiltered_!{vcfOut}" --no-version --threads "!{task.cpus}" "cutesv_output.vcf"
-  ${CMD_BCFTOOLS} index --csi --output "unfiltered_!{vcfOutIndex}" --threads "!{task.cpus}" "unfiltered_!{vcfOut}"
-  ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --regions-file "!{bed}" --no-version --threads "!{task.cpus}" "unfiltered_!{vcfOut}"
+  # Workaround for https://github.com/tjiangHIT/cuteSV/issues/124
+  cat "cutesv_output.vcf" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{gsub(/[YSB]/, "C", $4) gsub(/[WMRDHV]/, "A", $4) gsub("K", "G", $4)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "replaced_IUPAC_cuteSV.vcf.gz" --no-version --threads "!{task.cpus}"
+  ${CMD_BCFTOOLS} index --csi --output "replaced_IUPAC_cuteSV.vcf.gz.csi" --threads "!{task.cpus}" "replaced_IUPAC_cuteSV.vcf.gz"
+  ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --regions-file "!{bed}" --no-version --threads "!{task.cpus}" "replaced_IUPAC_cuteSV.vcf.gz"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
-  rm "unfiltered_!{vcfOutIndex}" "unfiltered_!{vcfOut}"
+  rm "replaced_IUPAC_cuteSV.vcf.gz.csi" "replaced_IUPAC_cuteSV.vcf.gz"
 }
 
 main() {
