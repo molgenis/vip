@@ -8,10 +8,10 @@ An additional configuration file can be supplied on the command-line to overwrit
 |---------------------------|-------------|---------------------------------------------|
 | GRCh37.reference.fasta    | *installed* | human_g1k_v37                               |
 | GRCh37.reference.fastaFai | *installed* |                                             |
- | GRCh37.reference.fastaGzi | *installed* |                                             |
- | GRCh38.reference.fasta    | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
- | GRCh38.reference.fastaFai | *installed* |                                             |
- | GRCh38.reference.fastaGzi | *installed* |                                             |
+| GRCh37.reference.fastaGzi | *installed* |                                             |
+| GRCh38.reference.fasta    | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
+| GRCh38.reference.fastaFai | *installed* |                                             |
+| GRCh38.reference.fastaGzi | *installed* |                                             |
 
 ### FASTQ
 | key                       | default     | description                                              |
@@ -20,11 +20,18 @@ An additional configuration file can be supplied on the command-line to overwrit
 | GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2) |
 
 ### CRAM
-| key                                             | default             | description                                                                   |
-|-------------------------------------------------|---------------------|-------------------------------------------------------------------------------|
-| cram.clair3.illumina.model_name                 | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.clair3.nanopore.model_name                 | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.clair3.pacbio_hifi.model_name              | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
+| key                                          | default             | description                                                                                                                                             |
+|----------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cram.detect_str                              | true                | enable/disable the detection of short tandem repeats                                                                                                    |
+| cram.clair3.illumina.model_name              | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.clair3.nanopore.model_name              | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.clair3.pacbio_hifi.model_name           | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.expansionhunter.aligner                 | dag-aligner         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [dag-aligner, path-aligner]          |
+| cram.expansionhunter.analysis_mode           | streaming           | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [seeking , streaming]                |
+| cram.expansionhunter.log_level               | warn                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [trace, debug, info, warn, or error] |
+| cram.expansionhunter.region_extension_length | 1000                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| cram.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| cram.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                               |
@@ -63,7 +70,7 @@ An additional configuration file can be supplied on the command-line to overwrit
 | vcf.classify_samples.GRCh37.decision_tree     | *installed*     | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.classify_samples.GRCh38.decision_tree     | *installed*     | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.filter.classes                            | VUS,LP,P        | for details, see [here](../advanced/classification_trees)                                                                                                                 |
-| vcf.filter.consequences                       | true            | allowed values: [true, false]. true: filter individual consequences, false: keep all consequences for a variant if one consequence filter passes.                                                                                                              |
+| vcf.filter.consequences                       | true            | allowed values: [true, false]. true: filter individual consequences, false: keep all consequences for a variant if one consequence filter passes.                         |
 | vcf.filter_samples.classes                    | MV,OK           | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.report.max_records                        |                 |                                                                                                                                                                           |
 | vcf.report.max_samples                        |                 |                                                                                                                                                                           |
