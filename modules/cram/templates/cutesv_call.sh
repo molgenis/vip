@@ -38,9 +38,34 @@ call_structural_variants () {
     ${CMD_CUTESV} "${args[@]}"
 }
 
+fixref () {
+  # Workaround for https://github.com/tjiangHIT/cuteSV/issues/124
+  while read line
+  do
+    IFS=$'\t'
+    fields=($line)
+    if [[ $line != \#* ]]; then
+      ref=$(${CMD_SAMTOOLS} faidx "!{reference}" "${fields[0]}:${fields[1]}-${fields[1]}" | sed -n '2 p')
+      fields[3]="${ref}"
+      length=${#fields[4]}
+      #Fix breakend ALTS
+      if [[ ${fields[4]} == \]* && ${fields[4]} == *N ]]; then
+        fields[4]="${fields[4]:0:length}${ref}"
+      elif [[ ${fields[4]} == *\[ && ${fields[4]} == N* ]]; then
+        fields[4]="${ref}${theStr:length}"
+      #Fix regular insertion ALT
+      elif [[ ${fields[4]} == N* && ${length} -gt 1 ]]; then
+        fields[4]="${ref}${theStr:length}"
+      fi
+    fi
+    echo "${fields[@]}" >> "fixed_ref_output.vcf"
+    
+  done < "cutesv_output.vcf"
+}
+
 postprocess () {
   # Workaround for https://github.com/tjiangHIT/cuteSV/issues/124
-  cat "cutesv_output.vcf" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{gsub(/[YSB]/, "C", $4) gsub(/[WMRDHV]/, "A", $4) gsub("K", "G", $4)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "replaced_IUPAC_cuteSV.vcf.gz" --no-version --threads "!{task.cpus}"
+  cat "fixed_ref_output.vcf" | awk -v FS='\t' -v OFS='\t' '/^[^#]/{gsub(/[YSB]/, "C", $4) gsub(/[WMRDHV]/, "A", $4) gsub("K", "G", $4)} 1' | ${CMD_BCFTOOLS} view --output-type z --output "replaced_IUPAC_cuteSV.vcf.gz" --no-version --threads "!{task.cpus}"
   ${CMD_BCFTOOLS} index --csi --output "replaced_IUPAC_cuteSV.vcf.gz.csi" --threads "!{task.cpus}" "replaced_IUPAC_cuteSV.vcf.gz"
   ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --regions-file "!{bed}" --no-version --threads "!{task.cpus}" "replaced_IUPAC_cuteSV.vcf.gz"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
@@ -52,7 +77,7 @@ main() {
     convert_to_bam
     call_structural_variants
     convert_to_bam_cleanup
-
+    fixref
     postprocess
 }
 
