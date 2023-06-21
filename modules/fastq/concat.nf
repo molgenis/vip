@@ -1,4 +1,6 @@
 process concat_fastq {
+  label 'fastq_concat'
+
   input:
     tuple val(meta), path(fastqs)
   output:
@@ -12,6 +14,8 @@ process concat_fastq {
 
 
 process concat_fastq_paired_end {
+  label 'fastq_concat_paired_end'
+  
   input:
     tuple val(meta), path(fastq_r1s), path(fastq_r2s)
   output:

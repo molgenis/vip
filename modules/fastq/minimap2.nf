@@ -1,45 +1,64 @@
 process minimap2_align {
+  label 'minimap2_align'
+
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(fastq)
-  output:
-    tuple val(meta), path(cram), path(cramCrai)
-  shell:
-    reference=params[meta.sample.assembly].reference.fasta
-    referenceMmi="${meta.fasta_mmi}"
-    cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
-    cramCrai="${cram}.crai"
 
-    preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : (meta.sample.sequencing_platform == "pacbio_hifi" ? "map-hifi" : "")
+  output:
+    tuple val(meta), path(cram), path(cramCrai), path(cramStats)
+
+  shell:
+    reference=params[meta.project.assembly].reference.fasta
+    referenceMmi=params[meta.project.assembly].reference.fastaMmi
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
+    cramCrai="${cram}.crai"
+    cramStats="${cram}.stats"
+
+    preset=meta.project.sequencing_platform == "nanopore" ? "map-ont" : (meta.project.sequencing_platform == "pacbio_hifi" ? "map-hifi" : "")
 
     template 'minimap2_align.sh'
+  
+  stub:
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
+    cramCrai="${cram}.crai"
+    cramStats="${cram}.stats"
+    """
+    touch "${cram}"
+    touch "${cramCrai}"
+    echo -e "chr1\t248956422\t16617476\t118422" > "${cramStats}"
+    """
 }
 
 process minimap2_align_paired_end {
+  label 'minimap2_align_paired_end'
+
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(fastqR1), path(fastqR2)
+
   output:
-    tuple val(meta), path(cram), path(cramCrai)
+    tuple val(meta), path(cram), path(cramCrai), path(cramStats)
+
   shell:
-    reference=params[meta.sample.assembly].reference.fasta
-    referenceMmi="${meta.fasta_mmi}"
-    cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
+    reference=params[meta.project.assembly].reference.fasta
+    referenceMmi=params[meta.project.assembly].reference.fastaMmi
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
+    cramStats="${cram}.stats"
 
     template 'minimap2_align_paired_end.sh'
-}
-
-process minimap2_index {
-  input:
-    val(meta)
-  output:
-    tuple val(meta), path(fasta_mmi)
-  shell:
-    reference=params[meta.sample.assembly].reference.fasta
-    fasta_mmi="reference.mmi"
-
-    template 'minimap2_index.sh'
+  
+  stub:
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
+    cramCrai="${cram}.crai"
+    cramStats="${cram}.stats"
+    
+    """
+    touch "${cram}"
+    touch "${cramCrai}"
+    echo -e "chr1\t248956422\t16617476\t118422" > "${cramStats}"
+    """
 }

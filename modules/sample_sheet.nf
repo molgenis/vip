@@ -11,7 +11,7 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     ],
     family_id: [
       type: "string",
-      default: { "vip_fam${seq_nr++}" },
+      default: { "fam${seq_nr++}" },
       regex: /[a-zA-Z0-9_-]+/
     ],
     individual_id: [
@@ -45,12 +45,14 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     assembly: [
       type: "string",
       default: { 'GRCh38' },
-      enum: ['GRCh37', 'GRCh38']
+      enum: ['GRCh37', 'GRCh38'],
+      scope: "project"
     ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },
-      enum: ['WES', 'WGS']
+      enum: ['WES', 'WGS'],
+      scope: "project"
     ]
   ]
 
@@ -89,9 +91,15 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     samples << sample
   }
 
-  validate(samples);
-  
-  return samples
+  def projects
+  try {
+    projects = parseProjects(samples, cols)
+    projects.each { project -> validate(project.samples)}
+  } catch(IllegalArgumentException e) {
+    exit 1, "error parsing '${csvFilename}': ${e.message}"
+  }
+
+  return projects
 }
 
 def validate(samples){
@@ -212,6 +220,38 @@ def parseSample(tokens, cols, rootDir) {
     return sample
 }
 
-def getAssemblies(sampleSheet) {
-  sampleSheet.collect(sample -> sample.assembly).unique()
+def parseProjects(samples, cols) {
+  def colIds = cols.findAll { it.value.scope == 'project' }.collect([] as Set){ it.key }
+  
+  // group samples by project id
+  def samplesByProject = [:]
+  samples.each { sample -> 
+    def projectSamples = samplesByProject[sample.project_id]
+    if(projectSamples == null) {
+      projectSamples = []
+      samplesByProject[sample.project_id] = projectSamples
+    }
+    projectSamples.push([*:sample].findAll { it.key != 'project_id'})
+  }
+  
+  // create projects
+  def projects = []
+  samplesByProject.each { projectId, projectSamples -> 
+    def project = [id: projectId]
+    colIds.each { colId ->
+        def colValues = projectSamples.unique(false) { it[colId] }
+        if(colValues.size() > 1) {
+            throw new IllegalArgumentException("project '${projectId}' column '${colId}' values must be equal for all project samples")
+        }
+        project[colId] = projectSamples.first()[colId]
+    }
+    project.samples = projectSamples.collect { projectSample -> projectSample.findAll { !colIds.contains(it.key) } }
+    projects << project
+  }
+
+  return projects
+}
+
+def getAssemblies(projects) {
+  projects.collect(project -> project.assembly).unique()
 }

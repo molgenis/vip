@@ -1,3 +1,11 @@
+def getCramRegex() {
+  /.+(?:\.bam|\.cram|\.sam)/
+}
+
+def getVcfRegex() {
+  /.+[^\.g](?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz)$/
+}
+
 def parseFastaIndex(faiFile) {
   def lines = new File(faiFile).readLines("UTF-8")
   if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
@@ -18,7 +26,7 @@ def parseFastaIndex(faiFile) {
 }
 
 def determineChunks(meta) {
-    def records = parseFastaIndex(params[meta.sample.assembly].reference.fastaFai)
+    def records = parseFastaIndex(params[meta.project.assembly].reference.fastaFai)
 
     long sizeMax = records.max{ record -> record.size }.size
     long size = 0L;
@@ -37,7 +45,6 @@ def determineChunks(meta) {
     if(regions.size() > 0) {
         chunks.add(regions)
     }
-
     return chunks
 }
 
@@ -45,14 +52,6 @@ def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
     chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ])
-}
-
-def findVcfIndex(vcf) {
-    def vcfIndex
-    if(vcf == null) vcfIndex = null
-    else if(file(vcf + ".csi").exists()) vcfIndex = vcf + ".csi"
-    else if(file(vcf + ".tbi").exists()) vcfIndex = vcf + ".tbi"
-    vcfIndex
 }
 
 def createPedigree(sampleSheet) {

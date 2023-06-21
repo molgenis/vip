@@ -1,25 +1,23 @@
-include { basename } from './utils'
-
-process filter_samples {
-  label 'vcf_filter_samples'
+process validate {
+  label 'vcf_validate'
   
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
+    tuple val(meta), path(vcf)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    basename = basename(meta)
-    vcfOut = "${basename}_filtered_samples.vcf.gz"
+    samplesFileData = meta.project.samples.collect { sample -> sample.individual_id }.join("\n")
+
+    vcfOut = "${meta.project.id}_validated.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
-    
-    template 'filter_samples.sh'
+
+    template 'validate.sh'
   
   stub:
-    basename = basename(meta)
-    vcfOut = "${basename}_filtered_samples.vcf.gz"
+    vcfOut = "${meta.project.id}_validated.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

@@ -6,25 +6,6 @@ SCRIPT_NAME="$(basename "$0")"
 
 source ${SCRIPT_DIR}/test_utils.sh
 
-test_gvcf () {
-  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
-
-  local args=()
-  args+=("--workflow" "vcf")
-  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--input" "${TEST_RESOURCES_DIR}/gvcf.tsv")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--resume")
-
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
-    return 1
-  fi
-
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
-    return 1
-  fi
-}
-
 test_empty_input () {
   local args=()
   args+=("--workflow" "vcf")
@@ -75,28 +56,6 @@ test_empty_output_filter_samples () {
   fi
 
   if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 0 ]; then
-    return 1
-  fi
-}
-
-test_multiproject () {
-  echo -e "params { vcf.gvcf_merge_preset = \"DeepVariant\" }" > "${OUTPUT_DIR}/custom.cfg"
-
-  local args=()
-  args+=("--workflow" "vcf")
-  args+=("--input" "${TEST_RESOURCES_DIR}/multiproject.tsv")
-  args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--output" "${OUTPUT_DIR}")
-  args+=("--resume")
-
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
-    return 1
-  fi
-
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip0.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
-    return 1
-  fi
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip1.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
     return 1
   fi
 }
@@ -287,11 +246,6 @@ test_lb_b38 () {
 run_tests () {
   before_all
 
-  TEST_ID="gvcf"
-  before_each
-  test_gvcf
-  after_each
-
   TEST_ID="test_empty_input"
   before_each
   test_empty_input
@@ -305,11 +259,6 @@ run_tests () {
   TEST_ID="test_empty_output_filter_samples"
   before_each
   test_empty_output_filter_samples
-  after_each
-
-  TEST_ID="test_multiproject"
-  before_each
-  test_multiproject
   after_each
 
   TEST_ID="test_multiproject_classify"

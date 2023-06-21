@@ -12,6 +12,7 @@ usage() {
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
   -r, --resume                   resume execution using cached results (default: false)
+  -s, --stub                     quickly prototype workflow logic using process script stubs
   -h, --help                     print this message and exit"
 }
 
@@ -22,6 +23,7 @@ validate() {
   local -r config="${4}"
   local -r profile="${5}"
   local -r resume="${6}"
+  local -r stub="${7}"
   
   if [[ -z "${workflow}" ]]; then
     >&2 echo -e "error: missing required -w / --workflow"
@@ -66,6 +68,7 @@ execute_workflow() {
   local -r paramConfig="${4}"
   local -r paramProfile="${5}"
   local -r paramResume="${6}"
+  local -r paramStub="${7}"
 
   rm -f "${paramOutput}/nxf_report.html"
   rm -f "${paramOutput}/nxf_timeline.html"
@@ -119,12 +122,14 @@ execute_workflow() {
   if [[ "${paramResume}" == "true" ]]; then
     args+=("-resume")
   fi
-
+  if [[ "${paramStub}" == "true" ]]; then
+    args+=("-stub")
+  fi
   (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.04.1" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}")
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rh --long workflow:,input:,output:,config:,profile:,resume,help -- "$@")
+  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rsh --long workflow:,input:,output:,config:,profile:,resume,stub,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -142,6 +147,7 @@ main() {
     profile="local"
   fi
   local resume="false"
+  local stub="false"
 
   eval set -- "${args}"
   while :; do
@@ -175,6 +181,10 @@ main() {
       resume="true"
       shift
       ;;
+    -s | --stub)
+      stub="true"
+      shift
+      ;;
     --)
       shift
       break
@@ -186,7 +196,7 @@ main() {
     esac
   done
 
-  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}"
+  validate "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}" "${stub}"
 
   if [[ "${resume}" == "true" ]] && ! [[ -d "${output}" ]]; then
     resume="false"
@@ -195,7 +205,7 @@ main() {
     mkdir -p "${output}"
   fi
   
-  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}"
+  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}" "${stub}"
 }
 
 main "${@}"

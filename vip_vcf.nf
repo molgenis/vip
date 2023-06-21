@@ -2,14 +2,8 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { findVcfIndex; createPedigree } from './modules/utils'
-include { findCramIndex } from './modules/cram/utils'
-include { samtools_index } from './modules/cram/samtools'
-include { convert } from './modules/vcf/convert'
-include { index } from './modules/vcf/index'
-include { stats } from './modules/vcf/stats'
-include { merge_vcf } from './modules/vcf/merge_vcf'
-include { merge_gvcf } from './modules/vcf/merge_gvcf'
+include { getCramRegex; getVcfRegex } from './modules/utils'
+include { validate } from './modules/vcf/validate'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -21,109 +15,15 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter; getVcfRegex; isGVcf; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
 
-/*
- * input:
- *   [
- *     sample: [],      
- *     sampleSheet: [],
- *     chunk: []        <-- optional, if defined then meta.chunk.total must be equal for all channel items
- *   ]
+/**
+ * input: [project, vcf, ...]
  */
 workflow vcf {
     take: meta
     main:
-      // emit unique vcfs with corresponding sample sheet rows
       meta
-        | map { meta ->
-            def key = [meta.sample.vcf, meta.sample.vcf_index, meta.sample.vcf_stats]
-            def size = meta.sampleSheet.count { sample ->
-              sample.vcf == meta.sample.vcf &&
-              sample.vcf_index == meta.sample.vcf_index &&
-              sample.vcf_stats == meta.sample.vcf_stats
-            } * (meta.chunk?.total ?: 1)
-            [groupKey(key, size), meta]
-          }
-        | groupTuple
-        | map { key, group -> [vcf: key[0], vcf_index: key[1], vcf_stats: key[2], metaList: group] }
-        | branch { meta ->
-            convert: !(meta.vcf ==~ /.+\.vcf\.gz/)
-            index:   meta.vcf_index == null
-            stats:   meta.vcf_stats == null
-            ready:   true
-          }
-        | set { ch_vcfs }
-    
-      // preprocess vcfs
-      ch_vcfs.convert
-        | map { meta -> [meta, meta.vcf] }
-        | convert
-        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
-        | set { ch_vcfs_converted }
-
-      ch_vcfs.index
-        | map { meta -> [meta, meta.vcf] }
-        | index
-        | map { meta, vcfIndex, vcfStats -> [*:meta, vcf_index: vcfIndex, vcf_stats: vcfStats] }
-        | set { ch_vcfs_indexed }
-
-      ch_vcfs.stats
-        | map { meta -> [meta, meta.vcf, meta.vcf_index] }
-        | stats
-        | map { meta, vcfStats -> [*:meta, vcf_stats: vcfStats] }
-        | set { ch_vcfs_statsed }
-
-      ch_vcfs.ready.mix(ch_vcfs_converted, ch_vcfs_indexed, ch_vcfs_statsed)
-        | flatMap { meta -> meta.metaList.collect { metaSample -> [*:meta, *:metaSample].findAll {it.key != 'metaList'} } }
-        | set { ch_vcfs_preprocessed }
-
-      // group vcfs per project
-      ch_vcfs_preprocessed
-        | map { meta ->
-            def key = [meta.sample.project_id, meta.sample.assembly, meta.chunk]
-            def size = meta.sampleSheet.count{ it.project_id == meta.sample.project_id }
-            [groupKey(key, size), meta]
-          }
-        | groupTuple
-        | map { key, group -> [project_id: key[0], assembly: key[1], chunk: key[2], sampleSheet: group.sort { it.sample.index } ] }
-        | branch { meta ->
-            merge_gvcfs: isGVcf(meta.sampleSheet.first().vcf)
-            merge_vcfs: meta.sampleSheet.collect{ it.vcf }.unique().size() > 1
-            ready: true
-          }
-        | set { ch_project_vcfs }
-
-      // merge unique project vcfs
-      ch_project_vcfs.merge_vcfs
-        | map { meta -> [ meta, meta.sampleSheet.collect{ it.vcf }.unique(), meta.sampleSheet.collect{ it.vcf_index }.unique() ] }
-        | merge_vcf
-        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats, sampleSheet: meta.sampleSheet.collect { it.sample }] }
-        | set { ch_project_vcfs_merged_vcfs }
-
-      ch_project_vcfs.merge_gvcfs
-        | map { meta -> [ meta, meta.sampleSheet.collect{ it.vcf }.unique(), meta.sampleSheet.collect{ it.vcf_index }.unique() ] }
-        | merge_gvcf
-        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats, sampleSheet: meta.sampleSheet.collect { it.sample }] }
-        | set { ch_project_vcfs_merged_gvcfs }
-      
-      ch_project_vcfs.ready
-        | map { meta ->
-            def sample = meta.sampleSheet.first()
-            [ *:meta, vcf: sample.vcf, vcf_index: sample.vcf_index, vcf_stats: sample.vcf_stats, sampleSheet: meta.sampleSheet.collect { it.sample } ]
-          }
-        | mix(ch_project_vcfs_merged_vcfs, ch_project_vcfs_merged_gvcfs)
-        | set { ch_project_vcfs_merged }
-
-      // scatter inputs
-      ch_project_vcfs_merged
-        | branch { meta ->
-            scatter: meta.chunk == null
-            ready: true
-          }
-        | set { ch_inputs }
-
-      ch_inputs.scatter
         | flatMap { meta -> scatter(meta) }
         | branch { meta ->
             split: meta.chunk.total > 1
@@ -132,17 +32,14 @@ workflow vcf {
         | set { ch_inputs_scattered }
 
       ch_inputs_scattered.split
-        | map { meta -> [meta, meta.vcf, meta.vcf_index] }
+        | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
         | split
-        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: vcfChunk, vcf_index: vcfChunkIndex, vcf_stats: vcfChunkStats] }
-        | set { ch_inputs_splitted }
-    
-      ch_inputs_splitted.mix(ch_inputs_scattered.ready, ch_inputs.ready)
-        | set { ch_inputs_scattered }
+        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }
+        | set { ch_inputs_scattered_split }
 
       // process chunks
-      ch_inputs_scattered
-        | map { meta -> [[*:meta, probands: getProbands(meta.sampleSheet), hpo_ids: getHpoIds(meta.sampleSheet) ], meta.vcf, meta.vcf_index, meta.vcf_stats] }
+      Channel.empty().mix(ch_inputs_scattered.ready, ch_inputs_scattered_split)
+        | map { meta -> [[*:meta, probands: getProbands(meta.project.samples), hpo_ids: getHpoIds(meta.project.samples) ], meta.vcf.data, meta.vcf.index, meta.vcf.stats] }
         | branch { meta, vcf, vcfIndex, vcfStats ->
             process: nrRecords(vcfStats) > 0
             empty: true
@@ -277,7 +174,7 @@ workflow vcf {
             | concat
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->
-                slice: meta.sampleSheet.any{ sample -> sample.cram != null }
+                slice: meta.samples.any{ sample -> sample.cram != null }
                 ready: true
               }
             | set { ch_concated }
@@ -288,17 +185,17 @@ workflow vcf {
 
           ch_output_singleton.mix(ch_concated)
             | branch { meta ->
-                slice: meta.sampleSheet.any{ sample -> sample.cram != null }
+                slice: meta.samples.any{ sample -> sample.cram != null }
                 ready: true
               }
             | set { ch_output }
 
         ch_output.slice
-            | flatMap { meta -> meta.sampleSheet.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram, meta.sample.cram_index] }
+            | flatMap { meta -> meta.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
-            | map { meta -> [groupKey(meta.project_id, meta.sampleSheet.count{ sample -> sample.cram != null }), meta] }
+            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
             | groupTuple
             | map { key, metaList -> 
                 def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
@@ -312,28 +209,19 @@ workflow vcf {
 }
 
 workflow {
-  def sampleSheet = parseSampleSheet(params.input)
-  def assemblies = getAssemblies(sampleSheet)
+  def projects = parseSampleSheet(params.input)
+  def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
 
-  // create sample channel, detect vcf and cram indexes
-  Channel.from(sampleSheet)
-    | map { sample -> [sample: [*:sample, vcf_index: findVcfIndex(sample.vcf), cram_index: findCramIndex(sample.cram)], sampleSheet: sampleSheet] }
-    | branch { meta ->
-        index_cram: meta.sample.cram != null && meta.sample.cram_index == null
-        ready: true
-      }
-    | set { ch_sample }
-
-  // index cram
-  ch_sample.index_cram
-    | map { meta -> [meta, meta.sample.cram] }
-    | samtools_index
-    | map { meta, cramIndex -> [*:meta, sample: [*:meta.sample, cram_index: cramIndex]] }
-    | set { ch_sample_indexed_cram }
+  // validate project vcfs
+  Channel.from(projects)
+    | map { project -> [[project: project], project.vcf] }
+    | validate
+    | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+    | set { ch_vcf_validated }
 
   // run vcf workflow
-  ch_sample_indexed_cram.mix(ch_sample.ready)  
+  ch_vcf_validated
     | vcf
 }
 
@@ -341,9 +229,6 @@ def validateVcfParams(assemblies) {
   validateCommonParams(assemblies)
   
   // general
-  def gvcfMergePreset = params.vcf.gvcf_merge_preset
-  if (!(gvcfMergePreset ==~ /gatk|gatk_unfiltered|DeepVariant/))  exit 1, "parameter 'vcf.gvcf_merge_preset' value '${gvcfMergePreset}' is invalid. allowed values are [gatk, DeepVariant]"
-
   def start = params.vcf.start
   if (!start.isEmpty() && !(start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/))  exit 1, "parameter 'vcf.start' value '${start}' is invalid. allowed values are [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]"
 
@@ -416,11 +301,12 @@ def parseSampleSheet(csvFile) {
     vcf: [
       type: "file",
       required: true,
-      regex: getVcfRegex()
+      regex: getVcfRegex(),
+      scope: "project"
     ],
     cram: [
       type: "file",
-      regex: /.+(?:\.bam|\.cram)/
+      regex: getCramRegex()
     ],
   ]
   return parseCommonSampleSheet(csvFile, cols)

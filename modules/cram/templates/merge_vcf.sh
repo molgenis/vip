@@ -1,15 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-concat () {
+merge () {
   local args=()
-  args+=("concat")
+  args+=("--merge" "both")            # allow multiallelic SNP and indel records
   args+=("--output-type" "z")
   args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
+  args+=(!{vcfs})                     # do not double-quote because of multiple values
 
-  ${CMD_BCFTOOLS} "${args[@]}" !{vcfs}
+  ${CMD_BCFTOOLS} merge "${args[@]}"
 }
 
 index () {
@@ -17,8 +18,8 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
-main() {
-  concat
+main() {  
+  merge
   index
 }
 

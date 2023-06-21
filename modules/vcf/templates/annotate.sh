@@ -11,7 +11,7 @@ annot_sv() {
   args+=("-SVinputFile" "!{vcf}")
   args+=("-outputDir" ".")
   args+=("-outputFile" "!{vcf}.tsv")
-  args+=("-genomeBuild" "!{meta.assembly}")
+  args+=("-genomeBuild" "!{assembly}")
   args+=("-annotationMode" "full")
   args+=("-annotationsDir" "!{params.vcf.annotate.annotsv_cache_dir}")
   if [ -n "!{hpoIds}" ]; then
@@ -27,7 +27,7 @@ annot_sv() {
   # write an empty file so that the AnnotSV VEP plugin is always used to ensure an equal number of VEP fields accross chunks
   if [[ ! -f "!{vcf}.tsv" ]]; then
     echo -e "AnnotSV_ranking_score\tAnnotSV_ranking_criteria\tACMG_class\n" > "!{vcf}.tsv"
-  elif [[ "!{meta.assembly}" == "GRCh38" ]]; then
+  elif [[ "!{assembly}" == "GRCh38" ]]; then
     # workaround for https://github.com/lgmgeo/AnnotSV/issues/152 that might fail for some chromosomes e.g. GRCh37 MT maps to GRCh38 chrM)
     mv "!{vcf}.tsv" "!{vcf}.tsv.tmp"
     awk -v FS='\t' -v OFS='\t' 'NR>1 {$2 = "chr"$2} 1' "!{vcf}.tsv.tmp" > "!{vcf}.tsv"
@@ -107,7 +107,7 @@ capice_vep() {
   args+=("--cache")
   args+=("--dir_cache" "!{params.vcf.annotate.vep_cache_dir}")
   args+=("--species" "homo_sapiens")
-  args+=("--assembly" "!{meta.assembly}")
+  args+=("--assembly" "!{assembly}")
   args+=("--refseq")
   args+=("--exclude_predicted")
   args+=("--use_given_ref")
@@ -177,7 +177,7 @@ vep() {
   args+=("--cache")
   args+=("--dir_cache" "!{params.vcf.annotate.vep_cache_dir}")
   args+=("--species" "homo_sapiens")
-  args+=("--assembly" "!{meta.assembly}")
+  args+=("--assembly" "!{assembly}")
   args+=("--refseq")
   args+=("--exclude_predicted")
   args+=("--use_given_ref")
