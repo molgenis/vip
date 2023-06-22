@@ -5,6 +5,7 @@ include { scatter } from './modules/utils'
 include { findCramIndex } from './modules/cram/utils'
 include { samtools_index; samtools_addreplacerg } from './modules/cram/samtools'
 include { clair3_call; clair3_call_publish } from './modules/cram/clair3'
+include { expansionhunter_call } from './modules/cram/expansionhunter'
 include { manta_call; manta_call_publish } from './modules/cram/manta'
 include { cutesv_call; cutesv_call_publish; cutesv_merge } from './modules/cram/cutesv'
 include { call_publish } from './modules/cram/publish'
@@ -30,14 +31,37 @@ workflow cram {
       | map { meta, cramIndex -> [*:meta, sample: [*:meta.sample, cram_index: cramIndex]] }
       | set { ch_cram_indexed }
 
-    // determine chunks for indexed crams
+    // forward crams to a channel that works on cram chunks and a channel that works on the whole cram
     ch_cram_indexed.mix(ch_cram.ready)
+      | multiMap { it -> chunk: whole: it }
+      | set { ch_cram_process }
+
+    // do stuff with unchunked cram
+    ch_cram_process.whole
+      | multiMap { it -> str: it }
+      | set { ch_cram_process_whole }
+
+    // select channel for short tandem repeat detection based on the sequencing platform
+    ch_cram_process_whole.str
+      | filter { params.cram.detect_str == true }
+      | branch { meta ->
+          short_read: meta.sample.sequencing_platform == 'illumina'
+        }
+      | set { ch_cram_detect_str }
+
+    // short tandem repeat detection onrun ExpansionHunter
+    ch_cram_detect_str.short_read
+      | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
+      | expansionhunter_call
+
+    // do stuff with chunked cram
+    ch_cram_process.chunk
       | flatMap { meta -> scatter(meta) }
       | multiMap { it -> snv: sv: it }
       | set { ch_cram_chunked }
 
     // call short variants, joint per project
-    ch_cram_chunked.snv    
+    ch_cram_chunked.snv
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | clair3_call
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]}
@@ -62,7 +86,7 @@ workflow cram {
     ch_vcf_chunked_snvs.publish
       | map { meta -> [groupKey([meta.sample.project_id, meta.sample.family_id, meta.sample.individual_id], meta.chunk.total), meta] }
       | groupTuple
-      | map { key, metaList -> 
+      | map { key, metaList ->
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = [*:sortedMetaList.first()].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
@@ -70,7 +94,7 @@ workflow cram {
       | clair3_call_publish
 
     // call SV variants
-    ch_cram_chunked.sv  
+    ch_cram_chunked.sv
       | branch {
         meta ->
           manta: meta.sample.sequencing_platform == 'illumina'
@@ -95,12 +119,12 @@ workflow cram {
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf:vcf, vcf_index:vcfIndex, vcf_stats:vcfStats, sequencing_platform:"illumina"]}
       | multiMap { it -> done: publish: it }
       | set { ch_vcf_chunked_sv_manta }
-      
+
     ch_vcf_chunked_sv_manta.publish
       | map {meta -> [groupKey(meta.project_id, meta.chunk.total), meta]
         }
       | groupTuple
-      | map { key, metaList -> 
+      | map { key, metaList ->
           def sortedMetaList = metaList.sort { metaLeft, metaRight -> metaLeft.chunk.index <=> metaRight.chunk.index }
           def meta = metaList.first().findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
           [meta, sortedMetaList.collect { it.vcf }, sortedMetaList.collect { it.vcf_index }]
@@ -113,9 +137,9 @@ workflow cram {
       | cutesv_call
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats]}
       // Only publish the intermediate result until this issues:
-      // - https://github.com/tjiangHIT/cuteSV/issues/124 
-      // - calls outside the regions of the bed file 
-      // are resolved 
+      // - https://github.com/tjiangHIT/cuteSV/issues/124
+      // - calls outside the regions of the bed file
+      // are resolved
       | set { ch_vcf_chunked_sv_cutesv_publish }
 
     ch_vcf_chunked_sv_cutesv_publish
@@ -169,6 +193,24 @@ workflow {
 
 def validateCramParams(assemblies) {
   validateVcfParams(assemblies)
+
+  def detectStr = params.cram.detect_str
+  if (!(detectStr ==~ /true|false/))  exit 1, "parameter 'cram.detect_str' value '${detectStr}' is invalid. allowed values are [true, false]"
+
+  // expansion hunter
+  def expansionhunterAligner = params.cram.expansionhunter.aligner
+  if (!(expansionhunterAligner ==~ /dag-aligner|path-aligner/))  exit 1, "parameter 'cram.expansionhunter.aligner' value '${expansionhunterAligner}' is invalid. allowed values are [dag-aligner, path-aligner]"
+
+  def expansionhunterAnalysisMode = params.cram.expansionhunter.analysis_mode
+  if (!(expansionhunterAnalysisMode ==~ /seeking|streaming/))  exit 1, "parameter 'cram.expansionhunter.analysis_mode' value '${expansionhunterAnalysisMode}' is invalid. allowed values are [seeking, streaming]"
+
+  def expansionhunterLogLevel = params.cram.expansionhunter.log_level
+  if (!(expansionhunterLogLevel ==~ /trace|debug|info|warn|error/))  exit 1, "parameter 'cram.expansionhunter.log_level' value '${expansionhunterLogLevel}' is invalid. allowed values are [trace, debug, info, warn, error]"
+
+  assemblies.each { assembly ->
+    def expansionhunterVariantCatalog = params.cram.expansionhunter[assembly].variant_catalog
+    if(!file(expansionhunterVariantCatalog).exists() )   exit 1, "parameter 'cram.expansionhunter.${assembly}.variant_catalog' value '${expansionhunterVariantCatalog}' does not exist"
+  }
 }
 
 def parseSampleSheet(csvFile) {

@@ -1,0 +1,31 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.17.3.sif
+
+%post
+    version_major=5
+    version_minor=0
+    version_patch=0
+
+    # install
+    apk update
+    apk add zlib libbz2 xz-libs libdeflate curl gcompat
+
+    curl -Ls -o ExpansionHunter.tar.gz https://github.com/Illumina/ExpansionHunter/releases/download/v${version_major}.${version_minor}.${version_patch}/ExpansionHunter-v${version_major}.${version_minor}.${version_patch}-linux_x86_64.tar.gz
+    echo "ebf3ec0ace6e6e3bbce12c26463da5d9f8e16374eff1ad10f0f1a9123050fa86  ExpansionHunter.tar.gz" | sha256sum -c
+
+    tar xzf ExpansionHunter.tar.gz
+    mv /ExpansionHunter-v${version_major}.${version_minor}.${version_patch}-linux_x86_64/bin/ExpansionHunter /usr/local/bin
+    
+    # cleanup
+    rm -rf /ExpansionHunter-v${version_major}.${version_minor}.${version_patch}-linux_x86_64
+    rm ExpansionHunter.tar.gz
+    rm -rf /var/cache/apk/*
+
+%environment
+   PATH=$PATH:/ExpansionHunter-v5.0.0-linux_x86_64/bin
+
+%runscript
+   exec "$@"
+
+%help
+    A tool for estimating repeat sizes.
