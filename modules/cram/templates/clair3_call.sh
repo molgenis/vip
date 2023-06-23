@@ -41,11 +41,17 @@ stats () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+#To exit with error when https://github.com/HKU-BAL/Clair3/issues/200 occurs, otherwise it will fail in the next steps of the pipeline without possibility of the "retry stategy".
+validate () {
+  ${CMD_BCFTOOLS} view "!{vcfOut}" > /dev/null
+}
+
 main() {
     create_bed
     convert_to_bam
     call_small_variants
     convert_to_bam_cleanup
+    validate
     stats
 }
 

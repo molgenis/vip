@@ -16,7 +16,6 @@ An additional configuration file can be supplied on the command-line to overwrit
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
 
-
 ### FASTQ
 | key                       | default     | description                                              |
 |---------------------------|-------------|----------------------------------------------------------|
@@ -24,13 +23,18 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2) |
 
 ### CRAM
-| key                                             | default             | description                                                                   |
-|-------------------------------------------------|---------------------|-------------------------------------------------------------------------------|
-| cram.clair3.illumina.model_name                 | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.clair3.nanopore.model_name                 | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.clair3.pacbio_hifi.model_name              | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models) |
-| cram.sniffles2.GRCh37.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
-| cram.sniffles2.GRCh38.tandem_repeat_annotations | *installed*         | for details, see [here](https://github.com/fritzsedlazeck/Sniffles)           |
+| key                                          | default             | description                                                                                                                                             |
+|----------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cram.detect_str                              | true                | enable/disable the detection of short tandem repeats                                                                                                    |
+| cram.clair3.illumina.model_name              | ilmn                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.clair3.nanopore.model_name              | r941_prom_sup_g5014 | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.clair3.pacbio_hifi.model_name           | hifi                | for details, see [here](https://github.com/HKU-BAL/Clair3#pre-trained-models)                                                                           |
+| cram.expansionhunter.aligner                 | dag-aligner         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [dag-aligner, path-aligner]          |
+| cram.expansionhunter.analysis_mode           | streaming           | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [seeking , streaming]                |
+| cram.expansionhunter.log_level               | warn                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [trace, debug, info, warn, or error] |
+| cram.expansionhunter.region_extension_length | 1000                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| cram.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| cram.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                               |
@@ -69,7 +73,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | vcf.classify_samples.GRCh37.decision_tree     | *installed*     | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.classify_samples.GRCh38.decision_tree     | *installed*     | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.filter.classes                            | VUS,LP,P        | for details, see [here](../advanced/classification_trees)                                                                                                                 |
-| vcf.filter.consequences                       | true            | allowed values: [true, false]                                                                                                                                             |
+| vcf.filter.consequences                       | true            | allowed values: [true, false]. true: filter individual consequences, false: keep all consequences for a variant if one consequence filter passes.                         |
 | vcf.filter_samples.classes                    | MV,OK           | for details, see [here](../advanced/classification_trees)                                                                                                                 |
 | vcf.report.max_records                        |                 |                                                                                                                                                                           |
 | vcf.report.max_samples                        |                 |                                                                                                                                                                           |
@@ -101,17 +105,15 @@ The following sections list all processes and their non-default configuration.
 | minimap2_index            | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
-| process                | configuration                 |
-|------------------------|-------------------------------|
-| samtools_addreplacerg  | *default*                     |
-| clair3_call            | cpus=4 memory='8GB' time='5h' |
-| clair3_call_publish    | *default*                     |
-| manta_call             | cpus=4 memory='8GB' time='5h' |
-| manta_call_publish     | *default*                     |
-| samtools_index         | *default*                     |
-| sniffles2_call         | cpus=4 memory='8GB' time='5h' |
-| sniffles2_combined_call| cpus=4 memory='8GB' time='5h' |
-| sniffles2_call_publish | *default*                     |
+| process               | configuration                 |
+|-----------------------|-------------------------------|
+| samtools_addreplacerg | *default*                     |
+| clair3_call           | cpus=4 memory='8GB' time='5h' |
+| clair3_call_publish   | *default*                     |
+| manta_call            | cpus=4 memory='8GB' time='5h' |
+| manta_call_publish    | *default*                     |
+| samtools_index        | *default*                     |
+| cutesv_call           | cpus=4 memory='8GB' time='5h' |
 
 ### VCF
 | process                  | configuration                 |
