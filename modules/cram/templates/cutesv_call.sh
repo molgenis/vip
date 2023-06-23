@@ -40,26 +40,23 @@ call_structural_variants () {
 
 fixref () {
   # Workaround for https://github.com/tjiangHIT/cuteSV/issues/124
-  while read line
+  while IFS=$'\t' read -r -a fields
   do
-    IFS=$'\t'
-    fields=($line)
-    if [[ $line != \#* ]]; then
+    if [[ "${fields[0]}" != \#* && "${fields[3]}" == "N" ]]; then
       ref=$(${CMD_SAMTOOLS} faidx "!{reference}" "${fields[0]}:${fields[1]}-${fields[1]}" | sed -n '2 p')
       fields[3]="${ref}"
-      length=${#fields[4]}
+      length="${#fields[4]}"
       #Fix breakend ALTS
-      if [[ ${fields[4]} == \]* && ${fields[4]} == *N ]]; then
-        fields[4]="${fields[4]:0:length}${ref}"
-      elif [[ ${fields[4]} == *\[ && ${fields[4]} == N* ]]; then
-        fields[4]="${ref}${theStr:length}"
+      if [[ "${fields[4]}" == \]* && "${fields[4]}" == *N ]]; then
+        fields[4]="${fields[4]:0:(length-1)}${ref}"
+      elif [[ "${fields[4]}" == *\[ && "${fields[4]}" == N* ]]; then
+        fields[4]="${ref}${fields[4]:1:length}"
       #Fix regular insertion ALT
-      elif [[ ${fields[4]} == N* && ${length} -gt 1 ]]; then
-        fields[4]="${ref}${theStr:length}"
+      elif [[ "${fields[4]}" == N* && "${length}" -gt 1 ]]; then
+        fields[4]="${ref}${fields[4]:1:length}"
       fi
     fi
-    echo "${fields[@]}" >> "fixed_ref_output.vcf"
-    
+    (IFS=$'\t'; echo "${fields[*]}") >> "fixed_ref_output.vcf"
   done < "cutesv_output.vcf"
 }
 
@@ -70,7 +67,7 @@ postprocess () {
   ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --regions-file "!{bed}" --no-version --threads "!{task.cpus}" "replaced_IUPAC_cuteSV.vcf.gz"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
-  rm "replaced_IUPAC_cuteSV.vcf.gz.csi" "replaced_IUPAC_cuteSV.vcf.gz"
+  rm "replaced_IUPAC_cuteSV.vcf.gz.csi" "replaced_IUPAC_cuteSV.vcf.gz" "fixed_ref_output.vcf" "cutesv_output.vcf"
 }
 
 main() {
