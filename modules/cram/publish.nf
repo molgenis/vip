@@ -2,7 +2,7 @@ process call_publish {
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
-    tuple val(meta), path(vcfs), path(vcfIndexes), path(vcfStats)
+    tuple val(meta), path(vcfs), path(vcfIndexes)
   output:
     tuple path(vcfOut), path(vcfOutIndex)
   shell:

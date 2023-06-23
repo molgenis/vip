@@ -26,8 +26,8 @@ The default decision tree to classify variant-consequences works as follows:
 ### Variant-consequences (samples)
 The default decision tree to classify variant-consequences in the context of samples works as follows:
 
-1. Each variant-consequence-sample is classified as `OK`, `LQ` (low quality) or `MV` (mendelian violation)
-2. Variant-consequences classified as `LQ` for all samples are removed
+1. Each variant-consequence-sample is classified as `OK`, `LQ` (low quality), `HR` (homozygous reference) or `MV` (mendelian violation)
+2. Variant-consequences classified as `LQ` or `HR` for all samples are removed
  
 ![Default variant-sample classification tree](../img/sample_decision_tree.png)
 

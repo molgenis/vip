@@ -30,7 +30,7 @@ annot_sv() {
   elif [[ "!{meta.assembly}" == "GRCh38" ]]; then
     # workaround for https://github.com/lgmgeo/AnnotSV/issues/152 that might fail for some chromosomes e.g. GRCh37 MT maps to GRCh38 chrM)
     mv "!{vcf}.tsv" "!{vcf}.tsv.tmp"
-    awk -v FS='\t' -v OFS='\t' 'NR>1 {$2 = "chr"$2; print} 1' "!{vcf}.tsv.tmp" > "!{vcf}.tsv"
+    awk -v FS='\t' -v OFS='\t' 'NR>1 {$2 = "chr"$2} 1' "!{vcf}.tsv.tmp" > "!{vcf}.tsv"
   fi
 }
 
@@ -72,7 +72,7 @@ capice_vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
-  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
 
   ${CMD_VEP} "${args[@]}"
 }
@@ -146,7 +146,8 @@ vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
-  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
+  args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
@@ -167,12 +168,6 @@ vep() {
   fi
 
   ${CMD_VEP} "${args[@]}"
-
-  if grep --quiet "Failed to instantiate plugin" ".command.err"
-  then
-      echo "VEP encountered a problem in one of the plugins"
-      exit 1
-  fi
 }
 
 index () {

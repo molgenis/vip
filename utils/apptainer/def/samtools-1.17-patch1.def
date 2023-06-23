@@ -1,12 +1,13 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.17.3.sif
+From: sif/build/ubuntu-22.04.sif
 Stage: build
 
 %post
     version_major=1
     version_minor=17
 
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
+    apt-get update
+    apt-get install -qq curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev
 
     # download
     curl -Ls -o samtools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/samtools/releases/download/${version_major}.${version_minor}/samtools-${version_major}.${version_minor}.tar.bz2
@@ -20,11 +21,15 @@ Stage: build
     make install
 
 Bootstrap: localimage
-From: sif/build/alpine-3.17.3.sif
+From: sif/build/ubuntu-22.04.sif
 Stage: final
 
 %files from build
     /usr/local/bin/samtools
 
 %post
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
+    apt-get update
+    apt-get install -qq zlib1g libbz2-1.0 liblzma5 libdeflate0
+
+%help
+    Set of utilities that manipulate alignments in the SAM (Sequence Alignment/Map), BAM, and CRAM formats.
