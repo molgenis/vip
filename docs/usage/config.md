@@ -13,6 +13,9 @@ An additional configuration file can be supplied on the command-line to overwrit
 | GRCh38.reference.fastaFai | *installed* |                                             |
 | GRCh38.reference.fastaGzi | *installed* |                                             |
 
+**Warning:**
+Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
+
 ### FASTQ
 | key                       | default     | description                                              |
 |---------------------------|-------------|----------------------------------------------------------|
