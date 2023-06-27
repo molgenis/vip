@@ -1,7 +1,7 @@
 # Annotations
 
 ## VEP
-VIP uses the [Ensamble Effect Predictor](FIXME) to annotate all variants with their consequences. We use VEP with the `refseq` option for the transcripts, and with the flags for `sift` and `polyphen` annotations enabled.
+VIP uses the [Ensemble Effect Predictor](https://github.com/Ensembl/ensembl-vep) to annotate all variants with their consequences. We use VEP with the `refseq` option for the transcripts, and with the flags for `sift` and `polyphen` annotations enabled.
 
 ### Plugins
 Below we describe the other sources which we annotate using the VEP plugin framework.
