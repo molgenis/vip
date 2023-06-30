@@ -1,0 +1,2 @@
+biomart_ensembl_entrez_mapping.txt was created using:
+https://biomart.genenames.org/martform/#!/default/HGNC?datasets=hgnc_gene_mart&attributes=hgnc_gene__ensembl_gene__ensembl_gene_id_104%2Chgnc_gene__ncbi_gene__gene_id_1026

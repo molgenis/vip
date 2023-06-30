@@ -191,7 +191,8 @@ vep() {
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
-    args+=("--plugin" "GADO,gado/all_samples.txt")
+    #TODO: if GADO output exists
+    args+=("--plugin" "GADO,gado/all_samples.txt,!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
