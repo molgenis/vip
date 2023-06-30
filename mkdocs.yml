@@ -21,7 +21,7 @@ nav:
       - 'Multi-project': 'examples/multi-project.md'
       - 'Reanalysis': 'examples/reanalysis.md'
   - 'Advanced':
-      - 'Annotationss': 'advanced/annotations.md'
+      - 'Annotations': 'advanced/annotations.md'
       - 'Classification trees': 'advanced/classification_trees.md'
       - 'Report templates': 'advanced/report_templates.md'
   - 'Help':
