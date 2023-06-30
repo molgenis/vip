@@ -53,9 +53,9 @@ gado() {
 gado_process() {
   echo -e -n "all_samples" > gadoProcessInput.tsv
   local -r hpo_ids=!{gadoHpoIds}
-  for hpoId in "${hpo_ids//,/ }"
+  for i in $(echo $hpo_ids | sed "s/,/ /g")
   do
-      echo -e -n "\t${hpoId}" >> gadoProcessInput.tsv
+      echo -e -n "\t${i}" >> gadoProcessInput.tsv
   done
 
   local args=()
