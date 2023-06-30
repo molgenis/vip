@@ -1,4 +1,4 @@
-include { basename } from './utils'
+include { basename; getProbandHpoIds; areProbandHpoIdsIndentical } from './utils'
 
 process annotate {
   input:
@@ -27,6 +27,8 @@ process annotate {
     gadoHpoPath = params.vcf.annotate.gado_hpo
     gadoPredictInfoPath = params.vcf.annotate.gado_predict_info
     gadoPredictMatrixPath = params.vcf.annotate.gado_predict_matrix
+    areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.sampleSheet)
+    gadoHpoIds = getProbandHpoIds(meta.sampleSheet).join(",")
 
     template 'annotate.sh'
 }

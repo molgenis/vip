@@ -35,16 +35,27 @@ annot_sv() {
 }
 
 gado() {
-  gado_process
-  gado_prioritize
+  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ];
+  then
+    echo "RUN GADO RUN!"
+    gado_process
+    gado_prioritize
+  else
+    if [ "!{areProbandHpoIdsIndentical}" ];
+    then
+      echo "WARNING: HPO terms for proband(s) differ within project, skipping GADO!"
+    else
+      echo "WARNING: no HPO terms specified for proband(s), skipping GADO!"
+    fi
+  fi
 }
 
 gado_process() {
   echo -e -n "all_samples" > gadoProcessInput.tsv
-  local -r hpo_ids="!{hpoIds}"
-  for i in ${hpo_ids//,/ }
+  local -r hpo_ids=!{gadoHpoIds}
+  for hpoId in "${hpo_ids//,/ }"
   do
-      echo -e -n "\t${i}" >> gadoProcessInput.tsv
+      echo -e -n "\t${hpoId}" >> gadoProcessInput.tsv
   done
 
   local args=()
@@ -191,7 +202,9 @@ vep() {
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
-    #TODO: if GADO output exists
+  fi
+  if [ "!{areProbandHpoIdsIndentical}"] && [ -n "!{gadoHpoIds}" ]; then
+    echo "GOGO GADO Plugin!"
     args+=("--plugin" "GADO,gado/all_samples.txt,!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
