@@ -421,7 +421,7 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: /.+(?:\.bam|\.cram)/
-    ]
+    ],
   ]
   return parseCommonSampleSheet(csvFile, cols)
 }
