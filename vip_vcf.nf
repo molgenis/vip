@@ -399,6 +399,9 @@ def validateVcfParams(assemblies) {
   }
 
   // report
+  def includeCrams = params.vcf.report.include_crams
+  if(includeCrams != "true" && includeCrams != "false" )   exit 1, "parameter 'vcf.report.includeCrams' should have be either 'true' or 'false'"
+
   def template = params.vcf.report.template
   if(!template.isEmpty() && !file(template).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
 
@@ -418,7 +421,7 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: /.+(?:\.bam|\.cram)/
-    ],
+    ]
   ]
   return parseCommonSampleSheet(csvFile, cols)
 }
