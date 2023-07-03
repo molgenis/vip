@@ -161,7 +161,7 @@ download_resources_annotsv() {
 }
 
 download_resources_gado() {
-  local -r gado_dir="${SCRIPT_DIR}/resources_dev/gado/v1.0.1"
+  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.1"
     if [ ! -d "${gado_dir}" ]; then
       mkdir -p "${gado_dir}"
 
@@ -174,7 +174,7 @@ download_resources_gado() {
       files+=("predictions_auc_bonf.txt")
 
       for file in "${files[@]}"; do
-        download "https://download.molgeniscloud.org/downloads/vip_dev/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
+        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
       done
     else
       echo -e "skipping download gado resources: already exists"
