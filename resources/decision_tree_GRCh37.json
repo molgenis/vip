@@ -121,7 +121,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "sv"
           }
         },
         {
@@ -147,7 +147,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "sv"
           }
         },
         {
@@ -165,10 +165,10 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "gnomAD"
+        "nextNode": "sv"
       },
       "outcomeMissing": {
-        "nextNode": "gnomAD"
+        "nextNode": "sv"
       }
     },
     "sv": {
@@ -179,7 +179,7 @@
         "nextNode": "annotSV"
       },
       "outcomeFalse": {
-        "nextNode": "spliceAI"
+        "nextNode": "gnomAD"
       }
     },
     "gnomAD": {
@@ -211,10 +211,10 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "sv"
+        "nextNode": "spliceAI"
       },
       "outcomeMissing": {
-        "nextNode": "sv"
+        "nextNode": "spliceAI"
       }
     },
     "annotSV": {
