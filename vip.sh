@@ -85,9 +85,24 @@ execute_workflow() {
 
   local envBind="$(IFS=, ; echo "${binds[*]}")"
   local envCacheDir="${SCRIPT_DIR}/images"
-  local envHome="${paramOutput}/.nxf.home"
-  local envTemp="${paramOutput}/.nxf.tmp"
-  local envWork="${paramOutput}/.nxf.work"
+  local envHome
+  if [[ -z "${NXF_HOME}" ]]; then
+    envHome="${paramOutput}/.nxf.home"
+  else
+    envHome="${NXF_HOME}"
+  fi
+  local envTemp
+  if [[ -z "${NXF_TEMP}" ]]; then
+    envTemp="${paramOutput}/.nxf.tmp"
+  else
+    envTemp="${NXF_TEMP}"
+  fi
+  local envWork
+  if [[ -z "${NXF_WORK}" ]]; then
+    envWork="${paramOutput}/.nxf.work"
+  else 
+    envWork="${NXF_WORK}"
+  fi
   local envStrict="true"
 
   local args=()
