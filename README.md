@@ -42,3 +42,6 @@ To publish the documentation pages:
 ```
 mkdocs gh-deploy
 ```
+
+### License
+VIP is an aggregate work of many works, each covered by their own licence(s). For the purposes of determining what you can do with specific works in VIP, this policy should be read together with the licence(s) of the relevant tools. For the avoidance of doubt, where any other licence grants rights, this policy does not modify or reduce those rights under those licences.
