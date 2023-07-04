@@ -23,6 +23,7 @@ process report {
     genesPath = params.vcf.report[meta.assembly].genes
     template = params.vcf.report.template
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : "" 
+    includeCrams = params.vcf.report.include_crams
 
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.sampleSheet.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 

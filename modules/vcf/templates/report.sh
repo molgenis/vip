@@ -55,7 +55,7 @@ report() {
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi
-  if [ -n "!{crams}" ]; then
+  if [ -n "!{crams}" ] && ["!{includeCrams}"]; then
     args+=("--cram" "!{crams}")
   fi
 

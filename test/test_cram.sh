@@ -9,7 +9,7 @@ source ${SCRIPT_DIR}/test_utils.sh
 test_cram_nanopore () {
   download_test_resource "nanopore.cram"
 
-  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
+  echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\"\nvcf.report.include_crams = \"false\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
   args+=("--workflow" "cram")
