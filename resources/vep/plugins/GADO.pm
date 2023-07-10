@@ -32,7 +32,7 @@ sub get_header_info {
     $self = GADO->new;
     my $result;
     $result->{GADO_SC} = "The combined prioritization GADO Z-score over the supplied HPO terms for this case.";
-    $result->{GADO_CL} = "The GADO predicion for the relation between the phenotypes and the gene, HC: high confidence, LC: low confidence.";
+    $result->{GADO_PD} = "The GADO predicion for the relation between the phenotypes and the gene, HC: high confidence, LC: low confidence.";
     return $result;
 }
 
@@ -109,9 +109,9 @@ sub run {
     my $score = $gene_hash{Zscore};
     $result->{GADO_SC} = $score;
     if($score >= 5){
-        $result->{GADO_CL} = "HC";
+        $result->{GADO_PD} = "HC";
     } elsif($score >= 3){
-        $result->{GADO_CL} = "LC";
+        $result->{GADO_PD} = "LC";
     }
     return $result;
 }
