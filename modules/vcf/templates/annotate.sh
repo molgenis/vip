@@ -203,8 +203,7 @@ vep() {
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
-  if [ "!{areProbandHpoIdsIndentical}"] && [ -n "!{gadoHpoIds}" ]; then
-    echo "GOGO GADO Plugin!"
+  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ]; then
     args+=("--plugin" "GADO,gado/all_samples.txt,!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
