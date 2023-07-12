@@ -26,13 +26,11 @@ def areProbandHpoIdsIndentical(samples) {
   def hpo_ids=[]
   def isIdentical = true
   samples.findAll{ sample -> sample.proband }.each{ sample ->
-    {
-      if(hpo_ids.isEmpty() && !sample.hpo_ids.isEmpty()){
-        hpo_ids = sample.hpo_ids
-      }else{
-        if(sample.hpo_ids as Set != hpo_ids as Set){
-          isIdentical = false
-        }
+    if(hpo_ids.isEmpty() && !sample.hpo_ids.isEmpty()){
+      hpo_ids = sample.hpo_ids
+    }else{
+      if(sample.hpo_ids as Set != hpo_ids as Set){
+        isIdentical = false
       }
     }
   }
