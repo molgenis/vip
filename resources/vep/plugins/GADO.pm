@@ -97,13 +97,13 @@ sub run {
     my $entrez_gene_id = $transcript->{_gene_stable_id};
     return {} unless $entrez_gene_id;
     my $ensembl_gene_id = $gene_mapping{$entrez_gene_id};
-    return {} unless $ensembl_gene_id;
+    unless ($ensembl_gene_id){
+        print "WARNING: No Entrez gene ID mapping found for Ensembl ID '$ensembl_gene_id'.";
+        return {};
+    }
     my $result;
     my $gene_value = $gene_data{$ensembl_gene_id};
     return {} unless $gene_value;
-
-    print $ensembl_gene_id;
-    print $entrez_gene_id;
 
     my %gene_hash = %{$gene_value};
     my $score = $gene_hash{Zscore};

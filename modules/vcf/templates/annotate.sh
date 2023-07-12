@@ -35,25 +35,22 @@ annot_sv() {
 }
 
 gado() {
-  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ];
-  then
-    echo "RUN GADO RUN!"
+  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ]; then
     gado_process
     gado_prioritize
   else
-    if [ "!{areProbandHpoIdsIndentical}" ];
-    then
-      echo "WARNING: HPO terms for proband(s) differ within project, skipping GADO!"
+    if [ "!{areProbandHpoIdsIndentical}" ]; then
+      >&2 echo "WARNING: HPO terms for proband(s) differ within samplesheet, skipping GADO!"
     else
-      echo "WARNING: no HPO terms specified for proband(s), skipping GADO!"
+      >&2 echo "WARNING: no HPO terms specified for proband(s), skipping GADO!"
     fi
   fi
 }
 
 gado_process() {
   echo -e -n "all_samples" > gadoProcessInput.tsv
-  local -r hpo_ids=!{gadoHpoIds}
-  for i in $(echo $hpo_ids | sed "s/,/ /g")
+  local -r hpo_ids="!{gadoHpoIds}"
+  for i in $(echo "${hpo_ids}" | sed "s/,/ /g")
   do
       echo -e -n "\t${i}" >> gadoProcessInput.tsv
   done
