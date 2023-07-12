@@ -166,6 +166,27 @@ download_resources_annotsv() {
   fi
 }
 
+download_resources_gado() {
+  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.1"
+    if [ ! -d "${gado_dir}" ]; then
+      mkdir -p "${gado_dir}"
+
+      local files=()
+      files+=("genenetwork_bonf_spiked.cols.txt")
+      files+=("genenetwork_bonf_spiked.dat")
+      files+=("genenetwork_bonf_spiked.rows.txt")
+      files+=("hp.obo")
+      files+=("hpo_prediction_genes.txt")
+      files+=("predictions_auc_bonf.txt")
+
+      for file in "${files[@]}"; do
+        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
+      done
+    else
+      echo -e "skipping download gado resources: already exists"
+    fi
+}
+
 download_resources() {
   local -r assembly="${1}"
 
@@ -182,6 +203,7 @@ download_resources() {
   download_resources_molgenis "${assembly}"
   download_resources_vep "${assembly}"
   download_resources_annotsv
+  download_resources_gado
 }
 
 download_images() {
@@ -200,9 +222,10 @@ download_images() {
   files+=("samtools-1.17-patch1.sif")
   files+=("vcf-decision-tree-3.5.4.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")
-  files+=("vcf-report-5.4.1.sif")
+  files+=("vcf-report-5.5.0.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
+  files+=("gado-1.0.1.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"

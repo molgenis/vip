@@ -34,6 +34,54 @@ annot_sv() {
   fi
 }
 
+gado() {
+  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ]; then
+    gado_process
+    gado_prioritize
+  else
+    if [ "!{areProbandHpoIdsIndentical}" ]; then
+      >&2 echo "WARNING: HPO terms for proband(s) differ within samplesheet, skipping GADO!"
+    else
+      >&2 echo "WARNING: no HPO terms specified for proband(s), skipping GADO!"
+    fi
+  fi
+}
+
+gado_process() {
+  echo -e -n "all_samples" > gadoProcessInput.tsv
+  local -r hpo_ids="!{gadoHpoIds}"
+  for i in $(echo "${hpo_ids}" | sed "s/,/ /g")
+  do
+      echo -e -n "\t${i}" >> gadoProcessInput.tsv
+  done
+
+  local args=()
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "/opt/gado/lib/GADO.jar")
+  args+=("--mode" "PROCESS")
+  args+=("--output" "gadoProcessOutput.tsv")
+  args+=("--caseHpo" "gadoProcessInput.tsv")
+  args+=("--hpoOntology" "!{gadoHpoPath}")
+  args+=("--hpoPredictionsInfo" "!{gadoPredictInfoPath}")
+
+  ${CMD_GADO} java "${args[@]}"
+}
+
+gado_prioritize() {
+  local args=()
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-jar" "/opt/gado/lib/GADO.jar")
+  args+=("--mode" "PRIORITIZE")
+  args+=("--output" "./gado")
+  args+=("--caseHpoProcessed" "gadoProcessOutput.tsv")
+  args+=("--genes" "!{gadoGenesPath}")
+  args+=("--hpoPredictions" "!{gadoPredictMatrixPath}")
+
+  ${CMD_GADO} java "${args[@]}"
+}
+
 capice() {
   capice_vep
   capice_bcftools
@@ -152,6 +200,9 @@ vep() {
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
+  if [ "!{areProbandHpoIdsIndentical}" ] && [ -n "!{gadoHpoIds}" ]; then
+    args+=("--plugin" "GADO,gado/all_samples.txt,!{params.vcf.annotate.ensembl_gene_mapping}")
+  fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
@@ -180,6 +231,9 @@ main () {
     annot_sv
   fi
 
+  if [ -n "!{hpoIds}" ]; then
+    gado
+  fi
   capice
   vep
   index

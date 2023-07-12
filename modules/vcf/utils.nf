@@ -18,6 +18,25 @@ def getHpoIds(samples) {
   samples.collectMany { sample -> sample.hpo_ids }.unique()
 }
 
+def getProbandHpoIds(samples) {
+  samples.findAll{ sample -> sample.proband }.collectMany { sample -> sample.hpo_ids }.unique()
+}
+
+def areProbandHpoIdsIndentical(samples) {
+  def hpo_ids=[]
+  def isIdentical = true
+  samples.findAll{ sample -> sample.proband }.each{ sample ->
+    if(hpo_ids.isEmpty() && !sample.hpo_ids.isEmpty()){
+      hpo_ids = sample.hpo_ids
+    }else{
+      if(sample.hpo_ids as Set != hpo_ids as Set){
+        isIdentical = false
+      }
+    }
+  }
+  return isIdentical;
+}
+
 def determineChunks(meta) {
   def fastaContigs = parseFastaIndex(params[meta.assembly].reference.fastaFai).collectEntries { record -> [record.contig, record] }
   def records = meta.vcf_stats.readLines().collect { line -> line.split('\t') }
