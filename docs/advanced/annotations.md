@@ -36,3 +36,8 @@ A file based on the [CGD database](https://research.nhgri.nih.gov/CGD/) is used 
 The [Grantham score](https://www.science.org/doi/10.1126/science.185.4154.862) attempts to predict the distance between two amino acids, in an evolutionary sense. A lower Grantham score reflects less evolutionary distance. A higher Grantham score reflects a greater evolutionary distance.
 
 We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with  Grantham scores.
+
+#### GADO
+[GADO](https://www.nature.com/articles/s41467-019-10649-4/) can be used to prioritize genes based on the HPO terms of a patient..
+
+We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the GADO output file.
