@@ -23,19 +23,19 @@ Sample-sheet values are case sensitive. Columns can contain values of different 
 The following sections describe the columns that can be used in every sample-sheet followed by [workflow](workflow.md) specific columns.   
 
 ## Columns
-| column                | type            | required | default                 | description                             |                                        
-|-----------------------|-----------------|----------|-------------------------|-----------------------------------------|
-| ``project_id``        | ``string``      |          | ``vip``                 | project identifier                      |
-| ``family_id``         | ``string``      |          | ``vip_fam<index>``      | family identifier                       |
-| ``individual_id``     | ``string``      | yes      |                         | sample identifier of the individual     |
-| ``paternal_id``       | ``string``      |          |                         | sample identifier of the father         |
-| ``maternal_id``       | ``string``      |          |                         | sample identifier of the mother         |
-| ``sex``               | ``enum``        |          | unknown sex             | ``values: [male,female]``               |
-| ``affected``          | ``boolean``     |          | unknown affected status | whether the individual is affected      |
-| ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on            |
-| ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/`                     |
-| ``assembly``          | ``enum``        |          | ``GRCh38``              | allowed values: [``GRCh37``,``GRCh38``] |
-| ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``]       |
+| column                | type            | required | default                 | description                                                  |                                        
+|-----------------------|-----------------|----------|-------------------------|--------------------------------------------------------------|
+| ``project_id``        | ``string``      |          | ``vip``                 | project identifier, see [here](../examples/multi-project.md) |
+| ``family_id``         | ``string``      |          | ``vip_fam<index>``      | family identifier                                            |
+| ``individual_id``     | ``string``      | yes      |                         | sample identifier of the individual                          |
+| ``paternal_id``       | ``string``      |          |                         | sample identifier of the father                              |
+| ``maternal_id``       | ``string``      |          |                         | sample identifier of the mother                              |
+| ``sex``               | ``enum``        |          | unknown sex             | ``values: [male,female]``                                    |
+| ``affected``          | ``boolean``     |          | unknown affected status | whether the individual is affected                           |
+| ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on                                 |
+| ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/`                                          |
+| ``assembly``          | ``enum``        |          | ``GRCh38``              | allowed values: [``GRCh37``,``GRCh38``]                      |
+| ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``]                            |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
