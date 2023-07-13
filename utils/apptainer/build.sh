@@ -91,7 +91,7 @@ main() {
   images+=("samtools-1.17-patch1")
   images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")
-  images+=("vcf-report-5.5.0")
+  images+=("vcf-report-5.5.1")
   images+=("manta-1.6.0")
   
   for i in "${!images[@]}"; do
