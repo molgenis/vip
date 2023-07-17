@@ -12,6 +12,7 @@ include { call_publish } from './modules/cram/publish'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { merge_gvcf } from './modules/vcf/merge_gvcf'
+include { straglr_call } from './modules/cram/straglr'
 
 workflow cram {
   take: meta
@@ -46,6 +47,7 @@ workflow cram {
       | filter { params.cram.detect_str == true }
       | branch { meta ->
           short_read: meta.sample.sequencing_platform == 'illumina'
+          long_read: meta.sample.sequencing_platform == 'nanopore' || meta.sample.sequencing_platform == 'pacbio_hifi'
         }
       | set { ch_cram_detect_str }
 
@@ -53,6 +55,11 @@ workflow cram {
     ch_cram_detect_str.short_read
       | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
       | expansionhunter_call
+
+    // short tandem repeat detection with Stragler
+    ch_cram_detect_str.long_read
+      | map { meta -> [meta, meta.sample.cram, meta.sample.cram_index] }
+      | straglr_call
 
     // do stuff with chunked cram
     ch_cram_process.chunk
