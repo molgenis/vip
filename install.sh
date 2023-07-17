@@ -217,15 +217,16 @@ download_images() {
   files+=("clair3-v1.0.2.sif")
   files+=("cutesv-2.0.3.sif")
   files+=("expansionhunter-5.0.0.sif")
+  files+=("gado-1.0.1.sif")
   files+=("glnexus_v1.4.5-patched.sif")
+  files+=("manta-1.6.0.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17-patch1.sif")
+  files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.5.4.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")
   files+=("vcf-report-5.5.2.sif")
   files+=("vep-109.3.sif")
-  files+=("manta-1.6.0.sif")
-  files+=("gado-1.0.1.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
