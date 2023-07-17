@@ -1,0 +1,21 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+    apt-get update
+    apt-get install -qq curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git python3-setuptools python3-pip
+
+    apt install ncbi-blast+  --assume-yes
+
+    mkdir -p /opt/trf/
+    curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
+    chmod +x /opt/trf/trf
+
+    pip install git+https://github.com/philres/straglr.git#egg=straglr
+
+
+%environment
+   PATH=$PATH:/opt/trf
+
+%help
+    Long-read-based human genomic short tandem repeat detection.
