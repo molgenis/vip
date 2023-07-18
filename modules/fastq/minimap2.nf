@@ -12,6 +12,7 @@ process minimap2_align {
     cramCrai="${cram}.crai"
 
     preset=meta.sample.sequencing_platform == "nanopore" ? "map-ont" : (meta.sample.sequencing_platform == "pacbio_hifi" ? "map-hifi" : "")
+    softClipping=params.minimap2.softClipping
 
     template 'minimap2_align.sh'
 }
@@ -28,7 +29,8 @@ process minimap2_align_paired_end {
     referenceMmi="${meta.fasta_mmi}"
     cram="${meta.sample.project_id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
-
+    softClipping=params.minimap2.softClipping
+    
     template 'minimap2_align_paired_end.sh'
 }
 
