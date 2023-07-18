@@ -5,7 +5,7 @@ main() {
     local args=()
     args+=("-t" "!{task.cpus}")
     args+=("-a")
-    args+=("--x" "sr")
+    args+=("-x" "sr")
     if [[ "!{softClipping}" == "true" ]]; then
         args+=("-Y")
     fi
