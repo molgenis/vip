@@ -218,6 +218,11 @@ def validateCramParams(assemblies) {
     def expansionhunterVariantCatalog = params.cram.expansionhunter[assembly].variant_catalog
     if(!file(expansionhunterVariantCatalog).exists() )   exit 1, "parameter 'cram.expansionhunter.${assembly}.variant_catalog' value '${expansionhunterVariantCatalog}' does not exist"
   }
+
+  assemblies.each { assembly ->
+    def straglrLoci = params.cram.straglr[assembly].loci
+    if(!file(straglrLoci).exists() )   exit 1, "parameter 'params.cram.straglr.${assembly}.loci' value '${straglrLoci}' does not exist"
+  }
 }
 
 def parseSampleSheet(csvFile) {
