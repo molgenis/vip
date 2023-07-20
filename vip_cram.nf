@@ -219,9 +219,11 @@ def validateCramParams(assemblies) {
     if(!file(expansionhunterVariantCatalog).exists() )   exit 1, "parameter 'cram.expansionhunter.${assembly}.variant_catalog' value '${expansionhunterVariantCatalog}' does not exist"
   }
 
-  assemblies.each { assembly ->
-    def straglrLoci = params.cram.straglr[assembly].loci
-    if(!file(straglrLoci).exists() )   exit 1, "parameter 'params.cram.straglr.${assembly}.loci' value '${straglrLoci}' does not exist"
+  if(params.cram.detect_str){
+    assemblies.each { assembly ->
+      def straglrLoci = params.cram.straglr[assembly].loci
+      if(!file(straglrLoci).exists() )   exit 1, "parameter 'params.cram.straglr.${assembly}.loci' value '${straglrLoci}' does not exist"
+    }
   }
 }
 
