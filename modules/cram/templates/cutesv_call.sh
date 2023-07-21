@@ -4,7 +4,7 @@ set -euo pipefail
 # workaround for cutesv
 convert_to_bam () {
   echo -e "!{bedContent}" > "!{bed}"
-  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "1 "!{cram}"
+  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "1" "!{cram}"
   ${CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
