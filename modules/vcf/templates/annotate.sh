@@ -80,6 +80,12 @@ gado_prioritize() {
   args+=("--hpoPredictions" "!{gadoPredictMatrixPath}")
 
   ${CMD_GADO} java "${args[@]}"
+
+  # workaround for GADO sometimes not producing a all_samples.txt after successfull exit
+  # https://github.com/molgenis/systemsgenetics/issues/663
+  if [[ ! -f "./gado/all_samples.txt" ]]; then
+    echo -e "Ensg\tHgnc\tRank\tZscore\t$(sed "s/,/\t/g" <<< "!{gadoHpoIds}")" > "./gado/all_samples.txt"
+  fi
 }
 
 capice() {
