@@ -4,7 +4,9 @@ set -euo pipefail
 # workaround for cutesv
 convert_to_bam () {
   echo -e "!{bedContent}" > "!{bed}"
-  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
+  # workaround for samtools issue somtimes producing unsorted/incorrect output when running with multiple threads
+  # replace --threads "1" with --threads "!{task.cpus}" when https://github.com/samtools/samtools/issues/1890 is fixed
+  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "1" "!{cram}"
   ${CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
