@@ -8,7 +8,9 @@ create_bed () {
 # workaround for clair 3 issue where the ebi server is called to decode the cram
 # https://github.com/HKU-BAL/Clair3/issues/180
 convert_to_bam () {
-  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
+  # workaround for samtools issue somtimes producing unsorted/incorrect output when running with multiple threads
+  # replace --threads "1" with --threads "!{task.cpus}" when https://github.com/samtools/samtools/issues/1890 is fixed
+  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --regions-file "!{bed}" --output "!{cram}.bam" --threads "1" "!{cram}"
   ${CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
