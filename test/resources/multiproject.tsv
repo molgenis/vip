@@ -1,4 +1,4 @@
-project_id	family_id	individual_id	vcf
+project_id	family_id	individual_id	gvcf
 vip0	fam0	individual0	multiproject_individual0.vcf
 vip0	fam0	individual1	multiproject_individual1.vcf.gz
 vip0	fam0	individual2	multiproject_individual2.vcf.gz
