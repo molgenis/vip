@@ -1,6 +1,6 @@
 # Workflow
-VIP consists of three workflows depending on the type of input data: fastq, bam/cram or (g)vcf.
-The `fastq` workflow is an extension of the `cram` workflow. The `cram` workflow is an extension of the `vcf` workflow.
+VIP consists of four workflows depending on the type of input data: fastq, bam/cram, gvcf or vcf.
+The `fastq` workflow is an extension of the `cram` workflow. The `cram` and `gvcf` workflows are extensions of the `vcf` workflow.
 The `vcf` workflow produces the pipeline outputs as described [here](./output.md).
 The following sections provide an overview of the steps of each of these workflows. 
 
@@ -430,6 +430,9 @@ Known limitation: Clair3 is not calling the small variants on the Mitochondia.
 
 For details, see [here](https://github.com/molgenis/vip/blob/main/vip_cram.nf).
 
+## gVCF
+For details, see [here](https://github.com/molgenis/vip/blob/main/vip_gvcf.nf).
+ 
 ## VCF
 The `vcf` workflow consists of the following steps:
 

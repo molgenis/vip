@@ -55,6 +55,13 @@ The following sections describe the columns that can be used in every sample-she
 | ``cram``                | ``file`` | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
 | ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
 
+## Columns: gVCF
+| column   | type     | required | default | description                                                                                                                        |
+|----------|----------|----------|---------|------------------------------------------------------------------------------------------------------------------------------------|
+| ``gvcf`` | ``file`` | yes      |         | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
+| ``cram`` | ``file`` |          |         | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
+
+
 ## Columns: VCF
 | column   | type     | required | default | description                                                                                                                                   |
 |----------|----------|----------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------|

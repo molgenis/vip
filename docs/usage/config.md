@@ -38,6 +38,11 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | str.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 | str.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 
+### gVCF
+| key               | default         | description                                          |
+|-------------------|-----------------|------------------------------------------------------|
+| gvcf.merge_preset | gatk_unfiltered | allowed values: [gatk, gatk_unfiltered, DeepVariant] |
+
 ### VCF
 | key                                           | default         | description                                                                                                                                                                                                                                                 |
 |-----------------------------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -121,6 +126,10 @@ The following sections list all processes and their non-default configuration.
 | manta_call_publish    | *default*                     |
 | samtools_index        | *default*                     |
 | cutesv_call           | cpus=4 memory='8GB' time='5h' |
+
+### gVCF
+| process                  | configuration                 |
+|--------------------------|-------------------------------|
 
 ### VCF
 | process                  | configuration                 |
