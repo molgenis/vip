@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getGenomeVcfRegex } from './modules/utils'
+include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate } from './modules/gvcf/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 
@@ -12,7 +12,7 @@ workflow gvcf {
     take: meta
     main:
       meta
-        | view
+        | view // FIXME merge genome vcfs and continue with vcf workflow
 }
 
 workflow {
@@ -25,7 +25,7 @@ workflow {
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     | set { ch_sample }
 
-  // validate sample crams
+  // validate sample gvcf
   ch_sample
     | map { meta -> [meta, meta.sample.gvcf] }
     | validate
