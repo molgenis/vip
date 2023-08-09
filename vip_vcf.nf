@@ -2,8 +2,8 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getVcfRegex } from './modules/utils'
-include { validate } from './modules/vcf/validate'
+include { getCramRegex; getVcfRegex; getRnaRegex } from './modules/utils'
+include { validate } from '/groups/umcg-gdio/tmp01/umcg-rheins-kars/vip_branch/vip/modules/vcf/validate.nf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -23,6 +23,12 @@ include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postG
 workflow vcf {
     take: meta
     main:
+      meta
+        | meta.rna.collect()
+        | set { ch_rna }
+
+      ch_rna.view()
+
       meta
         | flatMap { meta -> scatter(meta) }
         | branch { meta ->
@@ -307,6 +313,10 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
+    ],
+    rna: [
+      type: "file",
+      regex: getRnaRegex()
     ],
   ]
   return parseCommonSampleSheet(csvFile, cols)
