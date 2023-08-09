@@ -7,7 +7,7 @@ def createCountString(bamData) {
 }
 
 
-workflow {
+workflow rna {
     // get input, sample id:sample
     channel.fromPath( '/groups/umcg-gdio/tmp01/umcg-kmaassen/samples/rnaseq/blood/*.bam' ).collect() |
     set { inputs }
