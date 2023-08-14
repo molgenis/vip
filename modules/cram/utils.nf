@@ -1,12 +1,10 @@
-
-def findCramIndex(cram) {
-    def cram_index
-    if(cram == null) cram_index = null
-    else if(file(cram + ".crai").exists()) cram_index = cram + ".crai"
-    else if(file(cram + ".bai").exists()) cram_index = cram + ".bai"
-    cram_index
+def nrMappedReads(statsFilePath) {
+  def lines = statsFilePath.readLines()*.split('\t')
+  return !lines.isEmpty() ? lines.collect { line -> line[2] as int }.sum() : 0
 }
 
-def basename(meta) {
-  return meta.chunk && meta.chunk.total > 1 ? "${meta.sample.project_id}_chunk_${meta.chunk.index}" : meta.sample.project_id
+def nrMappedReadsInChunk(chunk, statsFilePath) {
+  def contigs = chunk.regions.collect { region -> region.chrom } as Set
+  def lines = statsFilePath.readLines()*.split('\t')
+  return !lines.isEmpty() ? lines.findAll { line -> contigs.contains(line[0]) }.collect { line -> line[2] as int }.sum() : 0
 }

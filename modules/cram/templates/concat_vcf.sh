@@ -38,7 +38,7 @@ order_samples () {
   done
 }
 
-main() {    
+main() {  
   order_samples
   concat
   bcftools_sort
