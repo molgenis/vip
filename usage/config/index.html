@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://example.com/usage/config/" rel="canonical"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>Config - Variant Interpretation Pipeline</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<link href="../../custom.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Config";
+        var mkdocs_page_input_path = "usage/config.md";
+        var mkdocs_page_url = "/usage/config/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> Variant Interpretation Pipeline
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Home</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../home/key_features/">Key features</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/requirements/">Requirements</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/installation/">Installation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/start_running/">Start running</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../command-line-options/">Command-line options</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow/">Workflow</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../input/">Input</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../output/">Output</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Config</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#fastq">FASTQ</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cram">CRAM</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vcf">VCF</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#profiles">Profiles</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#process">Process</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#fastq_1">FASTQ</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cram_1">CRAM</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vcf_1">VCF</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/nanopore/">Nanopore</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multi-project/">Multi-project</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/reanalysis/">Reanalysis</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/annotations/">Annotations</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/classification_trees/">Classification trees</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/report_templates/">Report templates</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../help/issues/">Issues</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../help/frequently_asked_questions/">Frequently asked questions</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/acknowledgements/">Acknowledgements</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">Variant Interpretation Pipeline</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a> »</li>
+<li>Usage »</li>
+<li class="breadcrumb-item active">Config</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/master/docs/usage/config.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="config">Config<a class="headerlink" href="#config" title="Permanent link">¶</a></h1>
+<p>The VIP configuration is stored in <a href="https://www.nextflow.io/docs/latest/config.html">Nextflow configuration</a> files.
+An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update profiles, configure processes and update environment variables. </p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GRCh37.reference.fasta</td>
+<td><em>installed</em></td>
+<td>human_g1k_v37</td>
+</tr>
+<tr>
+<td>GRCh37.reference.fastaFai</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>GRCh37.reference.fastaGzi</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>GRCh38.reference.fasta</td>
+<td><em>installed</em></td>
+<td>GCA_000001405.15_GRCh38_no_alt_analysis_set</td>
+</tr>
+<tr>
+<td>GRCh38.reference.fastaFai</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>GRCh38.reference.fastaGzi</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Warning:</strong>
+Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.</p>
+<h3 id="fastq">FASTQ<a class="headerlink" href="#fastq" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GRCh37.reference.fastaMmi</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="https://github.com/lh3/minimap2">here</a></td>
+</tr>
+<tr>
+<td>GRCh38.reference.fastaMmi</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="https://github.com/lh3/minimap2">here</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cram">CRAM<a class="headerlink" href="#cram" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cram.call_snv</td>
+<td>true</td>
+<td>enable/disable the detection of short variants</td>
+</tr>
+<tr>
+<td>cram.call_str</td>
+<td>true</td>
+<td>enable/disable the detection of short tandem repeats</td>
+</tr>
+<tr>
+<td>cram.call_sv</td>
+<td>true</td>
+<td>enable/disable the detection of structural variants</td>
+</tr>
+<tr>
+<td>snv.clair3.illumina.model_name</td>
+<td>ilmn</td>
+<td>for details, see <a href="https://github.com/HKU-BAL/Clair3#pre-trained-models">here</a></td>
+</tr>
+<tr>
+<td>snv.clair3.nanopore.model_name</td>
+<td>r941_prom_sup_g5014</td>
+<td>for details, see <a href="https://github.com/HKU-BAL/Clair3#pre-trained-models">here</a></td>
+</tr>
+<tr>
+<td>snv.clair3.pacbio_hifi.model_name</td>
+<td>hifi</td>
+<td>for details, see <a href="https://github.com/HKU-BAL/Clair3#pre-trained-models">here</a></td>
+</tr>
+<tr>
+<td>str.expansionhunter.aligner</td>
+<td>dag-aligner</td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a>. allowed values: [dag-aligner, path-aligner]</td>
+</tr>
+<tr>
+<td>str.expansionhunter.analysis_mode</td>
+<td>streaming</td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a>. allowed values: [seeking , streaming]</td>
+</tr>
+<tr>
+<td>str.expansionhunter.log_level</td>
+<td>warn</td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a>. allowed values: [trace, debug, info, warn, or error]</td>
+</tr>
+<tr>
+<td>str.expansionhunter.region_extension_length</td>
+<td>1000</td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a></td>
+</tr>
+<tr>
+<td>str.expansionhunter.GRCh37.variant_catalog</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a></td>
+</tr>
+<tr>
+<td>str.expansionhunter.GRCh38.variant_catalog</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="vcf">VCF<a class="headerlink" href="#vcf" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vcf.start</td>
+<td></td>
+<td>allowed values: [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]. for reanalysis this defines from which step to start the workflow</td>
+</tr>
+<tr>
+<td>vcf.annotate.annotsv_cache_dir</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.ensembl_gene_mapping</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_buffer_size</td>
+<td>1000</td>
+<td>for details, see <a href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html">here</a></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_cache_dir</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_plugin_dir</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_plugin_hpo</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_plugin_inheritance</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.vep_plugin_vkgl_mode</td>
+<td>1</td>
+<td>allowed values: [0=full VKGL, 1=public VKGL]. update <code>vcf.annotate.GRCh38.vep_plugin_vkgl</code> accordingly</td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.capice_model</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_custom_gnomad</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_custom_clinvar</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_custom_phylop</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_plugin_spliceai_indel</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_plugin_spliceai_snv</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_plugin_utrannotator</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh37.vep_plugin_vkgl</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.capice_model</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_custom_gnomad</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_custom_clinvar</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_custom_phylop</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_plugin_spliceai_indel</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_plugin_spliceai_snv</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_plugin_utrannotator</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.annotate.GRCh38.vep_plugin_vkgl</td>
+<td><em>installed</em></td>
+<td>update <code>vcf.annotate.vep_plugin_vkgl_mode</code> accordingly</td>
+</tr>
+<tr>
+<td>vcf.classify.annotate_labels</td>
+<td>0</td>
+<td>allowed values: [0=false, 1=true]. annotate variant-consequences with classification tree labels</td>
+</tr>
+<tr>
+<td>vcf.classify.annotate_path</td>
+<td>1</td>
+<td>allowed values: [0=false, 1=true]. annotate variant-consequences with classification tree path</td>
+</tr>
+<tr>
+<td>vcf.classify.GRCh37.decision_tree</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.classify.GRCh38.decision_tree</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.classify_samples.annotate_labels</td>
+<td>0</td>
+<td>allowed values: [0=false, 1=true]. annotate variant-consequences per sample with classification tree labels</td>
+</tr>
+<tr>
+<td>vcf.classify_samples.annotate_path</td>
+<td>1</td>
+<td>allowed values: [0=false, 1=true]. annotate variant-consequences per sample with classification tree path</td>
+</tr>
+<tr>
+<td>vcf.classify_samples.GRCh37.decision_tree</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.classify_samples.GRCh38.decision_tree</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.filter.classes</td>
+<td>VUS,LP,P</td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.filter.consequences</td>
+<td>true</td>
+<td>allowed values: [true, false]. true: filter individual consequences, false: keep all consequences for a variant if one consequence filter passes.</td>
+</tr>
+<tr>
+<td>vcf.filter_samples.classes</td>
+<td>MV,OK</td>
+<td>for details, see <a href="../advanced/classification_trees">here</a></td>
+</tr>
+<tr>
+<td>vcf.report.gado_genes</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.gado_hpo</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.gado_predict_info</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.gado_predict_matrix</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.include_crams</td>
+<td>true</td>
+<td>allowed values: [true, false]. true: include cram files in the report for showing alignments in the genome browser, false: do not include the crams in the report, no aligments are shown in the genome browser. This will result in a smaller report size.</td>
+</tr>
+<tr>
+<td>vcf.report.max_records</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.max_samples</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.template</td>
+<td></td>
+<td>for details, see <a href="../advanced/report_templates">here</a></td>
+</tr>
+<tr>
+<td>vcf.report.GRCh37.genes</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>vcf.report.GRCh38.genes</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="profiles">Profiles<a class="headerlink" href="#profiles" title="Permanent link">¶</a></h2>
+<p>VIP pre-defines two profiles. The default profile is Slurm with fallback to local in case Slurm cannot be discovered.</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>local</td>
+<td>for details, see <a href="https://www.nextflow.io/docs/latest/executor.html#local">here</a></td>
+</tr>
+<tr>
+<td>slurm</td>
+<td>for details, see <a href="https://www.nextflow.io/docs/latest/executor.html#slurm">here</a></td>
+</tr>
+</tbody>
+</table>
+<p>Additional profiles (for details, see <a href="https://www.nextflow.io/docs/latest/config.html#config-profiles">here</a>) can be added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google Cloud.</p>
+<h2 id="process">Process<a class="headerlink" href="#process" title="Permanent link">¶</a></h2>
+<p>By default, each process gets assigned <code>4 cpus</code>, <code>8GB of memory</code> and a <code>max runtime of 4 hours</code>. Depending on your system specifications and your analysis you might need to use updated values. For information on how to update process configuration see the <a href="https://www.nextflow.io/docs/latest/config.html#scope-process">Nextflow documentation</a>.
+The following sections list all processes and their non-default configuration.</p>
+<h3 id="fastq_1">FASTQ<a class="headerlink" href="#fastq_1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>process</th>
+<th>configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>concat_fastq</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>concat_fastq_paired_end</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>minimap2_align</td>
+<td>cpus=8 memory='16GB' time='23h'</td>
+</tr>
+<tr>
+<td>minimap2_align_paired_end</td>
+<td>cpus=8 memory='16GB' time='23h'</td>
+</tr>
+<tr>
+<td>minimap2_index</td>
+<td>cpus=8 memory='16GB' time='23h'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cram_1">CRAM<a class="headerlink" href="#cram_1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>process</th>
+<th>configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>samtools_addreplacerg</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>clair3_call</td>
+<td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+<tr>
+<td>clair3_call_publish</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>manta_call</td>
+<td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+<tr>
+<td>manta_call_publish</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>samtools_index</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>cutesv_call</td>
+<td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vcf_1">VCF<a class="headerlink" href="#vcf_1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>process</th>
+<th>configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>annotate</td>
+<td>cpus=4 memory='8GB' time='4h'</td>
+</tr>
+<tr>
+<td>annotate_publish</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>classify</td>
+<td>memory = '2GB'</td>
+</tr>
+<tr>
+<td>classify_publish</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>classify_samples</td>
+<td>memory = '2GB'</td>
+</tr>
+<tr>
+<td>classify_samples_publish</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>concat</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>convert</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>filter</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>filter_samples</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>index</td>
+<td>memory='100MB' time='30m'</td>
+</tr>
+<tr>
+<td>inheritance</td>
+<td>memory = '2GB'</td>
+</tr>
+<tr>
+<td>merge_gvcf</td>
+<td>memory='2GB' time='30m'</td>
+</tr>
+<tr>
+<td>merge_vcf</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>normalize</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>report</td>
+<td>memory = '4GB'</td>
+</tr>
+<tr>
+<td>slice</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>split</td>
+<td>memory='100MB' time='30m'</td>
+</tr>
+<tr>
+<td>stats</td>
+<td><em>default</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">¶</a></h2>
+<p>See <a href="https://github.com/molgenis/vip/tree/main/config">https://github.com/molgenis/vip/tree/main/config</a> for an overview of available environment variables.
+Notably this allows to use different Apptainer containers for the tools that VIP relies on.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../output/" title="Output"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../examples/nanopore/" title="Nanopore">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../output/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../examples/nanopore/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="../../js/mermaid.min.js"></script>
+<script src="../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+</body>
+</html>
