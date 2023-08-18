@@ -174,7 +174,7 @@ workflow vcf {
             | concat
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->
-                slice: meta.samples.any{ sample -> sample.cram != null }
+                slice: meta.project.samples.any{ sample -> sample.cram != null }
                 ready: true
               }
             | set { ch_concated }
