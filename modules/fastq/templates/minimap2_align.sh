@@ -8,6 +8,9 @@ align() {
   if [[ -n "!{preset}" ]]; then
       args+=("-x" "!{preset}")
   fi
+  if [[ "!{softClipping}" == "true" ]]; then
+      args+=("-Y")
+  fi
   args+=("!{referenceMmi}")
   args+=("!{fastq}")
 
