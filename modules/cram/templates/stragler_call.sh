@@ -2,7 +2,7 @@
 set -euo pipefail
 
 convert_to_bam () {
-  ${CMD_SAMTOOLS} view --reference "!{reference}" --bam --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
+  ${CMD_SAMTOOLS} view --reference "!{paramReference}" --bam --output "!{cram}.bam" --threads "!{task.cpus}" "!{cram}"
   ${CMD_SAMTOOLS} index "!{cram}.bam"
 }
 
@@ -12,16 +12,16 @@ convert_to_bam_cleanup () {
 
 call_short_tandem_repeats () {
     local args=()
-    args+=("--loci" "!{loci}")
+    args+=("--loci" "!{paramLoci}")
     args+=("--sample" "!{sampleId}")
     args+=("-v" "straglr.vcf")
     if [ -z "!{sampleSex}" ]; then
         args+=("--sex" "!{sampleSex}")
     fi
-    args+=("--min_support" "!{minSupport}")
-    args+=("--min_cluster_size" "!{minClusterSize}")
+    args+=("--min_support" "!{paramMinSupport}")
+    args+=("--min_cluster_size" "!{paramMinClusterSize}")
     args+=("!{cram}.bam")
-    args+=("!{reference}")
+    args+=("!{paramReference}")
 
     ${CMD_STRAGLR} "${args[@]}"
 }

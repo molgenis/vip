@@ -6,10 +6,10 @@ process straglr_call {
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
-    reference = params[meta.sample.assembly].reference.fasta
-    loci = params.str.straglr[meta.sample.assembly].loci
-    minSupport = params.str.straglr.minSupport
-    minClusterSize = params.str.straglr.minClusterSize
+    paramReference = params[meta.project.assembly].reference.fasta
+    paramLoci = params.str.straglr[meta.project.assembly].loci
+    paramMinSupport = params.str.straglr.minSupport
+    paramMinClusterSize = params.str.straglr.minClusterSize
     sampleId = meta.sample.individual_id
     sampleSex = meta.sample.sex
 
