@@ -15,11 +15,11 @@ From: sif/build/openjdk-17.sif
     apk add --virtual=.build-dependencies curl unzip
 
     mkdir -p /opt/gado/lib
-    curl -Ls -o /opt/gado/gado.zip "https://download.molgeniscloud.org/downloads/vip/resources/gado/v${version_major}.${version_minor}.${version_patch}/GadoCommandline-${version_major}.${version_minor}.${version_patch}-dist.zip"
-    echo "449c60bd3b1e354325905a03cf0b259cd2685b27f30540641387e2d1b4a9497a  /opt/gado/gado.zip" | sha256sum -c
+    curl -Ls -o /opt/gado/gado.tar.gz "https://download.molgeniscloud.org/downloads/vip/resources/gado/v${version_major}.${version_minor}.${version_patch}/GadoCommandline-${version_major}.${version_minor}.${version_patch}-dist.tar.gz"
+    echo "449c60bd3b1e354325905a03cf0b259cd2685b27f30540641387e2d1b4a9497a  /opt/gado/gado.tar.gz" | sha256sum -c
 
-    unzip -d /opt/gado/lib -qq /opt/gado/gado.zip
-    rm /opt/gado/gado.zip
+    tar -xf /opt/gado/gado.tar.gz -C /opt/gado/lib
+    rm /opt/gado/gado.tar.gz
     mv /opt/gado/lib/GadoCommandline-${version_major}.${version_minor}.${version_patch}/* /opt/gado/lib
     rm -r /opt/gado/lib/GadoCommandline-${version_major}.${version_minor}.${version_patch}
 
