@@ -172,12 +172,13 @@ download_resources_gado() {
       mkdir -p "${gado_dir}"
 
       local files=()
-      files+=("genenetwork_bonf_spiked.cols.txt")
-      files+=("genenetwork_bonf_spiked.dat")
-      files+=("genenetwork_bonf_spiked.rows.txt")
+      
+      files+=("HPO_2023_06_17_predictions.cols.txt.gz")
+      files+=("HPO_2023_06_17_predictions.datg")
+      files+=("HPO_2023_06_17_predictions.rows.txt.gz")
       files+=("hp.obo")
       files+=("genes.txt")
-      files+=("predictions_auc_bonf.txt")
+      files+=("HPO_2023_06_17_predictions_auc_bonf.txt.gz")
 
       for file in "${files[@]}"; do
         download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.3/${file}" "${gado_dir}/${file}"
