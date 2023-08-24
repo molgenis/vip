@@ -167,7 +167,7 @@ download_resources_annotsv() {
 }
 
 download_resources_gado() {
-  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.1"
+  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.3"
     if [ ! -d "${gado_dir}" ]; then
       mkdir -p "${gado_dir}"
 
@@ -176,11 +176,11 @@ download_resources_gado() {
       files+=("genenetwork_bonf_spiked.dat")
       files+=("genenetwork_bonf_spiked.rows.txt")
       files+=("hp.obo")
-      files+=("hpo_prediction_genes.txt")
+      files+=("genes.txt")
       files+=("predictions_auc_bonf.txt")
 
       for file in "${files[@]}"; do
-        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
+        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.3/${file}" "${gado_dir}/${file}"
       done
     else
       echo -e "skipping download gado resources: already exists"
@@ -225,7 +225,7 @@ download_images() {
   files+=("vcf-report-5.5.2.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
-  files+=("gado-1.0.1.sif")
+  files+=("gado-1.0.3.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
