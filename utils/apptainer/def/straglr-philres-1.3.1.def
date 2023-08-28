@@ -1,5 +1,5 @@
-Bootstrap: docker
-From: ubuntu:22.04
+Bootstrap: localimage
+From: sif/build/ubuntu-22.04.sif
 
 %post
     apt-get update
@@ -11,8 +11,12 @@ From: ubuntu:22.04
     curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
     chmod +x /opt/trf/trf
 
+    # No tags present on repository, so the most recent version of the egg in always installed.
     pip install git+https://github.com/philres/straglr.git#egg=straglr
 
+    # cleanup
+    pip cache purge
+    apt-get clean
 
 %environment
    PATH=$PATH:/opt/trf

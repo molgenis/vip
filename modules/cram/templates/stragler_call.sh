@@ -14,7 +14,7 @@ call_short_tandem_repeats () {
     local args=()
     args+=("--loci" "!{paramLoci}")
     args+=("--sample" "!{sampleId}")
-    args+=("-v" "straglr.vcf")
+    args+=("--vcf" "straglr.vcf")
     if [ -z "!{sampleSex}" ]; then
         args+=("--sex" "!{sampleSex}")
     fi

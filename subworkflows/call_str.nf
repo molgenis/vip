@@ -29,7 +29,7 @@ workflow str {
       | branch { meta ->
           expansionhunter: meta.project.sequencing_platform == 'illumina'
                            return meta
-          stragler: params.str.straglr[meta.project.assembly] != null && (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')
+          straglr: params.str.straglr[meta.project.assembly] != null && (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')
                            return meta
           ignore:          true
                            return [meta, null]
@@ -43,15 +43,15 @@ workflow str {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_str_expansionhunter }
 
-    // short tandem repeat detection with Stragler
-    ch_str_by_platform.stragler
+    // short tandem repeat detection with straglr
+    ch_str_by_platform.straglr
       | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | straglr_call
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set { ch_str_stragler }
+      | set { ch_str_straglr }
 
     // group by project
-    Channel.empty().mix(ch_str_expansionhunter, ch_str_stragler, ch_str.zero_reads, ch_str_by_platform.ignore)
+    Channel.empty().mix(ch_str_expansionhunter, ch_str_straglr, ch_str.zero_reads, ch_str_by_platform.ignore)
       | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, vcf: vcf]] }
       | groupTuple
       | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.vcf }] }
@@ -95,7 +95,7 @@ def validateCallStrParams(assemblies) {
     if(!file(expansionhunterVariantCatalog).exists() )   exit 1, "parameter 'cram.str.expansionhunter.${assembly}.variant_catalog' value '${expansionhunterVariantCatalog}' does not exist"
   }
 
-  //stragler
+  //straglr
   assemblies.each { assembly ->
     if(params.str.straglr[assembly] != null){
       def straglrLoci = params.str.straglr[assembly].loci

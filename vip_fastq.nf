@@ -79,8 +79,8 @@ workflow {
 def validateFastqParams(assemblies) {
   validateCramParams(assemblies)
   
-  def softClipping = params.minimap2.softClipping
-  if (!(softClipping ==~ /true|false/))  exit 1, "parameter 'minimap2.softClippin' value '${softClipping}' is invalid. allowed values are [true, false]"
+  def softClipping = params.minimap2.soft_clipping
+  if (!(softClipping ==~ /true|false/))  exit 1, "parameter 'minimap2.soft_clipping' value '${softClipping}' is invalid. allowed values are [true, false]"
 
   assemblies.each { assembly ->
     def fastaMmi = params[assembly].reference.fastaMmi
