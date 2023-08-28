@@ -10,8 +10,8 @@ process straglr_call {
   shell:
     paramReference = params[meta.project.assembly].reference.fasta
     paramLoci = params.str.straglr[meta.project.assembly].loci
-    paramMinSupport = params.str.straglr.minSupport
-    paramMinClusterSize = params.str.straglr.minClusterSize
+    paramMinSupport = params.str.straglr.min_support
+    paramMinClusterSize = params.str.straglr.min_cluster_size
     sampleId = meta.sample.individual_id
     sampleSex = meta.sample.sex
 
