@@ -165,7 +165,7 @@ capice_predict() {
 }
 
 stranger() {
-    cp !{vcfOut} stranger_input.vcf.gz
+    cp "!{vcfOut}" stranger_input.vcf.gz
 
     local args=()
     args+=("-f" "!{strangerCatalog}")
