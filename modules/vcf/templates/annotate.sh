@@ -171,7 +171,7 @@ stranger() {
     args+=("-f" "!{strangerCatalog}")
     args+=("stranger_input.vcf.gz")
 
-    ${CMD_STRANGER} "${args[@]}" | ${CMD_BGZIP} -c > "!{vcfOut}"
+    ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z > "!{vcfOut}"
     rm "stranger_input.vcf.gz"
 }
 
