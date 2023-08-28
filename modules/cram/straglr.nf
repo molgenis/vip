@@ -1,4 +1,6 @@
 process straglr_call {
+  label 'straglr_call'
+
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
