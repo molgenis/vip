@@ -174,7 +174,7 @@ workflow vcf {
             | concat
             | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->
-                slice: meta.samples.any{ sample -> sample.cram != null }
+                slice: meta.project.samples.any{ sample -> sample.cram != null }
                 ready: true
               }
             | set { ch_concated }
@@ -185,13 +185,13 @@ workflow vcf {
 
           ch_output_singleton.mix(ch_concated)
             | branch { meta ->
-                slice: meta.samples.any{ sample -> sample.cram != null }
+                slice: meta.project.samples.any{ sample -> sample.cram != null }
                 ready: true
               }
             | set { ch_output }
 
         ch_output.slice
-            | flatMap { meta -> meta.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
             | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
