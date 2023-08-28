@@ -18,7 +18,7 @@ call_short_tandem_repeats () {
 }
 
 index () {
-  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z "straglr.vcf" > !{vcfOut}
+  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z "straglr.vcf" > "!{vcfOut}"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 

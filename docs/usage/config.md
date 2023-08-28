@@ -21,7 +21,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 |---------------------------      |-------------|-------------------------------------------------------------------------------------------------------|
 | GRCh37.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
 | GRCh38.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
-| minimap2.soft_clipping.fastaMmi | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr)|
+| minimap2.soft_clipping          | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr)|
 
 ### CRAM
 | key                                         | default             | description                                                                                                                                             |
