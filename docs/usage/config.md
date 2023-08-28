@@ -17,10 +17,11 @@ An additional configuration file can be supplied on the command-line to overwrit
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
 
 ### FASTQ
-| key                       | default     | description                                              |
-|---------------------------|-------------|----------------------------------------------------------|
-| GRCh37.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2) |
-| GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2) |
+| key                             | default     | description                                                                                           |
+|---------------------------      |-------------|-------------------------------------------------------------------------------------------------------|
+| GRCh37.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
+| GRCh38.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
+| minimap2.soft_clipping          | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr)|
 
 ### CRAM
 | key                                         | default             | description                                                                                                                                             |
@@ -37,6 +38,9 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | str.expansionhunter.region_extension_length | 1000                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 | str.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 | str.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| str.straglr.min_support                     | 2                   | minimum number of support reads for an expansion to be captured in genome-scan, see [here](https://github.com/philres/straglr)                                                  |
+| str.straglr.min_cluster_size                | 2                   | minimum number of reads required to constitute a cluster (allele) in GMM clustering, see [here](https://github.com/philres/straglr)                               |
+| str.straglr.GRCh38.loci                     | *installed*         | from [here](https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed)                                                      |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                                                                                                                 |

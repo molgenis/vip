@@ -80,6 +80,7 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
+    files+=("GRCh38/clinical_repeats.bed")
     files+=("GRCh38/clinvar_20230604.vcf.gz")
     files+=("GRCh38/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
@@ -220,6 +221,7 @@ download_images() {
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17-patch1.sif")
+  files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.5.4.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")
   files+=("vcf-report-5.5.2.sif")
