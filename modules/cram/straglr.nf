@@ -17,7 +17,7 @@ process straglr_call {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
-    template 'stragler_call.sh'
+    template 'straglr_call.sh'
 
   stub:
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
