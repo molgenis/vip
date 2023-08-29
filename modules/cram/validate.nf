@@ -23,7 +23,7 @@ process validate {
 
     """
     touch "${cramOut}"
-    touch "${cramIndex}"
-    echo -e "chr1\t248956422\t16617476\t118422" > "${cramStats}"
+    touch "${cramOutIndex}"
+    echo -e "chr1\t248956422\t16617476\t118422" > "${cramOutStats}"
     """
 }
