@@ -27,6 +27,7 @@ process annotate {
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl
     vepPluginUtrAnnotatorPath = params.vcf.annotate[assembly].vep_plugin_utrannotator
     capiceModelPath = params.vcf.annotate[assembly].capice_model
+    strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
 
     gadoGenesPath = params.vcf.annotate.gado_genes
     gadoHpoPath = params.vcf.annotate.gado_hpo

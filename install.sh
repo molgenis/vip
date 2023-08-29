@@ -56,6 +56,7 @@ download_resources_molgenis() {
     files+=("GRCh37/clinvar_20230604.vcf.gz")
     files+=("GRCh37/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh37/expansionhunter_variant_catalog.json")
+    files+=("GRCh37/variant_catalog_grch37_fixed.json")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
@@ -84,6 +85,7 @@ download_resources_molgenis() {
     files+=("GRCh38/clinvar_20230604.vcf.gz")
     files+=("GRCh38/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
+    files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
@@ -221,6 +223,7 @@ download_images() {
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17-patch1.sif")
+  files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.5.4.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")

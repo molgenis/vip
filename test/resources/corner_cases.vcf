@@ -30,6 +30,11 @@
 ##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
 ##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
 ##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=REF,Number=1,Type=Integer,Description="Reference copy number">
+##INFO=<ID=RL,Number=1,Type=Integer,Description="Reference length in bp">
+##INFO=<ID=RU,Number=1,Type=String,Description="Repeat unit in the reference orientation">
+##INFO=<ID=REPID,Number=1,Type=String,Description="Repeat identifier from the repeat specification file">
+##INFO=<ID=OLD_MULTIALLELIC,Number=1,Type=String,Description="Original chr:pos:ref:alt encoding">
 ##FILTER=<ID=q40,Description="Quality below 40">
 ##FILTER=<ID=c5,Description="Coverage below 5">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE0
@@ -48,3 +53,4 @@
 17	14093499	.	T	<DEL>	PASS	.	SVTYPE=DEL;END=15486000;SVLEN=1392501	GT	0/1
 X	53513441	.	G	<DEL>	6	PASS	SVTYPE=DEL;END=53520776;SVLEN=-7335	GT	0/1
 X	53820721	.	T	<DUP>	6	PASS	SVTYPE=DUP;END=53862221;SVLEN=41500	GT	0/1
+11	119076999	.	C	<STR12>	.	PASS	END=119077032;REF=11;RL=33;RU=CGG;REPID=CBL;OLD_MULTIALLELIC=11:119076999:C/<STR12>/<STR20>	GT	1/0
