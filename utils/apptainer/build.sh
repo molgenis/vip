@@ -86,9 +86,10 @@ main() {
   images+=("expansionhunter-5.0.0")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
-  images+=("gado-1.0.1")
+  images+=("gado-1.0.3")
   images+=("minimap2-2.24")
   images+=("samtools-1.17-patch1")
+  images+=("stranger-0.8.1")
   images+=("straglr-philres-1.3.1")
   images+=("vcf-decision-tree-3.5.4")
   images+=("vcf-inheritance-matcher-2.1.6")

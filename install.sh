@@ -48,7 +48,7 @@ download_resources_molgenis() {
   local -r assembly="${1}"
 
   local files=()
-  files+=("hpo_20230608.tsv")
+  files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -56,6 +56,7 @@ download_resources_molgenis() {
     files+=("GRCh37/clinvar_20230604.vcf.gz")
     files+=("GRCh37/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh37/expansionhunter_variant_catalog.json")
+    files+=("GRCh37/variant_catalog_grch37_fixed.json")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
@@ -84,6 +85,7 @@ download_resources_molgenis() {
     files+=("GRCh38/clinvar_20230604.vcf.gz")
     files+=("GRCh38/clinvar_20230604.vcf.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
+    files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
     #FIXME: remove line below after clair 3 is fixed
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
@@ -168,20 +170,21 @@ download_resources_annotsv() {
 }
 
 download_resources_gado() {
-  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.1"
+  local -r gado_dir="${SCRIPT_DIR}/resources/gado/v1.0.3"
     if [ ! -d "${gado_dir}" ]; then
       mkdir -p "${gado_dir}"
 
       local files=()
-      files+=("genenetwork_bonf_spiked.cols.txt")
-      files+=("genenetwork_bonf_spiked.dat")
-      files+=("genenetwork_bonf_spiked.rows.txt")
+      
+      files+=("HPO_2023_06_17_predictions.cols.txt.gz")
+      files+=("HPO_2023_06_17_predictions.datg")
+      files+=("HPO_2023_06_17_predictions.rows.txt.gz")
       files+=("hp.obo")
-      files+=("hpo_prediction_genes.txt")
-      files+=("predictions_auc_bonf.txt")
+      files+=("genes.txt")
+      files+=("HPO_2023_06_17_predictions_auc_bonf.txt.gz")
 
       for file in "${files[@]}"; do
-        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.1/${file}" "${gado_dir}/${file}"
+        download "https://download.molgeniscloud.org/downloads/vip/resources/gado/v1.0.3/${file}" "${gado_dir}/${file}"
       done
     else
       echo -e "skipping download gado resources: already exists"
@@ -221,13 +224,14 @@ download_images() {
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")
   files+=("samtools-1.17-patch1.sif")
+  files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.5.4.sif")
   files+=("vcf-inheritance-matcher-2.1.6.sif")
   files+=("vcf-report-5.5.2.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
-  files+=("gado-1.0.1.sif")
+  files+=("gado-1.0.3.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"
