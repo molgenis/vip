@@ -1,12 +1,12 @@
 os: linux
-dist: jammy
+dist: focal
 language: python
 branches:
   only:
     - main
     - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 install:
-  - pip install mkdocs mkdocs-mermaid2-plugin==0.6.0
+  - pip install mkdocs==1.5.2 mkdocs-mermaid2-plugin==1.0.8
 deploy:
   provider: pages
   strategy: git
