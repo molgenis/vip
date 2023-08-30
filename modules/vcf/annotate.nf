@@ -52,7 +52,7 @@ process annotate {
 }
 
 process annotate_publish {
-  label 'annotate_publish'
+  label 'vcf_annotate_publish'
   
   publishDir "$params.output/intermediates", mode: 'link'
 
