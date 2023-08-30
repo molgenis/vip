@@ -1,0 +1,10 @@
+os: linux
+dist: jammy
+language: python
+install:
+  - pip install mkdocs mkdocs-mermaid2-plugin==0.6.0
+deploy:
+  provider: pages:git
+  token:
+    secure: "n9806rE/8HSKKzAXgC8fy7eVxtPT/TNnt/T8QIQumiseY5iU89OTkXm69fB+/C3h7l1feJABTyQQoXyH0nl57dbzlXrK/ZvK8U7abL0Pib9mP8tC1gKLDPqdsZgHABfCLUD1awemuKU8Q6TBYJfL0atQPcuK2NaAICUvRrtav/qdp3v7sGwL//7JRpHFaR+4KTCcjs1Si+S+fQuJ3J2KcKyoVD+4mctqeNYDiImUHQKEp09sb8S9a+VMFzQG7DTFjQA7N5ZVw6MLw2EhkKe8/oBiczPPRrTfxr4nGq0QXFT2zwkko7dyOXU+2RKxhfnm8YJKdTsRkUrfV7hbR/auWGVjW/B87tjYfryd+i9iCFjxf6jj7iOvQ7nIE7Y8boHf9ekTvBmTYUOJABJFvt2JJcgFonMHEiDs1b0JvLoz/I/0KtB0dH8c5vyCh3ULl/9V7tnOvrnSQdJwZAljGUgz2GmkckH3/qVRJIdDKG2keBnuVF2IxrU1kahu8krrkzwK9gSHFIxIgPczI8CRobnulUEqkwrhDd8DbcnSz/JrOLn4t/3eRGuy8xbBLVKgCZDAqZwhq5M7VyhMhE7KJnvoBedFZQHHtgSZKSsiBYomrk2CHonSlUHLOFBBmfV3OcT9gHrI060iL8buAtpShfZDM+AUmV1AKGlwqulAYIyYUkI="
+  edge: true # opt in to dpl v2
