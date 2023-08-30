@@ -92,7 +92,7 @@ main() {
   images+=("stranger-0.8.1")
   images+=("straglr-philres-1.3.1")
   images+=("vcf-decision-tree-3.5.4")
-  images+=("vcf-inheritance-matcher-2.1.6")
+  images+=("vcf-inheritance-matcher-2.1.7")
   images+=("vcf-report-5.5.2")
   images+=("manta-1.6.0")
   
