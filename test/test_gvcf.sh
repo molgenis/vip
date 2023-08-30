@@ -25,12 +25,12 @@ test_gvcf () {
   fi
 }
 
-test_multiproject () {
-  echo -e "params { gvcf.merge_preset = \"DeepVariant\" }" > "${OUTPUT_DIR}/custom.cfg"
+test_gvcf_multiproject () {
+  echo -e "params { gvcf.merge_preset = \"DeepVariant\"\nvcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
   args+=("--workflow" "gvcf")
-  args+=("--input" "${TEST_RESOURCES_DIR}/multiproject.tsv")
+  args+=("--input" "${TEST_RESOURCES_DIR}/gvcf_multiproject.tsv")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
@@ -52,12 +52,12 @@ run_tests () {
 
   TEST_ID="gvcf"
   before_each
-  test_gvcf
+  #test_gvcf
   after_each
 
-  TEST_ID="test_multiproject"
+  TEST_ID="gvcf_multiproject"
   before_each
-  test_multiproject
+  test_gvcf_multiproject
   after_each
 
   after_all

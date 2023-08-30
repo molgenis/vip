@@ -3,6 +3,7 @@ nextflow.enable.dsl=2
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate } from './modules/gvcf/validate'
+include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 
 /**
@@ -12,7 +13,13 @@ workflow gvcf {
     take: meta
     main:
       meta
-        | view // FIXME merge genome vcfs and continue with vcf workflow
+        | map { meta -> [groupKey(meta.project, meta.project.samples.size), meta.sample] }
+        | groupTuple
+        | map { key, group -> [key.getGroupTarget(), group.sort { it.index } ] }
+        | map { project, samples -> [[project: project], samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
+        | merge
+        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+        | vcf
 }
 
 workflow {

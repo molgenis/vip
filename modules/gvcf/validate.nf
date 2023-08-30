@@ -10,14 +10,14 @@ process validate {
   shell:
     sampleId = "${meta.sample.individual_id}"
 
-    gVcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.g.vcf"
+    gVcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.g.vcf.gz"
     gVcfOutIndex = "${gVcfOut}.csi"
     gVcfOutStats = "${gVcfOut}.stats"
 
     template 'validate.sh'
   
   stub:
-    gVcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.g.vcf"
+    gVcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.g.vcf.gz"
     gVcfOutIndex = "${gVcfOut}.csi"
     gVcfOutStats = "${gVcfOut}.stats"
 
