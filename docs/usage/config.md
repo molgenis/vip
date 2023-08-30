@@ -112,51 +112,51 @@ By default, each process gets assigned `4 cpus`, `8GB of memory` and a `max runt
 The following sections list all processes and their non-default configuration.
 
 ### FASTQ
-| process                   | configuration                   |
+| process label             | configuration                   |
 |---------------------------|---------------------------------|
 | concat_fastq              | *default*                       |
 | concat_fastq_paired_end   | *default*                       |
 | minimap2_align            | cpus=8 memory='16GB' time='23h' |
 | minimap2_align_paired_end | cpus=8 memory='16GB' time='23h' |
-| minimap2_index            | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
-| process               | configuration                 |
-|-----------------------|-------------------------------|
-| samtools_addreplacerg | *default*                     |
-| clair3_call           | cpus=4 memory='8GB' time='5h' |
-| clair3_call_publish   | *default*                     |
-| manta_call            | cpus=4 memory='8GB' time='5h' |
-| manta_call_publish    | *default*                     |
-| samtools_index        | *default*                     |
-| cutesv_call           | cpus=4 memory='8GB' time='5h' |
+| process label        | configuration                  |
+|----------------------|--------------------------------|
+| clair3_call          | cpus=4 memory='8GB' time='5h'  |
+| clair3_joint_call    | cpus=4 memory='8GB' time='5h'  |
+| concat_vcf           | *default*                      |
+| cram_validate        | *default*                      |
+| cutesv_call          | cpus=4 memory='8GB' time='5h'  |
+| expansionhunter_call | cpus=4 memory='16GB' time='5h' |
+| manta_call           | cpus=4 memory='8GB' time='5h'  |
+| straglr_call         | *default*                      |
+| vcf_merge_str        | *default*                      |
+| vcf_merge_sv         | *default*                      |
 
 ### gVCF
-| process                  | configuration                 |
-|--------------------------|-------------------------------|
+| process label | configuration             |
+|---------------|---------------------------|
+| gvcf_validate | memory='100MB' time='30m' |
+| gvcf_merge    | memory='2GB' time='30m'   |
 
 ### VCF
-| process                  | configuration                 |
-|--------------------------|-------------------------------|
-| annotate                 | cpus=4 memory='8GB' time='4h' |
-| annotate_publish         | *default*                     |
-| classify                 | memory = '2GB'                |
-| classify_publish         | *default*                     |
-| classify_samples         | memory = '2GB'                |
-| classify_samples_publish | *default*                     |
-| concat                   | *default*                     |
-| convert                  | *default*                     |
-| filter                   | *default*                     |
-| filter_samples           | *default*                     |
-| index                    | memory='100MB' time='30m'     |
-| inheritance              | memory = '2GB'                |
-| merge_gvcf               | memory='2GB' time='30m'       |
-| merge_vcf                | *default*                     |
-| normalize                | *default*                     |
-| report                   | memory = '4GB'                |
-| slice                    | *default*                     |
-| split                    | memory='100MB' time='30m'     |
-| stats                    | *default*                     |
+| process label                | configuration                 |
+|------------------------------|-------------------------------|
+| vcf_annotate                 | cpus=4 memory='8GB' time='4h' |
+| vcf_annotate_publish         | *default*                     |
+| vcf_classify                 | memory = '2GB'                |
+| vcf_classify_publish         | *default*                     |
+| vcf_classify_samples         | memory = '2GB'                |
+| vcf_classify_samples_publish | *default*                     |
+| vcf_concat                   | *default*                     |
+| vcf_filter                   | *default*                     |
+| vcf_filter_samples           | *default*                     |
+| vcf_inheritance              | memory = '2GB'                |
+| vcf_normalize                | *default*                     |
+| vcf_report                   | memory = '4GB'                |
+| vcf_slice                    | *default*                     |
+| vcf_split                    | memory='100MB' time='30m'     |
+| vcf_validate                 | memory='100MB' time='30m'     |
 
 ## Environment
 See [https://github.com/molgenis/vip/tree/main/config](https://github.com/molgenis/vip/tree/main/config) for an overview of available environment variables.
