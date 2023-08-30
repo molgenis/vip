@@ -1,4 +1,0 @@
-family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	vcf
-FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	gvcf_proband.g.vcf
-FAM0	FATHER0			male	false		gvcf_father.g.vcf
-FAM0	MOTHER0			female	false		gvcf_mother.g.vcf

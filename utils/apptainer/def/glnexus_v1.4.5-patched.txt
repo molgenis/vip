@@ -1,9 +1,0 @@
-1. clone glnexus repo
-2. add remote of haploid PR
-3. merge commit fae491b with haploid PR
-4. build with docker locally
-5. convert to singularity using https://github.com/apptainer/singularity/issues/1537
-  - start local registry
-  - tag image
-  - push tag to local registry
-  - APPTAINER_NOHTTPS=1 apptainer build glnexus.sif docker://localhost:5000/glnexus:latest

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://example.com/help/frequently_asked_questions/" rel="canonical"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>Frequently asked questions - Variant Interpretation Pipeline</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<link href="../../custom.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Frequently asked questions";
+        var mkdocs_page_input_path = "help/frequently_asked_questions.md";
+        var mkdocs_page_url = "/help/frequently_asked_questions/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> Variant Interpretation Pipeline
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Home</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../home/key_features/">Key features</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/requirements/">Requirements</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/installation/">Installation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/start_running/">Start running</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/command-line-options/">Command-line options</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/workflow/">Workflow</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/input/">Input</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output/">Output</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/config/">Config</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/nanopore/">Nanopore</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multi-project/">Multi-project</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/reanalysis/">Reanalysis</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/annotations/">Annotations</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/classification_trees/">Classification trees</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/report_templates/">Report templates</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../issues/">Issues</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Frequently asked questions</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#why-doesnt-my-report-contain-any-variants">Why doesn't my report contain any variants?</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-vip-fail-with-an-unexpected-error-invocationtargetexception">Why does VIP fail with an Unexpected Error [InvocationTargetException]?</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-vip-fail-with-a-file-not-found-error-but-my-file-exists">Why does VIP fail with a file not found error but my file exists?</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-vip-fail-with-an-exit-code-137">Why does VIP fail with an exit code 137?</a>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/acknowledgements/">Acknowledgements</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">Variant Interpretation Pipeline</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a> »</li>
+<li>Help »</li>
+<li class="breadcrumb-item active">Frequently asked questions</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/master/docs/help/frequently_asked_questions.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="frequently-asked-questions">Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permanent link">¶</a></h1>
+<h2 id="why-doesnt-my-report-contain-any-variants">Why doesn't my report contain any variants?<a class="headerlink" href="#why-doesnt-my-report-contain-any-variants" title="Permanent link">¶</a></h2>
+<p>VIP filters your input variants using classification trees for variant-effect and variant-sample combinations.
+Usually if your report doesn't contain any records this implies that they were filtered out based on these trees.   </p>
+<p>Inspect the <code>_classifications.vcf.gz</code> files in the <code>intermediates</code> output folder to determine why a variant record was removed.  </p>
+<p>The default VIP classification tree and class filter removes variants on the 'non-standard' contigs. For GRCh37 this implies [1-22,X,Y,MT]. The hg19 GRCh37 reference sequence uses different contigs identifiers which will result in filtering out of all records. In this case you should provide your own classification tree with the correct contig identifiers.</p>
+<h2 id="why-does-vip-fail-with-an-unexpected-error-invocationtargetexception">Why does VIP fail with an <code>Unexpected Error [InvocationTargetException]</code>?<a class="headerlink" href="#why-does-vip-fail-with-an-unexpected-error-invocationtargetexception" title="Permanent link">¶</a></h2>
+<p>This issue can mean a number of things, check the <code>.nxf.log</code> for more details.
+One of the causes is a mismatch between the reference genome that was used to call the variants in your .vcf file and the reference genome used by VIP.
+For example:</p>
+<ul>
+<li>Your variants are called with a reference genome that differs from the default VIP reference genome</li>
+<li>Your variants are called with GRCh37 and you use the GRCh38 assembly or vice-versa</li>
+</ul>
+<h2 id="why-does-vip-fail-with-a-file-not-found-error-but-my-file-exists">Why does VIP fail with a file not found error but my file exists?<a class="headerlink" href="#why-does-vip-fail-with-a-file-not-found-error-but-my-file-exists" title="Permanent link">¶</a></h2>
+<p>You might need to update <code>APPTAINER_BIND</code>, for more details see <a href="../../usage/config/#environment">here</a>. To understand the cause of this issue take a look at the <a href="https://apptainer.org/docs/user/main/bind_paths_and_mounts.html">Apptainer documentation</a>.</p>
+<h2 id="why-does-vip-fail-with-an-exit-code-137">Why does VIP fail with an exit code 137?<a class="headerlink" href="#why-does-vip-fail-with-an-exit-code-137" title="Permanent link">¶</a></h2>
+<p>A process has run out of memory. See the <a href="../../usage/config/#process">config</a> documentation on how to update resource assignments for some or all processes.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../issues/" title="Issues"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../about/license/" title="License">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../issues/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../about/license/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="../../js/mermaid.min.js"></script>
+<script src="../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+</body>
+</html>

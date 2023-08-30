@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://example.com/examples/reanalysis/" rel="canonical"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>Reanalysis - Variant Interpretation Pipeline</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<link href="../../custom.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Reanalysis";
+        var mkdocs_page_input_path = "examples/reanalysis.md";
+        var mkdocs_page_url = "/examples/reanalysis/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> Variant Interpretation Pipeline
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Home</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../home/key_features/">Key features</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/requirements/">Requirements</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/installation/">Installation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/start_running/">Start running</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/command-line-options/">Command-line options</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/workflow/">Workflow</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/input/">Input</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output/">Output</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/config/">Config</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../nanopore/">Nanopore</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../multi-project/">Multi-project</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Reanalysis</a>
+<ul class="current">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/annotations/">Annotations</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/classification_trees/">Classification trees</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/report_templates/">Report templates</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../help/issues/">Issues</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../help/frequently_asked_questions/">Frequently asked questions</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/acknowledgements/">Acknowledgements</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">Variant Interpretation Pipeline</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a> »</li>
+<li>Examples »</li>
+<li class="breadcrumb-item active">Reanalysis</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/master/docs/examples/reanalysis.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="reanalysis">Reanalysis<a class="headerlink" href="#reanalysis" title="Permanent link">¶</a></h1>
+<p>The VCF workflow can be used to reanalyse data from previous runs with the pipeline.
+It is possible to start from the normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples steps, this can for example be usefull if you update one of your decision trees, or if you which to re-run the inheritance matching with a different set of low-penetrance genes.</p>
+<p>For reanalysis the basics of running VIp remain the same, however the correct intermediate file should be provided as input in the sample sheet.
+Several intermediate results are available in the "intermediates" subfolder of your output folder.
+Furthermore the step form which you whish to start should be added in the configuration parameter "vcf.start"</p>
+<p>For an example on how to reanalyze VIP data using a different classification tree see <a href="https://github.com/molgenis/vip/blob/main/test/test_vcf.sh#L104">here</a>.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../multi-project/" title="Multi-project"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../advanced/annotations/" title="Annotations">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../multi-project/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../advanced/annotations/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="../../js/mermaid.min.js"></script>
+<script src="../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,0 @@
-project_id	family_id	proband	individual_id	hpo_ids	sequencing_platform	cram
-vip1	fam0	true	NA12878	HP:0000001,HP:0000002	illumina	test1.cram
-vip2	fam1	true	NA12878	HP:0000001	illumina	test.bam

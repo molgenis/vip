@@ -1,3 +1,0 @@
-family_id	individual_id	paternal_id	sequencing_platform	cram
-i_am_my_father	HG002	HG002_copy	nanopore	downloads/nanopore.cram
-i_am_my_father	HG002_copy		nanopore	downloads/nanopore_copy.cram
