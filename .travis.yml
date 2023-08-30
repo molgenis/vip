@@ -1,5 +1,3 @@
-os: linux
-dist: jammy
 language: python
 install:
   - pip install mkdocs mkdocs-mermaid2-plugin==0.6.0
