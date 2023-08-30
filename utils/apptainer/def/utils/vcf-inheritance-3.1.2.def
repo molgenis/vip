@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: sif/build/openjdk-17.sif
+
+%help
+    Command-line application to converts the omim 'genemap2.txt' to a tab separated file that can be used by the VEP Inheritance Plugin.
+    Usage: java -jar /opt/vcf-inheritance/lib/genemap-mapper
+
+%post
+    version_major=3
+    version_minor=1
+    version_patch=2
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/vcf-inheritance/lib
+    curl -Ls -o /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
+    echo "6e86ff6ddf815dfc527d280061035b389a10bd67cf88c349fcddd330f738f85b  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*

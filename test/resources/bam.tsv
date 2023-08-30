@@ -1,0 +1,2 @@
+family_id	proband	individual_id	hpo_ids	sequencing_platform	cram	sequencing_method
+fam0	true	NA12878	HP:0000001,HP:0000002	illumina	test.bam	WES

@@ -1,0 +1,35 @@
+# Mac custom folder attributes.
+.DS_Store
+
+# Ignores Intellij IDEA folder.
+.IDEA/
+/vip.iml
+
+# Apptainer images build folder.
+/images
+/utils/apptainer/sif
+
+# Installed resource folders.
+/resources
+!/resources/biomart_ensembl_entrez_mapping.txt
+!/resources/README.txt
+!/resources/decision_tree_*.json
+!/resources/vep/plugins
+
+# test
+/test/.nextflow
+/test/output*
+/test/nextflow.config
+/test/resources/downloads
+/test/resources/test2.cram
+/test/test_wrapper.sh
+
+# nextflow
+nextflow
+nextflow-*-all
+
+# vip
+/vip
+
+# mkdocs
+/site

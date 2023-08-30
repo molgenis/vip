@@ -1,0 +1,56 @@
+##fileformat=VCFv4.2
+##fileDate=20200904
+##source=GenomicConsensusV2.3.3
+##reference=file:///grp/valafar/resources/H37Rv-NC_000962.3.fasta
+##contig=<ID=1,length=249250621,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=2,length=243199373,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=3,length=198022430,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=4,length=191154276,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=5,length=180915260,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=6,length=171115067,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=7,length=159138663,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=8,length=146364022,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=9,length=141213431,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=10,length=135534747,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=11,length=135006516,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=12,length=133851895,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=13,length=115169878,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=14,length=107349540,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=15,length=102531392,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=16,length=90354753,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=17,length=81195210,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=18,length=78077248,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=19,length=59128983,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=20,length=63025520,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=21,length=48129895,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=22,length=51304566,assembly=human_g1k_v37_phiX.fasta>
+##contig=<ID=X,length=155270560,assembly=human_g1k_v37_phiX.fasta>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=REF,Number=1,Type=Integer,Description="Reference copy number">
+##INFO=<ID=RL,Number=1,Type=Integer,Description="Reference length in bp">
+##INFO=<ID=RU,Number=1,Type=String,Description="Repeat unit in the reference orientation">
+##INFO=<ID=REPID,Number=1,Type=String,Description="Repeat identifier from the repeat specification file">
+##INFO=<ID=OLD_MULTIALLELIC,Number=1,Type=String,Description="Original chr:pos:ref:alt encoding">
+##FILTER=<ID=q40,Description="Quality below 40">
+##FILTER=<ID=c5,Description="Coverage below 5">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE0
+1	1701	.	T	C	93	PASS	DP=131	GT	0/1
+1	1821	.	G	T	93	PASS	DP=133	GT	0/1
+1	1977	.	A	G	93	PASS	DP=134	GT	0/1
+1	4013	.	T	C	93	PASS	DP=122	GT	0/1
+1	7362	.	G	C	93	PASS	DP=111	GT	0/1
+2	321682	.	T	<DEL>	6	PASS	SVTYPE=DEL;END=321887;SVLEN=-205	GT	0/1
+2	6693415	.	T	<DEL>	6	PASS	SVTYPE=DEL;END=6707844;SVLEN=-14429	GT	0/1
+2	9959221	.	C	<DEL>	6	PASS	SVTYPE=DEL;END=9959571;SVLEN=-350	GT	0/1
+4	55808674	.	A	<DEL>	6	PASS	SVTYPE=DEL;END=55808918;SVLEN=-244	GT	0/1
+4	55998554	.	C	<DEL>	6	PASS	SVTYPE=DEL;END=55998888;SVLEN=-334	GT	0/1
+13	22052127	.	T	<DEL>	6	PASS	SVTYPE=DEL;END=22055126;SVLEN=-2999	GT	0/1
+13	51551934	.	C	<DEL>	6	PASS	SVTYPE=DEL;END=51552263;SVLEN=-329	GT	0/1
+17	14093499	.	T	<DEL>	PASS	.	SVTYPE=DEL;END=15486000;SVLEN=1392501	GT	0/1
+X	53513441	.	G	<DEL>	6	PASS	SVTYPE=DEL;END=53520776;SVLEN=-7335	GT	0/1
+X	53820721	.	T	<DUP>	6	PASS	SVTYPE=DUP;END=53862221;SVLEN=41500	GT	0/1
+11	119076999	.	C	<STR12>	.	PASS	END=119077032;REF=11;RL=33;RU=CGG;REPID=CBL;OLD_MULTIALLELIC=11:119076999:C/<STR12>/<STR20>	GT	1/0

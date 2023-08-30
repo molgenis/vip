@@ -1,0 +1,5 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%help
+    Ubuntu is a Debian-based Linux operating system based on free software.
