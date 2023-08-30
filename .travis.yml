@@ -14,7 +14,7 @@ script:
 deploy:
   provider: pages
   strategy: git
-  cleanup: false
+  skip_cleanup: true
   local_dir: /home/travis/build/molgenis/vip/site
   keep_history: true
   token:
