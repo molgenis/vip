@@ -98,7 +98,6 @@ sub run {
     return {} unless $entrez_gene_id;
     my $ensembl_gene_id = $gene_mapping{$entrez_gene_id};
     unless ($ensembl_gene_id){
-        print "WARNING: No Entrez gene ID mapping found for Ensembl ID '$ensembl_gene_id'.";
         return {};
     }
     my $result;
