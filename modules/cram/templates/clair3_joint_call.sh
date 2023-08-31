@@ -19,7 +19,7 @@ merge () {
   args+=("--dir" "glnexus")
   args+=("--config" "!{config}")
   args+=("--threads" "!{task.cpus}")
-  args+=("--mem-gbytes" "!{task.memory.toGiga()}")
+  args+=("--mem-gbytes" "!{task.memory.toGiga() - 1}")
   for gVcf in !{gVcfs}; do
     args+=("reheadered_${gVcf}")
   done
