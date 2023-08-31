@@ -66,6 +66,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#columns-cram">Columns: CRAM</a>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#columns-gvcf">Columns: gVCF</a>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#columns-vcf">Columns: VCF</a>
 </li>
 </ul>
@@ -350,6 +352,34 @@
 <td></td>
 <td><code>illumina</code></td>
 <td>allowed values: [<code>illumina</code>,<code>nanopore</code>,<code>pacbio_hifi</code>], value must be the same for all project samples</td>
+</tr>
+</tbody>
+</table>
+<h2 id="columns-gvcf">Columns: gVCF<a class="headerlink" href="#columns-gvcf" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>column</th>
+<th>type</th>
+<th>required</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gvcf</code></td>
+<td><code>file</code></td>
+<td>yes</td>
+<td></td>
+<td>allowed file extensions: [<code>gvcf</code>, <code>gvcf.gz</code>, <code>gvcf.bgz</code>, <code>vcf</code>, <code>vcf.gz</code>, <code>vcf.bgz</code>, <code>bcf</code>, <code>bcf.gz</code>, <code>bcf.bgz</code>]</td>
+</tr>
+<tr>
+<td><code>cram</code></td>
+<td><code>file</code></td>
+<td></td>
+<td></td>
+<td>allowed file extensions: [<code>bam</code>, <code>cram</code>, <code>sam</code>]</td>
 </tr>
 </tbody>
 </table>

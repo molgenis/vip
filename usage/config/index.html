@@ -70,6 +70,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#cram">CRAM</a>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#gvcf">gVCF</a>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#vcf">VCF</a>
 </li>
 </ul>
@@ -81,6 +83,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#fastq_1">FASTQ</a>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#cram_1">CRAM</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gvcf_1">gVCF</a>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#vcf_1">VCF</a>
 </li>
@@ -303,6 +307,23 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 <td>str.straglr.GRCh38.loci</td>
 <td><em>installed</em></td>
 <td>from <a href="https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed">here</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gvcf">gVCF<a class="headerlink" href="#gvcf" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gvcf.merge_preset</td>
+<td>gatk_unfiltered</td>
+<td>allowed values: [gatk, gatk_unfiltered, DeepVariant]</td>
 </tr>
 </tbody>
 </table>
@@ -576,7 +597,7 @@ The following sections list all processes and their non-default configuration.</
 <table>
 <thead>
 <tr>
-<th>process</th>
+<th>process label</th>
 <th>configuration</th>
 </tr>
 </thead>
@@ -597,48 +618,75 @@ The following sections list all processes and their non-default configuration.</
 <td>minimap2_align_paired_end</td>
 <td>cpus=8 memory='16GB' time='23h'</td>
 </tr>
-<tr>
-<td>minimap2_index</td>
-<td>cpus=8 memory='16GB' time='23h'</td>
-</tr>
 </tbody>
 </table>
 <h3 id="cram_1">CRAM<a class="headerlink" href="#cram_1" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th>process</th>
+<th>process label</th>
 <th>configuration</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>samtools_addreplacerg</td>
-<td><em>default</em></td>
-</tr>
-<tr>
 <td>clair3_call</td>
 <td>cpus=4 memory='8GB' time='5h'</td>
 </tr>
 <tr>
-<td>clair3_call_publish</td>
+<td>clair3_joint_call</td>
+<td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+<tr>
+<td>concat_vcf</td>
 <td><em>default</em></td>
+</tr>
+<tr>
+<td>cram_validate</td>
+<td><em>default</em></td>
+</tr>
+<tr>
+<td>cutesv_call</td>
+<td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+<tr>
+<td>expansionhunter_call</td>
+<td>cpus=4 memory='16GB' time='5h'</td>
 </tr>
 <tr>
 <td>manta_call</td>
 <td>cpus=4 memory='8GB' time='5h'</td>
 </tr>
 <tr>
-<td>manta_call_publish</td>
+<td>straglr_call</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>samtools_index</td>
+<td>vcf_merge_str</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>cutesv_call</td>
-<td>cpus=4 memory='8GB' time='5h'</td>
+<td>vcf_merge_sv</td>
+<td><em>default</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gvcf_1">gVCF<a class="headerlink" href="#gvcf_1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>process label</th>
+<th>configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gvcf_validate</td>
+<td>memory='100MB' time='30m'</td>
+</tr>
+<tr>
+<td>gvcf_merge</td>
+<td>memory='2GB' time='30m'</td>
 </tr>
 </tbody>
 </table>
@@ -646,86 +694,70 @@ The following sections list all processes and their non-default configuration.</
 <table>
 <thead>
 <tr>
-<th>process</th>
+<th>process label</th>
 <th>configuration</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>annotate</td>
+<td>vcf_annotate</td>
 <td>cpus=4 memory='8GB' time='4h'</td>
 </tr>
 <tr>
-<td>annotate_publish</td>
+<td>vcf_annotate_publish</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>classify</td>
+<td>vcf_classify</td>
 <td>memory = '2GB'</td>
 </tr>
 <tr>
-<td>classify_publish</td>
+<td>vcf_classify_publish</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>classify_samples</td>
+<td>vcf_classify_samples</td>
 <td>memory = '2GB'</td>
 </tr>
 <tr>
-<td>classify_samples_publish</td>
+<td>vcf_classify_samples_publish</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>concat</td>
+<td>vcf_concat</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>convert</td>
+<td>vcf_filter</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>filter</td>
+<td>vcf_filter_samples</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>filter_samples</td>
-<td><em>default</em></td>
-</tr>
-<tr>
-<td>index</td>
-<td>memory='100MB' time='30m'</td>
-</tr>
-<tr>
-<td>inheritance</td>
+<td>vcf_inheritance</td>
 <td>memory = '2GB'</td>
 </tr>
 <tr>
-<td>merge_gvcf</td>
-<td>memory='2GB' time='30m'</td>
-</tr>
-<tr>
-<td>merge_vcf</td>
+<td>vcf_normalize</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>normalize</td>
-<td><em>default</em></td>
-</tr>
-<tr>
-<td>report</td>
+<td>vcf_report</td>
 <td>memory = '4GB'</td>
 </tr>
 <tr>
-<td>slice</td>
+<td>vcf_slice</td>
 <td><em>default</em></td>
 </tr>
 <tr>
-<td>split</td>
+<td>vcf_split</td>
 <td>memory='100MB' time='30m'</td>
 </tr>
 <tr>
-<td>stats</td>
-<td><em>default</em></td>
+<td>vcf_validate</td>
+<td>memory='100MB' time='30m'</td>
 </tr>
 </tbody>
 </table>
