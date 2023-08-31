@@ -6,6 +6,8 @@ SCRIPT_NAME="$(basename "$0")"
 
 source "${SCRIPT_DIR}/test_vcf.sh"
 mv output output_vcf
+source "${SCRIPT_DIR}/test_gvcf.sh"
+mv output output_gvcf
 source "${SCRIPT_DIR}/test_cram.sh"
 mv output output_cram
 source "${SCRIPT_DIR}/test_fastq.sh"

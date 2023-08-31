@@ -6,6 +6,10 @@ def getVcfRegex() {
   /.+[^\.g](?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz)$/
 }
 
+def getGenomeVcfRegex() {
+  /.+(?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.gvcf|\.gvcf\.gz|\.gvcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz)$/
+}
+
 def parseFastaIndex(faiFile) {
   def lines = new File(faiFile).readLines("UTF-8")
   if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"

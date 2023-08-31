@@ -17,11 +17,11 @@ An additional configuration file can be supplied on the command-line to overwrit
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
 
 ### FASTQ
-| key                             | default     | description                                                                                           |
-|---------------------------      |-------------|-------------------------------------------------------------------------------------------------------|
-| GRCh37.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
-| GRCh38.reference.fastaMmi       | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                              |
-| minimap2.soft_clipping          | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr)|
+| key                       | default     | description                                                                                            |
+|---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| GRCh37.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
+| GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
+| minimap2.soft_clipping    | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
 
 ### CRAM
 | key                                         | default             | description                                                                                                                                             |
@@ -38,9 +38,14 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | str.expansionhunter.region_extension_length | 1000                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 | str.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
 | str.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
-| str.straglr.min_support                     | 2                   | minimum number of support reads for an expansion to be captured in genome-scan, see [here](https://github.com/philres/straglr)                                                  |
-| str.straglr.min_cluster_size                | 2                   | minimum number of reads required to constitute a cluster (allele) in GMM clustering, see [here](https://github.com/philres/straglr)                               |
+| str.straglr.min_support                     | 2                   | minimum number of support reads for an expansion to be captured in genome-scan, see [here](https://github.com/philres/straglr)                          |
+| str.straglr.min_cluster_size                | 2                   | minimum number of reads required to constitute a cluster (allele) in GMM clustering, see [here](https://github.com/philres/straglr)                     |
 | str.straglr.GRCh38.loci                     | *installed*         | from [here](https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed)                                                      |
+
+### gVCF
+| key               | default         | description                                          |
+|-------------------|-----------------|------------------------------------------------------|
+| gvcf.merge_preset | gatk_unfiltered | allowed values: [gatk, gatk_unfiltered, DeepVariant] |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                                                                                                                 |
@@ -107,47 +112,51 @@ By default, each process gets assigned `4 cpus`, `8GB of memory` and a `max runt
 The following sections list all processes and their non-default configuration.
 
 ### FASTQ
-| process                   | configuration                   |
+| process label             | configuration                   |
 |---------------------------|---------------------------------|
 | concat_fastq              | *default*                       |
 | concat_fastq_paired_end   | *default*                       |
 | minimap2_align            | cpus=8 memory='16GB' time='23h' |
 | minimap2_align_paired_end | cpus=8 memory='16GB' time='23h' |
-| minimap2_index            | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
-| process               | configuration                 |
-|-----------------------|-------------------------------|
-| samtools_addreplacerg | *default*                     |
-| clair3_call           | cpus=4 memory='8GB' time='5h' |
-| clair3_call_publish   | *default*                     |
-| manta_call            | cpus=4 memory='8GB' time='5h' |
-| manta_call_publish    | *default*                     |
-| samtools_index        | *default*                     |
-| cutesv_call           | cpus=4 memory='8GB' time='5h' |
+| process label        | configuration                  |
+|----------------------|--------------------------------|
+| clair3_call          | cpus=4 memory='8GB' time='5h'  |
+| clair3_joint_call    | cpus=4 memory='8GB' time='5h'  |
+| concat_vcf           | *default*                      |
+| cram_validate        | *default*                      |
+| cutesv_call          | cpus=4 memory='8GB' time='5h'  |
+| expansionhunter_call | cpus=4 memory='16GB' time='5h' |
+| manta_call           | cpus=4 memory='8GB' time='5h'  |
+| straglr_call         | *default*                      |
+| vcf_merge_str        | *default*                      |
+| vcf_merge_sv         | *default*                      |
+
+### gVCF
+| process label | configuration             |
+|---------------|---------------------------|
+| gvcf_validate | memory='100MB' time='30m' |
+| gvcf_merge    | memory='2GB' time='30m'   |
 
 ### VCF
-| process                  | configuration                 |
-|--------------------------|-------------------------------|
-| annotate                 | cpus=4 memory='8GB' time='4h' |
-| annotate_publish         | *default*                     |
-| classify                 | memory = '2GB'                |
-| classify_publish         | *default*                     |
-| classify_samples         | memory = '2GB'                |
-| classify_samples_publish | *default*                     |
-| concat                   | *default*                     |
-| convert                  | *default*                     |
-| filter                   | *default*                     |
-| filter_samples           | *default*                     |
-| index                    | memory='100MB' time='30m'     |
-| inheritance              | memory = '2GB'                |
-| merge_gvcf               | memory='2GB' time='30m'       |
-| merge_vcf                | *default*                     |
-| normalize                | *default*                     |
-| report                   | memory = '4GB'                |
-| slice                    | *default*                     |
-| split                    | memory='100MB' time='30m'     |
-| stats                    | *default*                     |
+| process label                | configuration                 |
+|------------------------------|-------------------------------|
+| vcf_annotate                 | cpus=4 memory='8GB' time='4h' |
+| vcf_annotate_publish         | *default*                     |
+| vcf_classify                 | memory = '2GB'                |
+| vcf_classify_publish         | *default*                     |
+| vcf_classify_samples         | memory = '2GB'                |
+| vcf_classify_samples_publish | *default*                     |
+| vcf_concat                   | *default*                     |
+| vcf_filter                   | *default*                     |
+| vcf_filter_samples           | *default*                     |
+| vcf_inheritance              | memory = '2GB'                |
+| vcf_normalize                | *default*                     |
+| vcf_report                   | memory = '4GB'                |
+| vcf_slice                    | *default*                     |
+| vcf_split                    | memory='100MB' time='30m'     |
+| vcf_validate                 | memory='100MB' time='30m'     |
 
 ## Environment
 See [https://github.com/molgenis/vip/tree/main/config](https://github.com/molgenis/vip/tree/main/config) for an overview of available environment variables.

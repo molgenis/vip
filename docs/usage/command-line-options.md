@@ -7,7 +7,7 @@ In addition to the `.vcf.gz` an interactive `.html` report is produced that can 
 
 ```
 usage: vip -w <arg> -i <arg> -o <arg>
-  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, vcf
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -c, --config   <arg>  path to additional nextflow .cfg (optional)

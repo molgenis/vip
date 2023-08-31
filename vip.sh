@@ -6,7 +6,7 @@ SCRIPT_NAME="$(basename "$0")"
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
-  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, vcf
+  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
   -i, --input             <arg>  path to sample sheet .tsv
   -o, --output            <arg>  output folder
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
@@ -30,8 +30,8 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! "${workflow}" =~ cram|fastq|vcf ]]; then
-    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, vcf]"
+  if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf ]]; then
+    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf]"
     usage
     exit 2
   fi

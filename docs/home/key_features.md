@@ -8,8 +8,8 @@ Features include:
 - Short-read sequencing support (Illumina, both single and paired-end reads)
 - Supports GRCh37 and GRCh38
 - Short variant detection
-    - Limitation: VIP currently does not support short variant detection on Mitochondrial DNA
 - Structural variant detection
+- Short tandem repeat detection
 - Consequence-agnostic
 - Rich set of variant annotations
 - Pathogenic variant prioritization [(CAPICE)](https://github.com/molgenis/capice)
