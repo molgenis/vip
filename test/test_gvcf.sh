@@ -52,7 +52,7 @@ run_tests () {
 
   TEST_ID="gvcf"
   before_each
-  #test_gvcf
+  test_gvcf
   after_each
 
   TEST_ID="gvcf_multiproject"
