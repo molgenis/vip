@@ -27,7 +27,8 @@ process annotate {
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl
     vepPluginUtrAnnotatorPath = params.vcf.annotate[assembly].vep_plugin_utrannotator
     capiceModelPath = params.vcf.annotate[assembly].capice_model
-    strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
+    alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
+    geneNameEntrezIdMappingPath = params.vcf.annotate.gene_name_entrez_id_mapping
 
     gadoGenesPath = params.vcf.annotate.gado_genes
     gadoHpoPath = params.vcf.annotate.gado_hpo
@@ -52,7 +53,7 @@ process annotate {
 }
 
 process annotate_publish {
-  label 'vcf_annotate_publish'
+  label 'annotate_publish'
   
   publishDir "$params.output/intermediates", mode: 'link'
 

@@ -50,6 +50,7 @@ download_resources_molgenis() {
   local files=()
   files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
+  files+=("symbol_to_entrez_id_mapping.txt")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v5.1.1-v1.ubj")
@@ -77,6 +78,8 @@ download_resources_molgenis() {
     files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh37/vkgl_consensus_20230701.tsv")
     files+=("GRCh37/human_hs37d5.trf.bed")
+    files+=("GRCh37/AlphScore_final_37_filtered_sorted.tsv.gz")
+    files+=("GRCh37/AlphScore_final_37_filtered_sorted.tsv.gz.tbi")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
@@ -106,6 +109,8 @@ download_resources_molgenis() {
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20230701.tsv")
     files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
+    files+=("GRCh38/AlphScore_final.tsv.gz")
+    files+=("GRCh38/AlphScore_final.tsv.gz.tbi")
   fi
 
   for file in "${files[@]}"; do
