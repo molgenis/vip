@@ -41,3 +41,8 @@ We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with 
 [GADO](https://www.nature.com/articles/s41467-019-10649-4/) can be used to prioritize genes based on the HPO terms of a patient..
 
 We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the GADO output file.
+
+#### AlphScore
+[AlphScore](https://doi.org/10.5281/zenodo.6288138) is a method to predict the pathogenicity of missense variants using features derived from AlphaFold2.
+
+We add the available precomputed scores of AlphScore using a custom VEP plugin.
