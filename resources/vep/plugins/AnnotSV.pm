@@ -159,7 +159,7 @@ sub create_key {
 sub run {
     my ($self, $bvfoa) = @_;
     my %indices = %{$self->{indices}};
-    my $result = ();
+    my $result = {};
     my $annotations;
 
     my $svf = $bvfoa->base_variation_feature;
