@@ -18,7 +18,7 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
  mv AlphScore.pm ~/.vep/Plugins
  ./vep -i variations.vcf --plugin AlphScore,/FULL_PATH_TO_ALPHSCORE_file
 =head1 DESCRIPTION
- Plugin to annotate AlphScore scores as described in https://academic.oup.com/bioinformatics/article/39/5/btad280/7135835
+ Plugin to annotate AlphScore scores as described in https://doi.org/10.1093/bioinformatics/btad280/7135835
 =cut
 
 my $output_vcf;
