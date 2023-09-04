@@ -53,7 +53,7 @@ sub get_header_info {
 
     my $result;
     $result->{ALPHSCORE_FILE} = "file:" . $self->params->[0] . "'";
-    $result->{ALPHSCORE} = "AlphScore_final scores as described in https://academic.oup.com/bioinformatics/article/39/5/btad280/7135835";
+    $result->{ALPHSCORE} = "AlphScore_final scores as described in https://doi.org/10.1093/bioinformatics/btad280";
     return $result;
 }
 
