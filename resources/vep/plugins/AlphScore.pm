@@ -60,7 +60,6 @@ sub get_header_info {
 sub parseMappingFile {
     my %mapping_data;
     my $file = $_[0];
-    print "FILE:$file";
     open(MAPPING_FH, '<', $file) or die $!;
 
     my @split;
