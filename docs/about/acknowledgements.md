@@ -3,6 +3,7 @@ Standing on the shoulders of giants. This project could not have possible withou
 
 - [Ensembl Variant Effect Predictor (VEP)](https://grch38.ensembl.org/info/docs/tools/vep/index.html)
 - [Nextflow](https://www.nextflow.io/)
+- [AlphScore](https://doi.org/10.5281/zenodo.6288138)
 - [AnnotSV](https://lbgi.fr/AnnotSV/)
 - [Illumina ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
 - [Illumina Manta](https://github.com/Illumina/manta)
