@@ -10,17 +10,19 @@ process merge {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut = "${meta.project.id}.vcf.gz"
+    vcfOut = "${meta.project.id}_${meta.chunk.index}.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
+    bed="${meta.project.id}_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
     config = params.gvcf.merge_preset
 
     template 'merge.sh'
   
   stub:
-    vcfOut = "${meta.project.id}.vcf.gz"
+    vcfOut = "${meta.project.id}_${meta.chunk.index}.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
