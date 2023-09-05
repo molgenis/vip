@@ -1,6 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
+create_bed () {
+  echo -e "!{bedContent}" > "!{bed}"
+}
+
+# cannot use --bed because it is broken: https://github.com/dnanexus-rnd/GLnexus/issues/279
+create_sliced_vcfs () {
+  for gVcf in !{gVcfs}; do
+    ${CMD_BCFTOOLS} view --regions-file "!{bed}" --output-type z --output-file "sliced_${gVcf}" --no-version --threads "!{task.cpus}" "${gVcf}"
+    ${CMD_BCFTOOLS} index --csi --threads "!{task.cpus}" "sliced_${gVcf}"
+  done
+}
+
 # workaround for https://github.com/dnanexus-rnd/GLnexus/issues/238
 # workaround contains a workaround for https://github.com/samtools/bcftools/issues/1425
 reheader () {
@@ -9,7 +21,7 @@ reheader () {
   ${CMD_BCFTOOLS} index --csi --threads "!{task.cpus}" empty_contigs.vcf.gz
 
   for gVcf in !{gVcfs}; do
-    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf.gz "${gVcf}"
+    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf.gz "sliced_${gVcf}"
   done
 }
 
@@ -37,10 +49,19 @@ reheader_cleanup () {
   done
 }
 
+create_sliced_vcfs_cleanup () {
+  for gVcf in !{gVcfs}; do
+    rm "sliced_${gVcf}"
+  done
+}
+
 main () {
+  create_bed
+  create_sliced_vcfs
   reheader
   merge
   reheader_cleanup
+  create_sliced_vcfs_cleanup
   index
 }
 
