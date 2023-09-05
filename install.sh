@@ -109,8 +109,8 @@ download_resources_molgenis() {
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20230701.tsv")
     files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
-    files+=("GRCh38/AlphScore_20230825_final.tsv.gz")
-    files+=("GRCh38/AlphScore_20230825_final.tsv.gz.tbi")
+    files+=("GRCh38/AlphScore_final_20230825.tsv.gz")
+    files+=("GRCh38/AlphScore_final_20230825.tsv.gz.tbi")
   fi
 
   for file in "${files[@]}"; do
