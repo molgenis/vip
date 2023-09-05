@@ -166,7 +166,7 @@ sub run {
 
     my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$feature_type,$transcript_id);
 
-    my $result = ();
+    my $result = {};
     $result->{CAPICE_SC} = undef;
     $result->{CAPICE_CL} = undef;
     my $value = $self->{capice_map}{$key};
