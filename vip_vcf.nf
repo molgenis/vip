@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getVcfRegex; getRnaRegex } from './modules/utils'
-include { validate } from '/groups/umcg-gdio/tmp01/umcg-rheins-kars/vip_branch/vip/modules/vcf/validate.nf'
+include { validate } from './modules/vcf/validate.nf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -16,6 +16,7 @@ include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
+include { featureCounts } from './modules/vcf/featureCounts'
 
 /**
  * input: [project, vcf, ...]
@@ -23,195 +24,215 @@ include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postG
 workflow vcf {
     take: meta
     main:
-      meta
-        | meta.rna.collect()
-        | set { ch_rna }
-
-      ch_rna.view()
 
       meta
-        | flatMap { meta -> scatter(meta) }
         | branch { meta ->
-            split: meta.chunk.total > 1
-            ready: true
+          rna: meta.project.samples.any{ sample -> sample.rna != null }
+          ready: true
           }
-        | set { ch_inputs_scattered }
+        | set {ch_drop}
 
-      ch_inputs_scattered.split
-        | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
-        | split
-        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }
-        | set { ch_inputs_scattered_split }
+      ch_drop.rna
+          | map { meta -> meta.project.samples.rna}
+          | collect
+          | set {ch_drop_files}
+      
+      ch_drop.rna
+          | map { meta -> meta.project.samples.individual_id }
+          | collect
+          | set {ch_drop_samples}
 
-      // process chunks
-      Channel.empty().mix(ch_inputs_scattered.ready, ch_inputs_scattered_split)
-        | map { meta -> [[*:meta, probands: getProbands(meta.project.samples), hpo_ids: getHpoIds(meta.project.samples) ], meta.vcf.data, meta.vcf.index, meta.vcf.stats] }
-        | branch { meta, vcf, vcfIndex, vcfStats ->
-            process: nrRecords(vcfStats) > 0
-            empty: true
-          }
-        | set { ch_inputs }
+      ch_drop_files.mix(ch_drop_samples)
+          | featureCounts
+          | view
 
-      ch_inputs.process
-        | branch {
-            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize/
-            skip: true
-          }
-        | set { ch_normalize }
+      // ch_drop.rna
+      //   | { meta -> meta.samples.findAll{ sample -> sample.rna != null }.collect{ sample -> [*:meta, sample: sample] } }
+      //   | view
 
-      // normalize
-      ch_normalize.take
-        | normalize
-        | set { ch_normalized }
+      // ch_drop.ready.mix(ch_drop.rna)
+      //   | flatMap { meta -> scatter(meta) }
+      //   | branch { meta ->
+      //       split: meta.chunk.total > 1
+      //       ready: true
+      //     }
+      //   | set { ch_inputs_scattered }
 
-      // annotate
-      ch_normalized.mix(ch_normalize.skip)
-        | branch {
-            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate/
-            skip: true
-          }
-        | set { ch_annotate }
+      // ch_inputs_scattered.split
+      //   | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
+      //   | split
+      //   | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }
+      //   | set { ch_inputs_scattered_split }
 
-      ch_annotate.take
-          | annotate
-          | multiMap { it -> done: publish: it }
-          | set { ch_annotated }
+      // // process chunks
+      // Channel.empty().mix(ch_inputs_scattered.ready, ch_inputs_scattered_split)
+      //   | map { meta -> [[*:meta, probands: getProbands(meta.project.samples), hpo_ids: getHpoIds(meta.project.samples) ], meta.vcf.data, meta.vcf.index, meta.vcf.stats] }
+      //   | branch { meta, vcf, vcfIndex, vcfStats ->
+      //       process: nrRecords(vcfStats) > 0
+      //       empty: true
+      //     }
+      //   | set { ch_inputs }
 
-      ch_annotated.publish.mix(ch_inputs.empty)
-          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
-          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-          | annotate_publish
+      // ch_inputs.process
+      //   | branch {
+      //       take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize/
+      //       skip: true
+      //     }
+      //   | set { ch_normalize }
 
-      // classify
-      ch_annotated.done.mix(ch_annotate.skip)
-        | branch {
-            take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify/
-            skip: true
-          }
-        | set { ch_classify }
+      // // normalize
+      // ch_normalize.take
+      //   | normalize
+      //   | set { ch_normalized }
 
-      ch_classify.take
-        | classify
-        | multiMap { it -> done: publish: it }
-        | set { ch_classified }
+      // // annotate
+      // ch_normalized.mix(ch_normalize.skip)
+      //   | branch {
+      //       take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate/
+      //       skip: true
+      //     }
+      //   | set { ch_annotate }
 
-      ch_classified.publish.mix(ch_inputs.empty)
-        | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-        | groupTuple
-        | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-        | classify_publish
+      // ch_annotate.take
+      //     | annotate
+      //     | multiMap { it -> done: publish: it }
+      //     | set { ch_annotated }
 
-        // filter
-        ch_classified.done.mix(ch_classify.skip)
-          | branch {
-              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter/
-              skip: true
-            }
-          | set { ch_filter }
+      // ch_annotated.publish.mix(ch_inputs.empty)
+      //     | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      //     | groupTuple
+      //     | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      //     | annotate_publish
 
-        ch_filter.take
-          | filter
-          | branch { meta, vcf, vcfIndex, vcfStats ->
-              process: nrRecords(vcfStats) > 0
-              empty: true
-            }
-          | set { ch_filtered }
+      // // classify
+      // ch_annotated.done.mix(ch_annotate.skip)
+      //   | branch {
+      //       take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify/
+      //       skip: true
+      //     }
+      //   | set { ch_classify }
 
-        // inheritance
-        ch_filtered.process.mix(ch_filter.skip)
-          | branch {
-              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance/
-              skip: true
-            }
-          | set { ch_inheritance }
+      // ch_classify.take
+      //   | classify
+      //   | multiMap { it -> done: publish: it }
+      //   | set { ch_classified }
 
-        ch_inheritance.take
-            | inheritance
-            | set { ch_inheritanced }
+      // ch_classified.publish.mix(ch_inputs.empty)
+      //   | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      //   | groupTuple
+      //   | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      //   | classify_publish
 
-        // classify samples
-        ch_inheritanced.mix(ch_inheritance.skip)
-          | branch {
-              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples/
-              skip: true
-            }
-          | set { ch_classify_samples }
+      //   // filter
+      //   ch_classified.done.mix(ch_classify.skip)
+      //     | branch {
+      //         take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter/
+      //         skip: true
+      //       }
+      //     | set { ch_filter }
 
-        ch_classify_samples.take
-          | classify_samples
-          | multiMap { it -> done: publish: it }
-          | set { ch_classified_samples }
+      //   ch_filter.take
+      //     | filter
+      //     | branch { meta, vcf, vcfIndex, vcfStats ->
+      //         process: nrRecords(vcfStats) > 0
+      //         empty: true
+      //       }
+      //     | set { ch_filtered }
 
-        ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
-          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
-          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-          | classify_samples_publish
+      //   // inheritance
+      //   ch_filtered.process.mix(ch_filter.skip)
+      //     | branch {
+      //         take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance/
+      //         skip: true
+      //       }
+      //     | set { ch_inheritance }
 
-        // filter samples
-        ch_classified_samples.done.mix(ch_classify_samples.skip)
-          | branch {
-              take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/
-              skip: true
-            }
-          | set { ch_filter_samples }
+      //   ch_inheritance.take
+      //       | inheritance
+      //       | set { ch_inheritanced }
 
-        ch_filter_samples.take
-          | filter_samples
-          | branch { meta, vcf, vcfIndex, vcfStats ->
-              process: nrRecords(vcfStats) > 0
-              empty: true
-            }
-          | set { ch_filtered_samples }
+      //   // classify samples
+      //   ch_inheritanced.mix(ch_inheritance.skip)
+      //     | branch {
+      //         take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples/
+      //         skip: true
+      //       }
+      //     | set { ch_classify_samples }
 
-        // concat
-        ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
-          | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
-          | map { key, metaList -> postGroupTupleConcat(key, metaList) }
-          | branch { meta, vcfs, vcfIndexes ->
-              concat: vcfs.size() > 1
-              ready: true
-            }
-          | set { ch_outputs }
+      //   ch_classify_samples.take
+      //     | classify_samples
+      //     | multiMap { it -> done: publish: it }
+      //     | set { ch_classified_samples }
 
-        ch_outputs.concat
-            | concat
-            | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
-            | branch { meta ->
-                slice: meta.samples.any{ sample -> sample.cram != null }
-                ready: true
-              }
-            | set { ch_concated }
+      //   ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
+      //     | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      //     | groupTuple
+      //     | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      //     | classify_samples_publish
+
+      //   // filter samples
+      //   ch_classified_samples.done.mix(ch_classify_samples.skip)
+      //     | branch {
+      //         take: params.vcf.start.isEmpty() || params.vcf.start ==~ /normalize|annotate|classify|filter|inheritance|classify_samples|filter_samples/
+      //         skip: true
+      //       }
+      //     | set { ch_filter_samples }
+
+      //   ch_filter_samples.take
+      //     | filter_samples
+      //     | branch { meta, vcf, vcfIndex, vcfStats ->
+      //         process: nrRecords(vcfStats) > 0
+      //         empty: true
+      //       }
+      //     | set { ch_filtered_samples }
+
+      //   // concat
+      //   ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
+      //     | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      //     | groupTuple
+      //     | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      //     | branch { meta, vcfs, vcfIndexes ->
+      //         concat: vcfs.size() > 1
+      //         ready: true
+      //       }
+      //     | set { ch_outputs }
+
+      //   ch_outputs.concat
+      //       | concat
+      //       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
+      //       | branch { meta ->
+      //           slice: meta.samples.any{ sample -> sample.cram != null }
+      //           ready: true
+      //         }
+      //       | set { ch_concated }
      
-          ch_outputs.ready
-            | map { meta, vcfs, vcfIndexes -> [*:meta, vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
-            | set { ch_output_singleton }
+      //     ch_outputs.ready
+      //       | map { meta, vcfs, vcfIndexes -> [*:meta, vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
+      //       | set { ch_output_singleton }
 
-          ch_output_singleton.mix(ch_concated)
-            | branch { meta ->
-                slice: meta.samples.any{ sample -> sample.cram != null }
-                ready: true
-              }
-            | set { ch_output }
+      //     ch_output_singleton.mix(ch_concated)
+      //       | branch { meta ->
+      //           slice: meta.samples.any{ sample -> sample.cram != null }
+      //           ready: true
+      //         }
+      //       | set { ch_output }
 
-        ch_output.slice
-            | flatMap { meta -> meta.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
-            | slice
-            | map { meta, cram -> [*:meta, cram: cram] }
-            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
-            | groupTuple
-            | map { key, metaList -> 
-                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
-                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
-              }
-            | set { ch_sliced }
+      //   ch_output.slice
+      //       | flatMap { meta -> meta.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+      //       | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
+      //       | slice
+      //       | map { meta, cram -> [*:meta, cram: cram] }
+      //       | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
+      //       | groupTuple
+      //       | map { key, metaList -> 
+      //           def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
+      //           [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+      //         }
+      //       | set { ch_sliced }
 
-        ch_sliced.mix(ch_output.ready)
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
-            | report
+      //   ch_sliced.mix(ch_output.ready)
+      //       | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
+      //       | report
 }
 
 workflow {
