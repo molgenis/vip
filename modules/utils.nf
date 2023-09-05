@@ -7,7 +7,7 @@ def getVcfRegex() {
 }
 
 def getGenomeVcfRegex() {
-  /.+(?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.gvcf|\.gvcf\.gz|\.gvcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz)$/
+  /.+(?:\.g\.bcf|\.g\.bcf.gz|\.g\.bcf\.bgz|\.gvcf|\.gvcf\.gz|\.gvcf\.bgz|\.g\.vcf|\.g\.vcf\.gz|\.g\.vcf\.bgz)$/
 }
 
 def parseFastaIndex(faiFile) {
