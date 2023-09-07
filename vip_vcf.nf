@@ -18,12 +18,19 @@ include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
 
 /**
- * input: [project, vcf, ...]
+ * input: [project, vcf, chunk (optional), ...]
  */
 workflow vcf {
     take: meta
     main:
       meta
+        | branch { meta ->
+            scatter: meta.chunk == null
+            ready: true
+          }
+        | set { ch_inputs }
+
+      ch_inputs.scatter
         | flatMap { meta -> scatter(meta) }
         | branch { meta ->
             split: meta.chunk.total > 1
@@ -31,7 +38,7 @@ workflow vcf {
           }
         | set { ch_inputs_scattered }
 
-      ch_inputs_scattered.split
+      Channel.empty().mix(ch_inputs_scattered.split, ch_inputs.ready)
         | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
         | split
         | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }

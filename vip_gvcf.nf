@@ -3,6 +3,7 @@ nextflow.enable.dsl=2
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate } from './modules/gvcf/validate'
+include { scatter } from './modules/gvcf/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 
@@ -10,16 +11,24 @@ include { vcf; validateVcfParams } from './vip_vcf'
  * input:  [project, sample, ...]
  */
 workflow gvcf {
-    take: meta
-    main:
-      meta
-        | map { meta -> [groupKey(meta.project, meta.project.samples.size), meta.sample] }
-        | groupTuple
-        | map { key, group -> [key.getGroupTarget(), group.sort { it.index } ] }
-        | map { project, samples -> [[project: project], samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
-        | merge
-        | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
-        | vcf
+  take: meta
+  main:
+    meta
+      | flatMap { meta -> scatter(meta) }
+      | set { ch_inputs_scattered }
+
+    // joint variant calling per project, per chunk
+    ch_inputs_scattered
+      | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+      | groupTuple
+      | map { key, group -> [key.getGroupTarget(), group.sort { it.index } ] }
+      | map { meta, samples -> [meta, samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
+      | merge
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_vcf_per_chunk_called }
+
+    ch_vcf_per_chunk_called  
+      | vcf
 }
 
 workflow {
