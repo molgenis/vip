@@ -168,10 +168,11 @@ stranger() {
     cp "!{vcfOut}" stranger_input.vcf.gz
 
     local args=()
-    args+=("-f" "!{strangerCatalog}")
+    args+=("--repeats-file" "!{strangerCatalog}")
+    args+=("--loglevel" "ERROR")
     args+=("stranger_input.vcf.gz")
-
-    ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z > "!{vcfOut}"
+    
+    ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "!{vcfOut}"
     rm "stranger_input.vcf.gz"
 }
 
