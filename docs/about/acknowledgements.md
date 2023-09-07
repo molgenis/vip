@@ -10,6 +10,7 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [Illumina SpliceAI](https://github.com/Illumina/SpliceAI)
 - [igv.js](https://github.com/igvteam/igv.js)
 - [Clair3](https://github.com/HKU-BAL/Clair3)
+- [DeepVariant](https://github.com/google/deepvariant)
 - [Minimap2](https://github.com/lh3/minimap2)
 - [GLnexus](https://github.com/dnanexus-rnd/GLnexus)
 - [Samtools formats and tools](http://samtools.github.io/)
