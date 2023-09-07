@@ -85,7 +85,7 @@ process joint_call {
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
     config="gatk_unfiltered"
 
-    template 'clair3_joint_call.sh'
+    template 'joint_call.sh'
     
   stub:
     vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"
