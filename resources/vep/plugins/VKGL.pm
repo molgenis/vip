@@ -268,7 +268,7 @@ sub run {
     my $alt = $vcf_line[4];
     my $gene_id = $transcript->{_gene_stable_id};
 
-    my $result = ();
+    my $result = {};
     if (!$self->{consensus_only}) {
         $result->{VKGL_AMC} = undef;
         $result->{VKGL_ERASMUS} = undef;

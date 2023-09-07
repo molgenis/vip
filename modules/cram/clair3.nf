@@ -46,14 +46,14 @@ process concat {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.g.vcf.gz"
+    vcfOut="${meta.project.id}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
     template 'concat.sh'
   
   stub:
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.g.vcf.gz"
+    vcfOut="${meta.project.id}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
@@ -76,17 +76,19 @@ process joint_call {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
+    bed="${meta.project.id}_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
     config="gatk_unfiltered"
 
     template 'clair3_joint_call.sh'
     
   stub:
-    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
