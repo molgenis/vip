@@ -220,6 +220,7 @@ download_images() {
   files+=("capice-5.1.1.sif")
   files+=("clair3-v1.0.2.sif")
   files+=("cutesv-2.0.3.sif")
+  files+=("deepvariant-v1.5.0.sif")
   files+=("expansionhunter-5.0.0.sif")
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("minimap2-2.24.sif")

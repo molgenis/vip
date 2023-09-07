@@ -7,32 +7,25 @@ create_bed () {
 
 call_small_variants () {
     local args=()
-    args+=("--model_type" "PACBIO")
-    args+=("--ref" "reference/GRCh38_no_alt_analysis_set.fasta")
-    args+=("--reads" "input/HG003.GRCh38.chr20.pFDA_truthv2.bam")
+    args+=("--model_type" "!{model}")
+    args+=("--ref" "!{reference}")
+    args+=("--reads" "!{cram}")
     args+=("--output_vcf" "!{vcfOut}")
     args+=("--num_shards" "!{task.cpus}")
-    args+=("--regions" "chr20")
+    args+=("--regions" "!{bed}")
+    args+=("--intermediate_results_dir" ".")
 
-    ${CMD_DEEPVARIANT} "${args[@]}"  
-
-    mv "merge_output.gvcf.gz" "!{vcfOut}"
-    mv "merge_output.gvcf.gz.tbi" "!{vcfOutIndex}"
+    ${CMD_DEEPVARIANT} "${args[@]}" 
 }
 
 stats () {
+  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
-}
-
-#To exit with error when https://github.com/HKU-BAL/Clair3/issues/200 occurs, otherwise it will fail in the next steps of the pipeline without possibility of the "retry stategy".
-validate () {
-  ${CMD_BCFTOOLS} view "!{vcfOut}" > /dev/null
 }
 
 main() {
     create_bed
     call_small_variants
-    validate
     stats
 }
 
