@@ -50,7 +50,6 @@ download_resources_molgenis() {
   local files=()
   files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
-  files+=("symbol_to_entrez_id_mapping.txt")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v5.1.1-v1.ubj")

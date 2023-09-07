@@ -236,8 +236,8 @@ vep() {
     # when you change the field also update the empty file header in this file
     args+=("--plugin" "AnnotSV,!{vcf}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
   fi
-  if [ -n "!{alphScorePath}" ] && [ "!{geneNameEntrezIdMappingPath}" ]; then
-    args+=("--plugin" "AlphScore,!{alphScorePath},!{geneNameEntrezIdMappingPath}")
+  if [ -n "!{alphScorePath}" ]; then
+    args+=("--plugin" "AlphScore,!{alphScorePath}")
   fi
   
   ${CMD_VEP} "${args[@]}"
