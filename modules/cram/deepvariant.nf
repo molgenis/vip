@@ -1,4 +1,4 @@
-process deepvariant_call {
+process call {
   label 'deepvariant_call'
 
   input:
@@ -17,8 +17,7 @@ process deepvariant_call {
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    platform=meta.project.sequencing_platform == "nanopore" ? "ont" : (meta.project.sequencing_platform == "pacbio_hifi" ? "hifi" : "ilmn")
-    modelName=params.snv.clair3[meta.project.sequencing_platform].model_name
+    model="${meta.project.sequencing_platform}" == "illumina" ? "${meta.project.sequencing_method}" : ("${meta.project.sequencing_platform}" == "nanopore" ? "ONT_R104" : "PACBIO")
 
     template 'deepvariant_call.sh'
 
@@ -27,6 +26,69 @@ process deepvariant_call {
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
     
+    """
+    touch "${vcfOut}"
+    touch "${vcfOutIndex}"
+    echo -e "chr1\t248956422\t1234" > "${vcfOutStats}"
+    """
+}
+
+process concat {
+  label 'concat'
+
+  publishDir "$params.output/intermediates", mode: 'link'
+
+  input:
+    tuple val(meta), path(vcfs), path(vcfIndexes)
+
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+
+  shell:
+    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    template 'concat.sh'
+  
+  stub:
+    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    """
+    touch "${vcfOut}"
+    touch "${vcfOutIndex}"
+    echo -e "chr1\t248956422\t1234" > "${vcfOutStats}"
+    """
+}
+
+process joint_call {
+  label 'deepvariant_joint_call'
+
+  publishDir "$params.output/intermediates", mode: 'link'
+
+  input:
+    tuple val(meta), path(gVcfs), path(gVcfIndexes)
+
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+
+  shell:
+    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
+    config="DeepVariant"
+
+    template 'joint_call.sh'
+    
+  stub:
+    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
     """
     touch "${vcfOut}"
     touch "${vcfOutIndex}"

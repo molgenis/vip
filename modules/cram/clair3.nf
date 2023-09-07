@@ -35,7 +35,7 @@ process call {
 }
 
 process concat {
-  label 'clair3_concat'
+  label 'concat'
 
   publishDir "$params.output/intermediates", mode: 'link'
 
@@ -50,7 +50,7 @@ process concat {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
-    template 'clair3_call_concat.sh'
+    template 'concat.sh'
   
   stub:
     vcfOut="${meta.project.id}_snv.vcf.gz"
