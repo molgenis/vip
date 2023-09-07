@@ -12,12 +12,13 @@ process call {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.')) 
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    
+    sampleName = "${meta.sample.individual_id}"
+
     vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chunk_${meta.chunk.index}_snv.g.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    model="${meta.project.sequencing_platform}" == "illumina" ? "${meta.project.sequencing_method}" : ("${meta.project.sequencing_platform}" == "nanopore" ? "ONT_R104" : "PACBIO")
+    model=meta.project.sequencing_platform == "illumina" ? params.snv.deepvariant[meta.project.sequencing_platform][meta.project.sequencing_method].model_name : params.snv.deepvariant[meta.project.sequencing_platform].model_name
 
     template 'deepvariant_call.sh'
 
@@ -32,7 +33,6 @@ process call {
     echo -e "chr1\t248956422\t1234" > "${vcfOutStats}"
     """
 }
-
 process concat {
   label 'concat'
 
@@ -45,14 +45,14 @@ process concat {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
     template 'concat.sh'
   
   stub:
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
@@ -75,7 +75,7 @@ process joint_call {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
@@ -87,7 +87,7 @@ process joint_call {
     template 'joint_call.sh'
     
   stub:
-    vcfOut="${meta.project.id}_snv.vcf.gz"
+    vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

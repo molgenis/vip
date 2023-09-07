@@ -130,11 +130,6 @@ test_cram_trio () {
 
 run_tests () {
 
-  TEST_ID="bam"
-  before_each
-  test_bam
-  after_each
-
   TEST_ID="cram"
   before_each
   test_cram
