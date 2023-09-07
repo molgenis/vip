@@ -58,7 +58,7 @@ test_bam () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}"; then
+  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
     return 1
   fi
 
@@ -129,6 +129,21 @@ test_cram_trio () {
 }
 
 run_tests () {
+  before_all
+  TEST_ID="cram_nanopore"
+  before_each
+  test_cram_nanopore
+  after_each
+
+  TEST_ID="cram_nanopore_duo"
+  before_each
+  test_cram_nanopore_duo
+  after_each
+
+  TEST_ID="bam"
+  before_each
+  test_bam
+  after_each
 
   TEST_ID="cram"
   before_each
