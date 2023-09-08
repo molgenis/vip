@@ -7,7 +7,7 @@ usage() {
   echo -e "usage: ${SCRIPT_NAME} -i <arg> -o <arg> [-a <arg>]
   -i, --input      <arg>    AlphScore .tsv.gz file from https://doi.org/10.5281/zenodo.8283349
   -o, --output     <arg>    AlphScore .tsv.gz file with '#chr', 'pos(1-based)', 'ref', 'alt', 'hg19_chr', 'hg19_pos(1-based)' and 'AlphScore' columns
-  -a, --assembly   <arg>    Assembly of the output file [GRCh37, GRCh38]
+  -a, --assembly   <arg>    Desired assembly of the output file [GRCh37, GRCh38]
   -h, --help                Print this message and exit"
 }
 
@@ -44,7 +44,6 @@ validate() {
 
   if [[ -z "${input}" ]]; then
     echo -e "missing required -i, --input"
-    usage
     exit 1
   fi
   if [[ ! -f "${input}" ]]; then
