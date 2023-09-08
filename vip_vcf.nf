@@ -16,7 +16,7 @@ include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
-include { featureCounts } from './modules/vcf/featureCounts'
+include { featureCounts; cut } from './modules/vcf/featureCounts'
 
 /**
  * input: [project, vcf, ...]
@@ -33,18 +33,19 @@ workflow vcf {
         | set {ch_drop}
 
       ch_drop.rna
-          | map { meta -> meta.project.samples.rna}
-          | collect
-          | set {ch_drop_files}
-      
-      ch_drop.rna
-          | map { meta -> meta.project.samples.individual_id }
-          | collect
-          | set {ch_drop_samples}
-
-      ch_drop_files.mix(ch_drop_samples)
+          | map { meta -> [meta, meta.project.samples.rna[0], meta.project.samples.individual_id[0]] }
           | featureCounts
+          | cut
           | view
+      //    | set {ch_countMatix}
+      
+      // ch_drop.rna
+      //     | map { meta -> meta.project.samples.individual_id }
+      //     | collect
+      //     | set {ch_drop_samples}
+
+      // Channel.empty().mix(ch_drop_files, ch_drop_samples)
+      //     | view
 
       // ch_drop.rna
       //   | { meta -> meta.samples.findAll{ sample -> sample.rna != null }.collect{ sample -> [*:meta, sample: sample] } }
