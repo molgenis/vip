@@ -24,9 +24,10 @@ strip() {
   local -r assembly="${3}"
 
   if [[ "${assembly}" == "GRCh37" ]]; then
+    # remove records with missing chromosome or position for GRCh37
+    # file is sorted on GRCh38, so we need to sort on GRCh37
     zcat "${input}" | \
-      awk 'BEGIN { FS="\t"; OFS="\t" } NR==1 { printf "%s\t%s\t%s\t%s\t%s\n", $8, $9, $3, $4, $23 } NR>1 { printf "%s\t%s\t%s\t%s\t%0.3f\n", $8, $9, $3, $4, $23 }' | \
-      awk -F"\t" '{if ($1!="NA") print}' | \
+      awk 'BEGIN { FS="\t"; OFS="\t" } NR==1 { printf "%s\t%s\t%s\t%s\t%s\n", $8, $9, $3, $4, $23 } NR>1 { if ($8!="NA" && $9!="NA") printf "%s\t%s\t%s\t%s\t%0.3f\n", $8, $9, $3, $4, $23 }' | \
       body sort --field-separator=$'\t' --key=1,1 --key=2,2n --parallel=8 | \
       bgzip --compress-level 9 --stdout --threads 8 > "${output}"
   else
