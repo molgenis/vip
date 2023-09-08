@@ -29,7 +29,6 @@ process annotate {
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
-    geneNameEntrezIdMappingPath = params.vcf.annotate.gene_name_entrez_id_mapping
 
     gadoGenesPath = params.vcf.annotate.gado_genes
     gadoHpoPath = params.vcf.annotate.gado_hpo
