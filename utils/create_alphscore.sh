@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_NAME="$(basename "$0")"
 
 usage() {
-  echo -e "usage: ${SCRIPT_NAME} -i <arg> -o <arg> [-a <arg>]
+  echo -e "usage: ${SCRIPT_NAME} -i <arg> -o <arg> -a <arg> [-t <arg>]
   -i, --input      <arg>    AlphScore .tsv.gz file from https://doi.org/10.5281/zenodo.8283349
   -o, --output     <arg>    AlphScore .tsv.gz file with '#chr', 'pos(1-based)', 'ref', 'alt', 'hg19_chr', 'hg19_pos(1-based)' and 'AlphScore' columns
   -a, --assembly   <arg>    Desired assembly of the output file [GRCh37, GRCh38]
@@ -26,6 +26,7 @@ strip() {
   if [[ "${assembly}" == "GRCh37" ]]; then
     zcat "${input}" | \
       awk 'BEGIN { FS="\t"; OFS="\t" } NR==1 { printf "%s\t%s\t%s\t%s\t%s\n", $8, $9, $3, $4, $23 } NR>1 { printf "%s\t%s\t%s\t%s\t%0.3f\n", $8, $9, $3, $4, $23 }' | \
+      awk -F"\t" '{if ($1!="NA") print}' | \
       body sort --field-separator=$'\t' --key=1,1 --key=2,2n --parallel=8 | \
       bgzip --compress-level 9 --stdout --threads 8 > "${output}"
   else
@@ -130,7 +131,7 @@ validate() {
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o i:o:a:h --long input:,assembly:,output:,help -- "$@")
+  local -r args=$(getopt -a -n pipeline -o i:o:a:h --long input:,assembly:,output:,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -147,7 +148,6 @@ main() {
     -h | --help)
       usage
       exit 0
-      shift
       ;;
     -i | --input)
       input="$2"
