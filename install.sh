@@ -231,7 +231,7 @@ download_images() {
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.7.0.sif")
-  files+=("vcf-inheritance-matcher-2.1.7.sif")
+  files+=("vcf-inheritance-matcher-2.1.8.sif")
   files+=("vcf-report-5.5.2.sif")
   files+=("vep-109.3.sif")
   files+=("manta-1.6.0.sif")
