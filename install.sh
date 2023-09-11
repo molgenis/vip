@@ -230,7 +230,7 @@ download_images() {
   files+=("samtools-1.17-patch1.sif")
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.3.1.sif")
-  files+=("vcf-decision-tree-3.5.4.sif")
+  files+=("vcf-decision-tree-3.7.0.sif")
   files+=("vcf-inheritance-matcher-2.1.7.sif")
   files+=("vcf-report-5.5.2.sif")
   files+=("vep-109.3.sif")
