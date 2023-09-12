@@ -344,10 +344,28 @@
         "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lb"
+        "nextNode": "alphScore"
       },
       "outcomeMissing": {
         "nextNode": "exit_vus"
+      }
+    },
+    "alphScore": {
+      "description": "AlphScore prediction > 0.79734",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/ALPHSCORE",
+        "operator": ">",
+        "value": 0.79734
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_lb"
       }
     },
     "exit_rm": {
