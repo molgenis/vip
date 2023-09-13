@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getVcfRegex; getRnaRegex } from './modules/utils'
+include { getCramRegex; getVcfRegex; getRnaRegex; createCountTemplate } from './modules/utils'
 include { validate } from './modules/vcf/validate.nf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
@@ -16,7 +16,8 @@ include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
-include { featureCounts; cut } from './modules/vcf/featureCounts'
+include { featureCounts; cut; createMatrix } from './modules/vcf/featureCounts'
+include { outrider; rnaResults } from './modules/vcf/outrider'
 
 /**
  * input: [project, vcf, ...]
@@ -33,23 +34,17 @@ workflow vcf {
         | set {ch_drop}
 
       ch_drop.rna
-          | map { meta -> [meta, meta.project.samples.rna[0], meta.project.samples.individual_id[0]] }
-          | featureCounts
-          | cut
-          | view
-      //    | set {ch_countMatix}
-      
-      // ch_drop.rna
-      //     | map { meta -> meta.project.samples.individual_id }
-      //     | collect
-      //     | set {ch_drop_samples}
+        | map { meta -> [meta, meta.project.samples.rna[0], meta.project.samples.individual_id[0]] }
+        | featureCounts
+        | cut
+        | combine(Channel.of(createCountTemplate()))
+        | createMatrix
+        | set {ch_countMatrix}
 
-      // Channel.empty().mix(ch_drop_files, ch_drop_samples)
-      //     | view
-
-      // ch_drop.rna
-      //   | { meta -> meta.samples.findAll{ sample -> sample.rna != null }.collect{ sample -> [*:meta, sample: sample] } }
-      //   | view
+      ch_countMatrix
+        | last
+        | view
+        // OUTRIDER
 
       // ch_drop.ready.mix(ch_drop.rna)
       //   | flatMap { meta -> scatter(meta) }
