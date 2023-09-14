@@ -50,7 +50,7 @@ main() {
 
   echo -e "downloading ..."
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.1.3.sif
-  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/resources/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
+  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
   wget --quiet --continue http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
   wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
   echo -e "downloading done"
