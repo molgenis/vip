@@ -6,6 +6,7 @@ SCRIPT_NAME="$(basename "$0")"
 
 BCFTOOLS_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/BCFtools.sif bcftools"
 BGZIP_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif bgzip"
+TABIX_CMD="apptainer exec --bind /groups /apps/data/vip/v3.2.0/sif/HTSlib.sif tabix"
 
 ASSEMBLY="GRCh37"
 THREADS=4
@@ -126,6 +127,18 @@ process() {
 	fi
 }
 
+convert() {
+	local -r input="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz"
+	local -r output="${SCRIPT_DIR}/${ASSEMBLY}/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz"
+	if [[ ! -f "${total_output_path}" ]]; then
+		${BCFTOOLS_CMD} query --print-header --format '%CHROM\t%POS\t%REF\t%ALT\t%INFO/AF\t%INFO/HN\n' "${input}" |\
+	      ${BGZIP_CMD} --stdout --compress-level 9 --threads "${THREADS}" > "${output}"
+    	${TABIX_CMD} "${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
+	else
+		echo "   skip converting to ${output} because file already exists"
+	fi
+}
+
 main() {
 	echo "downloading files ..."
 	download
@@ -134,6 +147,10 @@ main() {
 	echo "processing ..."
 	process
 	echo "processing done"
+
+	echo "convert ..."
+	process
+	echo "converting done"
 }
 
 main "${@}"

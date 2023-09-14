@@ -58,8 +58,8 @@ download_resources_molgenis() {
     files+=("GRCh37/expansionhunter_variant_catalog.json")
     files+=("GRCh37/variant_catalog_grch37_fixed.json")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
@@ -96,8 +96,8 @@ download_resources_molgenis() {
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh38/hg38.phyloP100way.bed.gz")
     files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
