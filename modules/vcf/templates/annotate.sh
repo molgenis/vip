@@ -226,8 +226,8 @@ vep() {
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
   fi
-  if [ -n "!{vepCustomGnomAdPath}" ]; then
-    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
+  if [ -n "!{vepPluginGnomAdPath}" ]; then
+    args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
   fi
   if [ -n "!{vepCustomClinVarPath}" ]; then
       args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
