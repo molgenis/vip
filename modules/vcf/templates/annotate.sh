@@ -127,7 +127,7 @@ capice_vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
-  args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
+  args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
 
   ${CMD_VEP} "${args[@]}"
 }
