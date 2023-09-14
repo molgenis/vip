@@ -19,9 +19,9 @@ process annotate {
     
     assembly=meta.project.assembly
     refSeqPath = params[assembly].reference.fasta
-    vepPluginGnomAdPath = params.vcf.annotate[assembly].vep_plugin_gnomad
-    vepCustomClinVarPath = params.vcf.annotate[assembly].vep_custom_clinvar
     vepCustomPhyloPPath = params.vcf.annotate[assembly].vep_custom_phylop
+    vepPluginClinVarPath = params.vcf.annotate[assembly].vep_plugin_clinvar
+    vepPluginGnomAdPath = params.vcf.annotate[assembly].vep_plugin_gnomad
     vepPluginSpliceAiIndelPath = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
     vepPluginSpliceAiSnvPath = params.vcf.annotate[assembly].vep_plugin_spliceai_snv
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl

@@ -229,8 +229,8 @@ vep() {
   if [ -n "!{vepPluginGnomAdPath}" ]; then
     args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
   fi
-  if [ -n "!{vepCustomClinVarPath}" ]; then
-      args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
+  if [ -n "!{vepPluginClinVarPath}" ]; then
+      args+=("--plugin" "ClinVar,!{vepPluginClinVarPath}")
   fi
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     # when you change the field also update the empty file header in this file

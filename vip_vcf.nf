@@ -258,16 +258,16 @@ def validateVcfParams(assemblies) {
   assemblies.each { assembly ->
     def capiceModel = params.vcf.annotate[assembly].capice_model
     if(!file(capiceModel).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.capiceModel' value '${capiceModel}' does not exist"
-
-    def vepCustomGnomad = params.vcf.annotate[assembly].vep_custom_gnomad
-    if(!file(vepCustomGnomad).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_gnomad' value '${vepCustomGnomad}' does not exist"
-
-    def vepCustomClinvar = params.vcf.annotate[assembly].vep_custom_clinvar
-    if(!file(vepCustomClinvar).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_clinvar' value '${vepCustomClinvar}' does not exist"
-
+    
     def vepCustomPhylop = params.vcf.annotate[assembly].vep_custom_phylop
     if(!file(vepCustomPhylop).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_custom_phylop' value '${vepCustomPhylop}' does not exist"
     
+    def vepPluginClinvar = params.vcf.annotate[assembly].vep_plugin_clinvar
+    if(!file(vepPluginClinvar).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_clinvar' value '${vepPluginClinvar}' does not exist"
+
+    def vepPluginGnomad = params.vcf.annotate[assembly].vep_plugin_gnomad
+    if(!file(vepPluginGnomad).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_gnomad' value '${vepPluginGnomad}' does not exist"
+
     def vepPluginSpliceaiIndel = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
     if(!file(vepPluginSpliceaiIndel).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.vep_plugin_spliceai_indel' value '${vepPluginSpliceaiIndel}' does not exist"
 
