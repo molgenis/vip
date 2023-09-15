@@ -71,17 +71,17 @@ sub run {
   return {};
 }
 
-# TODO unescape values, handle '.', check if pipe separation is same
 sub parse_data {
   my ($self, $line) = @_;
-  my ($chr, $pos, $ref, $alt, $clin_sig, $clin_sig_incl, $cln_rev_stat) = split /\t/, $line;
-
+  my ($chr, $pos, $cln_id, $ref, $alt, $clin_sig, $clin_sig_incl, $cln_rev_stat) = split /\t/, $line;
+  
   return {
     chr => $chr,
     pos => $pos,
     ref => $ref,
     alt => $alt,
     result => {
+      clinVar_ID => $cln_id,
       clinVar_CLNSIG => $clin_sig,
       clinVar_CLNSIGINCL => $clin_sig_incl,
       clinVar_CLNREVSTAT => $cln_rev_stat
