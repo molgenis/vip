@@ -82,7 +82,7 @@ sub parse_data {
     ref => $ref,
     alt => $alt,
     result => {
-      clinVar_ID => $cln_id,
+      clinVar_CLNID => $cln_id,
       clinVar_CLNSIG => $clin_sig,
       clinVar_CLNSIGINCL => $clin_sig_incl,
       clinVar_CLNREVSTAT => $cln_rev_stat
