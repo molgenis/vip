@@ -44,6 +44,7 @@ sub feature_types {
 
 sub get_header_info {
   return {
+    clinVar_CLNID => "ClinVar variation identifier" 
     clinVar_CLNSIG => "Clinical significance for this single variant; multiple values are separated by a vertical bar",
     clinVar_CLNSIGINCL => "Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance; multiple values are separated by a vertical bar",
     clinVar_CLNREVSTAT => "ClinVar review status for the Variation ID"
