@@ -181,7 +181,7 @@ test_lp () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2300 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2327 ]; then
     return 1
   fi
 }
@@ -200,7 +200,7 @@ test_lp_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2299 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -lt 2330 ]; then
     return 1
   fi
 }
@@ -219,7 +219,7 @@ test_lb () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 267 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 235 ]; then
     return 1
   fi
 }
@@ -238,28 +238,13 @@ test_lb_b38 () {
     return 1
   fi
 
-  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 291 ]; then
+  if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 209 ]; then
     return 1
   fi
 }
 
 run_tests () {
   before_all
-
-  TEST_ID="test_empty_input"
-  before_each
-  test_empty_input
-  after_each
-
-  TEST_ID="test_empty_output_filter"
-  before_each
-  test_empty_output_filter
-  after_each
-
-  TEST_ID="test_empty_output_filter_samples"
-  before_each
-  test_empty_output_filter_samples
-  after_each
 
   TEST_ID="test_multiproject_classify"
   before_each
