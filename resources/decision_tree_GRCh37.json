@@ -351,7 +351,7 @@
       }
     },
     "alphScore": {
-      "description": "AlphScore prediction > 0.84s",
+      "description": "AlphScore prediction > 0.84",
       "type": "BOOL",
       "query": {
         "field": "INFO/CSQ/ALPHSCORE",
