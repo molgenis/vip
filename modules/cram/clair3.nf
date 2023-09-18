@@ -83,7 +83,7 @@ process joint_call {
     bed="${meta.project.id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
-    config="gatk_unfiltered"
+    config= params.snv.clair3.glnexus_preset
 
     template 'joint_call.sh'
     
