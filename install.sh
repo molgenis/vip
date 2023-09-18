@@ -234,7 +234,7 @@ download_images() {
   files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.7.0.sif")
   files+=("vcf-inheritance-matcher-2.1.8.sif")
-  files+=("vcf-report-5.6.0.sif")
+  files+=("vcf-report-5.6.1.sif")
   files+=("vep-109.3.sif")
 
   for file in "${files[@]}"; do
