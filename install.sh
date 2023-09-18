@@ -53,13 +53,13 @@ download_resources_molgenis() {
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v5.1.1-v1.ubj")
-    files+=("GRCh37/clinvar_20230910.vcf.gz")
-    files+=("GRCh37/clinvar_20230910.vcf.gz.tbi")
+    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz")
+    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz.tbi")
     files+=("GRCh37/expansionhunter_variant_catalog.json")
     files+=("GRCh37/variant_catalog_grch37_fixed.json")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
@@ -84,8 +84,8 @@ download_resources_molgenis() {
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
     files+=("GRCh38/clinical_repeats.bed")
-    files+=("GRCh38/clinvar_20230910.vcf.gz")
-    files+=("GRCh38/clinvar_20230910.vcf.gz.tbi")
+    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz")
+    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
     files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
@@ -96,8 +96,8 @@ download_resources_molgenis() {
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh38/hg38.phyloP100way.bed.gz")
     files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
@@ -234,7 +234,7 @@ download_images() {
   files+=("straglr-philres-1.3.1.sif")
   files+=("vcf-decision-tree-3.7.0.sif")
   files+=("vcf-inheritance-matcher-2.1.8.sif")
-  files+=("vcf-report-5.6.0.sif")
+  files+=("vcf-report-5.6.1.sif")
   files+=("vep-109.3.sif")
 
   for file in "${files[@]}"; do

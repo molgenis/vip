@@ -127,7 +127,7 @@ capice_vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
-  args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
+  args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
 
   ${CMD_VEP} "${args[@]}"
 }
@@ -226,11 +226,11 @@ vep() {
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
   fi
-  if [ -n "!{vepCustomGnomAdPath}" ]; then
-    args+=("--custom" "!{vepCustomGnomAdPath},gnomAD,vcf,exact,0,AF,HN")
+  if [ -n "!{vepPluginGnomAdPath}" ]; then
+    args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
   fi
-  if [ -n "!{vepCustomClinVarPath}" ]; then
-      args+=("--custom" "!{vepCustomClinVarPath},clinVar,vcf,exact,0,CLNSIG,CLNSIGINCL,CLNREVSTAT")
+  if [ -n "!{vepPluginClinVarPath}" ]; then
+      args+=("--plugin" "ClinVar,!{vepPluginClinVarPath}")
   fi
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     # when you change the field also update the empty file header in this file
