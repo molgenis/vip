@@ -351,12 +351,12 @@
       }
     },
     "alphScore": {
-      "description": "AlphScore prediction > 0.84",
+      "description": "AlphScore prediction > 0.865",
       "type": "BOOL",
       "query": {
         "field": "INFO/CSQ/ALPHSCORE",
         "operator": ">",
-        "value": 0.84
+        "value": 0.865
       },
       "outcomeTrue": {
         "nextNode": "exit_lp"
