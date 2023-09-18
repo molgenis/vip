@@ -50,17 +50,16 @@ download_resources_molgenis() {
   local files=()
   files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
-  files+=("symbol_to_entrez_id_mapping.txt")
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     files+=("GRCh37/capice_model_v5.1.1-v1.ubj")
-    files+=("GRCh37/clinvar_20230604.vcf.gz")
-    files+=("GRCh37/clinvar_20230604.vcf.gz.tbi")
+    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz")
+    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz.tbi")
     files+=("GRCh37/expansionhunter_variant_catalog.json")
     files+=("GRCh37/variant_catalog_grch37_fixed.json")
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.vcf.gz.csi")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz")
+    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
@@ -78,15 +77,15 @@ download_resources_molgenis() {
     files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh37/vkgl_consensus_20230701.tsv")
     files+=("GRCh37/human_hs37d5.trf.bed")
-    files+=("GRCh37/AlphScore_final_20230825_37_filtered_sorted.tsv.gz")
-    files+=("GRCh37/AlphScore_final_20230825_37_filtered_sorted.tsv.gz.tbi")
+    files+=("GRCh37/AlphScore_final_20230825_stripped_GRCh37.tsv.gz")
+    files+=("GRCh37/AlphScore_final_20230825_stripped_GRCh37.tsv.gz.tbi")
   fi
 
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
     files+=("GRCh38/clinical_repeats.bed")
-    files+=("GRCh38/clinvar_20230604.vcf.gz")
-    files+=("GRCh38/clinvar_20230604.vcf.gz.tbi")
+    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz")
+    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
     files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
@@ -97,8 +96,8 @@ download_resources_molgenis() {
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.vcf.gz.csi")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
+    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh38/hg38.phyloP100way.bed.gz")
     files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
@@ -109,8 +108,8 @@ download_resources_molgenis() {
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
     files+=("GRCh38/vkgl_consensus_20230701.tsv")
     files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
-    files+=("GRCh38/AlphScore_final_20230825.tsv.gz")
-    files+=("GRCh38/AlphScore_final_20230825.tsv.gz.tbi")
+    files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz")
+    files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi")
   fi
 
   for file in "${files[@]}"; do
@@ -223,21 +222,21 @@ download_images() {
   files+=("annotsv-3.3.6.sif")
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
-  files+=("clair3-v1.0.2.sif")
+  files+=("clair3-v1.0.4.sif")
   files+=("cutesv-2.0.3.sif")
   files+=("deepvariant-v1.5.0.sif")
   files+=("expansionhunter-5.0.0.sif")
+  files+=("gado-1.0.3.sif")
   files+=("glnexus_v1.4.5-patched.sif")
-  files+=("minimap2-2.24.sif")
+  files+=("manta-1.6.0.sif")
+  files+=("minimap2-2.26.sif")
   files+=("samtools-1.17-patch1.sif")
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.3.1.sif")
-  files+=("vcf-decision-tree-3.5.4.sif")
-  files+=("vcf-inheritance-matcher-2.1.7.sif")
-  files+=("vcf-report-5.5.2.sif")
+  files+=("vcf-decision-tree-3.7.0.sif")
+  files+=("vcf-inheritance-matcher-2.1.8.sif")
+  files+=("vcf-report-5.6.1.sif")
   files+=("vep-109.3.sif")
-  files+=("manta-1.6.0.sif")
-  files+=("gado-1.0.3.sif")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/images/${file}" "${download_dir}/${file}"

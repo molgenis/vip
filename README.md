@@ -28,6 +28,7 @@ usage: vip -w <arg> -i <arg> -o <arg>
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
   -p, --profile  <arg>  nextflow configuration profile (optional)
   -r, --resume          resume execution using cached results (default: false)
+  -s, --stub                     quickly prototype workflow logic using process script stubs
   -h, --help            print this message and exit
 ```
 
@@ -36,11 +37,6 @@ To create the documentation pages:
 ```
 pip install mkdocs mkdocs-mermaid2-plugin
 mkdocs serve
-```
-
-To publish the documentation pages:
-```
-mkdocs gh-deploy
 ```
 
 ### License
