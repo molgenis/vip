@@ -7,11 +7,11 @@ combinedMatrixFile <- args[3]
 
 if (file.info(combinedMatrixFile)$size == 0) {
     combinedMatrix <- read.table(sampleMatrixFile, sep="\t", header=TRUE)
-    colnames(combinedMatrix) <- c("Geneid", sampleName)
+    colnames(combinedMatrix) <- c("geneID", sampleName)
 } else {
     sampleMatrix <- read.table(sampleMatrixFile, sep="\t", header=TRUE)
     combinedMatrix <- read.table(combinedMatrixFile, sep="\t", header=TRUE)
-    colnames(sampleMatrix) <- c("Geneid", sampleName)
+    colnames(sampleMatrix) <- c("geneID", sampleName)
     combinedMatrix <- merge(combinedMatrix, sampleMatrix)
 }
 

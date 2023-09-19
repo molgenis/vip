@@ -1,11 +1,24 @@
  process outrider {
      input:
-         tuple path(countMatrix), val(samples)
+         tuple val(meta), path(countMatrix)
      output:
-         path outrider.tsv
-     scripts:
+         path "outrider.tsv"
+     script:
          """
-         singularity exec --bind /groups/:/groups/ /groups/umcg-gdio/tmp01/umcg-rheins-kars/drop1.3.3/drop1.3.3.sif \
-         Rscript /groups/umcg-gdio/tmp01/umcg-rheins-kars/outrider/outrider.R $countMatrix $samples outrider.tsv
+         apptainer exec --no-mount home --bind \${TMPDIR} ${projectDir}/containers/drop1.3.3.sif \
+         Rscript ${projectDir}/scripts/outrider.R \
+         $countMatrix ${projectDir}/rna_resources/geneCounts.tsv "outrider.tsv"
          """
+ }
+
+ process rnaResults {
+    input:
+        tuple val(meta), val(sample), path(outriderResults)
+    output:
+        tuple val(meta), path("{sample}_outrider.tsv")
+    script:
+        """
+        apptainer exec --no-mount home --bind \${TMPDIR} ${projectDir}/containers/drop1.3.3.sif \
+        Rscript ${projectDir}/scripts/setResults.R $sample $outriderResults "${sample}_outrider.tsv"
+        """
  }

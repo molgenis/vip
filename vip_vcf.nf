@@ -43,8 +43,8 @@ workflow vcf {
 
       ch_countMatrix
         | last
+        | outrider
         | view
-        // OUTRIDER
 
       // ch_drop.ready.mix(ch_drop.rna)
       //   | flatMap { meta -> scatter(meta) }
