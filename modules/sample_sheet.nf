@@ -106,7 +106,7 @@ def validate(samples){
   def sampleMap = [:]
   samples.each{ sample ->
     if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project.")
-    sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id]
+    sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id, sex: sample.sex]
   }
   samples.each{ sample ->
     if(sample.paternal_id != null){
