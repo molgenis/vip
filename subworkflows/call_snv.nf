@@ -30,7 +30,7 @@ workflow snv {
       | set { ch_snv_deepvariant }
     
     // mix outputs of all tools
-    Channel.empty().mix(ch_snv_clair3, ch_snv_deepvariant)
+    Channel.empty().mix(ch_snv_deepvariant)
       | set { ch_snv_processed }
   emit:
     ch_snv_processed
