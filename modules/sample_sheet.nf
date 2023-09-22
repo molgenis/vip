@@ -105,17 +105,28 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
 def validate(samples){
   def sampleMap = [:]
   samples.each{ sample ->
-    if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  exit 1, "Individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project."
-    sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id]
+    if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project.")
+    sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id, sex: sample.sex]
   }
   samples.each{ sample ->
     if(sample.paternal_id != null){
-      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]] == null) exit 1, "Paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'."
-      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]].familyId != sample.family_id) exit 1, "Paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family."
+      if(sample.individual_id == sample.paternal_id) throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' cannot be the same as paternal_id '${sample.paternal_id}'")
+
+      def paternal_sample = sampleMap[[id: sample.paternal_id, projectId: sample.project_id]]
+      if(paternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
+      if(paternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(paternal_sample.sex == "female") throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' refers to sample with female sex.")
     }
     if(sample.maternal_id != null){
-      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]] == null) exit 1, "Maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'."
-      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]].familyId != sample.family_id) exit 1, "Maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family."
+      if(sample.individual_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
+
+      def maternal_sample = sampleMap[[id: sample.maternal_id, projectId: sample.project_id]]
+      if(maternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
+      if(maternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(maternal_sample.sex == "male") throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' refers to sample with male sex.")
+    }
+    if(sample.paternal_id != null && sample.maternal_id != null){
+      if(sample.paternal_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id '${sample.paternal_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
     }
   }
 }
