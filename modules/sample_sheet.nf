@@ -114,7 +114,7 @@ def validate(samples){
 
       def paternal_sample = sampleMap[[id: sample.paternal_id, projectId: sample.project_id]]
       if(paternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
-      if(paternal_sample.family_id != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(paternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
       if(paternal_sample.sex == "female") throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' refers to sample with female sex.")
     }
     if(sample.maternal_id != null){
@@ -122,7 +122,7 @@ def validate(samples){
 
       def maternal_sample = sampleMap[[id: sample.maternal_id, projectId: sample.project_id]]
       if(maternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
-      if(maternal_sample.family_id != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(maternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
       if(maternal_sample.sex == "male") throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' refers to sample with male sex.")
     }
     if(sample.paternal_id != null && sample.maternal_id != null){
