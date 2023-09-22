@@ -105,22 +105,22 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
 def validate(samples){
   def sampleMap = [:]
   samples.each{ sample ->
-    if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  throw new IllegalArgumentException("individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project.")
+    if(sampleMap[[id: sample.individual_id, projectId: sample.project_id]] != null)  throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' already exists in project '${sample.project_id}', individual_id should be unique within a project.")
     sampleMap[[id: sample.individual_id, projectId: sample.project_id]] = [projectId : sample.project_id, familyId : sample.family_id]
   }
   samples.each{ sample ->
     if(sample.paternal_id != null){
-      if(sample.individual_id == sample.paternal_id) throw new IllegalArgumentException("individual_id '${sample.individual_id}' cannot be the same as paternal_id '${sample.paternal_id}'")
-      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]] == null) throw new IllegalArgumentException("paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
-      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]].familyId != sample.family_id) throw new IllegalArgumentException("paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(sample.individual_id == sample.paternal_id) throw new IllegalArgumentException("line ${sample.index}:individual_id '${sample.individual_id}' cannot be the same as paternal_id '${sample.paternal_id}'")
+      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]] == null) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
+      if(sampleMap[[id: sample.paternal_id, projectId: sample.project_id]].familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
     }
     if(sample.maternal_id != null){
-      if(sample.individual_id == sample.maternal_id) throw new IllegalArgumentException("individual_id '${sample.individual_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
-      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]] == null) throw new IllegalArgumentException("maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
-      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]].familyId != sample.family_id) throw new IllegalArgumentException("maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(sample.individual_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
+      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]] == null) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${sample.project_id}'.")
+      if(sampleMap[[id: sample.maternal_id, projectId: sample.project_id]].familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
     }
     if(sample.paternal_id != null && sample.maternal_id != null){
-      if(sample.paternal_id == sample.maternal_id) throw new IllegalArgumentException("paternal_id '${sample.paternal_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
+      if(sample.paternal_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id '${sample.paternal_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
     }
   }
 }
