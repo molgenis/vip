@@ -14,7 +14,7 @@ call_small_variants () {
     args+=("--num_shards" "!{task.cpus}")
     args+=("--regions" "!{bed}")
     args+=("--intermediate_results_dir" ".")
-    args+=("--sample_name" "!{sampleName}")
+    args+=("--sample_name" "!{sampleName}") //FIXME: check if needed still
 
     ${CMD_DEEPVARIANT} "${args[@]}" 
 }

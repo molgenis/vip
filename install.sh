@@ -65,8 +65,6 @@ download_resources_molgenis() {
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
     files+=("GRCh37/human_g1k_v37.dict")
-    #FIXME: remove line below after clair 3 is fixed
-    files+=("GRCh37/human_g1k_v37.fasta.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz")
     files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
     files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
@@ -90,8 +88,6 @@ download_resources_molgenis() {
     files+=("GRCh38/expansionhunter_variant_catalog.json")
     files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-    #FIXME: remove line below after clair 3 is fixed
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
@@ -223,7 +219,6 @@ download_images() {
   files+=("annotsv-3.3.6.sif")
   files+=("bcftools-1.17.sif")
   files+=("capice-5.1.1.sif")
-  files+=("clair3-v1.0.2.sif")
   files+=("cutesv-2.0.3.sif")
   files+=("deepvariant-v1.5.0.sif")
   files+=("expansionhunter-5.0.0.sif")
@@ -310,8 +305,6 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
-  #FIXME: remove after clair 3 is fixed
-  unzip_reference "${assembly}"
   create_executable
   echo -e "installing done"
 }
