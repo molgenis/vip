@@ -19,9 +19,9 @@ process annotate {
     
     assembly=meta.project.assembly
     refSeqPath = params[assembly].reference.fasta
-    vepCustomGnomAdPath = params.vcf.annotate[assembly].vep_custom_gnomad
-    vepCustomClinVarPath = params.vcf.annotate[assembly].vep_custom_clinvar
     vepCustomPhyloPPath = params.vcf.annotate[assembly].vep_custom_phylop
+    vepPluginClinVarPath = params.vcf.annotate[assembly].vep_plugin_clinvar
+    vepPluginGnomAdPath = params.vcf.annotate[assembly].vep_plugin_gnomad
     vepPluginSpliceAiIndelPath = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
     vepPluginSpliceAiSnvPath = params.vcf.annotate[assembly].vep_plugin_spliceai_snv
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl
@@ -29,7 +29,6 @@ process annotate {
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
-    geneNameEntrezIdMappingPath = params.vcf.annotate.gene_name_entrez_id_mapping
 
     gadoGenesPath = params.vcf.annotate.gado_genes
     gadoHpoPath = params.vcf.annotate.gado_hpo

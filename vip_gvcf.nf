@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate } from './modules/gvcf/validate'
-include { scatter } from './modules/gvcf/utils'
+include { scatter } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 
