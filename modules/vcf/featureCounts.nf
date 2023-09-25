@@ -6,7 +6,7 @@ process featureCounts {
     script:
         """
         apptainer exec --no-mount home --bind \${TMPDIR} ${projectDir}/containers/featureCounts.sif featureCounts \
-        -a ${projectDir}/rna_resources/gencode.v34lift37.annotation.gtf -T $task.cpus -o "${sample}_countMatrix.txt" $bamFile
+        -a ${projectDir}/rna_resources/gencode.v34lift37.annotation.gtf -T $task.cpus -s 1 -o "${sample}_countMatrix.txt" $bamFile
         """
 }
 

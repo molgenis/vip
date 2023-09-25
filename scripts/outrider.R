@@ -1,48 +1,69 @@
 #!/usr/bin/env Rscript
 args = commandArgs(trailingOnly=TRUE)
 
+# load packages
 library(OUTRIDER)
+library(dplyr)
 
+# load arguments
 countData <- args[1]
 externalCountData <- args[2]
 output <- args[3]
 
+# Create data frames from count data
 sampleData <- read.table(countData, sep="\t", header=TRUE)
 externalCounts <- read.table(externalCountData, sep="\t", header=TRUE)
 
+# Cut genes from external count data that are not present in samples
 genesSample <- sampleData$geneID
 externalCounts <- externalCounts[externalCounts$geneID %in% genesSample,]
-# sampleData <- sampleData[sampleData$geneID %in% externalCounts$geneID,]
 
+# Order columns to prevent memory errors for larger datasets
 sampleData <- sampleData[order(sampleData$geneID),]
 externalCounts <- externalCounts[order(externalCounts$geneID),]
 
-externalCounts <- externalCounts[, c(1:11)]
+# Select x amount of external count samples
+externalCounts <- externalCounts[, c(1:51)]
 
+# Merge data
 ctsTable <- merge(sampleData, externalCounts)
 
+# Create Outrider DataSet matrix(ODS)
 countDataMatrix <- as.matrix(ctsTable[ , -1])
 rownames(countDataMatrix) <- ctsTable[ , 1]
-
 ods <- OutriderDataSet(countData=countDataMatrix)
+
+# Filter dataset
 ods <- filterExpression(ods, minCounts=TRUE, filterGenes=TRUE)
-write("filtering", file="log_out.txt", sep='\t')
 ods <- ods[mcols(ods)$passedFilter,]
-write("passed filter", file="log_out.txt", sep='\t', append=TRUE)
+
+# Estimate size factors of dataset for q estimation
 ods <- estimateSizeFactors(ods)
-write("size factor", file="log_out.txt", sep='\t', append=TRUE)
-ods <- findEncodingDim(ods)
-write("encoding dim", file="log_out.txt", sep='\t', append=TRUE)
+
+# Set parameters for q values to test
+a <- 5 
+b <- min(ncol(ods), nrow(ods)) / 3
+maxSteps <- 20
+Nsteps <- min(maxSteps, b) 
+pars_q <- round(exp(seq(log(a),log(b),length.out = Nsteps))) %>% unique
+
+# Find optimal value for dimension reduction, q
+ods <- findEncodingDim(ods, params=pars_q, implementation='autoencoder')
 opt_q <- getBestQ(ods)
-write("best_q", file="log_out.txt", sep='\t', append=TRUE)
-ods <- controlForConfounders(ods, q=opt_q, iterations=10)
-write("cofounders", file="log_out.txt", sep='\t', append=TRUE)
+
+# Update for further implementation
+ods <- estimateSizeFactors(ods)
+
+# Run autoencoder
+ods <- controlForConfounders(ods, q=opt_q, implementation="autoencoder", iterations=15)
 ods <- fit(ods)
-write("fit", file="log_out.txt", sep='\t', append=TRUE)
+
+# Compute statistical values
 ods <- computePvalues(ods, alternative="two.sided", method="BY")
-write("pval", file="log_out.txt", sep='\t', append=TRUE)
 ods <- computeZscores(ods)
-write("zscore", file="log_out.txt", sep='\t', append=TRUE)
+
+# saveRDS(ods, file = "outrider.rds")
+
+# Create output
 res <- results(ods)
-write("res", file="log_out.txt", sep='\t', append=TRUE)
-write.table(res, output, row.names=FALSE)
+write.table(res, output, row.names=FALSE, sep="\t")

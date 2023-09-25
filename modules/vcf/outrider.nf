@@ -1,4 +1,5 @@
  process outrider {
+    label 'vcf_outrider'
      input:
          tuple val(meta), path(countMatrix)
      output:
@@ -13,9 +14,9 @@
 
  process rnaResults {
     input:
-        tuple val(meta), val(sample), path(outriderResults)
+        tuple val(meta), path(outriderResults), val(sample)
     output:
-        tuple val(meta), path("{sample}_outrider.tsv")
+        tuple val(meta), path("${sample}_outrider.tsv")
     script:
         """
         apptainer exec --no-mount home --bind \${TMPDIR} ${projectDir}/containers/drop1.3.3.sif \
