@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	proband	sex	affected	assembly	sequencing_platform	sequencing_method	cram
+AshkenazimTrio	HG002	HG003	HG004	true	male	true	GRCh38	pacbio_hifi	WGS	downloads/giab_AshkenazimTrio_pacbio_ccs/HG002.SequelII.merged_15kb_20kb.pbmm2.GRCh38.haplotag.10x.bam
+AshkenazimTrio	HG003			false	male	false	GRCh38	pacbio_hifi	WGS	downloads/giab_AshkenazimTrio_pacbio_ccs/HG003.SequelII.merged_15kb_20kb.pbmm2.GRCh38.haplotag.10x.bam
+AshkenazimTrio	HG004			false	female	false	GRCh38	pacbio_hifi	WGS	downloads/giab_AshkenazimTrio_pacbio_ccs/HG004.SequelII.merged_15kb_20kb.pbmm2.GRCh38.haplotag.10x.bam
