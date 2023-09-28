@@ -154,7 +154,7 @@ The following sections provide an overview of the steps of each of these workflo
 </ol>
 </li>
 <li>Parallelize cram in chunks consisting of one or more contigs and for each chunk<ol>
-<li>Perform short variant calling with <a href="https://github.com/HKU-BAL/Clair3">Clair3</a> producing a <code>gvcf</code> file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a>.</li>
+<li>Perform short variant calling with <a href="https://github.com/google/deepvariant">DeepVariant</a> producing a <code>gvcf</code> file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a>.</li>
 <li>Perform structural variant calling with <a href="https://github.com/Illumina/manta">Manta</a> or <a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a> producing a <code>vcf</code> file per chunk per project.</li>
 </ol>
 </li>
