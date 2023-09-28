@@ -11,8 +11,8 @@ From: sif/build/ubuntu-22.04.sif
     curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
     chmod +x /opt/trf/trf
 
-    # No tags present on repository, so the most recent version of the egg in always installed.
-    pip install git+https://github.com/philres/straglr.git#egg=straglr
+    # ce7d96cad4630d6a73114657e082f2402b1b1213 = v1.4.2
+    pip install git+https://github.com/philres/straglr.git@ce7d96cad4630d6a73114657e082f2402b1b1213#egg=straglr
 
     # cleanup
     pip cache purge

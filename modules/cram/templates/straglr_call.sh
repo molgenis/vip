@@ -18,7 +18,9 @@ call_short_tandem_repeats () {
 }
 
 index () {
-  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type z "straglr.vcf" > "!{vcfOut}"
+  # workaround for https://github.com/molgenis/vip/issues/471
+  ${CMD_BCFTOOLS} reheader --fai "!{paramReferenceFai}" --temp-prefix . --threads "!{task.cpus}" "straglr.vcf" | ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}" --output-type z --output "!{vcfOut}"
+
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 
