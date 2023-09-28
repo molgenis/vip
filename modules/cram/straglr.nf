@@ -9,6 +9,7 @@ process straglr_call {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     paramReference = params[meta.project.assembly].reference.fasta
+    paramReferenceFai = params[meta.project.assembly].reference.fastaFai
     paramLoci = params.str.straglr[meta.project.assembly].loci
     paramMinSupport = params.str.straglr.min_support
     paramMinClusterSize = params.str.straglr.min_cluster_size
