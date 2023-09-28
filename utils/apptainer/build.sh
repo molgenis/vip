@@ -104,7 +104,7 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
-  uris["docker://hkubal/clair3:v1.0.4"]="clair3-v1.0.4"
+  uris["docker://google/deepvariant:1.5.0"]="deepvariant-1.5.0"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

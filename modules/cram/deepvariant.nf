@@ -1,5 +1,5 @@
 process call {
-  label 'clair3_call'
+  label 'deepvariant_call'
 
   input:
     tuple val(meta), path(cram), path(cramCrai)
@@ -12,15 +12,15 @@ process call {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.')) 
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
-    
+    sampleName = "${meta.sample.individual_id}"
+
     vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chunk_${meta.chunk.index}_snv.g.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    platform=meta.project.sequencing_platform == "nanopore" ? "ont" : (meta.project.sequencing_platform == "pacbio_hifi" ? "hifi" : "ilmn")
-    modelName=params.snv.clair3[meta.project.sequencing_platform].model_name
+    model=meta.project.sequencing_platform == "illumina" ? params.snv.deepvariant[meta.project.sequencing_platform][meta.project.sequencing_method].model_name : params.snv.deepvariant[meta.project.sequencing_platform].model_name
 
-    template 'clair3_call.sh'
+    template 'deepvariant_call.sh'
 
   stub:
     vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chunk_${meta.chunk.index}_snv.g.vcf.gz"
@@ -33,9 +33,8 @@ process call {
     echo -e "chr1\t248956422\t1234" > "${vcfOutStats}"
     """
 }
-
 process concat {
-  label 'clair3_concat'
+  label 'concat'
 
   publishDir "$params.output/intermediates", mode: 'link'
 
@@ -50,7 +49,7 @@ process concat {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
-    template 'clair3_call_concat.sh'
+    template 'concat.sh'
   
   stub:
     vcfOut="${meta.project.id}_snv.vcf.gz"
@@ -65,7 +64,7 @@ process concat {
 }
 
 process joint_call {
-  label 'clair3_joint_call'
+  label 'deepvariant_joint_call'
 
   publishDir "$params.output/intermediates", mode: 'link'
 
@@ -83,9 +82,9 @@ process joint_call {
     bed="${meta.project.id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
-    config="gatk_unfiltered"
+    config= params.snv.deepvariant.glnexus_preset
 
-    template 'clair3_joint_call.sh'
+    template 'joint_call.sh'
     
   stub:
     vcfOut="${meta.project.id}_${meta.chunk.index}_snv.vcf.gz"

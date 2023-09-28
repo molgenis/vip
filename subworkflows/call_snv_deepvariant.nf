@@ -1,13 +1,13 @@
 include { nrMappedReadsInChunk } from '../modules/cram/utils'
-include { call; concat; joint_call } from '../modules/cram/clair3'
+include { call; concat; joint_call;} from '../modules/cram/deepvariant'
 
 /*
- * Variant calling using Clair3
+ * Variant calling using DeepVariant
  *
  * input:  meta[project, sample, ...]
  * output: meta[project, ...        ], vcf
  */
-workflow clair3 {
+workflow deepvariant {
   take: meta
   main:
     // determine for which chunks variant calling is possible
@@ -75,6 +75,6 @@ workflow clair3 {
     ch_vcf_per_project
 }
 
-def validateCallClair3Params(assemblies) {
+def validateCallDeepVariantParams(assemblies) {
   // placeholder for future parameter validation
 }
