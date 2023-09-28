@@ -13,7 +13,7 @@ test_empty_input () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -32,7 +32,7 @@ test_empty_output_filter () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -51,7 +51,7 @@ test_empty_output_filter_samples () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -70,7 +70,7 @@ test_multiproject_classify () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -89,7 +89,7 @@ test_corner_cases () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 }
@@ -101,7 +101,7 @@ test_snv_proband () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -120,7 +120,7 @@ test_snv_proband_trio () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -139,11 +139,11 @@ test_snv_proband_trio_sample_filtering () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
-  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ] > /dev/null 2>&1; then
+  if [ ! "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ] 1> /dev/null; then
     return 1
   fi
 }
@@ -158,7 +158,7 @@ test_snv_proband_trio_b38 () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -177,7 +177,7 @@ test_lp () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -196,7 +196,7 @@ test_lp_b38 () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -215,7 +215,7 @@ test_lb () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 
@@ -234,7 +234,7 @@ test_lb_b38 () {
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1> /dev/null; then
     return 1
   fi
 

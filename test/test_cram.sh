@@ -18,7 +18,7 @@ test_cram_nanopore () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -39,7 +39,7 @@ test_cram_nanopore_duo () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -58,7 +58,7 @@ test_bam () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -77,7 +77,7 @@ test_cram () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -96,7 +96,7 @@ test_cram_multiproject () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -119,7 +119,7 @@ test_cram_trio () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 

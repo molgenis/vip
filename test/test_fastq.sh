@@ -18,7 +18,7 @@ test_fastq_pacbio_hifi () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -41,7 +41,7 @@ test_fastq_nanopore () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -69,7 +69,7 @@ test_fastq_illumina_pairedend () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -95,7 +95,7 @@ test_fastq_illumina_pairedend_trio () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
