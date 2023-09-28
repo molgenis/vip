@@ -231,7 +231,7 @@ download_images() {
   files+=("minimap2-2.26.sif")
   files+=("samtools-1.17-patch1.sif")
   files+=("stranger-0.8.1.sif")
-  files+=("straglr-philres-1.3.1.sif")
+  files+=("straglr-philres-1.4.2.sif")
   files+=("vcf-decision-tree-3.7.0.sif")
   files+=("vcf-inheritance-matcher-2.1.8.sif")
   files+=("vcf-report-5.6.1.sif")
