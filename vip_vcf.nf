@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getVcfRegex; getRnaRegex; createCountTemplate } from './modules/utils'
+include { getCramRegex; getVcfRegex; getRnaRegex } from './modules/utils'
 include { validate } from './modules/vcf/validate.nf'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
@@ -15,7 +15,7 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
+include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; createCountTemplate } from './modules/vcf/utils'
 include { featureCounts; cut; createMatrix } from './modules/vcf/featureCounts'
 include { outrider; rnaResults } from './modules/vcf/outrider'
 

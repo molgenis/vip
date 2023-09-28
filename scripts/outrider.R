@@ -23,7 +23,7 @@ sampleData <- sampleData[order(sampleData$geneID),]
 externalCounts <- externalCounts[order(externalCounts$geneID),]
 
 # Select x amount of external count samples
-externalCounts <- externalCounts[, c(1:51)]
+externalCounts <- externalCounts[, c(1:101)]
 
 # Merge data
 ctsTable <- merge(sampleData, externalCounts)
@@ -62,7 +62,7 @@ ods <- fit(ods)
 ods <- computePvalues(ods, alternative="two.sided", method="BY")
 ods <- computeZscores(ods)
 
-# saveRDS(ods, file = "outrider.rds")
+saveRDS(ods, file = "outrider.rds")
 
 # Create output
 res <- results(ods)

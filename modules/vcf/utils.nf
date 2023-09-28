@@ -105,3 +105,9 @@ def postGroupTupleConcat(key, metaList) {
   meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
   return [meta, vcfs, vcfIndexes]
 }
+
+def createCountTemplate(){
+  def countMatrix = new File("templateMatrix.tsv")
+  countMatrix.createNewFile()
+  return countMatrix.absolutePath
+}

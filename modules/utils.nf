@@ -2,6 +2,10 @@ def getCramRegex() {
   /.+(?:\.bam|\.cram|\.sam)/
 }
 
+def getRnaRegex() {
+  /.+(?:\.bam)/
+}
+
 def getVcfRegex() {
   /.+[^\.g](?:\.bcf|\.bcf.gz|\.bcf\.bgz|\.vcf|\.vcf\.gz|\.vcf\.bgz)$/
 }
