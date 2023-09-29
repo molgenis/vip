@@ -24,29 +24,30 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | minimap2.soft_clipping    | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
 
 ### CRAM
-| key                                         | default             | description                                                                                                                                             |
-|---------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| cram.call_snv                               | true                | enable/disable the detection of short variants                                                                                                          |
-| cram.call_str                               | true                | enable/disable the detection of short tandem repeats                                                                                                    |
-| cram.call_sv                                | true                | enable/disable the detection of structural variants                                                                                                     |
-| snv.deepvariant.illumina.WES.model_name     | WES                 | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
-| snv.deepvariant.illumina.WGS.model_name     | WGS                 | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
-| snv.deepvariant.nanopore.model_name         | ONT_R104            | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
-| snv.deepvariant.pacbio_hifi.model_name      | PACBIO              | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
-| str.expansionhunter.aligner                 | dag-aligner         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [dag-aligner, path-aligner]          |
-| str.expansionhunter.analysis_mode           | streaming           | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [seeking , streaming]                |
-| str.expansionhunter.log_level               | warn                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [trace, debug, info, warn, or error] |
-| str.expansionhunter.region_extension_length | 1000                | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
-| str.expansionhunter.GRCh37.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
-| str.expansionhunter.GRCh38.variant_catalog  | *installed*         | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
-| str.straglr.min_support                     | 2                   | minimum number of support reads for an expansion to be captured in genome-scan, see [here](https://github.com/philres/straglr)                          |
-| str.straglr.min_cluster_size                | 2                   | minimum number of reads required to constitute a cluster (allele) in GMM clustering, see [here](https://github.com/philres/straglr)                     |
-| str.straglr.GRCh38.loci                     | *installed*         | from [here](https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed)                                                      |
+| key                                         | default     | description                                                                                                                                             |
+|---------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cram.call_snv                               | true        | enable/disable the detection of short variants                                                                                                          |
+| cram.call_str                               | true        | enable/disable the detection of short tandem repeats                                                                                                    |
+| cram.call_sv                                | true        | enable/disable the detection of structural variants                                                                                                     |
+| snv.deepvariant.glnexus_preset              | DeepVariant | for details, see [here](https://github.com/dnanexus-rnd/GLnexus/). allowed values: [DeepVariant, DeepVariant_unfiltered]                                |
+| snv.deepvariant.illumina.WES.model_name     | WES         | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
+| snv.deepvariant.illumina.WGS.model_name     | WGS         | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
+| snv.deepvariant.nanopore.model_name         | ONT_R104    | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
+| snv.deepvariant.pacbio_hifi.model_name      | PACBIO      | for details, see [here](https://github.com/google/deepvariant)                                                                                          |
+| str.expansionhunter.aligner                 | dag-aligner | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [dag-aligner, path-aligner]          |
+| str.expansionhunter.analysis_mode           | streaming   | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [seeking , streaming]                |
+| str.expansionhunter.log_level               | warn        | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md). allowed values: [trace, debug, info, warn, or error] |
+| str.expansionhunter.region_extension_length | 1000        | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| str.expansionhunter.GRCh37.variant_catalog  | *installed* | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| str.expansionhunter.GRCh38.variant_catalog  | *installed* | for details, see [here](https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md)                                                       |
+| str.straglr.min_support                     | 2           | minimum number of support reads for an expansion to be captured in genome-scan, see [here](https://github.com/philres/straglr)                          |
+| str.straglr.min_cluster_size                | 2           | minimum number of reads required to constitute a cluster (allele) in GMM clustering, see [here](https://github.com/philres/straglr)                     |
+| str.straglr.GRCh38.loci                     | *installed* | from [here](https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed)                                                      |
 
 ### gVCF
-| key               | default         | description                                          |
-|-------------------|-----------------|------------------------------------------------------|
-| gvcf.merge_preset | gatk_unfiltered | allowed values: [gatk, gatk_unfiltered, DeepVariant] |
+| key               | default     | description                                                                  |
+|-------------------|-------------|------------------------------------------------------------------------------|
+| gvcf.merge_preset | DeepVariant | allowed values: [gatk, gatk_unfiltered, DeepVariant, DeepVariant_unfiltered] |
 
 ### VCF
 | key                                           | default         | description                                                                                                                                                                                                                                                 |

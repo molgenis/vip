@@ -76,5 +76,6 @@ workflow deepvariant {
 }
 
 def validateCallDeepVariantParams(assemblies) {
-  // placeholder for future parameter validation
+  def glnexusPreset = params.snv.deepvariant.glnexus_preset
+  if (!(glnexusPreset ==~ /DeepVariant|DeepVariant_unfiltered/))  exit 1, "parameter 'snv.deepvariant.glnexus_preset' value '${glnexusPreset}' is invalid. allowed values are [DeepVariant, DeepVariant_unfiltered]"
 }
