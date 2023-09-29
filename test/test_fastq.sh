@@ -50,22 +50,15 @@ test_fastq_nanopore () {
   fi
 }
 
-test_fastq_illumina_pairedend () {
-  download_test_resource "NIST7035_TAAGGCGA_L001_R1_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7035_TAAGGCGA_L001_R2_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7035_TAAGGCGA_L002_R1_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7035_TAAGGCGA_L002_R2_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7086_CGTACTAG_L001_R1_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7086_CGTACTAG_L001_R2_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7086_CGTACTAG_L002_R1_001_s0_10000.fastq.gz"
-  download_test_resource "NIST7086_CGTACTAG_L002_R2_001_s0_10000.fastq.gz"
+test_fastq_illumina () {
+  download_test_resource "chr22.fastq.gz"
 
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
   args+=("--workflow" "fastq")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
-  args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina_pairedend.tsv")
+  args+=("--input" "${TEST_RESOURCES_DIR}/fastq_illumina.tsv")
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
@@ -79,12 +72,8 @@ test_fastq_illumina_pairedend () {
 }
 
 test_fastq_illumina_pairedend_trio () {
-  download_test_resource "HG002.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz"
-  download_test_resource "HG002.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz"
-  download_test_resource "HG003.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz"
-  download_test_resource "HG003.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz"
-  download_test_resource "HG004.novaseq.pcr-free.35x.R1_s0_10000.fastq.gz"
-  download_test_resource "HG004.novaseq.pcr-free.35x.R2_s0_10000.fastq.gz"
+  download_test_resource "paired1.fastq.gz"
+  download_test_resource "paired2.fastq.gz"
 
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
@@ -117,9 +106,9 @@ run_tests () {
   test_fastq_nanopore
   after_each
 
-  TEST_ID="fastq_illumina_pairedend"
+  TEST_ID="fastq_illumina"
   before_each
-  test_fastq_illumina_pairedend
+  test_fastq_illumina
   after_each
 
   TEST_ID="fastq_illumina_pairedend_trio"
