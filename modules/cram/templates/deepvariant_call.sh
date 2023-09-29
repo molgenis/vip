@@ -16,6 +16,7 @@ call_small_variants () {
     args+=("--intermediate_results_dir" "intermediate_results")
     args+=("--sample_name" "!{sampleName}")
 
+    mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT} "${args[@]}"
 }
 
