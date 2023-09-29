@@ -16,7 +16,7 @@ test_gvcf () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -35,7 +35,7 @@ test_gvcf_multiproject () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
