@@ -13,13 +13,18 @@ call_small_variants () {
     args+=("--output_vcf" "!{vcfOut}")
     args+=("--num_shards" "!{task.cpus}")
     args+=("--regions" "!{bed}")
-    args+=("--intermediate_results_dir" ".")
+    args+=("--intermediate_results_dir" "intermediate_results")
     args+=("--sample_name" "!{sampleName}")
 
-    ${CMD_DEEPVARIANT} "${args[@]}" 
+    TMPDIR=tmp ${CMD_DEEPVARIANT} "${args[@]}"
 }
 
-stats () {
+call_small_variants_cleanup () {
+  rm -rf intermediate_results
+  rm -rf tmp
+}
+
+index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
@@ -27,7 +32,8 @@ stats () {
 main() {
     create_bed
     call_small_variants
-    stats
+    call_small_variants_cleanup
+    index
 }
 
 main "$@"
