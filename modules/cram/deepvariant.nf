@@ -66,8 +66,6 @@ process concat {
 process joint_call {
   label 'deepvariant_joint_call'
 
-  publishDir "$params.output/intermediates", mode: 'link'
-
   input:
     tuple val(meta), path(gVcfs), path(gVcfIndexes)
 
