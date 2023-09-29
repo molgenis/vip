@@ -49,6 +49,7 @@ test_cram_nanopore_duo () {
 }
 
 test_bam () {
+  download_test_resource "chr22.bam"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
@@ -68,6 +69,7 @@ test_bam () {
 }
 
 test_cram () {
+  download_test_resource "chr22.cram"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
@@ -87,6 +89,8 @@ test_cram () {
 }
 
 test_cram_multiproject () {
+  download_test_resource "chr22.cram"
+  download_test_resource "chr22.bam"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
@@ -109,9 +113,10 @@ test_cram_multiproject () {
 }
 
 test_cram_trio () {
+  download_test_resource "chr22.cram"
+  ln -sf ${TEST_RESOURCES_DIR}/chr22.cram ${TEST_RESOURCES_DIR}/symlink.cram
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
-  ln -sf ${TEST_RESOURCES_DIR}/test1.cram ${TEST_RESOURCES_DIR}/test2.cram
-
+  
   local args=()
   args+=("--workflow" "cram")
   args+=("--config" "${OUTPUT_DIR}/custom.cfg")
