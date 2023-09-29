@@ -57,7 +57,7 @@ def validateGenomeVcfParams(assemblies) {
 
   // general
   def mergePreset = params.gvcf.merge_preset
-  if (!(mergePreset ==~ /gatk|gatk_unfiltered|DeepVariant/))  exit 1, "parameter 'gvcf.merge_preset' value '${mergePreset}' is invalid. allowed values are [gatk, gatk_unfiltered, DeepVariant]"
+  if (!(mergePreset ==~ /gatk|gatk_unfiltered|DeepVariant|DeepVariant_unfiltered/))  exit 1, "parameter 'gvcf.merge_preset' value '${mergePreset}' is invalid. allowed values are [gatk, gatk_unfiltered, DeepVariant, DeepVariant_unfiltered]"
 }
 
 def parseSampleSheet(csvFile) {
