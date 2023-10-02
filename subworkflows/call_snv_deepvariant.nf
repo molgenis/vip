@@ -76,6 +76,8 @@ workflow deepvariant {
 }
 
 def validateCallDeepVariantParams(assemblies) {
-  def glnexusPreset = params.snv.deepvariant.glnexus_preset
-  if (!(glnexusPreset ==~ /DeepVariant|DeepVariant_unfiltered/))  exit 1, "parameter 'snv.deepvariant.glnexus_preset' value '${glnexusPreset}' is invalid. allowed values are [DeepVariant, DeepVariant_unfiltered]"
+  ["WES", "WGS"].each { sequencingMethod ->
+    def glnexusPreset = params.snv.glnexus[sequencingMethod].preset
+    if (!(glnexusPreset ==~ /DeepVariant|DeepVariantWES|DeepVariantWGS|DeepVariant_unfiltered/))  exit 1, "parameter 'params.snv.glnexus.${sequencingMethod}.preset' value '${glnexusPreset}' is invalid. allowed values are [DeepVariant, DeepVariantWES, DeepVariantWGS, DeepVariant_unfiltered]"
+  }
 }
