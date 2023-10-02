@@ -80,7 +80,7 @@ process joint_call {
     bed="${meta.project.id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
-    config= params.snv.glnexus[meta.project.sequencingMethod].preset
+    config= params.snv.glnexus[meta.project.sequencing_method].preset
 
     template 'joint_call.sh'
     
