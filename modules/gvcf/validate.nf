@@ -9,6 +9,9 @@ process validate {
 
   shell:
     sampleId = "${meta.sample.individual_id}"
+    assembly = meta.project.assembly
+    reference = params[meta.project.assembly].reference.fasta
+    referenceFai = params[meta.project.assembly].reference.fastaFai
 
     gVcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.g.vcf.gz"
     gVcfOutIndex = "${gVcfOut}.csi"
