@@ -304,6 +304,7 @@ main() {
   download_nextflow
   download_images
   download_resources "${assembly}"
+  unzip_reference "${assembly}"
   create_executable
   echo -e "installing done"
 }
