@@ -1,4 +1,0 @@
-family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	fastq_r1	fastq_r2
-AshkenazimTrio	HG002	HG003	HG004	male	true	true	downloads/paired1.fastq	downloads/paired2.fastq
-AshkenazimTrio	HG003			male	false	false	downloads/paired1.fastq	downloads/paired2.fastq
-AshkenazimTrio	HG004			female	false	false	downloads/paired1.fastq	downloads/paired2.fastq

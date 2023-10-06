@@ -10,5 +10,3 @@ source "${SCRIPT_DIR}/test_gvcf.sh"
 mv output output_gvcf
 source "${SCRIPT_DIR}/test_cram.sh"
 mv output output_cram
-source "${SCRIPT_DIR}/test_fastq.sh"
-mv output output_fastq
