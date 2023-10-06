@@ -74,12 +74,14 @@ sub parse_data {
   my ($self, $line) = @_;
   my ($chr, $pos, $ref, $alt, $af, $hn) = split /\t/, $line;
 
+
   return {
     chr => $chr,
     pos => $pos,
     ref => $ref,
     alt => $alt,
     result => {
+      # when adding elements with nullable values make sure to map "." to undef
       gnomAD_AF => $af,
       gnomAD_HN => $hn
     }

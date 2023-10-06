@@ -75,17 +75,19 @@ sub run {
 sub parse_data {
   my ($self, $line) = @_;
   my ($chr, $pos, $cln_id, $ref, $alt, $clin_sig, $clin_sig_incl, $cln_rev_stat) = split /\t/, $line;
-  
+
+  # when adding result elements with nullable values make sure to map "." to undef
   return {
     chr => $chr,
     pos => $pos,
     ref => $ref,
     alt => $alt,
     result => {
-      clinVar_CLNID => $cln_id,
-      clinVar_CLNSIG => $clin_sig,
-      clinVar_CLNSIGINCL => $clin_sig_incl,
-      clinVar_CLNREVSTAT => $cln_rev_stat
+      # when adding elements with nullable values make sure to map "." to undef
+      clinVar_CLNID => $cln_id ne "." ? $cln_id : undef,
+      clinVar_CLNSIG => $clin_sig ne "." ? $clin_sig : undef,
+      clinVar_CLNSIGINCL => $clin_sig_incl ne "." ? $clin_sig_incl : undef,
+      clinVar_CLNREVSTAT => $cln_rev_stat  ne "." ? $cln_rev_stat : undef
     }
   };
 }
