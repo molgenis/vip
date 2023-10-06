@@ -74,7 +74,6 @@ sub parse_data {
   my ($self, $line) = @_;
   my ($chr, $pos, $ref, $alt, $af, $hn) = split /\t/, $line;
 
-
   return {
     chr => $chr,
     pos => $pos,

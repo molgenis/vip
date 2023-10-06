@@ -76,7 +76,6 @@ sub parse_data {
   my ($self, $line) = @_;
   my ($chr, $pos, $cln_id, $ref, $alt, $clin_sig, $clin_sig_incl, $cln_rev_stat) = split /\t/, $line;
 
-  # when adding result elements with nullable values make sure to map "." to undef
   return {
     chr => $chr,
     pos => $pos,
