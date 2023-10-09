@@ -1,4 +1,4 @@
-include { basename; getProbandHpoIds; areProbandHpoIdsIndentical } from './utils'
+include { basename; areProbandHpoIdsIndentical } from './utils'
 
 process annotate {
   label 'vcf_annotate'
@@ -30,12 +30,8 @@ process annotate {
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
 
-    gadoGenesPath = params.vcf.annotate.gado_genes
-    gadoHpoPath = params.vcf.annotate.gado_hpo
-    gadoPredictInfoPath = params.vcf.annotate.gado_predict_info
-    gadoPredictMatrixPath = params.vcf.annotate.gado_predict_matrix
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
-    gadoHpoIds = getProbandHpoIds(meta.project.samples).join(",")
+    gadoScores = meta.gado
 
     template 'annotate.sh'
 
