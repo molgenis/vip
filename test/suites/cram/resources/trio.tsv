@@ -1,0 +1,4 @@
+family_id	proband	individual_id	hpo_ids	sequencing_platform	cram	sequencing_method
+fam0	true	patient	HP:0000001,HP:0000002	illumina	trio_patient.cram	WES
+fam0	false	father	HP:0000001,HP:0000002	illumina	trio_father.bam	WES
+fam0	false	mother	HP:0000001,HP:0000002	illumina	trio_mother.cram	WES

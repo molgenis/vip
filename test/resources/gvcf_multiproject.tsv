@@ -1,7 +1,0 @@
-assembly	project_id	family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	gvcf
-GRCh37	vip0	fam0	proband0	father0	mother0	male	true	true	gvcf_multiproject_vip0_fam0_proband0.g.vcf
-GRCh37	vip0	fam0	father0			male	false		gvcf_multiproject_vip0_fam0_father0.g.vcf
-GRCh37	vip0	fam0	mother0			female	false		gvcf_multiproject_vip0_fam0_mother0.g.vcf
-GRCh38	vip1	fam1	proband1	father1	mother1	male	true	true	gvcf_multiproject_vip1_fam1_proband1.g.vcf
-GRCh38	vip1	fam1	father1			male	false		gvcf_multiproject_vip1_fam1_father1.g.vcf
-GRCh38	vip1	fam1	mother1			female	false		gvcf_multiproject_vip1_fam1_mother1.g.vcf

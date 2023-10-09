@@ -20,12 +20,8 @@
 !/resources/vep/plugins
 
 # test
-/test/.nextflow
-/test/output*
-/test/nextflow.config
-/test/resources/downloads
-/test/resources/test2.cram
-/test/test_wrapper.sh
+/test/output
+/test/**/resources/downloads
 
 # nextflow
 nextflow
