@@ -15,8 +15,9 @@ YELLOW="\033[0;33m"
 NC="\033[0m"
 
 usage() {
-  echo -e "usage: ${SCRIPT_NAME} [-t <arg>]
+  echo -e "usage: ${SCRIPT_NAME} [-t <arg>] [-c]
   -t, --test    <arg>    Tests to run (comma-separated). examples: 'vcf', 'cram,fastq', '*/*b38'
+  -c, --clean            Clean up previous runs before test execution
   -h, --help             Print this message and exit"
 }
 
@@ -40,6 +41,8 @@ abort() {
 
 run() {
   local -r test="${1}"
+  local -r clean="${2}"
+
   IFS=',' read -r -a test_cases <<< "${test}"
 
   local cases=()
@@ -72,7 +75,7 @@ run() {
   done
 
   if [[ ${#test_cases[@]} != "0" && "${#cases[@]}" == 0 ]]; then
-    echo -e "error: no tests found that match -t --test '${test}'"
+    >&2 echo -e "error: no tests found that match -t --test '${test}'"
     exit 1
   fi
 
@@ -80,20 +83,31 @@ run() {
   
   local -r vip_dir="$(realpath "${SCRIPT_DIR}/..")"
   local -r tests_output_dir="${SCRIPT_DIR}/output"
-  
+  local -r nextflow_home_dir="${tests_output_dir}/.nextflow"
+
   # submit test jobs
   local case_id
   local job_id
   local test_output_dir
   local test_resources_dir
+  local test_nextflow_temp_dir
+  local test_nextflow_work_dir
+
   for case in "${cases[@]}"; do
     case_id="${case#"${TEST_SUITES_DIR}/"}"
     case_id=${case_id%".sh"}
 
     test_output_dir="${tests_output_dir}/${case_id}"
+    test_nextflow_temp_dir="${test_output_dir}/.nxf.temp"
+    test_nextflow_work_dir="${test_output_dir}/.nxf.work"
+
     if [[ -d "${test_output_dir}" ]]; then
       # only remove certain output test files so that --resume uses cached results
       rm -f "${test_output_dir}/.exitcode" "${test_output_dir}/job.err" "${test_output_dir}/job.out" "${test_output_dir}/.nxf.log"
+      if [[ "${clean}" == "true" ]]; then
+        rm -f "${test_nextflow_temp_dir}"
+        rm -f "${test_nextflow_work_dir}"
+      fi
     else
       mkdir -p "${test_output_dir}"
     fi
@@ -108,7 +122,7 @@ run() {
     sbatch_args+=("--mem=1gb")
     sbatch_args+=("--nodes=1")
     sbatch_args+=("--open-mode=append")
-    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${tests_output_dir}/nextflow/home,NXF_TEMP=${tests_output_dir}/nextflow/temp,NXF_WORK=${tests_output_dir}/nextflow/work,OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
+    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
     sbatch_args+=("--get-user-env=L")
     sbatch_args+=("--output=${test_output_dir}/job.out")
     sbatch_args+=("--error=${test_output_dir}/job.err")
@@ -243,17 +257,18 @@ run() {
 
 validate() {
   local -r test="${1}"
+  local -r clean="${2}"
 
   if ! command -v sbatch &> /dev/null; then
-    echo -e "error: tests require 'sbatch' in order to run"
+    >&2 echo -e "error: tests require 'sbatch' in order to run"
     exit 1
   fi
   if ! command -v scancel &> /dev/null; then
-    echo -e "error: tests require 'scancel' in order to run"
+    >&2 echo -e "error: tests require 'scancel' in order to run"
     exit 1
   fi
   if ! command -v sacct &> /dev/null; then
-    echo -e "error: tests require 'scancel' in order to run"
+    >&2 echo -e "error: tests require 'scancel' in order to run"
     exit 1
   fi
 }
@@ -267,6 +282,7 @@ main() {
   fi
 
   local test="cram,fastq,gvcf,vcf"
+  local clean="false"
 
   eval set -- "${args}"
   while :; do
@@ -279,6 +295,10 @@ main() {
       test="$2"
       shift 2
       ;;
+    -c | --clean)
+      clean="true"
+      shift
+      ;;
     --)
       shift
       break
@@ -290,8 +310,8 @@ main() {
     esac
   done
 
-  validate "${test}"
-  run "${test}"
+  validate "${test}" "${clean}"
+  run "${test}" "${clean}"
 }
 
 main "$@"
