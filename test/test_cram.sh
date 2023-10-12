@@ -137,7 +137,7 @@ test_cram_trio () {
 
 run_tests () {
   before_all
-TEST_ID="cram_nanopore"
+  TEST_ID="cram_nanopore"
   before_each
   test_cram_nanopore
   after_each

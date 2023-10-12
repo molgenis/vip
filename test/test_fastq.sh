@@ -18,7 +18,7 @@ test_fastq_pacbio_hifi () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -41,7 +41,7 @@ test_fastq_nanopore () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -51,7 +51,7 @@ test_fastq_nanopore () {
 }
 
 run_tests () {
-before_all
+  before_all
 
   TEST_ID="fastq_pacbio_hifi"
   before_each
