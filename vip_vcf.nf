@@ -15,8 +15,8 @@ include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
-include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
-
+include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
+include { gado } from './modules/vcf/gado'
 /**
  * input: [project, vcf, chunk (optional), ...]
  */
@@ -24,6 +24,18 @@ workflow vcf {
     take: meta
     main:
       meta
+        | branch { meta ->
+              run: !getProbandHpoIds(meta.project.samples).join(",").isEmpty() && areProbandHpoIdsIndentical(meta.project.samples)
+              skip: true
+        }
+        | set { ch_gado }
+
+        ch_gado.run
+        | gado
+        | map { meta, gado_scores -> [*:meta, gado: gado_scores] }
+        | set { ch_gado_done }
+
+        ch_gado_done.mix(ch_gado.skip)
         | branch { meta ->
             scatter: meta.chunk == null
             ready: true
