@@ -274,7 +274,7 @@ validate() {
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o t:h --long test:,help -- "$@")
+  local -r args=$(getopt -a -n pipeline -o t:ch --long test:,clean,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
