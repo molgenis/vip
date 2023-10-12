@@ -105,8 +105,8 @@ run() {
       # only remove certain output test files so that --resume uses cached results
       rm -f "${test_output_dir}/.exitcode" "${test_output_dir}/job.err" "${test_output_dir}/job.out" "${test_output_dir}/.nxf.log"
       if [[ "${clean}" == "true" ]]; then
-        rm -f "${test_nextflow_temp_dir}"
-        rm -f "${test_nextflow_work_dir}"
+        rm -rf "${test_nextflow_temp_dir}"
+        rm -rf "${test_nextflow_work_dir}"
       fi
     else
       mkdir -p "${test_output_dir}"
