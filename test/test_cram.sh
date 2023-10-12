@@ -49,7 +49,7 @@ test_cram_nanopore_duo () {
 }
 
 test_bam () {
-  download_test_resource "chr22.bam"
+  download_test_resource "test.bam"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
 
   local args=()
@@ -114,7 +114,8 @@ test_cram_multiproject () {
 
 test_cram_trio () {
   download_test_resource "chr22.cram"
-  ln -sf ${TEST_RESOURCES_DIR}/chr22.cram ${TEST_RESOURCES_DIR}/symlink.cram
+  download_test_resource "test.bam"
+  ln -sf ${TEST_RESOURCES_DIR}/downloads/chr22.cram ${TEST_RESOURCES_DIR}/symlink.cram
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
@@ -135,7 +136,7 @@ test_cram_trio () {
 
 run_tests () {
   before_all
-  TEST_ID="cram_nanopore"
+TEST_ID="cram_nanopore"
   before_each
   test_cram_nanopore
   after_each

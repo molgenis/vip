@@ -1,2 +1,2 @@
 family_id	proband	individual_id	hpo_ids	sequencing_platform	cram
-fam0	true	NA12878	HP:0000001,HP:0000002	illumina	chr22.cram
+fam0	true	NA12878	HP:0000001,HP:0000002	illumina	downloads/chr22.cram
