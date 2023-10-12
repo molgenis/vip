@@ -66,8 +66,6 @@ process concat {
 process joint_call {
   label 'deepvariant_joint_call'
 
-  publishDir "$params.output/intermediates", mode: 'link'
-
   input:
     tuple val(meta), path(gVcfs), path(gVcfIndexes)
 
@@ -82,7 +80,7 @@ process joint_call {
     bed="${meta.project.id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     refSeqFaiPath = params[meta.project.assembly].reference.fastaFai
-    config= params.snv.deepvariant.glnexus_preset
+    config= params.snv.glnexus[meta.project.sequencing_method].preset
 
     template 'joint_call.sh'
     

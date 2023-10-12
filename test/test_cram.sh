@@ -18,7 +18,7 @@ test_cram_nanopore () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -39,7 +39,7 @@ test_cram_nanopore_duo () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -59,7 +59,7 @@ test_bam () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -70,6 +70,7 @@ test_bam () {
 
 test_cram () {
   download_test_resource "chr22.cram"
+  download_test_resource "chr22.cram"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
@@ -79,7 +80,7 @@ test_cram () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -90,7 +91,7 @@ test_cram () {
 
 test_cram_multiproject () {
   download_test_resource "chr22.cram"
-  download_test_resource "chr22.bam"
+  download_test_resource "test.bam"
   echo -e "params { vcf.filter.classes = \"LQ,B,LB,VUS,LP,P\"\nvcf.filter_samples.classes = \"LQ,MV,OK\" }" > "${OUTPUT_DIR}/custom.cfg"
   
   local args=()
@@ -100,7 +101,7 @@ test_cram_multiproject () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 
@@ -125,7 +126,7 @@ test_cram_trio () {
   args+=("--output" "${OUTPUT_DIR}")
   args+=("--resume")
 
-  if ! "${CMD_VIP}" "${args[@]}" > /dev/null 2>&1; then
+  if ! "${CMD_VIP}" "${args[@]}" 1 > /dev/null; then
     return 1
   fi
 

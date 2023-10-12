@@ -9,6 +9,9 @@ process validate {
 
   shell:
     samplesFileData = meta.project.samples.collect { sample -> sample.individual_id }.join("\n")
+    assembly = meta.project.assembly
+    reference = params[meta.project.assembly].reference.fasta
+    referenceFai = params[meta.project.assembly].reference.fastaFai
 
     vcfOut = "${meta.project.id}_validated.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"

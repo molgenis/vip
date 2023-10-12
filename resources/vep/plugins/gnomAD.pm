@@ -80,6 +80,7 @@ sub parse_data {
     ref => $ref,
     alt => $alt,
     result => {
+      # when adding elements with nullable values make sure to map "." to undef
       gnomAD_AF => $af,
       gnomAD_HN => $hn
     }
