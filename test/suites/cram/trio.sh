@@ -1,6 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "${TEST_UTILS_DIR}/utils.sh"
+
+download_test_resource "chr22.bam" "${TEST_RESOURCES_DIR}/downloads"
+download_test_resource "chr22.cram" "${TEST_RESOURCES_DIR}/downloads"
+ln -sf "${TEST_RESOURCES_DIR}/downloads/chr22.bam" "${TEST_RESOURCES_DIR}/downloads/trio_patient.bam"
+ln -sf "${TEST_RESOURCES_DIR}/downloads/chr22.cram" "${TEST_RESOURCES_DIR}/downloads/trio_father.cram"
+ln -sf "${TEST_RESOURCES_DIR}/downloads/chr22.cram" "${TEST_RESOURCES_DIR}/downloads/trio_mother.cram"
+
 args=()
 args+=("--workflow" "cram")
 args+=("--input" "${TEST_RESOURCES_DIR}/trio.tsv")
