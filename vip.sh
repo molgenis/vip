@@ -4,6 +4,9 @@
 if [[ -n "${SLURM_JOB_ID}" ]]; then SCRIPT_DIR=$(dirname "$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}' | cut -d ' ' -f 1)"); else SCRIPT_DIR=$(dirname "$(realpath "$0")"); fi
 SCRIPT_NAME="$(basename "$0")"
 
+# SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
+VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
+
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
   -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
@@ -51,13 +54,30 @@ validate() {
     usage
     exit 2
   fi
-  if [[ "${resume}" == "false" ]] && [[ -d "${output}" ]]; then
+  if [[ "${resume}" == "false" ]] && [[ -d "${output}" ]] && [[ $(find "${output}" -mindepth 1 -maxdepth 1 | read) ]]; then
     >&2 echo -e "error: output '${output}' already exists. remove or use -r / --resume to resume execution"
     exit 2
   fi
   if [[ -n "${config}" ]] && [[ ! -f "${config}" ]]; then
     >&2 echo -e "error: config '${config}' does not exist"
     exit 2
+  fi
+
+  # detect java, try to load module with name 'java' or 'Java' otherwise
+  if ! command -v java &> /dev/null; then
+    if command -v module &> /dev/null; then
+      if module is_avail java; then
+        module load java
+      elif module is_avail Java; then
+        module load Java
+      else
+        >&2 echo -e "error: missing required 'java'. could not find a module with name 'java' or 'Java' to load"
+        exit 2
+      fi
+    else
+      >&2 echo -e "error: missing required 'java'"
+      exit 2
+    fi
   fi
 }
 
@@ -73,21 +93,16 @@ execute_workflow() {
   rm -f "${paramOutput}/nxf_report.html"
   rm -f "${paramOutput}/nxf_timeline.html"
 
-  local configs="${SCRIPT_DIR}/config/nxf_${paramWorkflow}.config"
+  local configs="${VIP_DIR}/config/nxf_${paramWorkflow}.config"
   if [[ -n "${paramConfig}" ]]; then
     configs+=",${paramConfig}"
   fi
 
   local binds=()
   binds+=("/$(realpath "${paramInput}" | cut -f 2 -d "/")")
-  if [[ -n "${TMPDIR}" ]]; then
-    binds+=("${TMPDIR}")
-  elif [[ -d "/tmp" ]]; then
-    binds+=("/tmp")
-  fi
 
   local envBind="$(IFS=, ; echo "${binds[*]}")"
-  local envCacheDir="${SCRIPT_DIR}/images"
+  local envCacheDir="${VIP_DIR}/images"
   local envHome
   if [[ -z "${NXF_HOME}" ]]; then
     envHome="${paramOutput}/.nxf.home"
@@ -112,7 +127,7 @@ execute_workflow() {
   args+=("-C" "${configs}")
   args+=("-log" "${paramOutput}/.nxf.log")
   args+=("run")
-  args+=("${SCRIPT_DIR}/vip_${paramWorkflow}.nf")
+  args+=("${VIP_DIR}/vip_${paramWorkflow}.nf")
   args+=("-offline")
   args+=("-profile" "${paramProfile}")
   args+=("-with-report" "${paramOutput}/nxf_report.html")
@@ -125,7 +140,7 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.04.1" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${SCRIPT_DIR}/nextflow" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.04.1" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${VIP_DIR}/nextflow" "${args[@]}")
 }
 
 main() {

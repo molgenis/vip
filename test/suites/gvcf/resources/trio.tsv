@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	gvcf
+FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	trio_proband.g.vcf
+FAM0	FATHER0			male	false		trio_father.g.vcf
+FAM0	MOTHER0			female	false		trio_mother.g.vcf
