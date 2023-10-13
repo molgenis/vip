@@ -4,8 +4,8 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-download_test_resource "chr22.cram" "${TEST_RESOURCES_DIR}/downloads"
-ln -sf "${TEST_RESOURCES_DIR}/downloads/chr22.cram" "${TEST_RESOURCES_DIR}/downloads/single.cram"
+download_test_resource "illumina_WES_GRCh38_chr22.cram" "${TEST_RESOURCES_DIR}/downloads"
+ln -sf "${TEST_RESOURCES_DIR}/downloads/illumina_WES_GRCh38_chr22.cram" "${TEST_RESOURCES_DIR}/downloads/single.cram"
 
 args=()
 args+=("--workflow" "cram")
