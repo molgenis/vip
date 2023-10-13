@@ -1,3 +1,3 @@
 project_id	family_id	proband	individual_id	hpo_ids	sequencing_platform	cram	sequencing_method
-vip1	fam0	true	NA12878	HP:0000001,HP:0000002	illumina	multiproject_vip1.cram	WES
-vip2	fam1	true	NA12878	HP:0000001	illumina	multiproject_vip2.bam	WES
+vip1	fam0	true	NA12878	HP:0000001,HP:0000002	illumina	downloads/multiproject_vip1.cram	WES
+vip2	fam1	true	NA12878	HP:0000001	illumina	downloads/multiproject_vip2.bam	WES
