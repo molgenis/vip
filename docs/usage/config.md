@@ -131,7 +131,7 @@ The following sections list all processes and their non-default configuration.
 | cram_validate        | *default*                      |
 | cutesv_call          | cpus=4 memory='8GB' time='5h'  |
 | expansionhunter_call | cpus=4 memory='16GB' time='5h' |
-| manta_call           | cpus=4 memory='8GB' time='5h'  |
+| manta_joint_call     | cpus=4 memory='8GB' time='5h'  |
 | straglr_call         | *default*                      |
 | vcf_merge_str        | *default*                      |
 | vcf_merge_sv         | *default*                      |

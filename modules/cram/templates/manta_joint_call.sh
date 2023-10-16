@@ -4,7 +4,10 @@ set -euo pipefail
 manta_config () {
   local args=()
   args+=("/opt/manta/bin/configManta.py")
-  args+=("--bam" "!{cram}")
+  for cram in !{crams}; do
+    args+=("--bam" "${cram}")
+  done
+  
   args+=("--referenceFasta" "!{reference}")
   args+=("--runDir" "$(realpath .)")
   if [ "!{sequencingMethod}" == "WES" ]; then
@@ -28,8 +31,7 @@ manta () {
 }
 
 post_process () {
-  echo -e "!{sampleId}" > samples.txt
-  ${CMD_BCFTOOLS} reheader --samples samples.txt --threads "!{task.cpus}" "results/variants/diploidSV.vcf.gz" | ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}"
+  ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" "results/variants/diploidSV.vcf.gz"
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }

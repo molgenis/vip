@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { nrMappedReads } from '../modules/cram/utils'
 include { cutesv_call } from '../modules/cram/cutesv'
-include { manta_call } from '../modules/cram/manta'
+include { manta_joint_call } from '../modules/cram/manta'
 include { merge_sv_vcf } from '../modules/cram/merge_vcf'
 
 /*
@@ -45,13 +45,17 @@ workflow sv {
 
     // sv calling: manta
     ch_sv_by_platform.manta
-      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
-      | manta_call
+      | map { meta -> [meta, [data: meta.sample.cram.data, index: meta.sample.cram.index]] }
+      | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, cram: cram]] }
+      | groupTuple
+      | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.cram }] }
+      | map { meta, crams -> [meta, crams.collect { it.data }, crams.collect { it.index }] }
+      | manta_joint_call
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_sv_manta }
 
     // group by project
-    Channel.empty().mix(ch_sv_cutesv, ch_sv_manta, ch_sv.zero_reads, ch_sv_by_platform.ignore)
+    Channel.empty().mix(ch_sv_cutesv, ch_sv.zero_reads, ch_sv_by_platform.ignore)
       | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, vcf: vcf]] }
       | groupTuple
       | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.vcf }] }
@@ -72,7 +76,7 @@ workflow sv {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_sv_project_merged }
     
-    Channel.empty().mix(ch_sv_project_merged, ch_sv_by_project.single, ch_sv_by_project.zero)
+    Channel.empty().mix(ch_sv_project_merged, ch_sv_by_project.single, ch_sv_by_project.zero, ch_sv_manta)
       | set { ch_sv_processed }
 
     emit:
