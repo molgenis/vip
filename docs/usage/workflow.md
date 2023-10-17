@@ -28,8 +28,6 @@ The `cram` workflow consists of the following steps:
 5. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
 6. Continue with step 3. of the `vcf` workflow
 
-Known limitation: Clair3 is not calling the small variants on the Mitochondia.
-
 For details, see [here](https://github.com/molgenis/vip/blob/main/vip_cram.nf).
 
 ## gVCF

@@ -29,6 +29,10 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | cram.call_snv                               | true           | enable/disable the detection of short variants                                                                                                           |
 | cram.call_str                               | true           | enable/disable the detection of short tandem repeats                                                                                                     |
 | cram.call_sv                                | true           | enable/disable the detection of structural variants                                                                                                      |
+| snv.deeptrio.illumina.WES.model_name        | WES            | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
+| snv.deeptrio.illumina.WGS.model_name        | WGS            | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
+| snv.deeptrio.nanopore.model_name            | ONT            | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
+| snv.deeptrio.pacbio_hifi.model_name         | PACBIO         | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
 | snv.deepvariant.illumina.WES.model_name     | WES            | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
 | snv.deepvariant.illumina.WGS.model_name     | WGS            | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
 | snv.deepvariant.nanopore.model_name         | ONT_R104       | for details, see [here](https://github.com/google/deepvariant)                                                                                           |
@@ -123,18 +127,22 @@ The following sections list all processes and their non-default configuration.
 | minimap2_align_paired_end | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
-| process label        | configuration                  |
-|----------------------|--------------------------------|
-| clair3_call          | cpus=4 memory='8GB' time='5h'  |
-| clair3_joint_call    | cpus=4 memory='8GB' time='5h'  |
-| concat_vcf           | *default*                      |
-| cram_validate        | *default*                      |
-| cutesv_call          | cpus=4 memory='8GB' time='5h'  |
-| expansionhunter_call | cpus=4 memory='16GB' time='5h' |
-| manta_joint_call     | cpus=4 memory='8GB' time='5h'  |
-| straglr_call         | *default*                      |
-| vcf_merge_str        | *default*                      |
-| vcf_merge_sv         | *default*                      |
+| process label           | configuration                                |
+|-------------------------|----------------------------------------------|
+| concat_vcf              | *default*                                    |
+| cram_validate           | *default*                                    |
+| cutesv_call             | cpus=4 memory='8GB' time='5h'                |
+| deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h' |
+| deepvariant_call_duo    | cpus=*default* memory='4GB * cpus' time='5h' |
+| deepvariant_call_trio   | cpus=*default* memory='4GB * cpus' time='5h' |
+| deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'       |
+| deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'       |
+| deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'       |
+| expansionhunter_call    | cpus=4 memory='16GB' time='5h'               |
+| manta_joint_call        | cpus=4 memory='8GB' time='5h'                |
+| straglr_call            | *default*                                    |
+| vcf_merge_str           | *default*                                    |
+| vcf_merge_sv            | *default*                                    |
 
 ### gVCF
 | process label | configuration             |
