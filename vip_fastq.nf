@@ -1,10 +1,10 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { concat_fastq; concat_fastq_paired_end } from './modules/fastq/concat'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
-
+include { splitPerFastqSingle; splitPerFastqPaired } from './modules/fastq/utils'
+include { merge_cram } from './modules/fastq/merge'
 
 /**
  * input:  [project, sample [...      ], ...]
@@ -13,7 +13,6 @@ include { cram; validateCramParams } from './vip_cram'
 workflow fastq {
   take: meta
   main:
-    //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
     meta
       | branch { meta ->
           paired_end: !meta.sample.fastq_r1.isEmpty() && !meta.sample.fastq_r2.isEmpty()
@@ -24,43 +23,51 @@ workflow fastq {
     // paired-end fastq
     ch_input.paired_end
       | branch { meta ->
-          merge: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
+          flatten: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
           ready: true
         }
       | set { ch_input_paired_end }
     
-    ch_input_paired_end.merge
-      | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2) }
-      | concat_fastq_paired_end
-      | map { meta, fastq_r1, fastq_r2 -> [*:meta, sample: [*:meta.sample, fastq_r1: fastq_r1, fastq_r2: fastq_r2] ] }
-      | set { ch_input_paired_end_merged }
+    ch_input_paired_end.flatten
+      | flatMap { meta -> splitPerFastqPaired(meta) }
+      | set { ch_input_paired_end_flattened }
 
-    ch_input_paired_end_merged.mix(ch_input_paired_end.ready)
-      | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2) }
+    ch_input_paired_end.ready
+      | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0) }
+      | set{ch_input_paired_end_ready}
+
+    ch_input_paired_end_flattened.mix(ch_input_paired_end_ready)
       | minimap2_align_paired_end
+      | map {meta, cram, cramCrai, cramStats, fastq_size -> [groupKey(meta.sample.individual_id, fastq_size), meta, cram]}
+      | groupTuple
+      | map { key, meta, cram -> tuple(meta[0], cram)}
       | set { ch_input_paired_end_aligned }
     
     // single fastq
     ch_input.single
       | branch { meta ->
-          merge: meta.sample.fastq.size() > 1
+          flatten: meta.sample.fastq.size() > 1
           ready: true
         }
       | set { ch_input_single }
     
-    ch_input_single.merge
-      | map { meta -> tuple(meta, meta.sample.fastq) }
-      | concat_fastq
-      | map { meta, fastq -> [*:meta, sample: [*:meta.sample, fastq: fastq] ] }
-      | set { ch_input_single_merged }
+    ch_input_single.flatten
+      | flatMap { meta -> splitPerFastqSingle(meta) }
+      | set { ch_input_single_flattened }
 
-    ch_input_single_merged.mix(ch_input_single.ready)
-      | map { meta -> tuple(meta, meta.sample.fastq) }
+    ch_input_single.ready
+      | map { meta -> tuple(meta, meta.sample.fastq, 1, 0) }
+      | set{ch_input_single_ready}
+
+    ch_input_single_flattened.mix(ch_input_single_ready)
       | minimap2_align
+      | map {meta, cram, cramCrai, cramStats, fastq_size -> [groupKey(meta.sample.individual_id, fastq_size), meta, cram]}
+      | groupTuple
+      | map { key, meta, cram -> tuple(meta[0], cram)}
       | set { ch_input_single_aligned }
 
-    // merge
-    Channel.empty().mix(ch_input_paired_end_aligned, ch_input_single_aligned)
+    ch_input_paired_end_aligned.mix(ch_input_single_aligned)
+      | merge_cram
       | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | cram
 }
@@ -125,6 +132,9 @@ def validate(projects) {
     project.samples.each { sample ->
       if (sample.fastq.isEmpty() && sample.fastq_r1.isEmpty() && sample.fastq_r2.isEmpty()) {
         exit 1, "A value in either the fastq or fastq_r1/fastq_r2 column(s) is required."
+      }
+      if (sample.fastq_r1.size() != sample.fastq_r2.size()) {
+        exit 1, "fastq_r1 and fastq_r2 have a different number of files, use the 'fastq' column for single fastq files."
       }
       if (!sample.fastq.isEmpty() && (!sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty())) exit 1, "'fastq' column cannot be combined with 'fastq_r1' and/or 'fastq_r2'."
       if ((!sample.fastq_r1.isEmpty() && sample.fastq_r2.isEmpty()) || (sample.fastq_r1.isEmpty() && !sample.fastq_r2.isEmpty()))   exit 1, "Either both 'fastq_r1' and 'fastq_r2' should be present or neither should be present, use the 'fastq' column for single fastq files."

@@ -5,6 +5,7 @@ align() {
   local args=()
   args+=("-t" "!{task.cpus}")
   args+=("-a")
+  args+=("-R" "@RG\tID:$(basename !{fastq})\tPL:!{platform}\tLB:!{sampleId}\tSM:!{sampleId}")
   if [[ -n "!{preset}" ]]; then
       args+=("-x" "!{preset}")
   fi
