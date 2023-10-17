@@ -1,0 +1,11 @@
+Bootstrap: library
+From: ubuntu:18.04
+
+# Install featurecounts
+%post
+	apt-get -y update
+	apt-get -y install wget tar
+	wget https://sourceforge.net/projects/subread/files/subread-2.0.6/subread-2.0.6-source.tar.gz/download -O subred.tar.gz
+	tar -xf subread.tar.gz
+	apt-get -y install subread
+	apt-get clean

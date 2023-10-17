@@ -1,0 +1,26 @@
+### featureCounts
+sudo apptainer build featureCounts.sif featureCounts.def
+
+### trimmomatic
+sudo apptainer build trimmomatic.sif trimmomatic.def
+
+### STAR
+sudo apptainer build STAR.sif STAR.def
+
+### DROP 
+# Build a sandbox from the definition file
+sudo apptainer build --sandbox drop_sandbox drop.def
+sudo apptainer exec --writable drop_sandbox /bin/bash
+# Make sure the version matches with the version of the environment file.
+git clone https://github.com/gagneurlab/drop.git --branch 1.3.3 --single-branch
+# DROP file downloads
+pip install ./drop
+R
+BiocManager::install("BSgenome.Hsapiens.UCSC.hg19", update=FALSE, ask=FALSE)
+BiocManager::install("BSgenome.Hsapiens.UCSC.hg38", update=FALSE, ask=FALSE)
+q()
+R -e "BiocManager::install(c(\"gagneurlab/OUTRIDER\", \"c-mertes/FRASER\"), update=FALSE)"
+Rscript drop/drop/installRPackages.R drop/drop/requirementsR.txt
+# when done with downloads build the container
+exit
+sudo apptainer build drop1.3.3.sif drop_sandbox

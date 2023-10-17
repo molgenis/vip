@@ -1,0 +1,35 @@
+Added files:
+
+containers:
+- trimmomatic.def
+- STAR.def
+- featureCounts.def
+- drop.def
+
+/rna_resources:
+- outrider.pm 
+
+/scripts:
+- createMatrix.R 
+- outrider.R 
+- setResults.R 
+
+/modules/vcf/:
+- outrider.nf 
+- featureCounts.nf 
+
+/modules/fastq/:
+- trimmomatic.nf
+- STAR.nf
+
+rna_install.sh
+
+Changes in original code:
+vip_vcf.nf: lines 31-68, 353-356
+vip_cram.nf: lines 123-126
+vip_fastq.nf: lines 20-62, 153-167
+nxf.config: lines 48-53
+nxf_vcf.config: lines 42-51
+nxf_fastq.config: lines 14-24
+modules/utils.nf: lines 5-8
+modules/vcf/utils.nf: lines 109-114

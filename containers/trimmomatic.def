@@ -1,0 +1,10 @@
+Bootstrap: library
+From: ubuntu:18.04
+
+%post
+	apt-get -y update
+	apt-get install -y build-essential zip wget default-jre
+	apt-get install -y trimmomatic
+	wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.38.zip -O Trimmomatic.zip
+	unzip Trimmomatic.zip
+	

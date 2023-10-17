@@ -31,6 +31,22 @@ usage: vip -w <arg> -i <arg> -o <arg>
   -h, --help            print this message and exit
 ```
 
+### RNA workflow use
+To run the RNA workflow usage stays the same. Add the RNA data in the following columns in the sample sheet:
+
+FASTQ:
+- fastq_rna: FASTQ file
+- fastq_rna_r1: FASTQ forward read file
+- fastq_rna_r2: FASTQ reverse read file
+
+CRAM:
+- rna: RNA BAM file
+
+VCF:
+- rna: RNA BAM file
+
+In order to use different reference files and count data edit the RNA parameters in configs/nxf.config.
+
 ## Developers
 To create the documentation pages:
 ```

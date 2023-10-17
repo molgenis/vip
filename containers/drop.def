@@ -1,0 +1,22 @@
+Bootstrap: docker
+Stage: Build
+
+From: continuumio/miniconda3
+
+# drop environment file based on drop 1.2.4, for use of another drop version search the corresponding file(see README)
+%files
+    drop_env.yml
+
+# Creates the drop environment in conda and activates it
+%post
+    apt-get update
+    /opt/conda/bin/conda env create -f drop_env.yml
+    mkdir /groups/
+    mkdir /apps/
+    mkdir /data/
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
+    echo "conda activate drop_env" >> $SINGULARITY_ENVIRONMENT
+
+# Argument to run the container, run default is 8 cores
+%runscript
+    snakemake --cores 8
