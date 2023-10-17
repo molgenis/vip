@@ -1,0 +1,2 @@
+individual_id	sequencing_platform	sequencing_method	assembly	fastq
+NA12878	illumina	WES	GRCh37	downloads/illumina_WES_chr20.fastq.gz
