@@ -4,6 +4,8 @@ include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { concat_fastq; concat_fastq_paired_end } from './modules/fastq/concat'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
+include { trimmomatic_pe; trimmomatic_se } from './modules/fastq/Trimmomatic.nf'
+include { star_pe; star_se; samtools } from './modules/fastq/STAR.nf'
 
 
 /**
@@ -14,7 +16,50 @@ workflow fastq {
   take: meta
   main:
     //TODO instead of concat_fastq, align in parallel and merge bams (keep in mind read groups when marking duplicates)
+    
+    // branch samples containg RNA data from the rest
     meta
+      | branch { meta ->
+          rna: !meta.sample.fastq_rna.isEmpty() || !meta.sample.fastq_rna_r1.isEmpty()
+          ready: true
+        }
+      | set { ch_split }
+
+    // create an empty RNA variable if no RNA fastqs are given
+    ch_split.ready
+      | map { meta -> [*:meta, project:[*:meta.project, samples:[[*:meta.project.samples[0], rna:""]]] ] }
+      | set { ch_dna_only }
+
+    // check if input is paired end or single end, split in two groups
+    ch_split.rna
+      | branch { meta ->
+          paired_end: !meta.sample.fastq_rna_r1.isEmpty() && !meta.sample.fastq_rna_r2.isEmpty()
+          single: true
+        }
+      | set { ch_rna }
+
+    // process paired end RNA data
+    ch_rna.paired_end
+      | map { meta -> [meta, meta.sample.fastq_rna_r1, meta.sample.fastq_rna_r2, meta.sample.individual_id] }
+      | trimmomatic_pe
+      | star_pe
+      | set { ch_rna_pe_done}
+
+    // process single end RNA data
+    ch_rna.single
+      | map { meta -> [meta, meta.sample.fastq_rna, meta.sample.individual_id] }
+      | trimmomatic_se
+      | star_se
+      | set { ch_rna_se_done }
+
+    // finalize the created bam file and add it in the right variable
+    ch_rna_pe_done.mix(ch_rna_se_done)
+      | samtools
+      | map { meta, rna_bam -> [*:meta, project:[*:meta.project, samples:[[*:meta.project.samples[0], rna:rna_bam]]] ]}
+      | set { ch_rna_done }
+
+    // return to DNA data
+    ch_rna_done
       | branch { meta ->
           paired_end: !meta.sample.fastq_r1.isEmpty() && !meta.sample.fastq_r2.isEmpty()
           single: true
@@ -100,6 +145,21 @@ def parseSampleSheet(csvFile) {
       regex: fastqRegex
     ],
     fastq_r2: [
+      type: "file",
+      list: true,
+      regex: fastqRegex
+    ],
+    fastq_rna: [
+      type: "file",
+      list: true,
+      regex: fastqRegex
+    ],
+    fastq_rna_r1: [
+      type: "file",
+      list: true,
+      regex: fastqRegex
+    ],
+    fastq_rna_r2: [
       type: "file",
       list: true,
       regex: fastqRegex
