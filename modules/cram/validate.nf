@@ -8,6 +8,7 @@ process validate {
     tuple val(meta), path(cramOut), path(cramOutIndex), path(cramOutStats)
 
   shell:
+    sampleId = meta.sample.individual_id
     reference = params[meta.project.assembly].reference.fasta
 
     cramOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.bam"

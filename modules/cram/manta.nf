@@ -1,10 +1,10 @@
-process manta_call {
-  label 'manta_call'
+process manta_joint_call {
+  label 'manta_joint_call'
   
   publishDir "$params.output/intermediates", mode: 'link'
   
   input:
-    tuple val(meta), path(cram), path(cramCrai)
+    tuple val(meta), path(crams), path(cramCrais)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
@@ -12,17 +12,16 @@ process manta_call {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    sampleId = meta.sample.individual_id
     sequencingMethod = meta.project.sequencing_method
 
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sv.vcf.gz"
+    vcfOut="${meta.project.id}_sv.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    template 'manta_call.sh'
+    template 'manta_joint_call.sh'
   
   stub:
-    vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sv.vcf.gz"
+    vcfOut="${meta.project.id}_sv.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
