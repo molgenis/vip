@@ -28,6 +28,7 @@ workflow vcf {
 
       // Take all samples containing RNA-seq data
       meta
+        | view
         | branch { meta ->
           rna: meta.project.samples.any{ sample -> sample.rna != null }
           ready: true
@@ -46,9 +47,9 @@ workflow vcf {
         | createMatrix
         | set {ch_countMatrix}
 
-      /**
-      Grab the final created count matrix and run it through outrider with external count data
-      **/
+      // /**
+      // Grab the final created count matrix and run it through outrider with external count data
+      // **/
       ch_countMatrix
         | last
         | outrider
@@ -61,7 +62,7 @@ workflow vcf {
       ch_drop.rna.combine(outriderResults)
         | map { meta, results -> [meta, results, meta.project.samples.individual_id[0]]}
         | rnaResults
-        | map { meta, result -> [*:meta, rna: result]}
+        | map { meta, result -> [*:meta, rna: [matrix: result]]}
         | set { ch_rna_ready }
 
       ch_drop.ready.mix(ch_rna_ready)

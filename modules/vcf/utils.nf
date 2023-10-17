@@ -106,6 +106,7 @@ def postGroupTupleConcat(key, metaList) {
   return [meta, vcfs, vcfIndexes]
 }
 
+// Create empty template countmatrix to be used for OUTRIDER analysis
 def createCountTemplate(){
   def countMatrix = new File("templateMatrix.tsv")
   countMatrix.createNewFile()

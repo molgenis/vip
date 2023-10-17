@@ -2,6 +2,7 @@ def getCramRegex() {
   /.+(?:\.bam|\.cram|\.sam)/
 }
 
+// Regex to check for correct RNA BAm file
 def getRnaRegex() {
   /.+(?:\.bam)/
 }

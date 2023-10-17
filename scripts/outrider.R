@@ -40,7 +40,9 @@ ods <- ods[mcols(ods)$passedFilter,]
 # Estimate size factors of dataset for q estimation
 ods <- estimateSizeFactors(ods)
 
-# Set parameters for q values to test
+# Create sequence of values to be tested as optimal q values, range from minimum of 5
+# to a maximum depended on datasize. Sequence size also based on datasize with a build
+# in maximum to increase speed for large datasets.
 a <- 5 
 b <- min(ncol(ods), nrow(ods)) / 3
 maxSteps <- 20
@@ -62,8 +64,8 @@ ods <- fit(ods)
 ods <- computePvalues(ods, alternative="two.sided", method="BY")
 ods <- computeZscores(ods)
 
-saveRDS(ods, file = "outrider.rds")
+saveRDS(ods, file = output)
 
 # Create output
-res <- results(ods)
-write.table(res, output, row.names=FALSE, sep="\t")
+# res <- results(ods)
+# write.table(res, output, row.names=FALSE, sep="\t")
