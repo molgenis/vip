@@ -165,7 +165,7 @@ vep() {
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
   fi
-  if [ -z "!{gadoScores}" ]; then
+  if [ -n "!{gadoScores}" ]; then
     args+=("--plugin" "GADO,!{gadoScores},!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
