@@ -1,2 +1,0 @@
-individual_id	sequencing_platform	sequencing_method	assembly	fastq_r1	fastq_r2
-NA12878	illumina	WES	GRCh38	downloads/illumina_WES_chr22_r1.fastq.gz	downloads/illumina_WES_chr22_r2.fastq.gz
