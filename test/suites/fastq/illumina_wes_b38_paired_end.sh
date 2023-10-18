@@ -4,8 +4,8 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-download_test_resource "illumina_WES_chr20_r1.fastq.gz" "${TEST_RESOURCES_DIR}/downloads"
-download_test_resource "illumina_WES_chr20_r2.fastq.gz" "${TEST_RESOURCES_DIR}/downloads"
+download_test_resource "illumina_WES_chr22_r1.fastq.gz" "${TEST_RESOURCES_DIR}/downloads"
+download_test_resource "illumina_WES_chr22_r2.fastq.gz" "${TEST_RESOURCES_DIR}/downloads"
 
 args=()
 args+=("--workflow" "fastq")
