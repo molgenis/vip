@@ -31,7 +31,7 @@ process annotate {
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
-    gadoScores = meta.gado
+    gadoScores = meta.gado != null ? meta.gado : ""
 
     template 'annotate.sh'
 
