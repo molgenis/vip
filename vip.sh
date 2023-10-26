@@ -9,8 +9,8 @@ VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
-  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
-  -i, --input             <arg>  path to sample sheet .tsv
+  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, mod
+  -i, --input             <arg>  path to sample sheet .tsv or directory with pod5 files
   -o, --output            <arg>  output folder
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
@@ -33,8 +33,8 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf ]]; then
-    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf]"
+  if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf|mod ]]; then
+    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf, mod]"
     usage
     exit 2
   fi
@@ -44,8 +44,8 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! -f "${input}" ]]; then
-    >&2 echo -e "error: input '${input}' does not exist"
+  if [[ ! -f "${input}" ]] && [[ ! -f $(find "${input}" -name "*.pod5" -print -quit) ]]; then
+    >&2 echo -e "error: input '${input}' does not exist or does not contain pod5 files"
     exit 2
   fi
 
