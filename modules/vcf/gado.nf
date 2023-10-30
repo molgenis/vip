@@ -9,8 +9,7 @@ process gado {
     tuple val(meta), path(gadoScores)
 
   shell:
-
-gadoGenesPath = params.vcf.annotate.gado_genes
+    gadoGenesPath = params.vcf.annotate.gado_genes
     gadoScores = "./gado/all_samples.txt"
 
     gadoHpoPath = params.vcf.annotate.gado_hpo
@@ -25,6 +24,7 @@ gadoGenesPath = params.vcf.annotate.gado_genes
     gadoScores = "./gado/all_samples.txt"
 
     """
+    mkdir -p "./gado"
     touch "${gadoScores}"
     """
 }
