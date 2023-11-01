@@ -10,7 +10,7 @@ VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
   -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, mod
-  -i, --input             <arg>  path to sample sheet .tsv or directory with pod5 files
+  -i, --input             <arg>  path to sample sheet .tsv
   -o, --output            <arg>  output folder
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
   -p, --profile           <arg>  nextflow configuration profile (optional)
@@ -44,8 +44,8 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! -f "${input}" ]] && [[ ! -f $(find "${input}" -name "*.pod5" -print -quit) ]]; then
-    >&2 echo -e "error: input '${input}' does not exist or does not contain pod5 files"
+  if [[ ! -f "${input}" ]] ; then
+    >&2 echo -e "error: input '${input}' does not exist"
     exit 2
   fi
 
