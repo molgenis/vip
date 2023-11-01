@@ -207,6 +207,8 @@ process concat_gvcfs {
     gvcfOutStats = "${gvcfOut}.stats"
     
     // reuse concat_vcf template
+    vcfs=gvcfs
+    vcfIndexes=gvcfIndexes
     vcfOut = gvcfOut
     vcfOutIndex = gvcfOutIndex
     vcfOutStats = gvcfOutStats
