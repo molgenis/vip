@@ -33,14 +33,15 @@ workflow fastq {
       | set { ch_input_paired_end_by_pair }
 
     ch_input_paired_end.ready
-      | map { meta -> [meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0] }
+      | map { meta -> [*:meta, sample: [*:meta.sample, fastq: [data_r1: meta.sample.fastq_r1, data_r2: meta.sample.fastq_r2, total: 1, index: 0]]]}
       | set{ch_input_paired_end_ready}
 
     Channel.empty().mix(ch_input_paired_end_by_pair, ch_input_paired_end_ready)
+      | map { meta -> [meta, meta.sample.fastq.data_r1, meta.sample.fastq.data_r2] }
       | minimap2_align_paired_end
-      | map {meta, cram, cramCrai, cramStats, fastq_size -> [groupKey(meta.sample.individual_id, fastq_size), meta, cram]}
+      | map {meta, cram, cramCrai, cramStats -> [groupKey(meta.sample.individual_id, meta.sample.fastq.total), meta, cram]}
       | groupTuple
-      | map { key, meta, cram -> tuple(meta[0], cram)}
+      | map { key, meta, cram -> [meta[0], cram]}
       | set { ch_input_paired_end_aligned }
     
     // single fastq
@@ -56,14 +57,15 @@ workflow fastq {
       | set { ch_input_single_flattened }
 
     ch_input_single.ready
-      | map { meta -> tuple(meta, meta.sample.fastq, 1, 0) }
+      | map { meta -> [*:meta, sample: [*:meta.sample, fastq: [data: meta.sample.fastq, total: 1, index: 0]]] }
       | set{ch_input_single_ready}
 
     ch_input_single_flattened.mix(ch_input_single_ready)
+      | map { meta -> [meta, meta.sample.fastq.data] }
       | minimap2_align
-      | map {meta, cram, cramCrai, cramStats, fastq_size -> [groupKey(meta.sample.individual_id, fastq_size), meta, cram]}
+      | map {meta, cram, cramCrai, cramStats -> [groupKey(meta.sample.individual_id, meta.sample.fastq.total), meta, cram]}
       | groupTuple
-      | map { key, meta, cram -> tuple(meta[0], cram)}
+      | map { key, meta, cram -> [meta[0], cram]}
       | set { ch_input_single_aligned }
 
     ch_input_paired_end_aligned.mix(ch_input_single_aligned)

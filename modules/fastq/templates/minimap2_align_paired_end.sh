@@ -13,7 +13,7 @@ align() {
     args+=("!{referenceMmi}")
     args+=("!{fastqR1}" "!{fastqR2}") 
 
-    ${CMD_MINIMAP2} "${args[@]}"
+    ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
 }
 
 stats() {
