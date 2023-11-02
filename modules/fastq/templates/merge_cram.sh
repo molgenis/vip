@@ -7,12 +7,13 @@ merge(){
     then
         ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "unmarked_!{cramOut}" --write-index "${cram_array}"
     else
+        # include single crams in the merge process to include them in the publish
         cp !{crams} "unmarked_!{cramOut}"
     fi
 }
 
 mark_dups(){
-    if [ "!{isPairEnded}" == "true"]
+    if [ "!{isPairEnded}" == "true" ]
     then
         ${CMD_SAMTOOLS} fixmate -u -m "unmarked_!{cramOut}" - | \
         ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | \
