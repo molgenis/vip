@@ -60,6 +60,8 @@ download_resources_molgenis() {
     files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz")
     files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz.tbi")
+    files+=("GRCh37/GRCh37_ncER_perc.bed.gz")
+    files+=("GRCh37/GRCh37_ncER_perc.bed.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
     files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
@@ -96,6 +98,8 @@ download_resources_molgenis() {
     files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
     files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
+    files+=("GRCh38/GRCh38_ncER_perc.bed.gz")
+    files+=("GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
     # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
     files+=("GRCh38/hg38.phyloP100way.bed.gz")
     files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
@@ -231,7 +235,7 @@ download_images() {
   files+=("samtools-1.17-patch1.sif")
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.4.2.sif")
-  files+=("vcf-decision-tree-3.7.0.sif")
+  files+=("vcf-decision-tree-3.8.0.sif")
   files+=("vcf-inheritance-matcher-2.1.8.sif")
   files+=("vcf-report-5.6.1.sif")
   files+=("vep-109.3.sif")

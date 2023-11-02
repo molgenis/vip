@@ -185,6 +185,9 @@ vep() {
   if [ -n "!{alphScorePath}" ]; then
     args+=("--plugin" "AlphScore,!{alphScorePath}")
   fi
+  if [ -n "!{vepPluginNcerPath}" ]; then
+    args+=("--plugin" "ncER,!{vepPluginNcerPath}")
+  fi
   
   ${CMD_VEP} "${args[@]}"
 }
