@@ -30,7 +30,7 @@ workflow fastq {
     
     ch_input_paired_end.process
       | flatMap { meta -> splitPerFastqPaired(meta) }
-      | set { ch_input_paired_end_flattened }
+      | set { ch_input_paired_end_by_pair }
 
     ch_input_paired_end.ready
       | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0) }
