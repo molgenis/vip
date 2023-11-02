@@ -36,7 +36,7 @@ workflow fastq {
       | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0) }
       | set{ch_input_paired_end_ready}
 
-    ch_input_paired_end_flattened.mix(ch_input_paired_end_ready)
+    Channel.empty().mix(ch_input_paired_end_by_pair, ch_input_paired_end_ready)
       | minimap2_align_paired_end
       | map {meta, cram, cramCrai, cramStats, fastq_size -> [groupKey(meta.sample.individual_id, fastq_size), meta, cram]}
       | groupTuple
