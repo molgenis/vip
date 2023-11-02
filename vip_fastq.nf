@@ -23,7 +23,7 @@ workflow fastq {
     // paired-end fastq
     ch_input.paired_end
       | branch { meta ->
-          flatten: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
+          process: meta.sample.fastq_r1.size() > 1 || meta.sample.fastq_r2.size() > 1
           ready: true
         }
       | set { ch_input_paired_end }
