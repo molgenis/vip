@@ -5,7 +5,7 @@ main() {
     IFS=' ' read -a cram_array <<< "!{crams}";
     if [ ${#cram_array} -gt 1 ]
     then
-        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o !{cramOut} --write-index "${cram_array}"
+        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "!{cramOut}" --write-index "${cram_array}"
     else
         mv !{crams} "!{cramOut}"
         exit 2
