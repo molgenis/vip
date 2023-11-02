@@ -33,7 +33,7 @@ workflow fastq {
       | set { ch_input_paired_end_by_pair }
 
     ch_input_paired_end.ready
-      | map { meta -> tuple(meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0) }
+      | map { meta -> [meta, meta.sample.fastq_r1, meta.sample.fastq_r2, 1, 0] }
       | set{ch_input_paired_end_ready}
 
     Channel.empty().mix(ch_input_paired_end_by_pair, ch_input_paired_end_ready)
