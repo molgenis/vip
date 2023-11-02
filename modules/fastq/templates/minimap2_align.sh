@@ -5,6 +5,7 @@ align() {
   local args=()
   args+=("-t" "!{task.cpus}")
   args+=("-a")
+  # MarkDuplicates uses the LB (= DNA preparation library identifier) field to determine which read groups might contain molecular duplicates, in case the same DNA library was sequenced on multiple lanes.
   args+=("-R" "@RG\tID:$(basename !{fastq})\tPL:!{platform}\tLB:!{sampleId}\tSM:!{sampleId}")
   if [[ -n "!{preset}" ]]; then
       args+=("-x" "!{preset}")
