@@ -28,7 +28,7 @@ workflow fastq {
         }
       | set { ch_input_paired_end }
     
-    ch_input_paired_end.flatten
+    ch_input_paired_end.process
       | flatMap { meta -> splitPerFastqPaired(meta) }
       | set { ch_input_paired_end_flattened }
 
