@@ -24,9 +24,10 @@ workflow deepvariant {
     ch_cram_per_chunk.with_reads
       | branch { meta ->
           // samples can be included in multiple trios
-          deeptrio:    meta.sample.paternal_id != null || meta.sample.maternal_id != null
+          // workaround for 'nanopore', see https://github.com/google/deepvariant/issues/724
+          deeptrio:    meta.project.sequencing_platform != "nanopore" && (meta.sample.paternal_id != null || meta.sample.maternal_id != null)
                        return meta
-          deepvariant: meta.sample.paternal_id == null && meta.sample.maternal_id == null && !hasChild(meta.sample, meta.family)
+          deepvariant: meta.project.sequencing_platform == "nanopore" || (meta.sample.paternal_id == null && meta.sample.maternal_id == null && !hasChild(meta.sample, meta.family))
                        return meta
           skip:        true
                        return [meta, [:]]
