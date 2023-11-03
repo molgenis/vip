@@ -9,7 +9,7 @@ process merge_cram{
     tuple val(meta), path(cramOut), path(cramOutCrai), path(cramOutStats)
   shell:
     reference=params[meta.project.assembly].reference.fasta
-    isPairEnded = meta.sample.fastq.isEmpty()
+    isPairEnded = meta.sample.fastq.data == null
     
     platform=meta.project.sequencing_platform
     cramOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
