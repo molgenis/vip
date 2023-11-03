@@ -249,6 +249,26 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 <td>enable/disable the detection of structural variants</td>
 </tr>
 <tr>
+<td>snv.deeptrio.illumina.WES.model_name</td>
+<td>WES</td>
+<td>for details, see <a href="https://github.com/google/deepvariant">here</a></td>
+</tr>
+<tr>
+<td>snv.deeptrio.illumina.WGS.model_name</td>
+<td>WGS</td>
+<td>for details, see <a href="https://github.com/google/deepvariant">here</a></td>
+</tr>
+<tr>
+<td>snv.deeptrio.nanopore.model_name</td>
+<td>ONT</td>
+<td>for details, see <a href="https://github.com/google/deepvariant">here</a></td>
+</tr>
+<tr>
+<td>snv.deeptrio.pacbio_hifi.model_name</td>
+<td>PACBIO</td>
+<td>for details, see <a href="https://github.com/google/deepvariant">here</a></td>
+</tr>
+<tr>
 <td>snv.deepvariant.illumina.WES.model_name</td>
 <td>WES</td>
 <td>for details, see <a href="https://github.com/google/deepvariant">here</a></td>
@@ -645,14 +665,6 @@ The following sections list all processes and their non-default configuration.</
 </thead>
 <tbody>
 <tr>
-<td>clair3_call</td>
-<td>cpus=4 memory='8GB' time='5h'</td>
-</tr>
-<tr>
-<td>clair3_joint_call</td>
-<td>cpus=4 memory='8GB' time='5h'</td>
-</tr>
-<tr>
 <td>concat_vcf</td>
 <td><em>default</em></td>
 </tr>
@@ -663,6 +675,30 @@ The following sections list all processes and their non-default configuration.</
 <tr>
 <td>cutesv_call</td>
 <td>cpus=4 memory='8GB' time='5h'</td>
+</tr>
+<tr>
+<td>deepvariant_call</td>
+<td>cpus=<em>default</em> memory='2GB * cpus' time='5h'</td>
+</tr>
+<tr>
+<td>deepvariant_call_duo</td>
+<td>cpus=<em>default</em> memory='4GB * cpus' time='5h'</td>
+</tr>
+<tr>
+<td>deepvariant_call_trio</td>
+<td>cpus=<em>default</em> memory='4GB * cpus' time='5h'</td>
+</tr>
+<tr>
+<td>deepvariant_concat_gvcf</td>
+<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
+</tr>
+<tr>
+<td>deepvariant_concat_vcf</td>
+<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
+</tr>
+<tr>
+<td>deepvariant_joint_call</td>
+<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
 </tr>
 <tr>
 <td>expansionhunter_call</td>
