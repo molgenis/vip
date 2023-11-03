@@ -65,3 +65,25 @@ def createPedigree(sampleSheet) {
         [sample.family_id, sample.individual_id, sample.paternal_id ?: 0, sample.maternal_id ?: 0, sex, affected].join("\t")
     }.join("\n")
 }
+
+def hasChild(sample, family) {
+  return family.samples.any { it.family_id == sample.family_id && (it.paternal_id == sample.individual_id || it.maternal_id == sample.individual_id) }
+}
+
+/**
+ * return validated groupTuple result
+ */
+def validateGroup(key, group) {
+  // validate group size
+  if(key.getGroupSize() != group.size()) {
+    throw new RuntimeException("error: expected group size '${key.getGroupSize()}' differs from actual group size '${group.size()}'. this might indicate a bug in the software")
+  }
+
+  // extract key from 'nextflow.extension.GroupKey'
+  def keyTarget = key.getGroupTarget()
+
+  // workaround: groupTuple can return a group of type 'nextflow.util.ArrayBag' which does not implement hashCode/equals 
+  def groupList = group.collect()
+  
+  return [keyTarget, groupList]
+}

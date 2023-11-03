@@ -1,0 +1,14 @@
+family_id	proband	individual_id	paternal_id	maternal_id	sequencing_platform	cram	sequencing_method
+solo	true	patient0			illumina	downloads/complex_solo_patient0.cram	WES
+duo	true	patient1	father1		illumina	downloads/complex_duo_patient1.cram	WES
+duo	false	father1			illumina	downloads/complex_duo_father1.cram	WES
+duo_sibling	true	patient2		mother2	illumina	downloads/complex_duo_sibling_patient2.cram	WES
+duo_sibling	false	mother2			illumina	downloads/complex_duo_sibling_mother2.cram	WES
+duo_sibling	false	sibling2		mother2	illumina	downloads/complex_duo_sibling_sibling2.cram	WES
+trio	true	patient3	father3	mother3	illumina	downloads/complex_trio_patient3.cram	WES
+trio	false	father3			illumina	downloads/complex_trio_father3.cram	WES
+trio	false	mother3			illumina	downloads/complex_trio_mother3.cram	WES
+trio_sibling	true	patient4	father4	mother4	illumina	downloads/complex_trio_sibling_patient4.cram	WES
+trio_sibling	false	father4			illumina	downloads/complex_trio_sibling_father4.cram	WES
+trio_sibling	false	mother4			illumina	downloads/complex_trio_sibling_mother4.cram	WES
+trio_sibling	false	sibling4	father4	mother4	illumina	downloads/complex_trio_sibling_sibling4.cram	WES
