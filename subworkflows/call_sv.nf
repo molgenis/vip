@@ -29,6 +29,7 @@ workflow sv {
       | branch { meta ->
           cutesv: meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi'
                   return meta
+          // manta requires paired-end reads but we can't detect whether that is the case when starting with the cram workflow
           manta:  meta.project.sequencing_platform == 'illumina'
                   return meta
           ignore: true
