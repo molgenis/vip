@@ -5,7 +5,7 @@ merge(){
     IFS=' ' read -a cram_array <<< "!{crams}";
     if [ ${#cram_array} -gt 1 ]
     then
-        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "unmarked_!{cramOut}" --write-index "${cram_array}"
+        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "unmarked_!{cramOut}" --write-index !{crams}
     else
         # include single crams in the merge process to include them in the publish
         cp !{crams} "unmarked_!{cramOut}"
