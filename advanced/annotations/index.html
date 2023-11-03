@@ -78,7 +78,9 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal current" href="./">Annotations</a>
 <ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="#vep">VEP</a>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#details">Details</a>
 <ul>
 <li class="toctree-l3"><a class="reference internal" href="#plugins">Plugins</a>
 <ul>
@@ -148,7 +150,545 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="annotations">Annotations<a class="headerlink" href="#annotations" title="Permanent link">¶</a></h1>
-<h2 id="vep">VEP<a class="headerlink" href="#vep" title="Permanent link">¶</a></h2>
+<p>VIP annotates variant effects and genotype data for samples using a rich set of tools. Annotions can be used to <a href="../classification_trees/">classify variants using classification trees</a> and displayed in <a href="../report_templates/">reports</a>.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The table contains annotations available in most output files. Depending on the workflow and the configuration used additional annotations might be available, 
+check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from your output file depending on the sample sheet content and configuration. </p>
+<table>
+<thead>
+<tr>
+<th>annotation</th>
+<th>type</th>
+<th>source</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FORMAT/VI</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>An enumeration of possible inheritance modes</td>
+</tr>
+<tr>
+<td>FORMAT/VIC</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>Possible Compound hetrozygote variants</td>
+</tr>
+<tr>
+<td>FORMAT/VID</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>De novo variant</td>
+</tr>
+<tr>
+<td>FORMAT/VIG</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>Genes with an inheritance match</td>
+</tr>
+<tr>
+<td>FORMAT/VIM</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>Inheritance Match: Genotypes, affected statuses and known gene inheritance patterns match</td>
+</tr>
+<tr>
+<td>FORMAT/VIPC_S</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
+<td>VIP decision tree classification for sample</td>
+</tr>
+<tr>
+<td>FORMAT/VIPP_S</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
+<td>VIP decision tree path for sample</td>
+</tr>
+<tr>
+<td>FORMAT/VIS</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
+<td>An enumeration of possible sub inheritance modes like e.g. compound, non penetrance</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Allele</td>
+<td>string</td>
+<td>VEP</td>
+<td>The variant allele used to calculate the consequence</td>
+</tr>
+<tr>
+<td>INFO/CSQ/ALLELE_NUM</td>
+<td>integer</td>
+<td>VEP</td>
+<td>Allele nr within the VCF file.</td>
+</tr>
+<tr>
+<td>INFO/CSQ/ALPHSCORE</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>AlphScore pathogenicity score for missense variants (see <a href="https://doi.org/10.1093/bioinformatics/btad280">here</a>)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Amino_acids</td>
+<td>string</td>
+<td>VEP</td>
+<td>Reference and variant amino acids</td>
+</tr>
+<tr>
+<td>INFO/CSQ/ASV_ACMG_class</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>AnnotSv 'ACMG_class' output</td>
+</tr>
+<tr>
+<td>INFO/CSQ/ASV_AnnotSV_ranking_criteria</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>AnnotSv 'AnnotSV_ranking_criteria' output</td>
+</tr>
+<tr>
+<td>INFO/CSQ/ASV_AnnotSV_ranking_score</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>AnnotSv 'AnnotSV_ranking_score' output</td>
+</tr>
+<tr>
+<td>INFO/CSQ/BIOTYPE</td>
+<td>string</td>
+<td>VEP</td>
+<td>Biotype of transcript or regulatory feature</td>
+</tr>
+<tr>
+<td>INFO/CSQ/CAPICE_CL</td>
+<td>categorical</td>
+<td>VEP plugin</td>
+<td>CAPICE classification (see <a href="https://github.com/molgenis/capice">here</a>). Categories: B, LB, VUS, LP, P</td>
+</tr>
+<tr>
+<td>INFO/CSQ/CAPICE_SC</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>CAPICE score</td>
+</tr>
+<tr>
+<td>INFO/CSQ/cDNA_position</td>
+<td>string</td>
+<td>VEP</td>
+<td>Position within the cDNA</td>
+</tr>
+<tr>
+<td>INFO/CSQ/CDS_position</td>
+<td>string</td>
+<td>VEP</td>
+<td>Position within the coding sequence</td>
+</tr>
+<tr>
+<td>INFO/CSQ/CHECK_REF</td>
+<td>string</td>
+<td>VEP</td>
+<td>Reports variants where the input reference does not match the expected reference</td>
+</tr>
+<tr>
+<td>INFO/CSQ/CLIN_SIG</td>
+<td>string list</td>
+<td>VEP</td>
+<td>ClinVar classification(s) (do not use, see <a href="https://github.com/Ensembl/ensembl-vep/issues/1213">here</a>)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/clinVar_CLNID</td>
+<td>integer list</td>
+<td>VEP plugin</td>
+<td>ClinVar variation identifier</td>
+</tr>
+<tr>
+<td>INFO/CSQ/clinVar_CLNREVSTAT</td>
+<td>categorical list</td>
+<td>VEP plugin</td>
+<td>ClinVar review status for the Variation ID. Categories: practice_guideline, reviewed_by_expert_panel, criteria_provided, _multiple_submitters, _no_conflicts, _single_submitter, _conflicting_interpretations, no_assertion_criteria_provided, no_assertion_provided</td>
+</tr>
+<tr>
+<td>INFO/CSQ/clinVar_CLNSIG</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Clinical significance for this single variant; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_interpretations_of_pathogenicity</td>
+</tr>
+<tr>
+<td>INFO/CSQ/clinVar_CLNSIGINCL</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_interpretations_of_pathogenicity</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Codons</td>
+<td>string</td>
+<td>VEP</td>
+<td>Reference and variant codon sequence</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Consequence</td>
+<td>string list</td>
+<td>VEP</td>
+<td>Effect(s) described as Sequence Ontology term(s)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/DISTANCE</td>
+<td>string</td>
+<td>VEP</td>
+<td>Shortest distance from variant to transcript</td>
+</tr>
+<tr>
+<td>INFO/CSQ/existing_InFrame_oORFs</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>The number of existing inFrame overlapping ORFs (inFrame oORF) at the 5 prime UTR</td>
+</tr>
+<tr>
+<td>INFO/CSQ/existing_OutOfFrame_oORFs</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>The number of existing out-of-frame overlapping ORFs (OutOfFrame oORF) at the 5 prime UTR</td>
+</tr>
+<tr>
+<td>INFO/CSQ/existing_uORFs</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>The number of existing uORFs with a stop codon within the 5 prime UTR</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Existing_variation</td>
+<td>string list</td>
+<td>VEP</td>
+<td>Identifier(s) of co-located known variants</td>
+</tr>
+<tr>
+<td>INFO/CSQ/EXON</td>
+<td>string</td>
+<td>VEP</td>
+<td>The exon number (out of total number)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Feature</td>
+<td>string</td>
+<td>VEP</td>
+<td>Ensembl stable ID of feature</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Feature_type</td>
+<td>categorical</td>
+<td>VEP</td>
+<td>VEP feature type. Categories: Transcript, RegulatoryFeature, MotifFeature</td>
+</tr>
+<tr>
+<td>INFO/CSQ/five_prime_UTR_variant_annotation</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Output the annotation of a given 5 prime UTR variant</td>
+</tr>
+<tr>
+<td>INFO/CSQ/five_prime_UTR_variant_consequence</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Output the variant consequences of a given 5 prime UTR variant: uAUG_gained, uAUG_lost, uSTOP_lost or uFrameshift</td>
+</tr>
+<tr>
+<td>INFO/CSQ/FLAGS</td>
+<td>string list</td>
+<td>VEP</td>
+<td>Transcript quality flags (cds_start_NF: CDS 5' incomplete, cds_end_NF: CDS 3' incomplete)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/GADO_PD</td>
+<td>categorical</td>
+<td>VEP plugin</td>
+<td><a href="https://www.genenetwork.nl/gado">GADO</a> prediction for the relation between the HPO terms of the proband(s) and the gene, HC: high confidence, LC: low confidence. Categories: LC, HC</td>
+</tr>
+<tr>
+<td>INFO/CSQ/GADO_SC</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>The combined prioritization GADO Z-score over the HPO of the proband(s) terms for this case</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Gene</td>
+<td>string</td>
+<td>VEP</td>
+<td>Ensembl stable ID of affected gene</td>
+</tr>
+<tr>
+<td>INFO/CSQ/gnomAD_AF</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>gnomAD allele frequency</td>
+</tr>
+<tr>
+<td>INFO/CSQ/gnomAD_HN</td>
+<td>integer</td>
+<td>VEP plugin</td>
+<td>gnomAD number of homozygotes</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Grantham</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Grantham Matrix score - Grantham, R. Amino Acid Difference Formula to Help Explain Protein Evolution, Science 1974 Sep 6;185(4154):862-4</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HGNC_ID</td>
+<td>integer</td>
+<td>VEP</td>
+<td>HGNC gene identifier</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HGVS_OFFSET</td>
+<td>string</td>
+<td>VEP</td>
+<td>Indicates by how many bases the HGVS notations for this variant have been shifted</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HGVSc</td>
+<td>string</td>
+<td>VEP</td>
+<td>HGVS nomenclature: coding DNA reference sequence</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HGVSp</td>
+<td>string</td>
+<td>VEP</td>
+<td>HGVS nomenclature: protein reference sequence</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HIGH_INF_POS</td>
+<td>string</td>
+<td>VEP</td>
+<td>A flag indicating if the variant falls in a high information position of a transcription factor binding profile (TFBP)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/HPO</td>
+<td>string list</td>
+<td>VEP plugin</td>
+<td>Human phenotype ontology term that match</td>
+</tr>
+<tr>
+<td>INFO/CSQ/IMPACT</td>
+<td>categorical</td>
+<td>VEP</td>
+<td>Impact as predicted by VEP. Categories: LOW, MODERATE, HIGH, MODIFIER</td>
+</tr>
+<tr>
+<td>INFO/CSQ/IncompletePenetrance</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>Boolean indicating if the gene is known for incomplete penetrance (1:true)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/InheritanceModesGene</td>
+<td>string list</td>
+<td>VEP plugin</td>
+<td>List of inheritance modes for the gene</td>
+</tr>
+<tr>
+<td>INFO/CSQ/INTRON</td>
+<td>string</td>
+<td>VEP</td>
+<td>The intron number (out of total number)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/MOTIF_NAME</td>
+<td>string</td>
+<td>VEP</td>
+<td>The source and identifier of a transcription factor binding profile aligned at this position</td>
+</tr>
+<tr>
+<td>INFO/CSQ/MOTIF_POS</td>
+<td>string</td>
+<td>VEP</td>
+<td>The relative position of the variation in the aligned TFBP</td>
+</tr>
+<tr>
+<td>INFO/CSQ/MOTIF_SCORE_CHANGE</td>
+<td>string</td>
+<td>VEP</td>
+<td>The difference in motif score of the reference and variant sequences for the TFBP</td>
+</tr>
+<tr>
+<td>INFO/CSQ/PHENO</td>
+<td>integer list</td>
+<td>VEP</td>
+<td>Indicates if existing variant is associated with a phenotype, disease or trait; multiple values correspond to multiple values in the Existing_variation field</td>
+</tr>
+<tr>
+<td>INFO/CSQ/phyloP</td>
+<td>string</td>
+<td>VEP custom</td>
+<td>Conservation p-values, see <a href="http://compgen.cshl.edu/phast/help-pages/phyloP.txt">here</a></td>
+</tr>
+<tr>
+<td>INFO/CSQ/PICK</td>
+<td>integer</td>
+<td>VEP</td>
+<td>Boolean indicating if this is the VEP picked transcript</td>
+</tr>
+<tr>
+<td>INFO/CSQ/PolyPhen</td>
+<td>float</td>
+<td>VEP</td>
+<td>PolyPhen score</td>
+</tr>
+<tr>
+<td>INFO/CSQ/Protein_position</td>
+<td>string</td>
+<td>VEP</td>
+<td>Position within the protein</td>
+</tr>
+<tr>
+<td>INFO/CSQ/PUBMED</td>
+<td>integer list</td>
+<td>VEP</td>
+<td>PubMed citations</td>
+</tr>
+<tr>
+<td>INFO/CSQ/REFSEQ_MATCH</td>
+<td>string</td>
+<td>VEP</td>
+<td>Flag indicating whether and how the RefSeq model differs from the underlying genome</td>
+</tr>
+<tr>
+<td>INFO/CSQ/REFSEQ_OFFSET</td>
+<td>string</td>
+<td>VEP</td>
+<td>?</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SIFT</td>
+<td>float</td>
+<td>VEP</td>
+<td>SIFT score</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SOMATIC</td>
+<td>integer list</td>
+<td>VEP</td>
+<td>Somatic status of existing variant(s); multiple values correspond to multiple values in the Existing_variation field</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SOURCE</td>
+<td>string</td>
+<td>VEP</td>
+<td>?</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DP_AG</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta position for acceptor gain</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DP_AL</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta position for acceptor loss</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DP_DG</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta position for donor gain</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DP_DL</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta position for donor loss</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DS_AG</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta score for acceptor gain</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DS_AL</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta score for acceptor loss</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DS_DG</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta score for donor gain</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_DS_DL</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>SpliceAI predicted effect on splicing. Delta score for donor loss</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SpliceAI_pred_SYMBOL</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>SpliceAI gene symbol</td>
+</tr>
+<tr>
+<td>INFO/CSQ/STRAND</td>
+<td>string</td>
+<td>VEP</td>
+<td>The DNA strand (1 or -1) on which the transcript/feature lies</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SYMBOL</td>
+<td>string</td>
+<td>VEP</td>
+<td>Gene symbol</td>
+</tr>
+<tr>
+<td>INFO/CSQ/SYMBOL_SOURCE</td>
+<td>string</td>
+<td>VEP</td>
+<td>The source of the gene symbol</td>
+</tr>
+<tr>
+<td>INFO/CSQ/TRANSCRIPTION_FACTORS</td>
+<td>string</td>
+<td>VEP</td>
+<td>?</td>
+</tr>
+<tr>
+<td>INFO/CSQ/VIPC</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
+<td>VIP decision tree classification for variant effect</td>
+</tr>
+<tr>
+<td>INFO/CSQ/VIPL</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
+<td>VIP decision tree labels for variant effect</td>
+</tr>
+<tr>
+<td>INFO/CSQ/VIPP</td>
+<td>string list</td>
+<td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
+<td>VIP decision tree path for variant effect</td>
+</tr>
+<tr>
+<td>INFO/CSQ/VKGL</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>?</td>
+</tr>
+<tr>
+<td>INFO/CSQ/VKGL_CL</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>VKGL consensus variant classification</td>
+</tr>
+</tbody>
+</table>
+<h2 id="details">Details<a class="headerlink" href="#details" title="Permanent link">¶</a></h2>
 <p>VIP uses the <a href="https://github.com/Ensembl/ensembl-vep">Ensemble Effect Predictor</a> to annotate all variants with their consequences. We use VEP with the <code>refseq</code> option for the transcripts, and with the flags for <code>sift</code> and <code>polyphen</code> annotations enabled.</p>
 <h3 id="plugins">Plugins<a class="headerlink" href="#plugins" title="Permanent link">¶</a></h3>
 <p>Below we describe the other sources which we annotate using the VEP plugin framework.</p>
