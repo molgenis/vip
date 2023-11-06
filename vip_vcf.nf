@@ -92,7 +92,7 @@ workflow vcf {
 
       ch_annotated.publish.mix(ch_inputs.empty)
           | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
+          | groupTuple(remainder: true)
           | map { key, metaList -> postGroupTupleConcat(key, metaList) }
           | annotate_publish
 
@@ -111,7 +111,7 @@ workflow vcf {
 
       ch_classified.publish.mix(ch_inputs.empty)
         | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-        | groupTuple
+        | groupTuple(remainder: true)
         | map { key, metaList -> postGroupTupleConcat(key, metaList) }
         | classify_publish
 
@@ -158,7 +158,7 @@ workflow vcf {
 
         ch_classified_samples.publish.mix(ch_inputs.empty, ch_filtered.empty)
           | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
+          | groupTuple(remainder: true)
           | map { key, metaList -> postGroupTupleConcat(key, metaList) }
           | classify_samples_publish
 
@@ -181,7 +181,7 @@ workflow vcf {
         // concat
         ch_filtered_samples.process.mix(ch_filter_samples.skip, ch_inputs.empty, ch_filtered.empty, ch_filtered_samples.empty)
           | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
-          | groupTuple
+          | groupTuple(remainder: true)
           | map { key, metaList -> postGroupTupleConcat(key, metaList) }
           | branch { meta, vcfs, vcfIndexes ->
               concat: vcfs.size() > 1
@@ -215,7 +215,7 @@ workflow vcf {
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
             | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
-            | groupTuple
+            | groupTuple(remainder: true)
             | map { key, metaList -> 
                 def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
                 [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
