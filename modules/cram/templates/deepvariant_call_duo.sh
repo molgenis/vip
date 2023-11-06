@@ -21,7 +21,7 @@ call_small_variants () {
     # required vcf outputs that won't be used
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutParent}")
-    args+=("--make_examples_extra_args=\"include_med_dp=true\"")
+    args+=("--make_examples_extra_args=include_med_dp=true")
 
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"
