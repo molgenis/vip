@@ -4,6 +4,7 @@ include { nrMappedReads } from '../modules/cram/utils'
 include { expansionhunter_call } from '../modules/cram/expansionhunter'
 include { merge_str_vcf } from '../modules/cram/merge_vcf'
 include { straglr_call } from '../modules/cram/straglr'
+include { validateGroup } from '../modules/utils'
 
 /*
  * Variant calling: short tandem repeats
@@ -53,8 +54,9 @@ workflow str {
     // group by project
     Channel.empty().mix(ch_str_expansionhunter, ch_str_straglr, ch_str.zero_reads, ch_str_by_platform.ignore)
       | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, vcf: vcf]] }
-      | groupTuple
-      | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.vcf }] }
+      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+      | map { key, group -> validateGroup(key, group) }
+      | map { meta, group -> [meta, group.collect { it.vcf }] }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
                     return [meta, vcfs.findAll { it != null }]
