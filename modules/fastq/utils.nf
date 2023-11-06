@@ -10,10 +10,12 @@ def splitPerFastqPaired(meta) {
 }
 
 def splitPerFastqSingle(meta) {
+    def index = 0;
     def meta_per_fastq = [];
     def total = meta.sample.fastq.size();
     for(fastq in meta.sample.fastq){
       meta_per_fastq.add([*:meta, sample: [*:meta.sample, fastq: [data: fastq, total: total, index: index]]])
+      index++;
     }
     return meta_per_fastq;
 }
