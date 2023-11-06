@@ -25,6 +25,7 @@ call_small_variants () {
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutPaternal}")
     args+=("--output_vcf_parent2" "!{vcfOutMaternal}")
+    args+=("--make_examples_extra_args=include_med_dp=true")
 
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"
