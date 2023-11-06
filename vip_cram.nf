@@ -47,7 +47,7 @@ workflow cram {
     // merge outputs of snv, str and sv workflows
     Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv)
       | map { meta, vcf -> [groupKey(meta, nrActivateVariantCallerTypes), vcf] }
-      | groupTuple(remainder: true, sort: true)
+      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
       | map { key, group -> validateGroup(key, group) }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
