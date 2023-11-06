@@ -80,7 +80,8 @@ def scatter(meta) {
 }
 
 def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
-    [groupKey(meta.project.id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
+    // take into account that scatter returns one 'empty' chunk in case of zero 'calculated' chunks
+    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
 }
 
 def postGroupTupleConcat(groupKey, group) {
