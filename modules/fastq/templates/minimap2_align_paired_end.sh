@@ -2,9 +2,11 @@
 set -euo pipefail
 
 align() {
-       local args=()
+    local args=()
     args+=("-t" "!{task.cpus}")
     args+=("-a")
+    # MarkDuplicates uses the LB (= DNA preparation library identifier) field to determine which read groups might contain molecular duplicates, in case the same DNA library was sequenced on multiple lanes.
+    args+=("-R" "@RG\tID:$(basename !{fastqR1})\tPL:!{platform}\tLB:!{sampleId}\tSM:!{sampleId}")
     args+=("-x" "sr")
     if [[ "!{softClipping}" == "true" ]]; then
         args+=("-Y")
@@ -12,10 +14,7 @@ align() {
     args+=("!{referenceMmi}")
     args+=("!{fastqR1}" "!{fastqR2}") 
 
-    ${CMD_MINIMAP2} "${args[@]}" | \
-    ${CMD_SAMTOOLS} fixmate -u -m - - | \
-    ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" - | \
-    ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --write-index - "!{cram}"
+    ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
 }
 
 stats() {
