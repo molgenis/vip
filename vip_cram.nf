@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex } from './modules/utils'
+include { getCramRegex; validateGroup } from './modules/utils'
 include { validate } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
@@ -47,8 +47,8 @@ workflow cram {
     // merge outputs of snv, str and sv workflows
     Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv)
       | map { meta, vcf -> [groupKey(meta, nrActivateVariantCallerTypes), vcf] }
-      | groupTuple
-      | map { key, group -> [key.getGroupTarget(), group] }
+      | groupTuple(remainder: true, sort: true)
+      | map { key, group -> validateGroup(key, group) }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
                     return [meta, vcfs.findAll { it != null } ]
