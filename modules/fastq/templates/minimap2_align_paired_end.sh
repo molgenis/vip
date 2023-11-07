@@ -14,7 +14,10 @@ align() {
     args+=("!{referenceMmi}")
     args+=("!{fastqR1}" "!{fastqR2}") 
 
-    ${CMD_MINIMAP2} "${args[@]}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
+    ${CMD_MINIMAP2} "${args[@]}" | \
+    ${CMD_SAMTOOLS} fixmate --no-PG -u -m -@ "!{task.cpus}" - - | \
+    #position sort for markdup
+    ${CMD_SAMTOOLS} sort --no-PG -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
 }
 
 stats() {
