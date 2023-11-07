@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-base_url="ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data"
+base_url="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data"
 
 declare -A files=()
 files["${base_url}/AshkenazimTrio/HG002_NA24385_son/PacBio_CCS_15kb_20kb_chemistry2/GRCh38/HG002.SequelII.merged_15kb_20kb.pbmm2.GRCh38.haplotag.10x.bam"]="d303b337a2e9ffedef0f2ad894078ac6"

@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-base_url="ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data"
+base_url="https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data"
 
 declare -A files=()
 files["${base_url}/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001_trimmed.fastq.gz"]="9195dceb8b97564915b9a67c8b8a5271"
@@ -20,13 +20,13 @@ for i in "${!files[@]}"; do
   download "${i}" "${files[$i]}" "${TEST_RESOURCES_DIR}/downloads"
 done
 
-vip "${args[@]}" 1> /dev/null
-
 args=()
 args+=("--workflow" "fastq")
 args+=("--input" "${TEST_RESOURCES_DIR}/NA12878_illumina_hiseq_exome.tsv")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
+
+vip "${args[@]}" 1> /dev/null
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
