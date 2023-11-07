@@ -5,7 +5,11 @@ merge(){
     IFS=' ' read -a cram_array <<< "!{crams}";
     if [ ${#cram_array} -gt 1 ]
     then
-        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "!{cramOut}" --write-index !{crams}
+        for cram in "${cram_array[@]}"
+        do
+            echo "$cram" >> crams.txt
+        done
+        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "!{cramOut}" -b crams.txt --write-index !{crams}
     fi
 }
 
