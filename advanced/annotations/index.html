@@ -102,6 +102,8 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#alphscore">AlphScore</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#ncer">ncER</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -513,6 +515,12 @@ check the output file headers for the complete overview. Similarly, some annotat
 <td>The difference in motif score of the reference and variant sequences for the TFBP</td>
 </tr>
 <tr>
+<td>INFO/CSQ/ncER</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td><a href="https://www.nature.com/articles/s41467-019-13212-3">The non-coding essential regulation (ncER)</a> score indicates if a region is likely to be essential in terms of regulation.</td>
+</tr>
+<tr>
 <td>INFO/CSQ/PHENO</td>
 <td>integer list</td>
 <td>VEP</td>
@@ -717,6 +725,9 @@ check the output file headers for the complete overview. Similarly, some annotat
 <h4 id="alphscore">AlphScore<a class="headerlink" href="#alphscore" title="Permanent link">¶</a></h4>
 <p><a href="https://doi.org/10.5281/zenodo.6288138">AlphScore</a> is a method to predict the pathogenicity of missense variants using features derived from AlphaFold2.</p>
 <p>We add the available precomputed scores of AlphScore using a custom VEP plugin.</p>
+<h4 id="ncer">ncER<a class="headerlink" href="#ncer" title="Permanent link">¶</a></h4>
+<p><a href="https://www.nature.com/articles/s41467-019-13212-3">The non-coding essential regulation (ncER)</a> score indicates if a region is likely to be essential in terms of regulation.
+The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on Zenodo: https://zenodo.org/records/5636163</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
