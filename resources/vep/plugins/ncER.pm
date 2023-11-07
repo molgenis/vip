@@ -50,7 +50,11 @@ sub get_header_info {
 
 sub getScore {
   my $chr = $_[0];
-  my $pos = $_[1];
+  my $one_based_pos = $_[1];
+
+  #VEP is 1 based, bed 0 based -> correct the pos for that
+  my $pos = $one_based_pos - 1;
+  die "ERROR: Encountered a negative zero-based position" unless $pos >= 0;
 
   # get candidate annotations from precomputed scores file
   my @data = @{$self->get_data($chr, $pos, $pos)};
