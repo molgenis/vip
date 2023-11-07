@@ -155,8 +155,8 @@
 <h3 id="variant-consequences-samples">Variant-consequences (samples)<a class="headerlink" href="#variant-consequences-samples" title="Permanent link">¶</a></h3>
 <p>The default decision tree to classify variant-consequences in the context of samples works as follows:</p>
 <ol>
-<li>Each variant-consequence-sample is classified as <code>OK</code>, <code>LQ</code> (low quality), <code>HR</code> (homozygous reference) or <code>MV</code> (mendelian violation)</li>
-<li>Variant-consequences classified as <code>LQ</code> or <code>HR</code> for all samples are removed</li>
+<li>Each variant-consequence-sample is classified as <code>U1</code> (usable: probably), <code>U2</code> (usable: maybe) and <code>U3</code> (usable: probably not)</li>
+<li>Variant-consequences classified as <code>U3</code> for all samples are removed</li>
 </ol>
 <p><img alt="Default variant-sample classification tree" src="../../img/sample_decision_tree.png"/></p>
 <p><em>Above: default variant sample classification tree</em></p>
