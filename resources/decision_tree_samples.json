@@ -1,25 +1,38 @@
 {
-  "rootNode": "HR",
+  "rootNode": "gt",
   "nodes": {
-    "HR": {
-      "description": "Homozygous reference call",
-      "type": "BOOL",
-      "query": {
-        "field": "FORMAT/GENOTYPE/TYPE",
-        "operator": "==",
-        "value": "HOM_REF"
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_hr"
-      },
-      "outcomeFalse": {
-        "nextNode": "GQ"
+    "gt": {
+      "description": "Genotype",
+      "type": "CATEGORICAL",
+      "field": "FORMAT/GENOTYPE/TYPE",
+      "outcomeMap": {
+        "HET": {
+          "nextNode": "gq"
+        },
+        "HOM_REF": {
+          "nextNode": "exit_u3"
+        },
+        "HOM_VAR": {
+          "nextNode": "gq"
+        },
+        "MIXED": {
+          "nextNode": "gq"
+        },
+        "NO_CALL": {
+          "nextNode": "exit_u3"
+        },
+        "UNAVAILABLE": {
+          "nextNode": "exit_u3"
+        }
       },
       "outcomeMissing": {
-        "nextNode": "GQ"
+        "nextNode": "gq"
+      },
+      "outcomeDefault": {
+        "nextNode": "gq"
       }
     },
-    "GQ": {
+    "gq": {
       "type": "BOOL",
       "description": "Genotype quality",
       "query": {
@@ -28,16 +41,16 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "DP"
+        "nextNode": "dp"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lq"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "DP"
+        "nextNode": "dp"
       }
     },
-    "DP": {
+    "dp": {
       "type": "BOOL",
       "description": "Sequencing depth",
       "query": {
@@ -46,16 +59,16 @@
         "value": 10
       },
       "outcomeTrue": {
-        "nextNode": "VIM"
+        "nextNode": "vim"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lq"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "VIM"
+        "nextNode": "vim"
       }
     },
-    "VIM": {
+    "vim": {
       "type": "BOOL",
       "description": "Inheritance match",
       "query": {
@@ -64,16 +77,16 @@
         "value": 1
       },
       "outcomeTrue": {
-        "nextNode": "exit_ok"
+        "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "VID"
+        "nextNode": "vid"
       },
       "outcomeMissing": {
-        "nextNode": "exit_ok"
+        "nextNode": "exit_u2"
       }
     },
-    "VID": {
+    "vid": {
       "type": "BOOL",
       "description": "Inheritance denovo",
       "query": {
@@ -82,34 +95,29 @@
         "value": 1
       },
       "outcomeTrue": {
-        "nextNode": "exit_ok"
+        "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "exit_mv"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "exit_ok"
+        "nextNode": "exit_u2"
       }
     },
-    "exit_hr": {
-      "description": "Homozygous reference call",
+    "exit_u1": {
+      "description": "Usable: probably",
       "type": "LEAF",
-      "class": "HR"
+      "class": "U1"
     },
-    "exit_lq": {
-      "description": "Low quality",
+    "exit_u2": {
+      "description": "Usable: maybe",
       "type": "LEAF",
-      "class": "LQ"
+      "class": "U2"
     },
-    "exit_mv": {
-      "description": "Mendelian violation",
+    "exit_u3": {
+      "description": "Usable: probably not",
       "type": "LEAF",
-      "class": "MV"
-    },
-    "exit_ok": {
-      "description": "Ok",
-      "type": "LEAF",
-      "class": "OK"
+      "class": "U3"
     }
   }
 }
