@@ -9,7 +9,7 @@ merge(){
         do
             echo "$cram" >> crams.txt
         done
-        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "!{cramOut}" -b crams.txt --write-index !{crams}
+        ${CMD_SAMTOOLS} merge -@ "!{task.cpus}" -o "!{cramOut}" -b crams.txt --write-index
     fi
 }
 
