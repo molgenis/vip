@@ -3,8 +3,8 @@ set -euo pipefail
 
 args=()
 args+=("--workflow" "vcf")
-args+=("--input" "${TEST_RESOURCES_DIR}/snv_proband_trio.tsv")
-args+=("--config" "${TEST_RESOURCES_DIR}/snv_proband_trio.cfg")
+args+=("--input" "${TEST_RESOURCES_DIR}/trio.tsv")
+args+=("--config" "${TEST_RESOURCES_DIR}/trio.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 

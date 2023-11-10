@@ -1,6 +1,4 @@
 Files for the genes file are donwloaded here:
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.25_GRCh37.p13/
-and
 https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/
 
 These versions are bases on the refseq version of VEP.
@@ -10,7 +8,3 @@ Step by step:
 2) map the contig identifiers to the versions used in our data:
 python ./utils/mapContigIdentifiers.py path/to/input/gff.gz path/to/assembly_report path/to/output/gff.gz
 3) download https://downloads.molgeniscloud.org/downloads/vip_dev/images/crossmap-0.6.5.sif
-4) liftover build 37 version to the "g1k" build used by VIP by default:
-apptainer exec crossmap-0.6.5.sif CrossMap.py gff utils/Hg19toHumanG1kV37.chain input.gff.gz output.gff
-5) gzip the
-gzip
