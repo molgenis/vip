@@ -1,7 +1,7 @@
 # Requirements
 Before installing VIP please check whether your system meets the following requirements:
 
-- [POSIX compatible system](https://en.wikipedia.org/wiki/POSIX#POSIX-oriented_operating_systems) (e.g. Linux, macOS, [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) with x86_64 architecture (AArch64 not supported)
+- [GNU-based Linux](https://en.wikipedia.org/wiki/Linux_distribution#Widely_used_GNU-based_or_GNU-compatible_distributions) (e.g. Ubuntu, [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) with [x86_64](https://en.wikipedia.org/wiki/X86-64) architecture
 - Bash ≥ 3.2
 - Java ≥ 11
 - [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages) (setuid installation)
