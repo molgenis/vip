@@ -45,7 +45,7 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     assembly: [
       type: "string",
       default: { 'GRCh38' },
-      enum: ['GRCh37', 'GRCh38'],
+      enum: ['GRCh38'],
       scope: "project"
     ],
     sequencing_method: [
