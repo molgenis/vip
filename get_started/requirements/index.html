@@ -131,10 +131,9 @@
 <li>Java ≥ 11</li>
 <li><a href="https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages">Apptainer</a> (setuid installation)</li>
 <li>8GB RAM <sup>1</sup></li>
-<li>200-400GB disk space <sup>2</sup></li>
+<li>150GB disk space</li>
 </ul>
 <p>1) The memory requirements differ per workflow and depend, on the size of your input data, the scheduler that you use, the amount of parallelization. For example, executing VIP using a job scheduler will reduce the memory requirements on the system submitting the jobs to 1-2GB.</p>
-<p>2) The disk space requirements are determined by the installation options, for more details see <a href="../installation/">here</a>. Installing VIP for only GRCh37 or only for GRCh38 will cut down requirements roughly by 50%.</p>
 <h2 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">¶</a></h2>
 <p>VIP auto-detects whether <a href="https://slurm.schedmd.com/overview.html">Slurm</a> is available on the system and, if available, will schedule its jobs with Slurm. Otherwise, the jobs will be submitted on the local system. </p>
 </div>

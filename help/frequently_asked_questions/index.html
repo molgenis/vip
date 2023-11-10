@@ -134,7 +134,6 @@
 <p>VIP filters your input variants using classification trees for variant-effect and variant-sample combinations.
 Usually if your report doesn't contain any records this implies that they were filtered out based on these trees.   </p>
 <p>Inspect the <code>_classifications.vcf.gz</code> files in the <code>intermediates</code> output folder to determine why a variant record was removed.  </p>
-<p>The default VIP classification tree and class filter removes variants on the 'non-standard' contigs. For GRCh37 this implies [1-22,X,Y,MT]. The hg19 GRCh37 reference sequence uses different contigs identifiers which will result in filtering out of all records. In this case you should provide your own classification tree with the correct contig identifiers.</p>
 <h2 id="why-does-vip-fail-with-an-unexpected-error-invocationtargetexception">Why does VIP fail with an <code>Unexpected Error [InvocationTargetException]</code>?<a class="headerlink" href="#why-does-vip-fail-with-an-unexpected-error-invocationtargetexception" title="Permanent link">¶</a></h2>
 <p>This issue can mean a number of things, check the <code>.nxf.log</code> for more details.
 One of the causes is a mismatch between the reference genome that was used to call the variants in your .vcf file and the reference genome used by VIP.
