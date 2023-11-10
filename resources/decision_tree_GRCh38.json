@@ -176,10 +176,50 @@
       "type": "EXISTS",
       "field": "INFO/SVTYPE",
       "outcomeTrue": {
-        "nextNode": "annotSV"
+        "nextNode": "str"
       },
       "outcomeFalse": {
         "nextNode": "spliceAI"
+      }
+    },
+    "str": {
+      "description": "Short tandem repeat?",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/SVTYPE",
+        "operator": "==",
+        "value": "STR"
+      },
+      "outcomeTrue": {
+        "nextNode": "str_status"
+      },
+      "outcomeFalse": {
+        "nextNode": "annotSV"
+      },
+      "outcomeMissing": {
+        "nextNode": "annotSV"
+      }
+    },
+    "str_status": {
+      "description": "Stranger str status (normal, pre_mutation, mutation)",
+      "type": "CATEGORICAL",
+      "field": "INFO/CSQ/ASV_ACMG_class",
+      "outcomeMap": {
+        "full_mutation": {
+          "nextNode": "exit_p"
+        },
+        "pre_mutation": {
+          "nextNode": "exit_vus"
+        },
+        "normal": {
+          "nextNode": "annotSV"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "annotSV"
+      },
+      "outcomeDefault": {
+        "nextNode": "annotSV"
       }
     },
     "gnomAD": {
