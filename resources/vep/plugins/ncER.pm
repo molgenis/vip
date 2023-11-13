@@ -38,6 +38,10 @@ sub new {
   return $self;
 }
 
+sub variant_feature_types {
+  return [ 'VariationFeature', 'StructuralVariationFeature' ];
+}
+
 sub feature_types {
   return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
