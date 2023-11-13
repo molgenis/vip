@@ -60,7 +60,7 @@ workflow sv {
     // group by project
     Channel.empty().mix(ch_sv_cutesv, ch_sv.zero_reads, ch_sv_by_platform.ignore)
       | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, vcf: vcf]] }
-      | groupTuple
+      | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
       | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], group.sort { left, right -> left.sample.index <=> right.sample.index }.collect { it.vcf }] }
       | branch { meta, vcfs ->
