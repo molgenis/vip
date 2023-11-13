@@ -206,20 +206,20 @@
       "field": "INFO/STR_STATUS",
       "outcomeMap": {
         "full_mutation": {
-          "nextNode": "exit_p"
+          "nextNode": "exit_lp"
         },
         "pre_mutation": {
           "nextNode": "exit_vus"
         },
         "normal": {
-          "nextNode": "annotSV"
+          "nextNode": "exit_lb"
         }
       },
       "outcomeMissing": {
-        "nextNode": "annotSV"
+        "nextNode": "exit_vus"
       },
       "outcomeDefault": {
-        "nextNode": "annotSV"
+        "nextNode": "exit_vus"
       }
     },
     "gnomAD": {
