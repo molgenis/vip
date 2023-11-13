@@ -203,7 +203,7 @@
     "str_status": {
       "description": "Stranger str status (normal, pre_mutation, mutation)",
       "type": "CATEGORICAL",
-      "field": "INFO/CSQ/ASV_ACMG_class",
+      "field": "INFO/STR_STATUS",
       "outcomeMap": {
         "full_mutation": {
           "nextNode": "exit_p"
