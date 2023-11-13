@@ -6,7 +6,7 @@ Features include:
 - Produces stand-alone variant interpretation HTML report with integrated genome browser  
 - Long-read sequencing support (Oxford Nanopore, PacBio HiFi)
 - Short-read sequencing support (Illumina, both single and paired-end reads)
-- Supports GRCh37 and GRCh38
+- Supports GRCh38
 - Short variant detection
 - Structural variant detection
 - Short tandem repeat detection

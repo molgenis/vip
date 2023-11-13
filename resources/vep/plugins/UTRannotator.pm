@@ -20,7 +20,7 @@ limitations under the License.
  UTRannotator
 =head1 SYNOPSIS
  mv UTRannotator/* $HOME/.vep/Plugins
- vep -i variations.vcf --tab --plugin UTRannotator,/path/to/uORF_starts_ends_GRCh37_PUBLIC.txt
+ vep -i variations.vcf --tab --plugin UTRannotator,/path/to/uORF_starts_ends_GRCh38_PUBLIC.txt
 =head1 DESCRIPTION
  A VEP plugin that annotates the effect of 5' UTR variant especially for variant creating/disrupting upstream ORFs
  Please cite Whiffin et al. Characterising the loss-of-function impact of 5' untranslated region variants in whole genome sequence data from 15,708 individuals. bioRxiv (2019)
@@ -69,7 +69,7 @@ sub new {
 			$self->{uORF_evidence} = \%uORF_evidence;
 		}
 		else {
-			printf "Warning: small ORF file not found. For human, you could use our curated list of uORFs(from sorf.org) at the repository: 'uORF_starts_ends_GRCh37_PUBLIC.txt' for GRCh37 or 'uORF_starts_ends_GRCh38_PUBLIC.txt' for GRCh38\n";
+			printf "Warning: small ORF file not found. For human, you could use our curated list of uORFs(from sorf.org) at the repository: 'uORF_starts_ends_GRCh38_PUBLIC.txt' for GRCh38\n";
 		}
 	}
 	return $self;

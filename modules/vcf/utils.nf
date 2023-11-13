@@ -1,4 +1,4 @@
-include { parseFastaIndex } from '../utils'
+include { parseFastaIndex; validateGroup } from '../utils'
 
 def basename(meta) {
   return meta.chunk && meta.chunk.total > 1 ? "${meta.project.id}_chunk_${meta.chunk.index}" : meta.project.id
@@ -80,10 +80,15 @@ def scatter(meta) {
 }
 
 def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
-    [groupKey(meta.project.id, meta.chunk.total), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
+    // take into account that scatter returns one 'empty' chunk in case of zero 'calculated' chunks
+    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
 }
 
-def postGroupTupleConcat(key, metaList) {
+def postGroupTupleConcat(groupKey, group) {
+  def validatedKeyGroup = validateGroup(groupKey, group)
+  def key = validatedKeyGroup[0]
+  def metaList = validatedKeyGroup[1]
+
   def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
   def meta, vcfs, vcfIndexes
   if(filteredMetaList.size() == 0) {

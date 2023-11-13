@@ -15,6 +15,7 @@ call_small_variants () {
     args+=("--regions" "!{bed}")
     args+=("--intermediate_results_dir" "intermediate_results")
     args+=("--sample_name" "!{sampleName}")
+    args+=("--make_examples_extra_args=include_med_dp=true")
 
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT} "${args[@]}"

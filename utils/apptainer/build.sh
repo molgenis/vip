@@ -92,9 +92,9 @@ main() {
   images+=("samtools-1.17-patch1")
   images+=("stranger-0.8.1")
   images+=("straglr-philres-1.4.2")
-  images+=("vcf-decision-tree-3.7.0")
-  images+=("vcf-inheritance-matcher-2.1.8")
-  images+=("vcf-report-5.6.1")
+  images+=("vcf-decision-tree-3.8.0")
+  images+=("vcf-inheritance-matcher-2.1.9")
+  images+=("vcf-report-5.7.0")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
@@ -104,7 +104,8 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
-  uris["docker://google/deepvariant:1.5.0"]="deepvariant-1.5.0"
+  uris["docker://google/deepvariant:1.6.0"]="deepvariant-1.6.0"
+  uris["docker://google/deepvariant:deeptrio-1.6.0"]="deepvariant_deeptrio-1.6.0"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

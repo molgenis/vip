@@ -7,7 +7,7 @@ usage() {
   echo -e "usage: ${SCRIPT_NAME} -i <arg> -o <arg> -a <arg> [-t <arg>]
   -i, --input      <arg>    ClinVar .vcf.gz file from https://www.ncbi.nlm.nih.gov/clinvar/
   -o, --output     <arg>    ClinVar .tsv.gz file with '#[1]CHROM', '[2]POS', '[3]ID', '[4]REF', '[5]ALT', '[6]CLNSIG', '[7]CLNSIGINCL', '[8]CLNREVSTAT' columns
-  -a, --assembly   <arg>    Desired assembly of the output file [GRCh37, GRCh38]
+  -a, --assembly   <arg>    Desired assembly of the output file [GRCh38]
   -h, --help                Print this message and exit"
 }
 
@@ -16,18 +16,12 @@ strip() {
   local -r output="${2}"
   local -r assembly="${3}"
 
-  if [[ "${assembly}" == "GRCh37" ]]; then
-    bcftools query --print-header --format '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/CLNSIG\t%INFO/CLNSIGINCL\t%INFO/CLNREVSTAT\n' "${input}" |\
-      bgzip --stdout --compress-level 9 --threads 8 > "${output}"
-    tabix	"${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
-  else
-    echo -e "1 chr1\n2 chr2\n3 chr3\n4 chr4\n5 chr5\n6 chr6\n7 chr7\n8 chr8\n9 chr9\n10 chr10\n11 chr11\n12 chr12\n13 chr13\n14 chr14\n15 chr15\n16 chr16\n17 chr17\n18 chr18\n19 chr19\n20 chr20\n21 chr21\n22 chr22\nX chrX\nY chrY\nMT chrM\n" > "chr_mapping.tmp"
-    bcftools annotate --rename-chrs chr_mapping.tmp --no-version --threads 8 "${input}" |\
-    bcftools query --print-header --format '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/CLNSIG\t%INFO/CLNSIGINCL\t%INFO/CLNREVSTAT\n' |\
-      bgzip --stdout --compress-level 9 --threads 8 > "${output}"
-    tabix	"${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
-    rm "chr_mapping.tmp"
-  fi
+  echo -e "1 chr1\n2 chr2\n3 chr3\n4 chr4\n5 chr5\n6 chr6\n7 chr7\n8 chr8\n9 chr9\n10 chr10\n11 chr11\n12 chr12\n13 chr13\n14 chr14\n15 chr15\n16 chr16\n17 chr17\n18 chr18\n19 chr19\n20 chr20\n21 chr21\n22 chr22\nX chrX\nY chrY\nMT chrM\n" > "chr_mapping.tmp"
+  bcftools annotate --rename-chrs chr_mapping.tmp --no-version --threads 8 "${input}" |\
+  bcftools query --print-header --format '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/CLNSIG\t%INFO/CLNSIGINCL\t%INFO/CLNREVSTAT\n' |\
+    bgzip --stdout --compress-level 9 --threads 8 > "${output}"
+  tabix	"${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
+  rm "chr_mapping.tmp"
 }
 
 validate() {
@@ -66,8 +60,8 @@ validate() {
     usage
     exit 1
   fi
-  if [[ "${assembly}" != "GRCh37" ]] && [[ "${assembly}" != "GRCh38" ]]; then
-    echo -e "invalid assembly value '${assembly}'. valid values are GRCh37, GRCh38."
+  if [[ "${assembly}" != "GRCh38" ]]; then
+    echo -e "invalid assembly value '${assembly}'. valid values are GRCh38."
     exit 1
   fi
 

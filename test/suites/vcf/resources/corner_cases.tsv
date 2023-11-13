@@ -1,2 +1,2 @@
-individual_id	assembly	vcf
-SAMPLE0	GRCh37	corner_cases.vcf
+individual_id	vcf
+SAMPLE0	corner_cases.vcf

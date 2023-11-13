@@ -7,7 +7,7 @@ usage() {
   echo -e "usage: ${SCRIPT_NAME} -i <arg> -o <arg> -a <arg> [-t <arg>]
   -i, --input      <arg>    AlphScore .tsv.gz file from https://doi.org/10.5281/zenodo.8283349
   -o, --output     <arg>    AlphScore .tsv.gz file with '#chr', 'pos(1-based)', 'ref', 'alt', 'hg19_chr', 'hg19_pos(1-based)' and 'AlphScore' columns
-  -a, --assembly   <arg>    Desired assembly of the output file [GRCh37, GRCh38]
+  -a, --assembly   <arg>    Desired assembly of the output file [GRCh38]
   -h, --help                Print this message and exit"
 }
 
@@ -23,18 +23,9 @@ strip() {
   local -r output="${2}"
   local -r assembly="${3}"
 
-  if [[ "${assembly}" == "GRCh37" ]]; then
-    # remove records with missing chromosome or position for GRCh37
-    # file is sorted on GRCh38, so we need to sort on GRCh37
-    zcat "${input}" | \
-      awk 'BEGIN { FS="\t"; OFS="\t" } NR==1 { printf "%s\t%s\t%s\t%s\t%s\n", $8, $9, $3, $4, $23 } NR>1 { if ($8!="NA" && $9!="NA") printf "%s\t%s\t%s\t%s\t%0.3f\n", $8, $9, $3, $4, $23 }' | \
-      body sort --field-separator=$'\t' --key=1,1 --key=2,2n --parallel=8 | \
-      bgzip --compress-level 9 --stdout --threads 8 > "${output}"
-  else
-    zcat "${input}" | \
+  zcat "${input}" | \
       awk 'BEGIN { FS="\t"; OFS="\t" } NR==1 { printf "%s\t%s\t%s\t%s\t%s\n", $1, $2, $3, $4, $23 } NR>1 { printf "%s\t%s\t%s\t%s\t%0.3f\n", $1, $2, $3, $4, $23 }' | \
       bgzip --compress-level 9 --stdout --threads 8 > "${output}"
-  fi
 
   tabix "${output}" -b 2 -e 2 -s 1 -S 1
 }
@@ -114,8 +105,8 @@ validate() {
     usage
     exit 1
   fi
-  if [[ "${assembly}" != "GRCh37" ]] && [[ "${assembly}" != "GRCh38" ]]; then
-    echo -e "invalid assembly value '${assembly}'. valid values are GRCh37, GRCh38."
+  if [[ "${assembly}" != "GRCh38" ]]; then
+    echo -e "invalid assembly value '${assembly}'. valid values are GRCh38."
     exit 1
   fi
 

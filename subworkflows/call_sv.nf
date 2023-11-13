@@ -4,6 +4,7 @@ include { nrMappedReads } from '../modules/cram/utils'
 include { cutesv_call } from '../modules/cram/cutesv'
 include { manta_joint_call } from '../modules/cram/manta'
 include { merge_sv_vcf } from '../modules/cram/merge_vcf'
+include { validateGroup } from '../modules/utils'
 
 /*
  * Variant calling: structural variants
@@ -29,6 +30,7 @@ workflow sv {
       | branch { meta ->
           cutesv: meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi'
                   return meta
+          // manta requires paired-end reads but we can't detect whether that is the case when starting with the cram workflow
           manta:  meta.project.sequencing_platform == 'illumina'
                   return meta
           ignore: true
@@ -47,8 +49,9 @@ workflow sv {
     ch_sv_by_platform.manta
       | map { meta -> [meta, [data: meta.sample.cram.data, index: meta.sample.cram.index]] }
       | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, cram: cram]] }
-      | groupTuple
-      | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.cram }] }
+      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+      | map { key, group -> validateGroup(key, group) }
+      | map { meta, group -> [meta, group.collect { it.cram }] }
       | map { meta, crams -> [meta, crams.collect { it.data }, crams.collect { it.index }] }
       | manta_joint_call
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }

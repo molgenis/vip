@@ -11,7 +11,7 @@ In order to end up with a small list of candidate variant records for interpreta
 The following sections describe the default variant filtration strategies and how to customize classification and filtration.
 
 ## Default
-VIP contains default filtration strategies for variant-consequences (GRCh37 and GRCh38) as well as variant-consequences in the context of samples. 
+VIP contains default filtration strategies for variant-consequences as well as variant-consequences in the context of samples. 
 
 ### Variant-consequences
 The default decision tree to classify variant-consequences works as follows:
@@ -26,8 +26,8 @@ The default decision tree to classify variant-consequences works as follows:
 ### Variant-consequences (samples)
 The default decision tree to classify variant-consequences in the context of samples works as follows:
 
-1. Each variant-consequence-sample is classified as `OK`, `LQ` (low quality), `HR` (homozygous reference) or `MV` (mendelian violation)
-2. Variant-consequences classified as `LQ` or `HR` for all samples are removed
+1. Each variant-consequence-sample is classified as `U1` (usable: probably), `U2` (usable: maybe) and `U3` (usable: probably not)
+2. Variant-consequences classified as `U3` for all samples are removed
  
 ![Default variant-sample classification tree](../img/sample_decision_tree.png)
 
@@ -36,10 +36,8 @@ The default decision tree to classify variant-consequences in the context of sam
 ## Customization
 The default variant filtration strategy can be customized using the following parameters (see [here](../usage/config.md#parameters)):
 
-- `vcf.classify.GRCh37.decision_tree`
 - `vcf.classify.GRCh38.decision_tree`
 - `vcf.filter.classes`
-- `vcf.classify_samples.GRCh37.decision_tree`
 - `vcf.classify_samples.GRCh38.decision_tree`
 - `vcf.filter_samples.classes`
 

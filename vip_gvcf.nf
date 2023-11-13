@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate } from './modules/gvcf/validate'
-include { scatter } from './modules/utils'
+include { scatter; validateGroup } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 
@@ -20,8 +20,8 @@ workflow gvcf {
     // joint variant calling per project, per chunk
     ch_inputs_scattered
       | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
-      | groupTuple
-      | map { key, group -> [key.getGroupTarget(), group.sort { it.index } ] }
+      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+      | map { key, group -> validateGroup(key, group) }
       | map { meta, samples -> [meta, samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
       | merge
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
