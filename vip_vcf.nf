@@ -237,8 +237,8 @@ workflow {
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     | set { ch_sample }
 
-  // validate sample crams
-  ch_sample
+    // validate sample crams
+    ch_sample
     | branch{ meta ->
               validate: meta.sample.cram != null
               ready: true
