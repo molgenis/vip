@@ -19,12 +19,12 @@ sub version {
     return '0.2';
 }
 
-sub feature_types {
-    return ['Transcript'];
+sub variant_feature_types {
+  return [ 'VariationFeature', 'StructuralVariationFeature' ];
 }
 
-sub variant_feature_types {
-    return ['VariationFeature'];
+sub feature_types {
+  return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 sub get_header_info {
