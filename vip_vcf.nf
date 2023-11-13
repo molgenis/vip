@@ -2,8 +2,9 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getVcfRegex } from './modules/utils'
+include { getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
 include { validate } from './modules/vcf/validate'
+include { validateCram } from './modules/cram/validate'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -24,7 +25,7 @@ workflow vcf {
     take: meta
     main:
       meta
-        | branch { meta ->
+                | branch { meta ->
               run: !getProbandHpoIds(meta.project.samples).join(",").isEmpty() && areProbandHpoIdsIndentical(meta.project.samples)
               skip: true
         }
@@ -211,7 +212,7 @@ workflow vcf {
 
         ch_output.slice
             | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram] }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram.data] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
             | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
@@ -232,9 +233,29 @@ workflow {
   def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
 
-  // validate project vcfs
   Channel.from(projects)
-    | map { project -> [[project: project], project.vcf] }
+    | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
+    | set { ch_sample }
+
+  // validate sample crams
+  ch_sample
+    | branch{ meta ->
+              validate: meta.sample.cram != null
+              ready: true
+      }
+    | set { ch_sample_cram }
+
+    ch_sample_cram.validate
+    | map { meta -> [meta, meta.sample.cram] }
+    | validateCram
+    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+    | set { ch_cram_validated }
+   
+   ch_cram_validated.mix(ch_sample_cram.ready)
+    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample]] }
+    | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], meta.project.vcf] }
     | validate
     | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
     | set { ch_vcf_validated }
