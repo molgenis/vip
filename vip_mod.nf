@@ -26,7 +26,6 @@ process dorado {
 
 workflow {
   Channel.of(params.in) | dorado
-  samtools 
 }
 
 
