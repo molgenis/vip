@@ -19,7 +19,7 @@ concat () {
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
+  ${CMD_BCFTOOLS} norm --rm-dup all "unsorted_!{vcfOut}" | ${CMD_BCFTOOLS} sort --output-type z --output "!{vcfOut}"
 }
 
 index () {
