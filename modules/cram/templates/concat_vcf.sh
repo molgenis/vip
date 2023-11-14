@@ -19,7 +19,7 @@ concat () {
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} norm --rm-dup all "unsorted_!{vcfOut}" | ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{vcfOut}" --write-index -
+  ${CMD_BCFTOOLS} norm --rm-dup all "unsorted_!{vcfOut}" | ${CMD_BCFTOOLS} sort --output-type z --output "!{vcfOut}"
 }
 
 index () {
