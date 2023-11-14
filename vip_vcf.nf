@@ -25,7 +25,7 @@ workflow vcf {
     take: meta
     main:
       meta
-                | branch { meta ->
+        | branch { meta ->
               run: !getProbandHpoIds(meta.project.samples).join(",").isEmpty() && areProbandHpoIdsIndentical(meta.project.samples)
               skip: true
         }
