@@ -17,7 +17,6 @@ workflow sv {
   main:
     // split channel in crams with and without mapped reads
     meta
-      | view { meta -> "SV:"+meta}
       | branch { meta ->
           with_reads: nrMappedReads(meta.sample.cram.stats) > 0
                       return meta
