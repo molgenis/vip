@@ -17,7 +17,7 @@ done
 
 args=()
 args+=("--workflow" "cram")
-args+=("--input" "${TEST_RESOURCES_DIR}/giab_AshkenazimTrio_pacbio_ccs.tsv")
+args+=("--input" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.tsv")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 

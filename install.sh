@@ -6,14 +6,14 @@ SCRIPT_NAME="$(basename "$0")"
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-a <arg>]
-  -a, --assembly   <arg>    Allowed values: GRCh37, GRCh38, ALL (default).
+  -a, --assembly   <arg>    Allowed values: GRCh38, ALL (default).
   -h, --help                Print this message and exit."
 }
 
 validate() {
   local -r assembly="${1}"
-  if [ "${assembly}" != "ALL" ] && [ "${assembly}" != "GRCh37" ] && [ "${assembly}" != "GRCh38" ]; then
-    echo -e "invalid assembly value '${assembly}'. valid values are ALL, GRCh37, GRCh38."
+  if [ "${assembly}" != "ALL" ] && [ "${assembly}" != "GRCh38" ]; then
+    echo -e "invalid assembly value '${assembly}'. valid values are ALL, GRCh38."
     exit 1
   fi
 }
@@ -36,7 +36,7 @@ download() {
 }
 
 download_nextflow() {
-  local -r version="23.04.1"
+  local -r version="23.10.0"
   local -r file="nextflow-${version}-all"
   local -r download_dir="${SCRIPT_DIR}"
 
@@ -51,42 +51,11 @@ download_resources_molgenis() {
   files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
 
-  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    files+=("GRCh37/capice_model_v5.1.1-v1.ubj")
-    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz")
-    files+=("GRCh37/clinvar_20230910_stripped.tsv.gz.tbi")
-    files+=("GRCh37/expansionhunter_variant_catalog.json")
-    files+=("GRCh37/variant_catalog_grch37_fixed.json")
-    files+=("GRCh37/GCF_000001405.25_GRCh37.p13_genomic_g1k.gff.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz")
-    files+=("GRCh37/gnomad.total.r2.1.1.sites.stripped.patch1.tsv.gz.tbi")
-    files+=("GRCh37/GRCh37_ncER_perc.bed.gz")
-    files+=("GRCh37/GRCh37_ncER_perc.bed.gz.tbi")
-    # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
-    files+=("GRCh37/hg19.100way.phyloP100way.bed.gz")
-    files+=("GRCh37/hg19.100way.phyloP100way.bed.gz.tbi")
-    files+=("GRCh37/human_g1k_v37.dict")
-    files+=("GRCh37/human_g1k_v37.fasta.fai")
-    files+=("GRCh37/human_g1k_v37.fasta.gz")
-    files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
-    files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
-    files+=("GRCh37/human_g1k_v37.fasta.gz.mmi")
-    files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz")
-    files+=("GRCh37/spliceai_scores.masked.indel.hg19.vcf.gz.tbi")
-    files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz")
-    files+=("GRCh37/spliceai_scores.masked.snv.hg19.vcf.gz.tbi")
-    files+=("GRCh37/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh37/vkgl_consensus_20230701.tsv")
-    files+=("GRCh37/human_hs37d5.trf.bed")
-    files+=("GRCh37/AlphScore_final_20230825_stripped_GRCh37.tsv.gz")
-    files+=("GRCh37/AlphScore_final_20230825_stripped_GRCh37.tsv.gz.tbi")
-  fi
-
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
     files+=("GRCh38/clinical_repeats.bed")
-    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz")
-    files+=("GRCh38/clinvar_20230910_stripped.tsv.gz.tbi")
+    files+=("GRCh38/clinvar_20231104_stripped.tsv.gz")
+    files+=("GRCh38/clinvar_20231104_stripped.tsv.gz.tbi")
     files+=("GRCh38/expansionhunter_variant_catalog.json")
     files+=("GRCh38/variant_catalog_grch38_fixed.json")
     files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
@@ -108,7 +77,7 @@ download_resources_molgenis() {
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
     files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
     files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh38/vkgl_consensus_20230701.tsv")
+    files+=("GRCh38/vkgl_consensus_20231101.tsv")
     files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
     files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz")
     files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi")
@@ -127,13 +96,6 @@ download_resources_vep() {
   mkdir -p "${vep_dir}"
 
   local vep_files=()
-  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh37" ]; then
-      vep_files+=("homo_sapiens_refseq_vep_109_GRCh37.tar.gz")
-    else
-      echo -e "skipping download vep cache for GRCh37: already exists"
-    fi
-  fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh38" ]; then
       vep_files+=("homo_sapiens_refseq_vep_109_GRCh38.tar.gz")
@@ -203,9 +165,6 @@ download_resources() {
   local -r download_dir="${SCRIPT_DIR}/resources"
   mkdir -p "${download_dir}"
 
-  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    mkdir -p "${download_dir}/GRCh37"
-  fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     mkdir -p "${download_dir}/GRCh38"
   fi
@@ -236,8 +195,8 @@ download_images() {
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.4.2.sif")
   files+=("vcf-decision-tree-3.8.0.sif")
-  files+=("vcf-inheritance-matcher-2.1.8.sif")
-  files+=("vcf-report-5.6.1.sif")
+  files+=("vcf-inheritance-matcher-2.1.9.sif")
+  files+=("vcf-report-5.7.0.sif")
   files+=("vep-109.3.sif")
 
   for file in "${files[@]}"; do
@@ -256,13 +215,6 @@ unzip_reference() {
   local -r assembly="${1}"
   local -r download_dir="${SCRIPT_DIR}/resources"
 
-  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
-    if [ ! -f "${download_dir}/GRCh37/human_g1k_v37.fasta" ]; then
-      gunzip -c "${download_dir}/GRCh37/human_g1k_v37.fasta.gz" > "${download_dir}/GRCh37/human_g1k_v37.fasta"
-    else
-      echo -e "skipping extraction of reference for GRCh37: already exists"
-    fi
-  fi
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
     if [ ! -f "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna" ]; then
       gunzip -c "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz" > "${download_dir}/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"

@@ -6,8 +6,6 @@ Usually if your report doesn't contain any records this implies that they were f
 
 Inspect the `_classifications.vcf.gz` files in the `intermediates` output folder to determine why a variant record was removed.  
 
-The default VIP classification tree and class filter removes variants on the 'non-standard' contigs. For GRCh37 this implies [1-22,X,Y,MT]. The hg19 GRCh37 reference sequence uses different contigs identifiers which will result in filtering out of all records. In this case you should provide your own classification tree with the correct contig identifiers.
-
 ## Why does VIP fail with an `Unexpected Error [InvocationTargetException]`?
 This issue can mean a number of things, check the `.nxf.log` for more details.
 One of the causes is a mismatch between the reference genome that was used to call the variants in your .vcf file and the reference genome used by VIP.

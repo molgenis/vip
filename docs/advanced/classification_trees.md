@@ -11,7 +11,7 @@ In order to end up with a small list of candidate variant records for interpreta
 The following sections describe the default variant filtration strategies and how to customize classification and filtration.
 
 ## Default
-VIP contains default filtration strategies for variant-consequences (GRCh37 and GRCh38) as well as variant-consequences in the context of samples. 
+VIP contains default filtration strategies for variant-consequences as well as variant-consequences in the context of samples. 
 
 ### Variant-consequences
 The default decision tree to classify variant-consequences works as follows:
@@ -36,10 +36,8 @@ The default decision tree to classify variant-consequences in the context of sam
 ## Customization
 The default variant filtration strategy can be customized using the following parameters (see [here](../usage/config.md#parameters)):
 
-- `vcf.classify.GRCh37.decision_tree`
 - `vcf.classify.GRCh38.decision_tree`
 - `vcf.filter.classes`
-- `vcf.classify_samples.GRCh37.decision_tree`
 - `vcf.classify_samples.GRCh38.decision_tree`
 - `vcf.filter_samples.classes`
 
