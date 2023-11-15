@@ -48,10 +48,10 @@ workflow sv {
     // sv calling: manta
     ch_sv_by_platform.manta
       | map { meta -> [meta, [data: meta.sample.cram.data, index: meta.sample.cram.index]] }
-      | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, cram: cram]] }
-      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+      | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram]] }
+      | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
-      | map { meta, group -> [meta, group.collect { it.cram }] }
+      | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], group.collect { it.cram }] }
       | map { meta, crams -> [meta, crams.collect { it.data }, crams.collect { it.index }] }
       | manta_joint_call
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
@@ -59,9 +59,10 @@ workflow sv {
 
     // group by project
     Channel.empty().mix(ch_sv_cutesv, ch_sv.zero_reads, ch_sv_by_platform.ignore)
-      | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [index: meta.sample.index, vcf: vcf]] }
-      | groupTuple
-      | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.vcf }] }
+      | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, vcf: vcf]] }
+      | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
+      | map { key, group -> validateGroup(key, group) }
+      | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], group.collect { it.vcf }] }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
                     return [meta, vcfs.findAll { it != null }]

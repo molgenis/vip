@@ -119,10 +119,10 @@ workflow deepvariant {
 
     // group gvcf chunks by project
     Channel.empty().mix(ch_gvcfs_per_chunk_per_sample_merged, ch_gvcfs_per_chunk_per_sample.single, ch_gvcfs_per_chunk_per_sample.zero)
-      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [sample: meta.sample, gvcf: gvcf]] }
+      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [meta: meta,sample: meta.sample, gvcf: gvcf]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
-      | map { meta, group -> [meta, group.collect{ it.gvcf }] }
+      | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{ it.sample }]], group.collect{ it.gvcf }] }
       | set { ch_gvcfs_per_chunk_per_project }
 
     ch_gvcfs_per_chunk_per_project
