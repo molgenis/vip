@@ -18,6 +18,8 @@
 !/resources/decision_tree_*.json
 /resources/vep/cache
 !/resources/vep/plugins
+!/resources/*.chain
+!/resources/*.chain.gz
 
 # test
 /test/output

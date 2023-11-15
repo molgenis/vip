@@ -3,8 +3,9 @@ nextflow.enable.dsl=2
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
-include { validate } from './modules/vcf/validate'
-include { validateCram } from './modules/cram/validate'
+include { validate as validate_vcf } from './modules/vcf/validate'
+include { liftover as liftover_vcf } from './modules/vcf/liftover'
+include { validate as validate_cram } from './modules/cram/validate'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -18,6 +19,7 @@ include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
 include { gado } from './modules/vcf/gado'
+
 /**
  * input: [project, vcf, chunk (optional), ...]
  */
@@ -233,40 +235,80 @@ workflow {
   def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
 
+  // preprocess vcfs and crams in parallel
   Channel.from(projects)
-    | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
-    | set { ch_sample }
+    | map { project -> [project: project] }
+    | multiMap { it -> vcf: cram: it }
+    | set { ch_project }
 
-    // validate sample crams
-    ch_sample
-    | branch{ meta ->
-              validate: meta.sample.cram != null
-              ready: true
-      }
-    | set { ch_sample_cram }
+  // validate and liftover vcf per project
+	ch_project.vcf
+	  | map { meta -> [meta, meta.project.vcf] }
+	  | validate_vcf
+	  | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+	  | branch { meta, vcf ->
+	      liftover: meta.project.assembly != params.assembly
+	      ready: true
+	    }
+    | set { ch_project_vcf_validated }
 
-    ch_sample_cram.validate
-    | map { meta -> [meta, meta.sample.cram] }
-    | validateCram
-    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
-    | set { ch_cram_validated }
-   
-   ch_cram_validated.mix(ch_sample_cram.ready)
-    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample]] }
+  // liftover vcf
+  ch_project_vcf_validated.liftover
+    | map { meta, vcf -> [meta, vcf.data] }
+    | liftover_vcf
+    | map { meta, vcf, vcfIndex, vcfStats, vcfRejected, vcfIndexRejected, vcfStatsRejected -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+    | set { ch_project_vcf_liftover }
+
+  // merge vcf channels
+  Channel.empty().mix(ch_project_vcf_liftover, ch_project_vcf_validated.ready)
+    | map { meta, vcf -> [meta, [vcf: vcf]] }
+    | set { ch_project_vcf_processed }
+
+  // liftover and validate cram per sample
+	ch_project.cram
+	  | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
+	  | branch { meta ->
+				process: meta.sample.cram != null
+				ready:   true
+                 return [meta, null]
+			}
+	  | set { ch_sample_cram }
+
+  // validate cram
+	ch_sample_cram.process
+	  | map { meta -> [meta, meta.project.assembly, meta.sample.cram] }
+	  | validate_cram
+	  | map { meta, cram, cramIndex, cramStats -> [meta, [data: cram, index: cramIndex, stats: cramStats]] }
+    | set { ch_sample_cram_validated }
+
+  // merge cram channels per project
+  Channel.empty().mix(ch_sample_cram_validated, ch_sample_cram.ready)
+    | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram]] }
     | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], meta.project.vcf] }
-    | validate
-    | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
-    | set { ch_vcf_validated }
+    | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram] }]] }
+    | set { ch_project_cram_processed }
+
+  // merge vcf and cram channels and update project
+	Channel.empty().mix(ch_project_vcf_processed, ch_project_cram_processed)
+    | map { meta, container -> [groupKey(meta, 2), container] }
+    | groupTuple(remainder: true)
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, containers ->
+        def vcf = containers.find { it.vcf != null }.vcf
+        def samples = containers.find { it.samples != null }.samples
+        [*:meta, vcf: vcf, project: [*:meta.project, assembly: params.assembly, samples: samples]]
+      }
+    | set { ch_project_processed }
 
   // run vcf workflow
-  ch_vcf_validated
+  ch_project_processed
     | vcf
 }
 
-def validateVcfParams(assemblies) {
-  validateCommonParams(assemblies)
+def validateVcfParams(inputAssemblies) {
+  validateCommonParams(inputAssemblies)
+  def outputAssemblies = [params.assembly]
   
   // general
   def start = params.vcf.start
@@ -288,7 +330,7 @@ def validateVcfParams(assemblies) {
   def vepPluginInheritance = params.vcf.annotate.vep_plugin_inheritance
   if(!file(vepPluginInheritance).exists() )   exit 1, "parameter 'vcf.annotate.vep_plugin_inheritance' value '${vepPluginInheritance}' does not exist"
 
-  assemblies.each { assembly ->
+  outputAssemblies.each { assembly ->
     def capiceModel = params.vcf.annotate[assembly].capice_model
     if(!file(capiceModel).exists() )   exit 1, "parameter 'vcf.annotate.${assembly}.capiceModel' value '${capiceModel}' does not exist"
     
@@ -315,7 +357,7 @@ def validateVcfParams(assemblies) {
   }
 
   // classify
-  assemblies.each { assembly ->
+  outputAssemblies.each { assembly ->
     def decisionTree = params.vcf.classify[assembly].decision_tree
     if(!file(decisionTree).exists() )   exit 1, "parameter 'vcf.classify.${assembly}.decision_tree' value '${decisionTree}' does not exist"
 
@@ -330,7 +372,7 @@ def validateVcfParams(assemblies) {
   def template = params.vcf.report.template
   if(!template.isEmpty() && !file(template).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
 
-  assemblies.each { assembly ->
+  outputAssemblies.each { assembly ->
     def genes = params.vcf.report[assembly].genes
     if(!file(genes).exists() )   exit 1, "parameter 'vcf.report.${assembly}.genes' value '${genes}' does not exist"
   }
@@ -338,6 +380,12 @@ def validateVcfParams(assemblies) {
 
 def parseSampleSheet(csvFile) {
   def cols = [
+  	assembly: [
+			type: "string",
+			default: { 'GRCh38' },
+			enum: ['GRCh37', 'GRCh38', 'T2T'],
+      scope: "project"
+		],
     vcf: [
       type: "file",
       required: true,
@@ -347,7 +395,20 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
-    ],
+    ]
   ]
-  return parseCommonSampleSheet(csvFile, cols)
+
+  def projects = parseCommonSampleSheet(csvFile, cols)
+  validate(projects)
+  return projects
+}
+
+def validate(projects) {
+  projects.each { project ->
+    project.samples.each { sample ->
+      if ((project.assembly != params.assembly) && (sample.cram != null)) {
+        throw new IllegalArgumentException("line ${sample.index}: 'cram' column must be empty because input assembly '${sample.assembly}' differs from output assembly '${params.assembly}' (liftover not possible).")
+      }
+    }
+  }
 }

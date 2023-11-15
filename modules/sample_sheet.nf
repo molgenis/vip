@@ -42,12 +42,6 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
-    assembly: [
-      type: "string",
-      default: { 'GRCh38' },
-      enum: ['GRCh38'],
-      scope: "project"
-    ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },
@@ -264,5 +258,5 @@ def parseProjects(samples, cols) {
 }
 
 def getAssemblies(projects) {
-  projects.collect(project -> project.assembly).unique()
+  projects.collect(project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly }).flatten().unique()
 }

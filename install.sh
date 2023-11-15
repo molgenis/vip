@@ -12,8 +12,8 @@ usage() {
 
 validate() {
   local -r assembly="${1}"
-  if [ "${assembly}" != "ALL" ] && [ "${assembly}" != "GRCh38" ]; then
-    echo -e "invalid assembly value '${assembly}'. valid values are ALL, GRCh38."
+  if [ "${assembly}" != "ALL" ] && [ "${assembly}" != "GRCh37" ] && [ "${assembly}" != "GRCh38" ]; then
+    echo -e "invalid assembly value '${assembly}'. valid values are ALL, GRCh37, GRCh38."
     exit 1
   fi
 }
@@ -51,37 +51,41 @@ download_resources_molgenis() {
   files+=("hpo_20230822.tsv")
   files+=("inheritance_20230608.tsv")
 
-  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh38" ]; then
-    files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
-    files+=("GRCh38/clinical_repeats.bed")
-    files+=("GRCh38/clinvar_20231104_stripped.tsv.gz")
-    files+=("GRCh38/clinvar_20231104_stripped.tsv.gz.tbi")
-    files+=("GRCh38/expansionhunter_variant_catalog.json")
-    files+=("GRCh38/variant_catalog_grch38_fixed.json")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
-    files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
-    files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
-    files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
-    files+=("GRCh38/GRCh38_ncER_perc.bed.gz")
-    files+=("GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
-    # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
-    files+=("GRCh38/hg38.phyloP100way.bed.gz")
-    files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
-    files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
-    files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
-    files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
-    files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
-    files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
-    files+=("GRCh38/vkgl_consensus_20231101.tsv")
-    files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
-    files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz")
-    files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi")
+  if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
+    files+=("GRCh37/human_g1k_v37.fasta.gz")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.fai")
+    files+=("GRCh37/human_g1k_v37.fasta.gz.gzi")
   fi
+
+  files+=("GRCh38/capice_model_v5.1.1-v1.ubj")
+  files+=("GRCh38/clinical_repeats.bed")
+  files+=("GRCh38/clinvar_20231104_stripped.tsv.gz")
+  files+=("GRCh38/clinvar_20231104_stripped.tsv.gz.tbi")
+  files+=("GRCh38/expansionhunter_variant_catalog.json")
+  files+=("GRCh38/variant_catalog_grch38_fixed.json")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.fai")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.gzi")
+  files+=("GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi")
+  files+=("GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
+  files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz")
+  files+=("GRCh38/gnomad.genomes.v3.1.2.sites.stripped.tsv.gz.tbi")
+  files+=("GRCh38/GRCh38_ncER_perc.bed.gz")
+  files+=("GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
+  # workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
+  files+=("GRCh38/hg38.phyloP100way.bed.gz")
+  files+=("GRCh38/hg38.phyloP100way.bed.gz.tbi")
+  files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz")
+  files+=("GRCh38/spliceai_scores.masked.indel.hg38.vcf.gz.tbi")
+  files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz")
+  files+=("GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
+  files+=("GRCh38/uORF_5UTR_PUBLIC.txt")
+  files+=("GRCh38/vkgl_consensus_20231101.tsv")
+  files+=("GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed")
+  files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz")
+  files+=("GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi")
 
   for file in "${files[@]}"; do
     download "https://download.molgeniscloud.org/downloads/vip/resources/${file}" "${download_dir}/${file}"
@@ -191,6 +195,7 @@ download_images() {
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("manta-1.6.0.sif")
   files+=("minimap2-2.26.sif")
+  files+=("picard-3.1.1.sif")
   files+=("samtools-1.17-patch1.sif")
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.4.2.sif")
