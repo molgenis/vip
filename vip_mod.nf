@@ -1,31 +1,13 @@
 nextflow.enable.dsl=2
 
-params.work = "."
-params.in = "./ont_sample_data/small_X5_pod5"
-params.out = "./vip_test_nf"
-
-dorado_tool = "$params.work/dorado-0.3.4-linux-x64/bin/dorado"
-dorado_model = "$params.work/dorado_models/dna_r10.4.1_e8.2_400bps_hac@v4.1.0/"
-reference_g1k_v37 = "./ont_sample_data/human_g1k_v37.fasta"
-
-process dorado {
-	label 'dorado'
-	publishDir './vip_test_nf/'
-
-	input:
-	path in
-  
-  	shell:
-  """
-  $dorado_tool basecaller $dorado_model $in --modified-bases 5mCG_5hmCG --reference $reference_g1k_v37 > small_X5.bam
-  """
-
-}  
-
-
+include { dorado } from './modules/mod/dorado'
+include { sort_bam } from './modules/mod/samtools'
+include { modkit } from './modules/mod/modkit'
 
 workflow {
-  Channel.of(params.in) | dorado
+  	dorado_mod_bam = Channel.of(params.pod5) | dorado
+	sorted_bam = sort_bam(dorado_mod_bam)
+	modkit(sorted_bam)
 }
 
 
