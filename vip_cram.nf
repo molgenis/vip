@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; validateGroup } from './modules/utils'
-include { validate } from './modules/cram/validate'
+include { validateCram } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
@@ -85,7 +85,7 @@ workflow {
   // validate sample crams
   ch_sample
     | map { meta -> [meta, meta.sample.cram] }
-    | validate
+    | validateCram
     | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
     | set { ch_sample_validated }
 
