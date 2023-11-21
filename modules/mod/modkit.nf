@@ -6,7 +6,7 @@ process modkit {
 	tuple path(in), path(index)
 
 	output:
-	tuple path('small_X5_cpg.bed'), path("modkit_X5_summary.txt")
+	tuple path("${params.run}_cpg.bed"), path("${params.run}_summary.txt"), path("${params.run}_modkit.log")
   
   	shell:
 		template 'modkit.sh'

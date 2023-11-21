@@ -5,7 +5,7 @@ publishDir "../vip_test_nf", mode: 'link'
 	path in
 
 	output:
-	tuple path("small_X5_sorted.bam"), path("small_X5_sorted.bam.csi")
+	tuple path("${params.run}_sorted.bam"), path("${params.run}_sorted.bam.csi")
 
 	shell:
 

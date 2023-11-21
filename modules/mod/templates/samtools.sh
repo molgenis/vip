@@ -2,7 +2,7 @@
 set -euo pipefail
 
 sort() {
-  ${CMD_SAMTOOLS} sort --no-PG -u -o small_X5_sorted.bam !{in} --write-index
+  ${CMD_SAMTOOLS} sort --no-PG -u -o !{params.run}_sorted.bam !{in} --write-index
 }
 
 main() {
