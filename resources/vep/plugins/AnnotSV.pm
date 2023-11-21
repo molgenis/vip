@@ -22,11 +22,11 @@ sub version {
 }
 
 sub variant_feature_types {
-    return [ 'BaseVariationFeature' ];
+  return [ 'VariationFeature', 'StructuralVariationFeature' ];
 }
 
 sub feature_types {
-    return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
+  return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 my $self;

@@ -14,6 +14,7 @@
 ##FORMAT=<ID=MED_DP,Number=1,Type=Integer,Description="Median DP observed within the GVCF block rounded to the nearest integer.">
 ##DeepVariant_version=1.4.0
 ##contig=<ID=chr1,length=248956422,assembly=GRCh38>
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	proband1
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	proband0
 chr1	10001	.	T	<*>	0	.	END=11000	GT:GQ:MIN_DP:PL	0/0:1:0:0,0,0
 chr1	12146	.	A	<*>	0	.	END=12146	GT:GQ:MIN_DP:PL	./.:0:1:29,3,0
+chr1	129285	.	G	A,<*>	21.5	PASS	.	GT:GQ:DP:AD:VAF:PL	1/1:16:8:0,8,0:1,0:21,18,0,990,990,990

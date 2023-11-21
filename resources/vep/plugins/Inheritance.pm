@@ -39,12 +39,12 @@ sub version {
     return '1.0';
 }
 
-sub feature_types {
-    return ['Transcript'];
+sub variant_feature_types {
+  return [ 'VariationFeature', 'StructuralVariationFeature' ];
 }
 
-sub variant_feature_types {
-    return ['VariationFeature'];
+sub feature_types {
+  return [ 'Transcript', 'RegulatoryFeature', 'MotifFeature', 'Intergenic'];
 }
 
 my $self;

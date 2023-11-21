@@ -11,7 +11,7 @@ VIP documentation is available at this link https://molgenis.github.io/vip/.
 ### Requirements
 - Java
 - [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages)
-- 400GB free disk space
+- 150GB free disk space
 
 ### Installation
 ```bash

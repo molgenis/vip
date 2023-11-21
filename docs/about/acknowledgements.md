@@ -1,6 +1,7 @@
 # Acknowledgements
 Standing on the shoulders of giants. This project could not have possible without the existence of many other tools and resources. Among them we would like to thank the people behind the following projects:
 
+- [CAPICE](https://github.com/molgenis/capice)
 - [Ensembl Variant Effect Predictor (VEP)](https://grch38.ensembl.org/info/docs/tools/vep/index.html)
 - [Nextflow](https://www.nextflow.io/)
 - [AlphScore](https://doi.org/10.5281/zenodo.6288138)

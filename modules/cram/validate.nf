@@ -1,4 +1,4 @@
-process validate {
+process validateCram {
   label 'cram_validate'
 
   input:
