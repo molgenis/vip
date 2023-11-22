@@ -19,7 +19,7 @@ concat () {
 }
 
 bcftools_sort () {
-  ${CMD_BCFTOOLS} sort --output-type z "unsorted_!{vcfOut}" --output "!{vcfOut}"
+  ${CMD_BCFTOOLS} norm --do-not-normalize --rm-dup all --no-version --threads "!{task.cpus}" "unsorted_!{vcfOut}" | ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}" --output-type z --output "!{vcfOut}"
 }
 
 index () {
