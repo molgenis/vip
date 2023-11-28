@@ -22,7 +22,7 @@ bash vip/install.sh
 ### Usage
 ```bash
 usage: vip -w <arg> -i <arg> -o <arg>
-  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, mod
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
