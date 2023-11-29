@@ -8,7 +8,7 @@ From: sif/build/openjdk-17.sif
 %post    
     version_major=3
     version_minor=1
-    version_patch=0
+    version_patch=1
 
     # install
     apk update
@@ -17,7 +17,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/picard/lib
     curl -Ls -o /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
-    echo "ea79ca6279a5e818cb6fa68a3476dde799c7ea03ffe52a26a3ca68c71ef28559  /opt/picard/lib/picard.jar" | sha256sum -c
+    echo "15c79f51fd0ac001049f9dd7b9bac1dbdf759dcb0230a89c7f6d1f246e8bbab4  /opt/picard/lib/picard.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

@@ -34,7 +34,6 @@ The following sections describe the columns that can be used in every sample-she
 | ``affected``          | ``boolean``     |          | unknown affected status | whether the individual is affected                                                |
 | ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on                                                      |
 | ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/`                                                               |
-| ``assembly``          | ``enum``        |          | ``GRCh38``              | allowed values: [``GRCh38``], value must be the same for all project samples      |
 | ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
@@ -56,14 +55,16 @@ The following sections describe the columns that can be used in every sample-she
 | ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
 
 ## Columns: gVCF
-| column   | type     | required | default | description                                                                                                                        |
-|----------|----------|----------|---------|------------------------------------------------------------------------------------------------------------------------------------|
-| ``gvcf`` | ``file`` | yes      |         | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
-| ``cram`` | ``file`` |          |         | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
+| column       | type     | required | default    | description                                                                                                                        |
+|--------------|----------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
+| ``gvcf``     | ``file`` | yes      |            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
+| ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
 
 
 ## Columns: VCF
-| column   | type     | required | default | description                                                                                                                                   |
-|----------|----------|----------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| ``vcf``  | ``file`` | yes      |         | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
-| ``cram`` | ``file`` |          |         | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
+| column       | type     | required | default    | description                                                                                                                                   |
+|--------------|----------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |
+| ``vcf``      | ``file`` | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
+| ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |

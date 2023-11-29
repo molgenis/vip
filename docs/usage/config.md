@@ -4,11 +4,20 @@ An additional configuration file can be supplied on the command-line to overwrit
 
 ## Parameters
 
-| key                       | default     | description                                 |
-|---------------------------|-------------|---------------------------------------------|
-| GRCh38.reference.fasta    | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
-| GRCh38.reference.fastaFai | *installed* |                                             |
-| GRCh38.reference.fastaGzi | *installed* |                                             |
+| key                           | default     | description                                 |
+|-------------------------------|-------------|---------------------------------------------|
+| assembly                      | GRCh38      | output assembly, allowed values: [GRCh38]   |
+| GRCh37.reference.chain.GRCh38 | *installed* | chain file to convert GRCh37 to GRCh38 data |
+| GRCh37.reference.fasta        | *installed* |                                             |
+| GRCh37.reference.fastaFai     | *installed* |                                             |
+| GRCh37.reference.fastaGzi     | *installed* |                                             |
+| GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
+| GRCh38.reference.fastaFai     | *installed* |                                             |
+| GRCh38.reference.fastaGzi     | *installed* |                                             |
+| T2T.reference.chain.GRCh38    | *installed* | chain file to convert T2T to GRCh38 data    |
+| T2T.reference.fasta           |             |                                             |
+| T2T.reference.fastaFai        |             |                                             |
+| T2T.reference.fastaGzi        |             |                                             |
 
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
@@ -131,6 +140,7 @@ The following sections list all processes and their non-default configuration.
 ### gVCF
 | process label | configuration             |
 |---------------|---------------------------|
+| gvcf_liftover | *default*                 |
 | gvcf_validate | memory='100MB' time='30m' |
 | gvcf_merge    | memory='2GB' time='30m'   |
 
@@ -147,6 +157,7 @@ The following sections list all processes and their non-default configuration.
 | vcf_filter                   | *default*                     |
 | vcf_filter_samples           | *default*                     |
 | vcf_inheritance              | memory = '2GB'                |
+| vcf_liftover                 | *default*                     |
 | vcf_normalize                | *default*                     |
 | vcf_report                   | memory = '4GB'                |
 | vcf_slice                    | *default*                     |

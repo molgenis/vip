@@ -8,8 +8,8 @@ process minimap2_align {
     tuple val(meta), path(cram), path(cramCrai), path(cramStats)
 
   shell:
-    reference=params[meta.project.assembly].reference.fasta
-    referenceMmi=params[meta.project.assembly].reference.fastaMmi
+    reference=params[params.assembly].reference.fasta
+    referenceMmi=params[params.assembly].reference.fastaMmi
     fastq_size=meta.sample.fastq.total;
     fastq_nr=meta.sample.fastq.index;
     //fastq_nr prevent naming collisions when merging crams
@@ -46,8 +46,8 @@ process minimap2_align_paired_end {
     tuple val(meta), path(cram), path(cramCrai), path(cramStats)
 
   shell:
-    reference=params[meta.project.assembly].reference.fasta
-    referenceMmi=params[meta.project.assembly].reference.fastaMmi
+    reference=params[params.assembly].reference.fasta
+    referenceMmi=params[params.assembly].reference.fastaMmi
     fastq_size=meta.sample.fastq.total;
     fastq_nr=meta.sample.fastq.index;
     //fastq_nr prevent naming collisions when merging crams

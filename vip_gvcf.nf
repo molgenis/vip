@@ -2,7 +2,9 @@ nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
-include { validate } from './modules/gvcf/validate'
+include { validate as validate_gvcf } from './modules/gvcf/validate'
+include { liftover as liftover_gvcf } from './modules/gvcf/liftover'
+include { validate as validate_cram } from './modules/cram/validate'
 include { scatter; validateGroup } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
@@ -41,14 +43,40 @@ workflow {
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     | set { ch_sample }
 
-  // validate sample gvcf
+  // validate gvcf and decide whether liftover if required
   ch_sample
     | map { meta -> [meta, meta.sample.gvcf] }
-    | validate
-    | map { meta, gVcf, gVcfIndex, gVcfStats -> [*:meta, sample: [*:meta.sample, gvcf: [data: gVcf, index: gVcfIndex, stats: gVcfStats]]] }
+    | validate_gvcf
+    | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
+    | branch { meta, gVcf ->
+	      liftover: meta.sample.assembly != params.assembly
+	      ready: true
+	    }
     | set { ch_sample_validated }
 
-  ch_sample_validated
+  // liftover gvcf
+  ch_sample_validated.liftover
+    | map { meta, gVcf -> [meta, gVcf.data] }
+    | liftover_gvcf
+    | map { meta, gVcf, gVcfIndex, gVcfStats, gVcfRejected, gVcfRejectedIndex, gVcfRejectedStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
+    | set { ch_sample_liftover }
+
+  // merge vcf channels
+  Channel.empty().mix(ch_sample_liftover, ch_sample_validated.ready)
+    | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, gvcf: gVcf]] }
+    | set { ch_sample_processed }
+
+  // update project assembly and samples
+  ch_sample_processed
+    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+    | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, samples -> [*:meta, project: [*:meta.project, assembly: params.assembly, samples: samples]] }
+    | set { ch_project_processed }
+
+  // map to updated samples
+  ch_project_processed
+    | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
     | gvcf
 }
 
@@ -62,6 +90,11 @@ def validateGenomeVcfParams(assemblies) {
 
 def parseSampleSheet(csvFile) {
   def cols = [
+		assembly: [
+			type: "string",
+			default: { 'GRCh38' },
+			enum: ['GRCh37', 'GRCh38', 'T2T']
+		],
     gvcf: [
       type: "file",
       required: true,
@@ -70,7 +103,20 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
-    ],
+    ]
   ]
-  return parseCommonSampleSheet(csvFile, cols)
+  
+  def projects = parseCommonSampleSheet(csvFile, cols)
+  validate(projects)
+  return projects
+}
+
+def validate(projects) {
+  projects.each { project ->
+    project.samples.each { sample ->
+      if ((sample.assembly != params.assembly) && (sample.cram != null)) {
+        throw new IllegalArgumentException("line ${sample.index}: 'cram' column must be empty because input assembly '${sample.assembly}' differs from output assembly '${params.assembly}' (liftover not possible).")
+      }
+    }
+  }
 }

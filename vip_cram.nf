@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; validateGroup } from './modules/utils'
-include { validateCram } from './modules/cram/validate'
+include { validate as validate_cram } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
@@ -82,20 +82,30 @@ workflow {
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     | set { ch_sample }
 
-  // validate sample crams
+  // validate cram
   ch_sample
-    | map { meta -> [meta, meta.sample.cram] }
-    | validateCram
+    | map { meta -> [meta, meta.project.assembly, meta.sample.cram] }
+    | validate_cram
     | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
     | set { ch_sample_validated }
 
-  // run cram workflow
+  // update project samples
   ch_sample_validated
+    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+    | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, samples -> [*:meta, project: [*:meta.project, samples: samples]] }
+    | set { ch_project_validated }
+
+  // decide whether realignment is required
+  ch_project_validated
+    | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
     | cram
 }
 
-def validateCramParams(assemblies) {
-  validateVcfParams(assemblies)
+def validateCramParams(inputAssemblies) {
+  validateVcfParams(inputAssemblies)
+  def outputAssemblies = [params.assembly]
 
   def callSnv = params.cram.call_snv
   if (!(callSnv ==~ /true|false/))  exit 1, "parameter 'cram.call_snv' value '${callSnv}' is invalid. allowed values are [true, false]"
@@ -108,9 +118,9 @@ def validateCramParams(assemblies) {
   
   if (callSnv == false && callStr == false && callSv == false) exit 1, "parameters 'cram.call_snv', 'cram.call_str' and 'cram.call_sv' are false. at least one must be true"
 
-  if(callSnv) validateCallSnvParams(assemblies)
-  if(callStr) validateCallStrParams(assemblies)
-  if(callSv)  validateCallSvParams(assemblies)
+  if(callSnv) validateCallSnvParams(outputAssemblies)
+  if(callStr) validateCallStrParams(outputAssemblies)
+  if(callSv)  validateCallSvParams(outputAssemblies)
 }
 
 def parseSampleSheet(csvFile) {
@@ -127,5 +137,7 @@ def parseSampleSheet(csvFile) {
       scope: "project"
     ]
   ]
-  return parseCommonSampleSheet(csvFile, cols)
+
+  def projects = parseCommonSampleSheet(csvFile, cols)
+  return projects.collect { project -> [*:project, assembly: params.assembly] }
 }
