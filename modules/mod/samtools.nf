@@ -1,6 +1,7 @@
 process sort_bam {
 	// Sort bam files using SAMTools
-publishDir "../vip_test_nf", mode: 'link'
+	label "sort_bam"
+	publishDir "../vip_test_nf", mode: 'link'
 
 	input:
 	tuple val(meta), path(bam)
