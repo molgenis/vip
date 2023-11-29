@@ -2,11 +2,9 @@
 set -euo pipefail
 
 mod_basecaller() {
-  ${CMD_DORADO} basecaller !{params.dorado_model} !{in} --modified-bases 5mCG_5hmCG --reference !{params.reference_g1k_v37} > !{params.run}.bam
-}
-
-basecaller() {
-	${CMD_DORADO} basecaller !{params.dorado_model} !{in} --reference !{params.reference_g1k_v37} > !{params.run}.bam
+  # Command for Dorado tool
+  echo "working"
+  ${CMD_DORADO} basecaller !{params.dorado_model} ./ --modified-bases 5mCG_5hmCG --reference !{params.reference_g1k_v37} > !{bam}
 }
 
 main() {
