@@ -2,7 +2,8 @@
 set -euo pipefail
 
 sort() {
-  ${CMD_SAMTOOLS} sort --no-PG -u -o !{params.run}_sorted.bam !{in} --write-index
+  # Use samtools to sort bam
+  ${CMD_SAMTOOLS} sort --no-PG -u -o !{sorted_bam} !{bam} --write-index
 }
 
 main() {

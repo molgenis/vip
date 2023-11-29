@@ -1,13 +1,16 @@
 process sort_bam {
+	// Sort bam files using SAMTools
 publishDir "../vip_test_nf", mode: 'link'
 
 	input:
-	path in
+	tuple val(meta), path(bam)
 
 	output:
-	tuple path("${params.run}_sorted.bam"), path("${params.run}_sorted.bam.csi")
-
-	shell:
+	tuple val(meta), path(sorted_bam), path(sorted_bam_index)
+  
+  	shell:
+	sorted_bam="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam"
+	sorted_bam_index="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam.csi"
 
 	template 'samtools.sh'
 
