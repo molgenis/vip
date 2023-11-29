@@ -2,11 +2,13 @@
 set -euo pipefail
 
 summary() {
-  ${CMD_MODKIT} summary !{in} > !{params.run}_summary.txt
+  # Use modkit tool to summarize bam files
+  ${CMD_MODKIT} summary !{sorted_bam} > !{summary_modkit}
 }
 
 pileup() {
-	${CMD_MODKIT} pileup !{in} !{params.run}_cpg.bed --cpg --ref !{params.reference_g1k_v37} --log-filepath !{params.run}_modkit.log
+  # Use modkit tool to process bam to bedmethyl file
+	${CMD_MODKIT} pileup !{sorted_bam} !{bed} --cpg --ref !{params.reference_g1k_v37} --log-filepath !{log_modkit}
 }
 
 main() {
