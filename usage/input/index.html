@@ -268,13 +268,6 @@
 <td>regex: <code>/HP:\d{7}/</code></td>
 </tr>
 <tr>
-<td><code>assembly</code></td>
-<td><code>enum</code></td>
-<td></td>
-<td><code>GRCh38</code></td>
-<td>allowed values: [<code>GRCh38</code>], value must be the same for all project samples</td>
-</tr>
-<tr>
 <td><code>sequencing_method</code></td>
 <td><code>enum</code></td>
 <td></td>
@@ -368,6 +361,13 @@
 </thead>
 <tbody>
 <tr>
+<td><code>assembly</code></td>
+<td><code>enum</code></td>
+<td></td>
+<td><code>GRCh38</code></td>
+<td>allowed values: [<code>GRCh37</code>, <code>GRCh38</code>, <code>T2T</code>]</td>
+</tr>
+<tr>
 <td><code>gvcf</code></td>
 <td><code>file</code></td>
 <td>yes</td>
@@ -395,6 +395,13 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>assembly</code></td>
+<td><code>enum</code></td>
+<td></td>
+<td><code>GRCh38</code></td>
+<td>allowed values: [<code>GRCh37</code>, <code>GRCh38</code>, <code>T2T</code>], value must be the same for all project samples</td>
+</tr>
 <tr>
 <td><code>vcf</code></td>
 <td><code>file</code></td>

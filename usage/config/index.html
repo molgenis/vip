@@ -163,6 +163,31 @@ An additional configuration file can be supplied on the command-line to overwrit
 </thead>
 <tbody>
 <tr>
+<td>assembly</td>
+<td>GRCh38</td>
+<td>output assembly, allowed values: [GRCh38]</td>
+</tr>
+<tr>
+<td>GRCh37.reference.chain.GRCh38</td>
+<td><em>installed</em></td>
+<td>chain file to convert GRCh37 to GRCh38 data</td>
+</tr>
+<tr>
+<td>GRCh37.reference.fasta</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>GRCh37.reference.fastaFai</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>GRCh37.reference.fastaGzi</td>
+<td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
 <td>GRCh38.reference.fasta</td>
 <td><em>installed</em></td>
 <td>GCA_000001405.15_GRCh38_no_alt_analysis_set</td>
@@ -175,6 +200,26 @@ An additional configuration file can be supplied on the command-line to overwrit
 <tr>
 <td>GRCh38.reference.fastaGzi</td>
 <td><em>installed</em></td>
+<td></td>
+</tr>
+<tr>
+<td>T2T.reference.chain.GRCh38</td>
+<td><em>installed</em></td>
+<td>chain file to convert T2T to GRCh38 data</td>
+</tr>
+<tr>
+<td>T2T.reference.fasta</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T2T.reference.fastaFai</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T2T.reference.fastaGzi</td>
+<td></td>
 <td></td>
 </tr>
 </tbody>
@@ -652,6 +697,10 @@ The following sections list all processes and their non-default configuration.</
 </thead>
 <tbody>
 <tr>
+<td>gvcf_liftover</td>
+<td><em>default</em></td>
+</tr>
+<tr>
 <td>gvcf_validate</td>
 <td>memory='100MB' time='30m'</td>
 </tr>
@@ -709,6 +758,10 @@ The following sections list all processes and their non-default configuration.</
 <tr>
 <td>vcf_inheritance</td>
 <td>memory = '2GB'</td>
+</tr>
+<tr>
+<td>vcf_liftover</td>
+<td><em>default</em></td>
 </tr>
 <tr>
 <td>vcf_normalize</td>
