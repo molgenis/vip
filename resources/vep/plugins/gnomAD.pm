@@ -44,8 +44,13 @@ sub feature_types {
 
 sub get_header_info {
   return {
-    gnomAD_AF => "gnomAD allele frequency",
-    gnomAD_HN => "gnomAD number of homozygotes"
+    gnomAD_SRC => 'gnomAD source: E=exomes, G=genomes, T=total',
+    gnomAD_AF => 'gnomAD allele frequency',
+    gnomAD_FAF95 => 'gnomAD filtering allele frequency (95% confidence)',
+    gnomAD_FAF99 => 'gnomAD filtering allele frequency (99% confidence)',
+    gnomAD_HN => 'gnomAD number of homozygotes',
+    gnomAD_QC => 'gnomAD quality control filters that failed',
+    gnomAD_COV => 'gnomAD coverage (percent of individuals in gnomAD source)'
   };
 }
 
@@ -70,9 +75,25 @@ sub run {
   return {};
 }
 
+sub uniq {
+  my %seen;
+  return grep { !$seen{$_}++ } @_;
+}
+
 sub parse_data {
   my ($self, $line) = @_;
-  my ($chr, $pos, $ref, $alt, $af, $hn) = split /\t/, $line;
+  my ($chr, $pos, $ref, $alt, $af_e, $af_g, $af_t, $faf95_e, $faf95_g, $faf95_t, $faf99_e, $faf99_g, $faf99_t, $hn_e, $hn_g, $hn_t, $qc_e, $qc_g, $cov_e, $cov_g, $cov_t) = split /\t/, $line;
+
+  # use 'total' in case both exomes and genomes qc fail
+  my $src = $qc_e eq 'PASS' ? ($qc_g eq 'PASS' ? 'T' : 'E') : ($qc_g eq 'PASS' ? 'G' : 'T');
+  my @qc;
+  if($src eq 'E') {
+    @qc = uniq(grep { $_ ne 'NO_VAR' && $_ ne 'PASS' } split(/,/, $qc_e));
+  } elsif($src eq 'E') {
+    @qc = uniq(grep { $_ ne 'NO_VAR' && $_ ne 'PASS' } split(/,/, $qc_g));
+  } else {
+    @qc = uniq(grep { $_ ne 'NO_VAR' && $_ ne 'PASS' } split(/,/, $qc_e . ',' . $qc_g));
+  }
 
   return {
     chr => $chr,
@@ -81,8 +102,13 @@ sub parse_data {
     alt => $alt,
     result => {
       # when adding elements with nullable values make sure to map "." to undef
-      gnomAD_AF => $af,
-      gnomAD_HN => $hn
+      gnomAD_SRC => $src,
+      gnomAD_AF => $src eq 'T' ? $af_t : ($src eq 'E' ? $af_e : $af_g),
+      gnomAD_FAF95 => $src eq 'T' ? $faf95_t : ($src eq 'E' ? $faf95_e : $faf95_g),
+      gnomAD_FAF99 => $src eq 'T' ? $faf99_t : ($src eq 'E' ? $faf99_e : $faf99_g),
+      gnomAD_HN => $src eq 'T' ? $hn_t : ($src eq 'E' ? $hn_e : $hn_g),
+      gnomAD_QC => join(',', @qc),
+      gnomAD_COV => $src eq 'T' ? $cov_t : ($src eq 'E' ? $cov_e : $cov_g)
     }
   };
 }
