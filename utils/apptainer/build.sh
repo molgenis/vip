@@ -84,6 +84,7 @@ main() {
   images+=("capice-5.1.1")
   images+=("cutesv-2.0.3")
   images+=("expansionhunter-5.0.0")
+  images+=("fastp-0.23.4")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("gado-1.0.3")
