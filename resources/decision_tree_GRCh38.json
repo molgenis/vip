@@ -230,7 +230,7 @@
         "nextNode": "sv"
       },
       "outcomeFalse": {
-        "nextNode": "sv"
+        "nextNode": "gnomAD_AF"
       }
     },
     "gnomAD_AF": {
