@@ -22,6 +22,13 @@ process minimap2_align {
     preset=platform == "nanopore" ? "map-ont" : (platform == "pacbio_hifi" ? "map-hifi" : "")
     softClipping=params.minimap2.soft_clipping 
 
+    //fastp params
+    disable_length_filtering=params.fastp.disable_length_filtering
+    disable_quality_filtering=params.fastp.disable_quality_filtering
+    additional_params=params.fastp.additional_params
+    reportFile="${fastq}.html"
+    outputPath="${params.output}/fastp"
+
     template 'minimap2_align.sh'
   
   stub:

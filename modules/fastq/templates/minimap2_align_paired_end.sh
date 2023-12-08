@@ -2,6 +2,21 @@
 set -euo pipefail
 
 align() {
+    local args_fastp=()
+    args_fastp+=("--thread" "!{task.cpus}")
+    if [[ "!{disable_quality_filtering}" == "true"  ]]; then
+        args_fastp+=("--disable_quality_filtering")
+    fi
+    if [[ "!{disable_length_filtering}" == "true"  ]]; then
+        args_fastp+=("--disable_length_filtering")
+    fi
+    if [[ -n "!{additional_params}" ]]; then
+        args_fastp+=("!{additional_params}")
+    fi
+    args_fastp+=("--html" "!{reportFile}")
+    args_fastp+=("--in1" "!{fastqR1}")
+    args_fastp+=("--in2" "!{fastqR2}")
+    
     local args=()
     args+=("-t" "!{task.cpus}")
     args+=("-a")
@@ -12,12 +27,17 @@ align() {
         args+=("-Y")
     fi
     args+=("!{referenceMmi}")
-    args+=("!{fastqR1}" "!{fastqR2}") 
 
+    ${CMD_FASTP} "${args_fastp[@]}" | \
     ${CMD_MINIMAP2} "${args[@]}" | \
     ${CMD_SAMTOOLS} fixmate --no-PG -u -m -@ "!{task.cpus}" - - | \
     #position sort for markdup
     ${CMD_SAMTOOLS} sort --no-PG -u -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --write-index -
+}
+
+publish_fastp() {
+  mkdir -p "!{outputPath}"
+  cp "!{reportFile}" "!{outputPath}/!{reportFile}"
 }
 
 stats() {
@@ -26,7 +46,8 @@ stats() {
 
 main() {
   align
-  stats      
+  publish_fastp
+  stats
 }
 
 main "$@"
