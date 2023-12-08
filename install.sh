@@ -200,7 +200,7 @@ download_images() {
   files+=("stranger-0.8.1.sif")
   files+=("straglr-philres-1.4.2.sif")
   files+=("vcf-decision-tree-3.9.0.sif")
-  files+=("vcf-inheritance-matcher-2.1.9.sif")
+  files+=("vcf-inheritance-matcher-3.0.0.sif")
   files+=("vcf-report-5.8.0.sif")
   files+=("vep-109.3.sif")
 
