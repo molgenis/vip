@@ -10,6 +10,7 @@ process dorado {
 	tuple val(meta), path(bam)
   
   	shell:
+	reference=params[meta.project.assembly].reference.fasta
 	bam="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.bam"
 
 	template "dorado.sh"
