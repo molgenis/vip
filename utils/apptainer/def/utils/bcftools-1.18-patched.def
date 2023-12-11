@@ -1,0 +1,35 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+Stage: build
+
+%post
+		# fix for https://github.com/samtools/bcftools/issues/1187
+    version_major=1
+    version_minor=18
+
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community autoconf automake git curl-dev build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
+
+    git clone --recurse-submodules --depth 1 --branch ${version_major}.${version_minor} https://github.com/samtools/htslib.git
+    git clone https://github.com/samtools/bcftools.git
+    cd bcftools
+    git checkout 6e72e5929543bc7775b55840bcbe8c297214541d
+
+    autoheader
+    autoconf
+    ./configure --disable-libcurl --disable-gcs --disable-s3
+    make
+    make install
+
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+Stage: final
+
+%files from build
+    /usr/local/bin/bcftools
+    /usr/local/libexec/bcftools
+
+%post
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl zlib libbz2 xz-libs libdeflate
+
+%help
+    BCFtools - utilities for variant calling and manipulating VCFs and BCFs

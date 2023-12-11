@@ -5,6 +5,7 @@ liftover() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
+  args+=("-Xmx!{task.memory.toGiga()}g")
   args+=("-jar" "/opt/picard/lib/picard.jar")
   args+=("LiftoverVcf")
   args+=("--CHAIN" "!{chain}")

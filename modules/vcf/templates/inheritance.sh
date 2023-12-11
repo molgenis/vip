@@ -9,6 +9,7 @@ inheritance () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
+  args+=("-Xmx!{task.memory.toGiga()}g")
   args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
   args+=("--input" "!{vcf}")
   args+=("--output" "!{vcfOut}")
