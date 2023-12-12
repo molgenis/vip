@@ -5,6 +5,7 @@ include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { dorado } from './modules/mod/dorado'
 include { sort_bam } from './modules/mod/samtools'
 include { modkit } from './modules/mod/modkit'
+include { methplotlib } from './modules/mod/methplotlib'
 
 workflow mod{
 	// Base modification workflow 
@@ -42,7 +43,9 @@ workflow mod{
 	// View output hashmap
 
 	ch_input_bedmethyl
-	| view
+	| map { meta, bed, region -> [ meta, bed, meta.sample.region ]}
+	| methplotlib
+	| set { ch_input_methylfreq }
 	
 }
 
@@ -71,6 +74,9 @@ def parseSampleSheet(csvFile){
 	  required: true,
 	  regex: pod5Regex
     ],
+	region: [
+		type: "string",
+	],
     sequencing_platform: [
       type: "string",
       default: { 'nanopore' },
