@@ -8,9 +8,10 @@ The following sections provide an overview of the steps of each of these workflo
 The `fastq` workflow consists of the following steps:
 
 1. Parallelize sample sheet per sample and for each sample
-2. In case of multiple fastq files per sample, concatenate the files
+2. Quality reporting and preprocessing using [fastp](https://github.com/OpenGene/fastp)
 3. Alignment using [minimap2](https://github.com/lh3/minimap2) producing a `cram` file per sample
-4. Continue with step 3. of the `cram` workflow
+4. In case of multiple fastq files per sample, concatenate the cram output files
+5. Continue with step 3. of the `cram` workflow
 
 For details, see [here](https://github.com/molgenis/vip/blob/main/vip_fastq.nf).
 

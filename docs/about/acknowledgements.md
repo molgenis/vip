@@ -23,3 +23,4 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [cuteSV](https://github.com/tjiangHIT/cuteSV)
 - [Straglr](https://github.com/philres/straglr)
 - [Stranger](https://github.com/Clinical-Genomics/stranger)
+- [fastp](https://github.com/OpenGene/fastp)
