@@ -6,6 +6,8 @@ include { dorado } from './modules/mod/dorado'
 include { sort_bam } from './modules/mod/samtools'
 include { modkit } from './modules/mod/modkit'
 include { methplotlib } from './modules/mod/methplotlib'
+include { to_cram } from './modules/mod/to_cram'
+include { cram; validateCramParams } from './vip_cram'
 
 workflow mod{
 	// Base modification workflow 
@@ -40,12 +42,19 @@ workflow mod{
 	| modkit
 	| set { ch_input_bedmethyl }
 
+	ch_basecalled_sorted
+	| map { meta, sorted_bam, sorted_bam_index -> [ meta, sorted_bam, sorted_bam_index ]}
+	| to_cram
+    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+	| cram
+
+
 	// View output hashmap
 
-	ch_input_bedmethyl
-	| map { meta, bed, region -> [ meta, bed, meta.sample.region ]}
-	| methplotlib
-	| set { ch_input_methylfreq }
+	// ch_input_bedmethyl
+	// | map { meta, bed -> [ meta, bed ]}
+	// | methplotlib
+	// | set { ch_input_methylfreq }
 	
 }
 
@@ -55,7 +64,7 @@ workflow {
 	def projects = parseSampleSheet(params.input)
 	def assemblies = getAssemblies(projects)
 
-	// Eventueel een validate mod params
+	validateCramParams(assemblies)
 
 	Channel.from(projects)
 		| flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
@@ -75,7 +84,7 @@ def parseSampleSheet(csvFile){
 	  regex: pod5Regex
     ],
 	region: [
-		type: "string",
+		type: "string"
 	],
     sequencing_platform: [
       type: "string",
@@ -87,3 +96,4 @@ def parseSampleSheet(csvFile){
 
 	return parseCommonSampleSheet(csvFile, cols)
 }
+
