@@ -27,7 +27,7 @@ report() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx!{task.memory.toGiga()}g")
+  args+=("-Xmx!{task.memory.toMega() - 256}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("--input" "!{vcfOut}")
   args+=("--reference" "!{refSeqPath}")
