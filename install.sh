@@ -191,6 +191,7 @@ download_images() {
   files+=("deepvariant-1.6.0.sif")
   files+=("deepvariant_deeptrio-1.6.0.sif")
   files+=("expansionhunter-5.0.0.sif")
+  files+=("fastp-0.23.4.sif")
   files+=("gado-1.0.3.sif")
   files+=("glnexus_v1.4.5-patched.sif")
   files+=("manta-1.6.0.sif")
