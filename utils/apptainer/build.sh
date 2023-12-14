@@ -100,7 +100,7 @@ main() {
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
-    sudo apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log"
+    (cd "${SCRIPT_DIR}" && sudo apptainer build "${outputDir}/${images[$i]}.sif" "${inputDir}/${images[$i]}.def" | tee "${outputDir}/build.log")
     echo "---Done building ${images[$i]}---"
   done
 
@@ -111,7 +111,7 @@ main() {
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
-    sudo apptainer build "${outputDir}/${uris[${i}]}.sif" "${i}" | tee "${outputDir}/build.log"
+    (cd "${SCRIPT_DIR}" && sudo apptainer build "${outputDir}/${uris[${i}]}.sif" "${i}" | tee "${outputDir}/build.log")
     echo "---Done building ${uris[${i}]}---"
   done
 }
