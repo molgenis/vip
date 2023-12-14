@@ -5,6 +5,7 @@ classify () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
+  args+=("-Xmx!{task.memory.toMega() - 256}m")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcf}")
   args+=("--config" "!{decisionTree}")

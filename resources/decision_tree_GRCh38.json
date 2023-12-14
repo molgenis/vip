@@ -223,19 +223,30 @@
       }
     },
     "gnomAD": {
+      "description": "gnomAD QC filter failure",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/gnomAD_QC",
+      "outcomeTrue": {
+        "nextNode": "sv"
+      },
+      "outcomeFalse": {
+        "nextNode": "gnomAD_AF"
+      }
+    },
+    "gnomAD_AF": {
       "description": "gnomAD",
       "type": "BOOL_MULTI",
       "fields": [
-        "INFO/CSQ/gnomAD_AF",
+        "INFO/CSQ/gnomAD_FAF99",
         "INFO/CSQ/gnomAD_HN"
       ],
       "outcomes": [
         {
-          "description": "Allele Frequency >= 0.02 or Number of Homozygotes > 5",
+          "description": "Filtering allele Frequency (99% confidence) >= 0.02 or Number of Homozygotes > 5",
           "operator": "OR",
           "queries": [
             {
-              "field": "INFO/CSQ/gnomAD_AF",
+              "field": "INFO/CSQ/gnomAD_FAF99",
               "operator": ">=",
               "value": 0.02
             },

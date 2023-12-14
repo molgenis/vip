@@ -42,12 +42,6 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
-    assembly: [
-      type: "string",
-      default: { 'GRCh38' },
-      enum: ['GRCh38'],
-      scope: "project"
-    ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },
@@ -114,7 +108,7 @@ def validate(project){
 
       def paternal_sample = sampleMap[[id: sample.paternal_id]]
       if(paternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${project.id}'.")
-      if(paternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
+      if(paternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family. hint: add or update column 'family_id'.")
       if(paternal_sample.sex == "female") throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' refers to sample with female sex.")
     }
     if(sample.maternal_id != null){
@@ -264,5 +258,5 @@ def parseProjects(samples, cols) {
 }
 
 def getAssemblies(projects) {
-  projects.collect(project -> project.assembly).unique()
+  projects.collect(project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly }).flatten().unique()
 }

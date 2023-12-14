@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
+include { parseCommonSampleSheet } from './modules/sample_sheet'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
 include { splitPerFastqSingle; splitPerFastqPaired } from './modules/fastq/utils'
@@ -70,14 +70,13 @@ workflow fastq {
 
     ch_input_paired_end_aligned.mix(ch_input_single_aligned)
       | merge_cram
-      | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+      | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | cram
 }
 
 workflow {
   def projects = parseSampleSheet(params.input)
-  def assemblies = getAssemblies(projects)
-  validateFastqParams(assemblies)
+  validateFastqParams([params.assembly])
 
   // run fastq workflow for each sample in each project
   Channel.from(projects)
