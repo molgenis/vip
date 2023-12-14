@@ -1,0 +1,30 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+Stage: build
+
+%post
+    version_major=0
+    version_minor=23
+    version_patch=4
+
+    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl
+    
+    # download
+    curl -Ls -o fastp.${version_major}.${version_minor}.${version_patch} http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
+    echo "4037508afcfa41e85586d4f06bb001bb73d9f29f159fb264c59b98deff27d377  fastp.${version_major}.${version_minor}.${version_patch}" | sha256sum -c
+
+    # install
+    mv  fastp.${version_major}.${version_minor}.${version_patch} /opt/fastp
+
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+Stage: final
+
+%files from build
+    /opt/fastp
+
+%post
+    chmod a+x /opt/fastp
+
+%help
+    fastp - A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.

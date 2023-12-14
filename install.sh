@@ -75,6 +75,7 @@ download_files() {
   urls+=("8efa3c0f6c0f5378ca22d16074f50dfe" "images/deepvariant-1.6.0.sif")
   urls+=("b67e8c1d774c0d22de70b7be79aaa05e" "images/deepvariant_deeptrio-1.6.0.sif")
   urls+=("78a8ce16c9d8bac53e5fbca4f763dcef" "images/expansionhunter-5.0.0.sif")
+  urls+=("afed919dc16ccdae1869cf6dbc5a19d5" "images/fastp-0.23.4.sif")
   urls+=("494c8c9e1031828f48027e34032de423" "images/gado-1.0.3.sif")
   urls+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif")
   urls+=("ff8aceb2c9f185307a69b981ba08efd8" "images/manta-1.6.0.sif")
