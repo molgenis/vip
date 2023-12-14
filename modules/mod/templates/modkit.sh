@@ -8,7 +8,7 @@ summary() {
 
 pileup() {
   # Use modkit tool to process bam to bedmethyl file
-	${CMD_MODKIT} pileup !{sorted_bam} !{bed} --cpg --ref !{reference} --only-tabs --log-filepath !{log_modkit}
+	${CMD_MODKIT} pileup !{sorted_bam} !{bed} --ref !{reference} --only-tabs --log-filepath !{log_modkit}
 }
 
 main() {

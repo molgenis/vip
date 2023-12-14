@@ -13,7 +13,7 @@ process modkit {
   	shell:
 	reference=params[meta.project.assembly].reference.fasta
 	name = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}"
-	bed = "${name}_cpg.bed"
+	bed = "${name}.bedmethyl"
 	summary_modkit = "${name}_summary_modkit.txt"
 	log_modkit = "${name}_modkit.log"
 		
