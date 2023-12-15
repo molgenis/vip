@@ -62,9 +62,8 @@ workflow {
 	// Main workflow
 
 	def projects = parseSampleSheet(params.input)
-	def assemblies = getAssemblies(projects)
 
-	validateCramParams(assemblies)
+
 
 	Channel.from(projects)
 		| flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
