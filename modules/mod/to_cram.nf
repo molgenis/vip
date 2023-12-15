@@ -10,7 +10,7 @@ process to_cram {
 	tuple val(meta), path(cram), path(cramCrai), path(cramStats)
   
   	shell:
-	reference=params[meta.project.assembly].reference.fasta 
+	reference=params[params.assembly].reference.fasta
 	cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
