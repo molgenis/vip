@@ -88,10 +88,10 @@ capice_bcftools() {
   args+=("-d")
   args+=("-f" "${format}\n")
   args+=("-A" "tab")
-  args+=("-o" "${capiceInputPathHeaderless}")
   args+=("${vcfCapiceAnnotatedPath}")
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  # clear gnomad_HN column
+  ${CMD_BCFTOOLS} "${args[@]}" | awk 'BEGIN{FS=OFS="\t"} !($55="")' > "${capiceInputPathHeaderless}"
 
   echo -e "${header}$(${CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "${capiceInputPath}"
 }
