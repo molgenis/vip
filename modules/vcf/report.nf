@@ -27,8 +27,7 @@ process report {
     genesPath = params.vcf.report[meta.project.assembly].genes
     template = params.vcf.report.template
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
-    // workaround for https://github.com/molgenis/vip/issues/467: genome browser hangs on long reads
-    includeCrams = meta.project.sequencing_platform !in ['nanopore', 'pacbio_hifi'] ? params.vcf.report.include_crams : false
+    includeCrams = params.vcf.report.include_crams
 
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.project.samples.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
