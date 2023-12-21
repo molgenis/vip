@@ -72,9 +72,9 @@
       "type": "BOOL",
       "description": "Inheritance match",
       "query": {
-        "field": "FORMAT/VIM",
-        "operator": "==",
-        "value": 1
+        "field": "FORMAT/VIG",
+        "operator": "CONTAINS",
+        "value": "field:INFO/CSQ/GENE"
       },
       "outcomeTrue": {
         "nextNode": "exit_u1"
