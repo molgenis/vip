@@ -74,7 +74,7 @@
       "query": {
         "field": "FORMAT/VIG",
         "operator": "contains",
-        "value": "field:INFO/CSQ/GENE"
+        "value": "field:INFO/CSQ/Gene"
       },
       "outcomeTrue": {
         "nextNode": "exit_u1"
