@@ -73,7 +73,7 @@
       "description": "Inheritance match",
       "query": {
         "field": "FORMAT/VIG",
-        "operator": "CONTAINS",
+        "operator": "contains",
         "value": "field:INFO/CSQ/GENE"
       },
       "outcomeTrue": {
