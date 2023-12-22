@@ -45,9 +45,8 @@ workflow mod{
 	ch_basecalled_sorted
 	| map { meta, sorted_bam, sorted_bam_index -> [ meta, sorted_bam, sorted_bam_index ]}
 	| to_cram
-    // | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
-	// | cram
-
+    | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+    | cram
 
 	// View output hashmap
 

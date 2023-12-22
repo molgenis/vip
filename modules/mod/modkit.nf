@@ -11,7 +11,8 @@ process modkit {
 	tuple val(meta), path(bed), path(summary_modkit), path(log_modkit)
   
   	shell:
-	reference=params[params.assembly].reference.fasta
+	refSeqPath = params[params.assembly].reference.fasta
+    reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
 	name = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}"
 	bed = "${name}.bedmethyl"
 	summary_modkit = "${name}_summary_modkit.txt"
