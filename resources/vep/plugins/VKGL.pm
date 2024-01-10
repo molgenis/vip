@@ -259,18 +259,24 @@ sub parse_file {
 }
 
 sub run {
-    my ($self, $tva) = @_;
+    my ($self, $base_variation_feature_overlap_allele) = @_;
 
-    my $transcript = $tva->transcript;
-    return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
+		# fail fast: sub-class doesn't contain transcript method
+    return {} unless ($base_variation_feature_overlap_allele->can('transcript'));
+		my $transcript = $base_variation_feature_overlap_allele->transcript;
 
-    my $vf = $tva->base_variation_feature;
-    my @vcf_line = @{$vf->{_line}};
+		# fail fast: gene identifier is not from NCBI's Entrez Gene
+		return {} unless ($transcript->{_gene_symbol_source} eq 'EntrezGene');
+
+		# fail fast: missing gene identifier
+		my $gene_id = $transcript->{_gene_stable_id};
+    return {} unless $gene_id;
+
+    my @vcf_line = @{$base_variation_feature_overlap_allele->base_variation_feature->{_line}};
     my $chr = $vcf_line[0];
     my $pos = $vcf_line[1];
     my $ref = $vcf_line[3];
-    my $alt = $vcf_line[4];
-    my $gene_id = $transcript->{_gene_stable_id};
+    my $alt = $vcf_line[4]; # assume site is biallelic
 
     my $result = {};
     if (!$self->{consensus_only}) {
@@ -303,6 +309,4 @@ sub run {
 
     return $result;
 }
-
-
 1;
