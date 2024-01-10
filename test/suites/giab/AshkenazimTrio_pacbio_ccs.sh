@@ -18,6 +18,7 @@ done
 args=()
 args+=("--workflow" "cram")
 args+=("--input" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.tsv")
+args+=("--config" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
