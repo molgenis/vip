@@ -94,28 +94,35 @@ sub new {
 }
 
 sub run {
-    my ($self, $transcript_variation_allele) = @_;
-    my %gene_data = %{$self->{gene_data}};
+    my ($self, $base_variation_feature_overlap_allele) = @_;
+
+    # fail fast: sub-class doesn't contain transcript method
+    return {} unless ($base_variation_feature_overlap_allele->can('transcript'));
+
+		# fail fast: missing gene identifier
+		my $gene_id = $transcript->{_gene_stable_id};
+    return {} unless $gene_id;
+
+		# fail fast: gene identifier is not from NCBI's Entrez Gene
+    my $transcript = $base_variation_feature_overlap_allele->transcript;
+    return {} unless ($transcript->{_gene_symbol_source} eq 'EntrezGene');
+
+    # fail fast: gene identifier unknown in gene_inheritance_modes.tsv
+		my $gene_value = $self->{gene_data}{$gene_id};
+		return {} unless $gene_value;
+
+		my $result;
+    my %gene_hash = %{$gene_value};
     my $pheno_data = $self->{pheno_data};
 
-    my $transcript = $transcript_variation_allele->transcript;
-    return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
-
-    my $entrez_gene_id = $transcript->{_gene_stable_id};
-    return {} unless $entrez_gene_id;
-    my $result;
-    my $gene_value = $gene_data{$entrez_gene_id};
-    return {} unless $gene_value;
-
-    my %gene_hash = %{$gene_value};
-    if($gene_hash{source} eq "EntrezGene") {
+    if($gene_hash{source} eq 'EntrezGene') {
         $result->{InheritanceModesGene} = $gene_hash{mode};
-        $result->{IncompletePenetrance} = "";
+        $result->{IncompletePenetrance} = '';
         if (defined $gene_hash{incompletePenetrance}) {
-            $result->{IncompletePenetrance} = $gene_hash{incompletePenetrance};
+            $result->{IncompletePenetrance} = $gene_hFix ash{incompletePenetrance};
         }
-        if (defined $self->{include_pheno} && $pheno_data->{$entrez_gene_id}) {
-            $result->{InheritanceModesPheno} = $pheno_data->{$entrez_gene_id};
+        if (defined $self->{include_pheno} && $pheno_data->{$gene_id}) {
+            $result->{InheritanceModesPheno} = $pheno_data->{$gene_id};
         }
     }
     return $result;
