@@ -98,14 +98,14 @@ sub run {
 
     # fail fast: sub-class doesn't contain transcript method
     return {} unless ($base_variation_feature_overlap_allele->can('transcript'));
+		my $transcript = $base_variation_feature_overlap_allele->transcript;
+
+		# fail fast: gene identifier is not from NCBI's Entrez Gene
+		return {} unless ($transcript->{_gene_symbol_source} eq 'EntrezGene');
 
 		# fail fast: missing gene identifier
 		my $gene_id = $transcript->{_gene_stable_id};
     return {} unless $gene_id;
-
-		# fail fast: gene identifier is not from NCBI's Entrez Gene
-    my $transcript = $base_variation_feature_overlap_allele->transcript;
-    return {} unless ($transcript->{_gene_symbol_source} eq 'EntrezGene');
 
     # fail fast: gene identifier unknown in gene_inheritance_modes.tsv
 		my $gene_value = $self->{gene_data}{$gene_id};
