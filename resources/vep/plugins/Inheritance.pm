@@ -119,7 +119,7 @@ sub run {
         $result->{InheritanceModesGene} = $gene_hash{mode};
         $result->{IncompletePenetrance} = '';
         if (defined $gene_hash{incompletePenetrance}) {
-            $result->{IncompletePenetrance} = $gene_hFix ash{incompletePenetrance};
+            $result->{IncompletePenetrance} = $gene_hash{incompletePenetrance};
         }
         if (defined $self->{include_pheno} && $pheno_data->{$gene_id}) {
             $result->{InheritanceModesPheno} = $pheno_data->{$gene_id};
