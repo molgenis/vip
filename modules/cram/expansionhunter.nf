@@ -20,7 +20,7 @@ process expansionhunter_call {
     paramVariantCatalog = params.str.expansionhunter[meta.project.assembly].variant_catalog
 
     sampleId = meta.sample.individual_id
-    sampleSex = meta.sample.sex != null ? meta.sample.sex : "female" // ExpansionHunter assumes 'female' by default
+    sampleSex = meta.sample.sex != "unknown" ? meta.sample.sex : "female" // ExpansionHunter assumes 'female' by default
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"

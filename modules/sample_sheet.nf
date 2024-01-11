@@ -29,10 +29,15 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     ],
     sex: [
       type: "string",
-      enum: ["male", "female"]
+      required: true,
+      default: { 'unknown' },
+      enum: ["male", "female", "unknown"]
     ],
     affected: [
-      type: "boolean",
+      type: "string",
+      required: true,
+      default: { 'unknown' },
+      enum: ["true", "false", "unknown"]
     ],
     proband: [
       type: "boolean",
@@ -109,7 +114,7 @@ def validate(project){
       def paternal_sample = sampleMap[[id: sample.paternal_id]]
       if(paternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' is not present in project '${project.id}'.")
       if(paternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' for sample '${sample.individual_id}' belongs to a different family. hint: add or update column 'family_id'.")
-      if(paternal_sample.sex == "female") throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' refers to sample with female sex.")
+      if(paternal_sample.sex != "male") throw new IllegalArgumentException("line ${sample.index}: paternal_id sample '${sample.paternal_id}' refers to sample with '${paternal_sample.sex}' sex instead of 'male'.")
     }
     if(sample.maternal_id != null){
       if(sample.individual_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: individual_id '${sample.individual_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
@@ -117,7 +122,7 @@ def validate(project){
       def maternal_sample = sampleMap[[id: sample.maternal_id]]
       if(maternal_sample == null) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' is not present in project '${project.id}'.")
       if(maternal_sample.familyId != sample.family_id) throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' for sample '${sample.individual_id}' belongs to a different family.")
-      if(maternal_sample.sex == "male") throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' refers to sample with male sex.")
+      if(maternal_sample.sex != "female") throw new IllegalArgumentException("line ${sample.index}: maternal_id sample '${sample.maternal_id}' refers to sample with '${maternal_sample.sex}' sex instead of 'female'.")
     }
     if(sample.paternal_id != null && sample.maternal_id != null){
       if(sample.paternal_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id '${sample.paternal_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
