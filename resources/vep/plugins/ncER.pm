@@ -72,12 +72,15 @@ sub getScore {
 }
 
 sub run {
-  my ($self, $transcript_variation_allele) = @_;
+  my ($self, $base_variation_feature_overlap_allele) = @_;
 
-  my $vf = $transcript_variation_allele->variation_feature;
-  my $chr = $vf->{chr};
-  my $start = $vf->{start};
-  my $end = $vf->{end};
+  # fail fast: sub-class doesn't contain transcript method
+  return {} unless ($base_variation_feature_overlap_allele->can('variation_feature'));
+	my $variation_feature = $base_variation_feature_overlap_allele->variation_feature;
+
+  my $chr = $variation_feature->{chr};
+  my $start = $variation_feature->{start};
+  my $end = $variation_feature->{end};
   my $score;
   my $result = {};
 
