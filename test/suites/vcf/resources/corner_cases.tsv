@@ -1,2 +1,2 @@
-individual_id	vcf
-SAMPLE0	corner_cases.vcf
+individual_id	sex	vcf
+SAMPLE0		corner_cases.vcf
