@@ -92,6 +92,7 @@ def parseSampleSheet(csvFile) {
   def cols = [
 		assembly: [
 			type: "string",
+      required: true,
 			default: { 'GRCh38' },
 			enum: ['GRCh37', 'GRCh38', 'T2T']
 		],
@@ -102,6 +103,7 @@ def parseSampleSheet(csvFile) {
     ],
     cram: [
       type: "file",
+      required: true,
       regex: getCramRegex()
     ]
   ]

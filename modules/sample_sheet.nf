@@ -6,11 +6,13 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
   def commonCols = [
     project_id: [
       type: "string",
+      required: true,
       default: { 'vip' },
       regex: /[a-zA-Z0-9_-]+/
     ],
     family_id: [
       type: "string",
+      required: true,
       default: { "fam${seq_nr++}" },
       regex: /[a-zA-Z0-9_-]+/
     ],
@@ -21,10 +23,12 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     ],
     paternal_id: [
       type: "string",
+      required: true,
       regex: /[a-zA-Z0-9_-]+/
     ],
     maternal_id: [
       type: "string",
+      required: true,
       regex: /[a-zA-Z0-9_-]+/
     ],
     sex: [
@@ -41,14 +45,17 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     ],
     proband: [
       type: "boolean",
+      required: true,
     ],
     hpo_ids: [
       type: "string",
+      required: true,
       list: true,
       regex: /HP:\d{7}/
     ],
     sequencing_method: [
       type: "string",
+      required: true,
       default: { 'WGS' },
       enum: ['WES', 'WGS'],
       scope: "project"

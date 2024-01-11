@@ -132,6 +132,7 @@ def parseSampleSheet(csvFile) {
     ],
     sequencing_platform: [
       type: "string",
+      required: true,
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"

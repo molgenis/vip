@@ -102,21 +102,25 @@ def parseSampleSheet(csvFile) {
   def cols = [
     fastq: [
       type: "file",
+      required: true,
       list: true,
       regex: fastqRegex
     ],
     fastq_r1: [
       type: "file",
+      required: true,
       list: true,
       regex: fastqRegex
     ],
     fastq_r2: [
       type: "file",
+      required: true,
       list: true,
       regex: fastqRegex
     ],
     sequencing_platform: [
       type: "string",
+      required: true,
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
