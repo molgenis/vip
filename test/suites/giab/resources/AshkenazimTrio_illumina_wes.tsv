@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	proband	sex	affected	sequencing_platform	sequencing_method	fastq_r1	fastq_r2
+AshkenazimTrio	HG002	HG003	HG004	true	male	true	illumina	WES	downloads/HG002.illumina.wes.R1.fastq.gz	downloads/HG002.illumina.wes.R2.fastq.gz
+AshkenazimTrio	HG003			false	male	false	illumina	WES	downloads/HG003.illumina.wes.R1.fastq.gz	downloads/HG003.illumina.wes.R2.fastq.gz
+AshkenazimTrio	HG004			false	female	false	illumina	WES	downloads/HG004.illumina.wes.R1.fastq.gz	downloads/HG004.illumina.wes.R2.fastq.gz
