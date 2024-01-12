@@ -21,6 +21,7 @@ done
 args=()
 args+=("--workflow" "fastq")
 args+=("--input" "${TEST_RESOURCES_DIR}/AshkenazimTrio_illumina_wes.tsv")
+args+=("--config" "${TEST_RESOURCES_DIR}/AshkenazimTrio_illumina_wes.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
