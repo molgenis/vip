@@ -49,7 +49,7 @@ main() {
   done
 
   echo -e "downloading ..."
-  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.1.3.sif
+  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/images/utils/vcf-inheritance-3.2.0.sif
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
   wget --quiet --continue http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa
   wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
@@ -75,7 +75,7 @@ main() {
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  apptainer exec vcf-inheritance-3.1.3.sif java "${args[@]}"
+  apptainer exec vcf-inheritance-3.2.0.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 
