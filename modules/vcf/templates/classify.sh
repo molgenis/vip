@@ -26,8 +26,26 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+
+#Workaround for https://github.com/samtools/htsjdk/issues/500https://github.com/samtools/htsjdk/issues/500
+store_alt(){
+  #store ALT headers
+  zcat "!{vcf}" | sed --quiet --expression='/^##ALT/p' > header.tmp
+}
+
+insert_alt(){
+  #remove remaining ALT header (since htsjdk stores in a map, a single ALT remains)
+  zcat "!{vcfOut}" | sed '/^##ALT/d' > "!{vcfOut}".tmp
+  #re-insert the ALT headers
+  f1=$(<header.tmp)
+  awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
+  rm header.tmp
+}
+
 main () {
+  store_alt
   classify
+  insert_alt
   index
 }
 
