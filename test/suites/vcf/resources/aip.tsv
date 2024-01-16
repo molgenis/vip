@@ -1,2 +1,2 @@
-individual_id	vcf
-SAMPLE0	aip.vcf
+individual_id	sex	proband	affected	vcf
+SAMPLE0	male	true	true	aip.vcf
