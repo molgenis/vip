@@ -34,12 +34,14 @@ store_alt(){
 }
 
 insert_alt(){
-  #remove remaining ALT header (since htsjdk stores in a map, a single ALT remains)
-  zcat "!{vcfOut}" | sed '/^##ALT/d' > "!{vcfOut}".tmp
-  #re-insert the ALT headers
-  f1=$(<header.tmp)
-  awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
-  rm header.tmp
+  if [ -s header.tmp ]; then
+    #remove remaining ALT header (since htsjdk stores in a map, a single ALT remains)
+    zcat "!{vcfOut}" | sed '/^##ALT/d' > "!{vcfOut}".tmp
+    #re-insert the ALT headers
+    f1=$(<header.tmp)
+    awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
+    #rm header.tmp
+  fi
 }
 
 main () {
