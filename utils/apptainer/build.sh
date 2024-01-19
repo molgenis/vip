@@ -105,7 +105,7 @@ main() {
   done
 
   declare -A uris
-  uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
+  uris["docker://ensemblorg/ensembl-vep:release_111.0"]="vep-111.0"
   uris["docker://google/deepvariant:1.6.0"]="deepvariant-1.6.0"
   uris["docker://google/deepvariant:deeptrio-1.6.0"]="deepvariant_deeptrio-1.6.0"
   
