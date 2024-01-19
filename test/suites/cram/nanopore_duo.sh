@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-download_test_resource "nanopore.cram" "${TEST_RESOURCES_DIR}/downloads"
+download "$base_url/nanopore.cram" "e66e9d364766e0d45f03bdc25d42cf24" "${TEST_RESOURCES_DIR}/downloads"
 ln -sf "${TEST_RESOURCES_DIR}/downloads/nanopore.cram" "${TEST_RESOURCES_DIR}/downloads/nanopore_copy.cram"
 
 args=()
