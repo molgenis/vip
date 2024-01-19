@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/bcftools-1.17.sif
+From: sif/bcftools-1.19.sif
 Stage: build
 
 Bootstrap: localimage
