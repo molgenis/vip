@@ -152,7 +152,7 @@ extract_files() {
   fi
 
   local -r vep_dir="${output_dir}/resources/vep/cache"
-  if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh38" ]; then
+  if [ ! -d "${vep_dir}/homo_sapiens_refseq/111_GRCh38" ]; then
     local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
