@@ -69,7 +69,7 @@ download_files() {
   # when modifying urls array, please keep list in 'ls -l' order
   local urls=()
   urls+=("51c904d9992c3748d4e266dd883f86f9" "images/annotsv-3.3.6.sif")
-  urls+=("7ee92c85e1f4d1151dfe9ae6b1fa06ac" "images/bcftools-1.19.sif")
+  urls+=("2a15d650ac78357cccac0368cab0bffd" "images/bcftools-1.19.sif")
   urls+=("3870e215dfebb96d8b4f1ab7f161fc37" "images/capice-5.1.1.sif")
   urls+=("c7655e4ffce0178a1a0dcc0ed097cd8f" "images/cutesv-2.0.3.sif")
   urls+=("8efa3c0f6c0f5378ca22d16074f50dfe" "images/deepvariant-1.6.0.sif")
@@ -87,7 +87,7 @@ download_files() {
   urls+=("df4523b3b8a6ced93460ca05199c70f6" "images/vcf-decision-tree-3.9.0.sif")
   urls+=("cd0001d10876537458c86907a5a6dfdc" "images/vcf-inheritance-matcher-3.0.1.sif")
   urls+=("bb20961d26ec5c92fb4c6a6bcd97d852" "images/vcf-report-5.9.0.sif")
-  urls+=("f5ef389b4b5031edfbbe9eef4f545539" "images/vep-111.0.sif")
+  urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
@@ -133,7 +133,7 @@ download_files() {
   urls+=("e2e1b4a10ecf47b1e4fe075a69f89c2e" "resources/gado/v1.0.3/HPO_2023_06_17_predictions_auc_bonf.txt.gz")
   urls+=("9aea133bbe8dea635172e6de0cf05edf" "resources/hpo_20230822.tsv")
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
-  urls+=("53c17b183d46f0798bcca2fbdbc28786" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
+  urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
 
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
