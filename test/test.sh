@@ -113,7 +113,7 @@ run() {
     fi
     test_resources_dir="$(dirname "${case}")/resources"
 
-    local time="${SLURM_TIMELIMIT:-"05:59:59"}"
+    local time="${SLURM_TIMELIMIT:-"23:59:59"}"
     local sbatch_args=()
     sbatch_args+=("--parsable")
     sbatch_args+=("--job-name=vip_test")

@@ -7,6 +7,12 @@ SCRIPT_NAME="$(basename "$0")"
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 
+VIP_VERSION="7.3.0"
+
+display_version() {
+  echo -e "${VIP_VERSION}"
+}
+
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
   -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
@@ -16,7 +22,8 @@ usage() {
   -p, --profile           <arg>  nextflow configuration profile (optional)
   -r, --resume                   resume execution using cached results (default: false)
   -s, --stub                     quickly prototype workflow logic using process script stubs
-  -h, --help                     print this message and exit"
+  -h, --help                     display this help and exit
+  -v, --version                  display version information and exit"
 }
 
 validate() {
@@ -140,11 +147,11 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.10.0" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" "${VIP_DIR}/nextflow" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.10.0" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rsh --long workflow:,input:,output:,config:,profile:,resume,stub,help -- "$@")
+  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rsvh --long workflow:,input:,output:,config:,profile:,resume,stub,version,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -167,6 +174,11 @@ main() {
   eval set -- "${args}"
   while :; do
     case "$1" in
+    -v | --version)
+          display_version
+          exit 0
+          shift
+          ;;
     -h | --help)
       usage
       exit 0
