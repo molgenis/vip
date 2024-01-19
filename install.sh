@@ -86,7 +86,7 @@ download_files() {
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
   urls+=("df4523b3b8a6ced93460ca05199c70f6" "images/vcf-decision-tree-3.9.0.sif")
   urls+=("cd0001d10876537458c86907a5a6dfdc" "images/vcf-inheritance-matcher-3.0.1.sif")
-  urls+=("ce67e55ae73b2c57d43ddc1e8e4e374a" "images/vcf-report-5.8.1.sif")
+  urls+=("bb20961d26ec5c92fb4c6a6bcd97d852" "images/vcf-report-5.9.0.sif")
   urls+=("f5ef389b4b5031edfbbe9eef4f545539" "images/vep-111.0.sif")
   urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -132,7 +132,7 @@ download_files() {
   urls+=("33e5f44edbb31625f153127be83f7640" "resources/gado/v1.0.3/genes.txt")
   urls+=("e2e1b4a10ecf47b1e4fe075a69f89c2e" "resources/gado/v1.0.3/HPO_2023_06_17_predictions_auc_bonf.txt.gz")
   urls+=("9aea133bbe8dea635172e6de0cf05edf" "resources/hpo_20230822.tsv")
-  urls+=("baa3397796ee67bb1c246f3b146d6641" "resources/inheritance_20230608.tsv")
+  urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("53c17b183d46f0798bcca2fbdbc28786" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
 
