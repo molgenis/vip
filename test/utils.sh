@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-base_url=https://download.molgeniscloud.org/downloads/vip/test/resources/
+base_url="https://download.molgeniscloud.org/downloads/vip/test/resources/"
 
 # arguments:
 #   $1  url
@@ -23,8 +23,18 @@ download() {
         rm -f "${output}"
         exit 1
     fi
+    touch "${output_dir}/${filename}.finished"
   fi
 
+  #due to the tests running in parallel the second test using the same file can fire the md5 check too soon.
+  if [ ! -f "${output_dir}/${filename}.finished" ]; then
+    for (( i=0; i<12; ++i)); do
+      echo -e "Waiting for '${output_dir}/${filename}' to finish downloading ($i)"
+      [ -f "${output_dir}/${filename}.finished" ] && break
+      sleep 5
+    done
+  fi
+  
   if ! echo "${md5}"  "${output_dir}/${filename}" | md5sum --check --quiet --status --strict; then
     echo -e "checksum check failed for '${output_dir}/${filename}'"
     exit 1
