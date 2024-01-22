@@ -4,13 +4,13 @@ Stage: build
 
 %post
     version_major=1
-    version_minor=19
+    version_minor=17
 
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
     
     # download
     curl -Ls -o bcftools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/bcftools/releases/download/${version_major}.${version_minor}/bcftools-${version_major}.${version_minor}.tar.bz2
-    echo "782b5f1bc690415192231e82213b3493b047f45e630dc8ef6f154d6126ab3e68  bcftools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+    echo "01f75d8e701d85b2c759172412009cc04f29b61616ace2fa75116123de4596cc  bcftools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
     tar xf bcftools-${version_major}.${version_minor}.tar.bz2
