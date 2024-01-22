@@ -7,7 +7,7 @@ process report {
   publishDir "$params.output", mode: 'link'
 
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(crams)
+    tuple val(meta), path(vcf), path(vcfIndex), path(crams), path(bedmethyls)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(reportPath)
@@ -26,8 +26,11 @@ process report {
     maxSamples = params.vcf.report.max_samples
     genesPath = params.vcf.report[meta.project.assembly].genes
     template = params.vcf.report.template
+    vcfReportJar = params.vcf.report.vcf_report_jar
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
+    bedmethyls = meta.bedmethyls ? meta.bedmethyls.findAll { it.bedmethyl }.collect { "${it.individual_id}=${it.bedmethyl}" }.join(",") : ""
     includeCrams = params.vcf.report.include_crams
+    includeBedMethyls = params.vcf.report.include_bedmethyls
 
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.project.samples.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 

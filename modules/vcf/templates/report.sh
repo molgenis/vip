@@ -28,7 +28,7 @@ report() {
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 256}m")
-  args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
+  args+=("-jar" "!{vcfReportJar}")
   args+=("--input" "!{vcfOut}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
@@ -58,6 +58,9 @@ report() {
   fi
   if [ -n "!{crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
     args+=("--cram" "!{crams}")
+  fi
+  if [ -n "!{bedmethyls}" ] && [[ "!{includeBedMethyls}" == "true" ]]; then
+    args+=("--bedmethyl" "!{bedmethyls}")
   fi
 
   ${CMD_VCFREPORT} java "${args[@]}"

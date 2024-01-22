@@ -2,6 +2,7 @@ nextflow.enable.dsl=2
 
 // Modules to include
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
+include { validateGroup } from './modules/utils'
 include { dorado } from './modules/mod/dorado'
 include { sort_bam } from './modules/mod/samtools'
 include { modkit } from './modules/mod/modkit'
@@ -9,9 +10,8 @@ include { methplotlib } from './modules/mod/methplotlib'
 include { to_cram } from './modules/mod/to_cram'
 include { cram; validateCramParams } from './vip_cram'
 
-workflow mod{
+workflow mod {
 	// Base modification workflow 
-
     take: meta
     main:
 	  meta
@@ -24,30 +24,37 @@ workflow mod{
 	// Basecalling using Dorado
 	
 	ch_input.pod5_data
-	| map { meta -> [meta, meta.sample.pod5] }
+	| map { meta -> [*:meta, sample:[*:meta.sample, pod5:meta.sample.pod5] ] }
+	| set {ch_input_ready}
+
+	ch_input_ready
+	| map { meta -> [ meta, meta.sample.pod5]}
 	| dorado
-	| set {ch_input_basecalled}
+	| map { meta, bam -> [*:meta, sample: [*:meta.sample, bam: bam]] }
+	| set {ch_basecalled}
 
 	// Sorting output bam files from Dorado
 
-	ch_input_basecalled
-	| map { meta, bam -> [ meta, bam ]}
+	ch_basecalled
+	| map { meta -> [ meta, meta.sample.bam ] }
 	| sort_bam
+	| map { meta, sorted_bam, sorted_bam_index -> [*:meta, sample: [*:meta.sample, sortedBam: sorted_bam, sortedBamIndex: sorted_bam_index]] }
 	| set {ch_basecalled_sorted}
 
 	// Processing bam files by modkit
 
 	ch_basecalled_sorted
-	| map { meta, sorted_bam, sorted_bam_index -> [ meta, sorted_bam, sorted_bam_index ]}
+	| map { meta -> [ meta, meta.sample.sortedBam, meta.sample.sortedBamIndex ]}
 	| modkit
+	| map { meta, bedmethyl -> [ *:meta, sample: [*:meta.sample, bedmethyl: bedmethyl]]}
 	| set { ch_input_bedmethyl }
 
-	ch_basecalled_sorted
-	| map { meta, sorted_bam, sorted_bam_index -> [ meta, sorted_bam, sorted_bam_index ]}
+	ch_input_bedmethyl
+	| map { meta -> [ meta, meta.sample.sortedBam, meta.sample.sortedBamIndex ]}
 	| to_cram
     | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
     | cram
-
+	
 	// View output hashmap
 
 	// ch_input_bedmethyl
@@ -59,11 +66,7 @@ workflow mod{
 
 workflow {
 	// Main workflow
-
 	def projects = parseSampleSheet(params.input)
-
-
-
 	Channel.from(projects)
 		| flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     	| mod
