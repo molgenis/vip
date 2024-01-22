@@ -6,8 +6,6 @@ include { validateGroup } from './modules/utils'
 include { dorado } from './modules/mod/dorado'
 include { sort_bam } from './modules/mod/samtools'
 include { modkit } from './modules/mod/modkit'
-include { methplotlib } from './modules/mod/methplotlib'
-include { to_cram } from './modules/mod/to_cram'
 include { cram; validateCramParams } from './vip_cram'
 
 workflow mod {
@@ -20,13 +18,12 @@ workflow mod {
 			ready: true
 		}
 		| set { ch_input }
-
-	// Basecalling using Dorado
 	
 	ch_input.pod5_data
 	| map { meta -> [*:meta, sample:[*:meta.sample, pod5:meta.sample.pod5] ] }
 	| set {ch_input_ready}
 
+	// Basecalling using Dorado
 	ch_input_ready
 	| map { meta -> [ meta, meta.sample.pod5]}
 	| dorado
@@ -38,29 +35,16 @@ workflow mod {
 	ch_basecalled
 	| map { meta -> [ meta, meta.sample.bam ] }
 	| sort_bam
-	| map { meta, sorted_bam, sorted_bam_index -> [*:meta, sample: [*:meta.sample, sortedBam: sorted_bam, sortedBamIndex: sorted_bam_index]] }
+	| map { meta, sortedBam, sortedBamIndex, sortedBamStats -> [*:meta, sample: [*:meta.sample, cram: sortedBam, cramIndex: sortedBamIndex, cramStats: sortedBamStats]] }
 	| set {ch_basecalled_sorted}
 
 	// Processing bam files by modkit
 
 	ch_basecalled_sorted
-	| map { meta -> [ meta, meta.sample.sortedBam, meta.sample.sortedBamIndex ]}
+	| map { meta -> [ meta, meta.sample.cram, meta.sample.cramIndex ]}
 	| modkit
 	| map { meta, bedmethyl -> [ *:meta, sample: [*:meta.sample, bedmethyl: bedmethyl]]}
-	| set { ch_input_bedmethyl }
-
-	ch_input_bedmethyl
-	| map { meta -> [ meta, meta.sample.sortedBam, meta.sample.sortedBamIndex ]}
-	| to_cram
-    | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
-    | cram
-	
-	// View output hashmap
-
-	// ch_input_bedmethyl
-	// | map { meta, bed -> [ meta, bed ]}
-	// | methplotlib
-	// | set { ch_input_methylfreq }
+	| cram
 	
 }
 

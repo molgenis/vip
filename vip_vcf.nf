@@ -232,7 +232,6 @@ workflow vcf {
 
                 [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], bedmethylPaths]
             }
-            // | view
             | report
 }
 
@@ -294,37 +293,6 @@ workflow {
     | map { key, group -> validateGroup(key, group) }
     | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram] }]] }
     | set { ch_project_cram_processed }
-
-  // // liftover and validate bedmethyl per sample
-	// ch_project.bedmethyl
-	//   | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
-	//   | branch { meta ->
-	// 			process: meta.sample.bedmethyl != null
-	// 			ready:   true
-  //                return [meta, null]
-	// 		}
-	//   | set { ch_sample_bedmethyl }
-
-  // // validate bedmethyl
-	// ch_sample_bedmethyl.process
-	//   | map { meta -> [meta, meta.sample.bedmethyl] }
-	//   | map { meta, bedmethyl -> [meta, [data: bedmethyl]] }
-  //   | set { ch_sample_bedmethyl_validated }
-
-  // // merge bedmethyl channels per project
-  // Channel.empty().mix(ch_sample_bedmethyl_validated, ch_sample_bedmethyl.ready)
-  //   | map { meta, bedmethyl -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, bedmethyl: bedmethyl]] }
-  //   | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
-  //   | map { key, group -> validateGroup(key, group) }
-  //   | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, bedmethyl: it.bedmethyl] }]] }
-  //   | set { ch_project_bedmethyl_processed }
-
-  // // merge bedmethyl and cram per project
-  //   Channel.empty().mix(ch_sample_cram_validated, ch_sample_bedmethyl_validated)
-  //   | map { meta, containers -> [meta, [samples: containers.collect {[*:it.sample, cram:it.cram, bedmethyl: it.bedmethyl]}]]}
-  //   | view
-  //   | set { ch_project_cram_bedmethyl_processed }
-
 
   // merge vcf, cram, and bedmethyl channels and update project
 	Channel.empty().mix(ch_project_vcf_processed, ch_project_cram_processed)

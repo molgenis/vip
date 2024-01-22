@@ -7,11 +7,12 @@ process sort_bam {
 	tuple val(meta), path(bam)
 
 	output:
-	tuple val(meta), path(sorted_bam), path(sorted_bam_index)
+	tuple val(meta), path(sortedBam), path(sortedBamIndex), path(sortedBamStats)
   
   	shell:
-	sorted_bam="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam"
-	sorted_bam_index="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam.csi"
+	sortedBam="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam"
+	sortedBamIndex="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam.csi"
+	sortedBamStats="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_sorted.bam.stats"
 
 	template 'samtools.sh'
 
