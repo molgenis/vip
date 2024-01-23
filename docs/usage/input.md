@@ -38,6 +38,11 @@ The following sections describe the columns that can be used in every sample-she
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
+## Columns: POD5
+| column                  | type     | required | default      | description                                                                                                 |
+|-------------------------|----------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
+| ``pod5``                | ``file`` | yes      |              | allowed file extensions: ``pod5``                                                       					 |
+
 ## Columns: FASTQ
 | column                  | type          | required        | default      | description                                                                                                 |
 |-------------------------|---------------|-----------------|--------------|-------------------------------------------------------------------------------------------------------------|
@@ -68,3 +73,4 @@ The following sections describe the columns that can be used in every sample-she
 | ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |
 | ``vcf``      | ``file`` | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
 | ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
+| ``bedmethyl``| ``file`` |          |            | allowed file extensions: ``bedmethyl``                                                       					 |

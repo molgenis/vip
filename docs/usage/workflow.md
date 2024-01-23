@@ -1,8 +1,19 @@
 # Workflow
-VIP consists of four workflows depending on the type of input data: fastq, bam/cram, gvcf or vcf.
-The `fastq` workflow is an extension of the `cram` workflow. The `cram` and `gvcf` workflows are extensions of the `vcf` workflow.
+VIP consists of five workflows depending on the type of input data: pod5, fastq, bam/cram, gvcf or vcf.
+The `fastq` and `pod5` workflows RE an extension of the `cram` workflow. The `cram` and `gvcf` workflows are extensions of the `vcf` workflow.
 The `vcf` workflow produces the pipeline outputs as described [here](./output.md).
-The following sections provide an overview of the steps of each of these workflows. 
+The following sections provide an overview of the steps of each of these workflows.
+
+## POD5
+The `pod5` workflow consists of the following steps:
+
+1. Parallelize sample sheet per sample and for each sample
+2. Modified basecalling and alignment using [Dorado](https://github.com/nanoporetech/dorado) producing a `bam` file per sample
+3. Sorting the `bam` file per sample and create an index and stats file using [Samtools](http://samtools.github.io/)
+4. Perform pileup with [Modkit](https://github.com/nanoporetech/modkit) to construct a bedMethyl table per sample
+5. Continue with step 3. of the `cram` workflow
+
+For details, see [here](https://github.com/molgenis/vip/blob/main/vip_pod5.nf).
 
 ## FASTQ
 The `fastq` workflow consists of the following steps:
@@ -24,7 +35,7 @@ The `cram` workflow consists of the following steps:
     1. Using [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) for Illumina short read data.
     2. Using this [fork of Straglr](https://github.com/philres/straglr) for PacBio and Nanopore long read data, this fork is chosen over the original [Straglr](https://github.com/bcgsc/straglr) because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.
 4. Parallelize cram in chunks consisting of one or more contigs and for each chunk
-    1. Perform short variant calling with [DeepVariant](https://github.com/google/deepvariant) producing a `gvcf` file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using [GLnexus](https://github.com/dnanexus-rnd/GLnexus).
+    1. Perform short variant calling with [DeepVariant](https://github.com/google/deepvariant) producing a `gvcf` file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using [GLnexus](https://github.com/dnanexus-rnd/GLnexus)).
     2. Perform structural variant calling with [Manta](https://github.com/Illumina/manta) or [cuteSV](https://github.com/tjiangHIT/cuteSV) producing a `vcf` file per chunk per project.
 5. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
 6. Continue with step 3. of the `vcf` workflow

@@ -2,9 +2,11 @@
 VIP is an easy to install, easy to use, portable and flexible pipeline implemented using [Nextflow](https://www.nextflow.io/).
 Features include:
 
-- Workflows for a broad range of input file types: `bam`, `cram`, `fastq`, `g.vcf`, `vcf`
+- Workflows for a broad range of input file types: `pod5`, `bam`, `cram`, `fastq`, `g.vcf`, `vcf`
 - Produces stand-alone variant interpretation HTML report with integrated genome browser  
 - Long-read sequencing support (Oxford Nanopore, PacBio HiFi)
+- Supports base modification in `cram` files with methylation tags: [SAMtags](https://samtools.github.io/hts-specs/SAMtags.pdf)
+- Supports bedmethyl visualisation in genome browser 
 - Short-read sequencing support (Illumina, both single and paired-end reads)
 - Supports GRCh38, supports GRCh37 and T2T via liftover
 - Short variant detection

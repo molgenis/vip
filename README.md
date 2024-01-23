@@ -22,7 +22,7 @@ bash vip/install.sh
 ### Usage
 ```bash
 usage: vip -w <arg> -i <arg> -o <arg>
-  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, mod
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, pod5
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
@@ -37,6 +37,21 @@ To create the documentation pages:
 ```
 pip install mkdocs mkdocs-mermaid2-plugin
 mkdocs serve
+```
+
+## Proof of Concept - Methylation
+All the files and directories that are adapted or added for the support of base modification and POD5 data
+```
+config/nxf_pod5.config
+config/nxf_vcf.config
+docs/
+modules/pod5/
+modules/vcf/report.nf
+modules/vcf/templates/report.sh
+resources/pod5/
+vip_pod5.nf
+vip_vcf.nf
+vip.sh
 ```
 
 ### License
