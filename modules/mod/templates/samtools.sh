@@ -7,7 +7,7 @@ sort() {
 }
 
 stats() {
-  ${CMD_SAMTOOLS} idxstats "!{sortedBam}" > "!{bamStats}"
+  ${CMD_SAMTOOLS} idxstats "!{sortedBam}" > "!{sortedBamStats}"
 }
 
 main() {

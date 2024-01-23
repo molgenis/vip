@@ -3,12 +3,12 @@ nextflow.enable.dsl=2
 // Modules to include
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { validateGroup } from './modules/utils'
-include { dorado } from './modules/mod/dorado'
-include { sort_bam } from './modules/mod/samtools'
-include { modkit } from './modules/mod/modkit'
+include { dorado } from './modules/pod5/dorado'
+include { sort_bam } from './modules/pod5/samtools'
+include { modkit } from './modules/pod5/modkit'
 include { cram; validateCramParams } from './vip_cram'
 
-workflow mod {
+workflow pod5 {
 	// Base modification workflow 
     take: meta
     main:
@@ -53,7 +53,7 @@ workflow {
 	def projects = parseSampleSheet(params.input)
 	Channel.from(projects)
 		| flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
-    	| mod
+    	| pod5
 }
 
 def parseSampleSheet(csvFile){
