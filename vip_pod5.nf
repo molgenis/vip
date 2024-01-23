@@ -31,7 +31,6 @@ workflow pod5 {
 	| set {ch_basecalled}
 
 	// Sorting output bam files from Dorado
-
 	ch_basecalled
 	| map { meta -> [ meta, meta.sample.bam ] }
 	| sort_bam
@@ -39,12 +38,15 @@ workflow pod5 {
 	| set {ch_basecalled_sorted}
 
 	// Processing bam files by modkit
-
 	ch_basecalled_sorted
 	| map { meta -> [ meta, meta.sample.cram, meta.sample.cramIndex ]}
 	| modkit
 	| map { meta, bedmethyl -> [ *:meta, sample: [*:meta.sample, bedmethyl: bedmethyl]]}
-	| cram
+	| set { ch_bedmethyl }
+	
+	ch_bedmethyl
+	| map { meta -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: meta.sample.cram, index: meta.sample.cramIndex, stats: meta.sample.cramStats]]] }
+    | cram
 	
 }
 
