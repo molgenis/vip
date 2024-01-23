@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+    # Install required dependencies
+    apt-get update
+    apt-get install -y git curl build-essential
+
+    # Set version variables
+    version_major=0
+    version_minor=2
+    version_patch=1
+
+	git clone https://github.com/nanoporetech/modkit.git
+    cd modkit
+    git checkout tags/v${version_major}.${version_minor}.${version_patch} -b v${version_major}.${version_minor}.${version_patch}
+
+	cargo install --path .
+
+	    # Cleanup
+    apt-get remove -y git build-essential
+    apt-get autoremove -y
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export PATH=$PATH:/root/.cargo/bin
