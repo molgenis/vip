@@ -87,7 +87,7 @@ download_files() {
   urls+=("df4523b3b8a6ced93460ca05199c70f6" "images/vcf-decision-tree-3.9.0.sif")
   urls+=("cd0001d10876537458c86907a5a6dfdc" "images/vcf-inheritance-matcher-3.0.1.sif")
   urls+=("bb20961d26ec5c92fb4c6a6bcd97d852" "images/vcf-report-5.9.0.sif")
-  urls+=("f5ef389b4b5031edfbbe9eef4f545539" "images/vep-109.3.sif")
+  urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
@@ -107,8 +107,8 @@ download_files() {
   urls+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
   urls+=("4b7f868c1dfd579de67eefa6fa6d73f4" "resources/GRCh38/capice_model_v5.1.1-v1.ubj")
   urls+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed")
-  urls+=("f9eae21524853938d82137c0fdf92368" "resources/GRCh38/clinvar_20231104_stripped.tsv.gz")
-  urls+=("5930cc7ed54b9a90d1b31d4d0ab69f93" "resources/GRCh38/clinvar_20231104_stripped.tsv.gz.tbi")
+  urls+=("332deddf7059631933df36869a326a30" "resources/GRCh38/clinvar_20240119_stripped.tsv.gz")
+  urls+=("ffa99787dee2dc8d30e00075d526a559" "resources/GRCh38/clinvar_20240119_stripped.tsv.gz.tbi")
   urls+=("72f12f9ee918878030022c46ec850038" "resources/GRCh38/expansionhunter_variant_catalog.json")
   urls+=("fecbe7f6bdc06bc7424e621ec6988c1f" "resources/GRCh38/gnomad.total.v4.0.sites.stripped.tsv.gz")
   urls+=("05ab8e0c17203148d26e568cb07d9e96" "resources/GRCh38/gnomad.total.v4.0.sites.stripped.tsv.gz.tbi")
@@ -133,7 +133,7 @@ download_files() {
   urls+=("e2e1b4a10ecf47b1e4fe075a69f89c2e" "resources/gado/v1.0.3/HPO_2023_06_17_predictions_auc_bonf.txt.gz")
   urls+=("9aea133bbe8dea635172e6de0cf05edf" "resources/hpo_20230822.tsv")
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
-  urls+=("53c17b183d46f0798bcca2fbdbc28786" "resources/vep/cache/homo_sapiens_refseq_vep_109_GRCh38.tar.gz")
+  urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
 
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
@@ -152,8 +152,8 @@ extract_files() {
   fi
 
   local -r vep_dir="${output_dir}/resources/vep/cache"
-  if [ ! -d "${vep_dir}/homo_sapiens_refseq/109_GRCh38" ]; then
-    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_109_GRCh38.tar.gz"
+  if [ ! -d "${vep_dir}/homo_sapiens_refseq/111_GRCh38" ]; then
+    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
