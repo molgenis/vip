@@ -1,25 +1,32 @@
-Bootstrap: docker
-From: ubuntu:22.04
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
 
 %post
-    # Install required dependencies
-    apt-get update
-    apt-get install -y git curl build-essential
-
-    # Set version variables
     version_major=0
     version_minor=2
     version_patch=1
 
-	git clone https://github.com/nanoporetech/modkit.git
-    cd modkit
-    git checkout tags/v${version_major}.${version_minor}.${version_patch} -b v${version_major}.${version_minor}.${version_patch}
+    # install
+    apk update
+    apk add zlib libbz2 xz-libs libdeflate curl gcompat
 
-	cargo install --path .
+    curl -Ls -o modkit.tar.gz https://github.com/nanoporetech/modkit/releases/download/v${version_major}.${version_minor}.${version_patch}/modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64.tar.gz
+    echo "ebf3ec0ace6e6e3bbce12c26463da5d9f8e16374eff1ad10f0f1a9123050fa86  modkit.tar.gz" | sha256sum -c
 
-	    # Cleanup
-    apt-get remove -y git build-essential
-    apt-get autoremove -y
-    apt-get clean
-    rm -rf /var/lib/apt/lists/*
+    tar xzf modkit.tar.gz
+    mv /modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64/bin/modkit /usr/local/bin
+    
+    # cleanup
+    rm -rf /modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64/bin/modkit
+    rm modkit.tar.gz
+    rm -rf /var/cache/apk/*
+
+%environment
+   PATH=$PATH:/modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64/bin
+
+%runscript
+   exec "$@"
+
+%help
+    A tool for post processing basecalled reads.
 
