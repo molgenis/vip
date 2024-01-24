@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+base_url="https://download.molgeniscloud.org/downloads/vip/test/resources/"
+
 # arguments:
 #   $1  url
 #   $2  md5 checksum
@@ -21,31 +23,20 @@ download() {
         rm -f "${output}"
         exit 1
     fi
+    touch "${output_dir}/${filename}.finished"
   fi
 
+  #due to the tests running in parallel the second test using the same file can fire the md5 check too soon.
+  if [ ! -f "${output_dir}/${filename}.finished" ]; then
+    for (( i=0; i<12; ++i)); do
+      echo -e "Waiting for '${output_dir}/${filename}' to finish downloading ($i)"
+      [ -f "${output_dir}/${filename}.finished" ] && break
+      sleep 5
+    done
+  fi
+  
   if ! echo "${md5}"  "${output_dir}/${filename}" | md5sum --check --quiet --status --strict; then
     echo -e "checksum check failed for '${output_dir}/${filename}'"
     exit 1
-  fi
-}
-
-# arguments:
-#   $1  filename on molgenis download server
-#   $2  output directory
-download_test_resource() {
-  local -r file="${1}"
-  local -r output_dir="${2}"
-  
-  local -r url="https://download.molgeniscloud.org/downloads/vip/test/resources/${file}"
-  local -r output="${output_dir}/${file}"
-
-  if [ ! -f "${output}" ]; then
-    mkdir -p "${output_dir}"
-    if ! wget --quiet --continue "${url}" --output-document "${output}"; then
-      echo -e "an error occurred downloading ${url}"
-        # wget always writes an (empty) output file regardless of errors
-        rm -f "${output}"
-        exit 1
-    fi
   fi
 }
