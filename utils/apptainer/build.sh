@@ -79,7 +79,7 @@ main() {
   images+=("build/alpine-3.18.3")
   images+=("build/openjdk-17")
   images+=("build/ubuntu-22.04")
-  images+=("bcftools-1.19")
+  images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
   images+=("capice-5.1.1")
   images+=("cutesv-2.0.3")
