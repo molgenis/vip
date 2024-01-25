@@ -11,7 +11,7 @@ From: sif/build/alpine-3.18.3.sif
     apk add zlib libbz2 xz-libs libdeflate curl gcompat
 
     curl -Ls -o modkit.tar.gz https://github.com/nanoporetech/modkit/releases/download/v${version_major}.${version_minor}.${version_patch}/modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64.tar.gz
-    echo "ebf3ec0ace6e6e3bbce12c26463da5d9f8e16374eff1ad10f0f1a9123050fa86  modkit.tar.gz" | sha256sum -c
+    echo "0286cef0586dde50f53aa21117a66f1e307581da  modkit.tar.gz" | sha256sum -c
 
     tar xzf modkit.tar.gz
     mv /modkit_v${version_major}.${version_minor}.${version_patch}_centos7_x86_64/bin/modkit /usr/local/bin
