@@ -24,3 +24,5 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [Straglr](https://github.com/philres/straglr)
 - [Stranger](https://github.com/Clinical-Genomics/stranger)
 - [fastp](https://github.com/OpenGene/fastp)
+- [Dorado](https://github.com/nanoporetech/dorado)
+- [Modkit](https://github.com/nanoporetech/modkit)

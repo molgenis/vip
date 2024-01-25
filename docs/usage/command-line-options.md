@@ -7,7 +7,7 @@ In addition to the `.vcf.gz` an interactive `.html` report is produced that can 
 
 ```
 usage: vip -w <arg> -i <arg> -o <arg>
-  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
+  -w, --workflow <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, pod5
   -i, --input    <arg>  path to sample sheet .tsv
   -o, --output   <arg>  output folder
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
@@ -30,6 +30,7 @@ usage: vip -w <arg> -i <arg> -o <arg>
 By default `vip`:
 
 - Assumes an Illumina sequencing platform was used to generate the input data
+- Assumes Nanopore sequencing was used to generate input data for `pod5` workflow
 - Assumes whole-genome sequencing (WGS) method was used to generate the input data
 - Uses a GRCh38 reference genome ([GCA_000001405.15 / GCF_000001405.26](https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.26/))
 - Provides classification trees for default variant filtration. For details, see [here](../advanced/classification_trees.md)

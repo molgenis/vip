@@ -200,7 +200,7 @@ workflow vcf {
                 ready: true
               }
             | set { ch_concated }
-     
+        
           ch_outputs.ready
             | map { meta, vcfs, vcfIndexes -> [*:meta, vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
             | set { ch_output_singleton }
@@ -213,20 +213,25 @@ workflow vcf {
             | set { ch_output }
 
         ch_output.slice
-            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null || sample.bedmethyl != null}.collect{ sample -> [*:meta, sample: sample] } }
             | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram.data] }
             | slice
             | map { meta, cram -> [*:meta, cram: cram] }
-            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
+            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null || sample.bedmethyl != null }), meta] }
             | groupTuple(remainder: true)
             | map { key, metaList -> 
-                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
-                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' && it.key != 'bedmethyl'}
+                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] }, bedmethyls: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, bedmethyl: it.sample.bedmethyl] } ]
               }
             | set { ch_sliced }
-
+        
         ch_sliced.mix(ch_output.ready)
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
+            | map { meta -> 
+                def bedmethylPaths = meta.bedmethyls ? meta.bedmethyls.collect { it.bedmethyl } : []
+                bedmethylPaths = bedmethylPaths.findAll { it != null}
+
+                [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], bedmethylPaths]
+            }
             | report
 }
 
@@ -238,7 +243,7 @@ workflow {
   // preprocess vcfs and crams in parallel
   Channel.from(projects)
     | map { project -> [project: project] }
-    | multiMap { it -> vcf: cram: it }
+    | multiMap { it -> vcf: cram: bedmethyl: it }
     | set { ch_project }
 
   // validate and liftover vcf per project
@@ -289,11 +294,11 @@ workflow {
     | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram] }]] }
     | set { ch_project_cram_processed }
 
-  // merge vcf and cram channels and update project
+  // merge vcf, cram, and bedmethyl channels and update project
 	Channel.empty().mix(ch_project_vcf_processed, ch_project_cram_processed)
     | map { meta, container -> [groupKey(meta, 2), container] }
     | groupTuple(remainder: true)
-    | map { key, group -> validateGroup(key, group) }
+    | map { key, group -> validateGroup(key, group) } 
     | map { meta, containers ->
         def vcf = containers.find { it.vcf != null }.vcf
         def samples = containers.find { it.samples != null }.samples
@@ -369,8 +374,15 @@ def validateVcfParams(inputAssemblies) {
   def includeCrams = params.vcf.report.include_crams
   if (!(includeCrams ==~ /true|false/))  exit 1, "parameter 'params.vcf.report.include_crams' value '${includeCrams}' is invalid. allowed values are [true, false]"
   
+  def includeBedmethyls = params.vcf.report.include_bedmethyls
+  if (!(includeBedmethyls ==~ /true|false/))  exit 1, "parameter 'params.vcf.report.include_bedmethyls' value '${includeBedmethyls}' is invalid. allowed values are [true, false]"
+
+
   def template = params.vcf.report.template
   if(!template.isEmpty() && !file(template).exists() )   exit 1, "parameter 'vcf.report.template' value '${template}' does not exist"
+
+    def vcf_report_jar = params.vcf.report.vcf_report_jar
+  if(!vcf_report_jar.isEmpty() && !file(vcf_report_jar).exists() )   exit 1, "parameter 'vcf.report.vcf_report_jar' value '${vcf_report_jar}' does not exist"
 
   outputAssemblies.each { assembly ->
     def genes = params.vcf.report[assembly].genes
@@ -379,6 +391,8 @@ def validateVcfParams(inputAssemblies) {
 }
 
 def parseSampleSheet(csvFile) {
+  def bedmethylRegex = /.+\.(bedmethyl)?/
+
   def cols = [
   	assembly: [
 			type: "string",
@@ -395,6 +409,10 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
+    ],
+    bedmethyl: [
+      type: "file",
+      regex: bedmethylRegex
     ]
   ]
 

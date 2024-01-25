@@ -22,6 +22,11 @@ An additional configuration file can be supplied on the command-line to overwrit
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
 
+### POD5
+| key                       | default     | description                                                                                            |
+|---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| dorado_model				| *installed* | for details, see [here](https://github.com/nanoporetech/dorado)                                               |
+
 ### FASTQ
 | key                       | default     | description                                                                                            |
 |---------------------------|-------------|--------------------------------------------------------------------------------------------------------|

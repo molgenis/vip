@@ -15,7 +15,7 @@ display_version() {
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-w <arg> -i <arg> -o <arg>]
-  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf
+  -w, --workflow          <arg>  workflow to execute. allowed values: cram, fastq, gvcf, vcf, pod5
   -i, --input             <arg>  path to sample sheet .tsv
   -o, --output            <arg>  output folder
   -c, --config            <arg>  path to additional nextflow .cfg (optional)
@@ -40,8 +40,8 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf ]]; then
-    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf]"
+  if [[ ! "${workflow}" =~ cram|fastq|gvcf|vcf|pod5 ]]; then
+    >&2 echo -e "error: workflow '${workflow}'. allowed values are [cram, fastq, gvcf, vcf, pod5]"
     usage
     exit 2
   fi
@@ -51,7 +51,7 @@ validate() {
     usage
     exit 2
   fi
-  if [[ ! -f "${input}" ]]; then
+  if [[ ! -f "${input}" ]] ; then
     >&2 echo -e "error: input '${input}' does not exist"
     exit 2
   fi
