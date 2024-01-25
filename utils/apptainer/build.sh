@@ -108,6 +108,8 @@ main() {
   uris["docker://ensemblorg/ensembl-vep:release_109.3"]="vep-109.3"
   uris["docker://google/deepvariant:1.6.0"]="deepvariant-1.6.0"
   uris["docker://google/deepvariant:deeptrio-1.6.0"]="deepvariant_deeptrio-1.6.0"
+  uris["docker://ontresearch/modkit:sha3745cd8f97213eaf908f5fbf4f2f8b8e2cedfc30"]="modkit-sha3745cd8f97213eaf908f5fbf4f2f8b8e2cedfc30"
+  uris["docker://ontresearch/dorado:shac28cd94f2303b0493a4b16ca86e711852c2b8525"]="dorado-shac28cd94f2303b0493a4b16ca86e711852c2b8525"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
