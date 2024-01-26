@@ -94,7 +94,7 @@ main() {
   images+=("samtools-1.17-patch1")
   images+=("stranger-0.8.1")
   images+=("straglr-philres-1.4.2")
-  images+=("vcf-decision-tree-3.9.0")
+  images+=("vcf-decision-tree-4.0.0")
   images+=("vcf-inheritance-matcher-3.0.2")
   images+=("vcf-report-6.0.0")
 
