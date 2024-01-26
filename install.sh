@@ -86,7 +86,7 @@ download_files() {
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
   urls+=("df4523b3b8a6ced93460ca05199c70f6" "images/vcf-decision-tree-3.9.0.sif")
   urls+=("cd0001d10876537458c86907a5a6dfdc" "images/vcf-inheritance-matcher-3.0.1.sif")
-  urls+=("bb20961d26ec5c92fb4c6a6bcd97d852" "images/vcf-report-5.9.0.sif")
+  urls+=("bb20961d26ec5c92fb4c6a6bcd97d852" "images/vcf-report-6.0.0.sif") #FIXME checksum
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
