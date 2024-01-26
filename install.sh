@@ -84,7 +84,7 @@ download_files() {
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
   urls+=("2c18fcda2660792a7c8ba390463ae7ac" "images/straglr-philres-1.4.2.sif")
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
-  urls+=("df4523b3b8a6ced93460ca05199c70f6" "images/vcf-decision-tree-4.0.0.sif") #FIXME update checksum
+  urls+=("4fbbd8642ead7754cb8cc19740e18175" "images/vcf-decision-tree-4.0.0.sif")
   urls+=("e58983a7dd9cdfb4ca71bc8a0a40a4a3" "images/vcf-inheritance-matcher-3.0.2.sif")
   urls+=("e7f9001dc3d866a6ad6a506261008458" "images/vcf-report-6.0.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
