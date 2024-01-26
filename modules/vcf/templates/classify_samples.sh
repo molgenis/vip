@@ -8,7 +8,8 @@ classify_samples() {
   args+=("-Xmx!{task.memory.toMega() - 256}m")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcf}")
-  args+=("--mode" "sample")
+  args+=("--metadata" "!{metadata}")
+  args+=("--type" "sample")
   args+=("--config" "!{decisionTree}")
   if [ !{annotateLabels} -eq 1 ]; then
     args+=("--labels")

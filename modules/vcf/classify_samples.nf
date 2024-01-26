@@ -15,6 +15,7 @@ process classify_samples {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
+		metadata = params.vcf.classify_samples.metadata
     decisionTree = params.vcf.classify_samples[meta.project.assembly].decision_tree
     annotateLabels = params.vcf.classify_samples.annotate_labels
     annotatePath = params.vcf.classify_samples.annotate_path

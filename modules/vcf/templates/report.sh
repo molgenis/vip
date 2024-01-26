@@ -30,6 +30,7 @@ report() {
   args+=("-Xmx!{task.memory.toMega() - 256}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("--input" "!{vcfOut}")
+  args+=("--metadata" "!{metadata}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
   if [ -n "!{probands}" ]; then
