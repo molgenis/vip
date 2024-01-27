@@ -119,7 +119,7 @@ run() {
     sbatch_args+=("--job-name=vip_test")
     sbatch_args+=("--time=${time}")
     sbatch_args+=("--cpus-per-task=1")
-    sbatch_args+=("--mem=1gb")
+    sbatch_args+=("--mem=10gb")
     sbatch_args+=("--nodes=1")
     sbatch_args+=("--open-mode=append")
     sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
@@ -281,7 +281,7 @@ main() {
     exit 2
   fi
 
-  local test="cram,fastq,gvcf,vcf"
+  local test="cram,fastq,gvcf,vcf,pod5"
   local clean="false"
 
   eval set -- "${args}"
