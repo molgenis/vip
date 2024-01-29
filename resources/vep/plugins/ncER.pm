@@ -65,7 +65,9 @@ sub getScore {
 
   my $size = @data;
   die("ERROR: Expecting no more than one score for a position.\n") unless $size <= 1;
-
+  if($size == 0){
+    return;
+  }
   #list of lines, tab separated values
   my @values = split("\t", $data[0]);
   return $values[3];
@@ -90,7 +92,13 @@ sub run {
   else{
     my $scoreStart = getScore($chr, $start);
     my $scoreEnd = getScore($chr, $start);
-    $score = $scoreStart > $scoreEnd ? $scoreStart : $scoreEnd;
+    if($scoreStart && $scoreEnd){
+        $score = $scoreStart > $scoreEnd ? $scoreStart : $scoreEnd;
+    }elsif($scoreStart){
+        $score = $scoreStart;
+    }else{
+        $score = $scoreEnd;
+    }
   }
 
   if($score) {
