@@ -53,9 +53,17 @@ workflow pod5 {
 workflow {
 	// Main workflow
 	def projects = parseSampleSheet(params.input)
+	def assemblies = getAssemblies(projects)
+	validatePod5Params(assemblies)
+
 	Channel.from(projects)
 		| flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
     	| pod5
+}
+
+def validatePod5Params(assemblies) {
+  def doradoModel = params.dorado_model
+  if(!file(doradoModel).isDirectory())   exit 1, "parameter 'params.dorado_model' value '${doradoModel}' is not an directory"
 }
 
 def parseSampleSheet(csvFile){
