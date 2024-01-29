@@ -1,61 +1,6 @@
 {
-  "rootNode": "chrom",
+  "rootNode": "filter",
   "nodes": {
-    "chrom": {
-      "description": "Chromosome 1-22-X-Y-MT",
-      "type": "BOOL",
-      "query": {
-        "field": "#CHROM",
-        "operator": "in",
-        "value": [
-          "chr1",
-          "chr2",
-          "chr3",
-          "chr4",
-          "chr5",
-          "chr6",
-          "chr7",
-          "chr8",
-          "chr9",
-          "chr10",
-          "chr11",
-          "chr12",
-          "chr13",
-          "chr14",
-          "chr15",
-          "chr16",
-          "chr17",
-          "chr18",
-          "chr19",
-          "chr20",
-          "chr21",
-          "chr22",
-          "chrX",
-          "chrY",
-          "chrM"
-        ]
-      },
-      "outcomeTrue": {
-        "nextNode": "gene"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_rm"
-      },
-      "outcomeMissing": {
-        "nextNode": "gene"
-      }
-    },
-    "gene": {
-      "description": "Gene exists",
-      "type": "EXISTS",
-      "field": "INFO/CSQ/Gene",
-      "outcomeTrue": {
-        "nextNode": "filter"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_rm"
-      }
-    },
     "filter": {
       "description": "Filter pass",
       "type": "BOOL",
@@ -121,7 +66,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "chrom"
           }
         },
         {
@@ -147,7 +92,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "gnomAD"
+            "nextNode": "chrom"
           }
         },
         {
@@ -165,10 +110,65 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "gnomAD"
+        "nextNode": "chrom"
       },
       "outcomeMissing": {
+        "nextNode": "chrom"
+      }
+    },
+    "chrom": {
+      "description": "Chromosome 1-22-X-Y-MT",
+      "type": "BOOL",
+      "query": {
+        "field": "#CHROM",
+        "operator": "in",
+        "value": [
+          "chr1",
+          "chr2",
+          "chr3",
+          "chr4",
+          "chr5",
+          "chr6",
+          "chr7",
+          "chr8",
+          "chr9",
+          "chr10",
+          "chr11",
+          "chr12",
+          "chr13",
+          "chr14",
+          "chr15",
+          "chr16",
+          "chr17",
+          "chr18",
+          "chr19",
+          "chr20",
+          "chr21",
+          "chr22",
+          "chrX",
+          "chrY",
+          "chrM"
+        ]
+      },
+      "outcomeTrue": {
+        "nextNode": "gene"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "gene"
+      }
+    },
+    "gene": {
+      "description": "Gene exists",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/Gene",
+      "outcomeTrue": {
         "nextNode": "gnomAD"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
       }
     },
     "sv": {
