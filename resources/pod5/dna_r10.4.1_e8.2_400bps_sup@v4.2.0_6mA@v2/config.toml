@@ -1,0 +1,23 @@
+[general]
+creation_date = "04/21/2023, 13:53:36"
+model = "conv_lstm"
+
+[model_params]
+size = 256
+kmer_len = 9
+num_out = 2
+
+[modbases]
+mod_bases = "a"
+offset = 0
+mod_long_names_0 = "6mA"
+chunk_context_0 = 100
+chunk_context_1 = 100
+kmer_context_bases_0 = 4
+kmer_context_bases_1 = 4
+motif = "A"
+motif_offset = 0
+
+[refinement]
+refine_do_rough_rescale = 1
+refine_kmer_center_idx = 6
