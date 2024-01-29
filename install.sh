@@ -74,7 +74,7 @@ download_files() {
   urls+=("c7655e4ffce0178a1a0dcc0ed097cd8f" "images/cutesv-2.0.3.sif")
   urls+=("8efa3c0f6c0f5378ca22d16074f50dfe" "images/deepvariant-1.6.0.sif")
   urls+=("b67e8c1d774c0d22de70b7be79aaa05e" "images/deepvariant_deeptrio-1.6.0.sif")
-  urls+=("8d7a34c469bbd1d27c324a867713cd4b" "dorado-shac28cd94f2303b0493a4b16ca86e711852c2b8525.sif")
+  urls+=("8d7a34c469bbd1d27c324a867713cd4b" "images/dorado-shac28cd94f2303b0493a4b16ca86e711852c2b8525.sif")
   urls+=("78a8ce16c9d8bac53e5fbca4f763dcef" "images/expansionhunter-5.0.0.sif")
   urls+=("afed919dc16ccdae1869cf6dbc5a19d5" "images/fastp-0.23.4.sif")
   urls+=("494c8c9e1031828f48027e34032de423" "images/gado-1.0.3.sif")
