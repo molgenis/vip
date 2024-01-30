@@ -92,16 +92,16 @@ sub run {
   else{
     my $scoreStart = getScore($chr, $start);
     my $scoreEnd = getScore($chr, $start);
-    if($scoreStart && $scoreEnd){
+    if(length $scoreStart && length $scoreEnd){
         $score = $scoreStart > $scoreEnd ? $scoreStart : $scoreEnd;
-    }elsif($scoreStart){
+    }elsif(length $scoreStart){
         $score = $scoreStart;
     }else{
         $score = $scoreEnd;
     }
   }
 
-  if($score) {
+  if(length $score) {
     $result->{ncER} = $score;
   }
   
