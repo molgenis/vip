@@ -69,6 +69,7 @@ bash install.sh
 
 # Test the pod5 workflow
 cd test
+ml awscli
 bash test.sh -t pod5
 ```
 
