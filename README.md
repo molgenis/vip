@@ -71,6 +71,8 @@ bash install.sh
 cd test
 ml awscli
 bash test.sh -t pod5
+
+# Output can be found in test/output/
 ```
 
 ### License
