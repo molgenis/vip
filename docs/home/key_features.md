@@ -10,7 +10,7 @@ Features include:
 - Short variant detection
 - Structural variant detection
 - Short tandem repeat detection
-- Consequence-agnostic
+- [Consequence](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html) aware
 - Rich set of variant annotations
 - Pathogenic variant prioritization [(CAPICE)](https://github.com/molgenis/capice)
 - Phenotype support [(HPO)](https://hpo.jax.org/)
