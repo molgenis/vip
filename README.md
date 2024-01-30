@@ -49,9 +49,27 @@ modules/pod5/
 modules/vcf/report.nf
 modules/vcf/templates/report.sh
 resources/pod5/
+test/suites/pod5/
+utils/build.sh
 vip_pod5.nf
 vip_vcf.nf
 vip.sh
+install.sh
+```
+
+## How to install VIP and test this branch
+```
+# Clone repository and switch to PoC/Methylation branch
+git clone https://github.com/molgenis/vip.git
+cd vip
+git checkout PoC/Methylation
+
+# Install to download tools
+bash install.sh
+
+# Test the pod5 workflow
+cd test
+bash test.sh -t pod5
 ```
 
 ### License
