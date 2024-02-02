@@ -75,6 +75,8 @@ sub new {
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
+    # fail fast: sub-class doesn't contain transcript method
+    return {} unless ($base_variation_feature_overlap_allele->can('transcript'));
     my $transcript = $transcript_variation_allele->transcript;
     return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
 
