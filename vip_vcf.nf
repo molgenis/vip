@@ -8,7 +8,7 @@ include { liftover as liftover_vcf } from './modules/vcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
-include { annotate; annotate_publish } from './modules/vcf/annotate'
+include { annotate; annotate_rna; annotate_publish } from './modules/vcf/annotate'
 include { classify; classify_publish } from './modules/vcf/classify'
 include { filter } from './modules/vcf/filter'
 include { inheritance } from './modules/vcf/inheritance'
@@ -90,6 +90,7 @@ workflow vcf {
 
       ch_annotate.take
           | annotate
+          | annotate_rna
           | multiMap { it -> done: publish: it }
           | set { ch_annotated }
 

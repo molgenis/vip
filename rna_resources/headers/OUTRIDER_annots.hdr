@@ -1,0 +1,2 @@
+##FORMAT=<ID=OUTRIDER_PVAL,Number=1,Type=Float,Description="Gagneurlab OUTRIDER module expression pValue">
+##FORMAT=<ID=OUTRIDER_ZSCORE,Number=1,Type=Float,Description="Gagneurlab OUTRIDER module expression Zscore">

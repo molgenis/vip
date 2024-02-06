@@ -49,6 +49,43 @@ process annotate {
     """
 }
 
+process annotate_rna {
+
+  input:
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
+
+  output:
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+
+  shell:
+    basename = basename(meta)
+    vcfOut = "${basename}_annotated.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+    rna_res = meta.project.samples.rna_res[0]
+    sampleid = meta.project.samples.individual_id[0]
+    res_to_bed = "/groups/umcg-gdio/tmp01/umcg-tniemeijer/rna_vip/vip/utils/convert_res_to_bed.py"
+
+    fraser_header = params.vcf.annotate.headers.fraser
+    outrider_header = params.vcf.annotate.headers.outrider
+    mae_header = params.vcf.annotate.headers.mae
+
+    template 'annotate_rna.sh'
+
+  stub:
+    basename = basename(meta)
+    vcfOut = "${basename}_annotated.vcf.gz"
+    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutStats = "${vcfOut}.stats"
+
+    """
+    touch "${vcfOut}"
+    touch "${vcfOutIndex}"
+    echo -e "chr1\t248956422\t1234" > "${vcfOutStats}"
+    """
+  
+}
+
 process annotate_publish {
   label 'vcf_annotate_publish'
   

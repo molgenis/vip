@@ -47,6 +47,9 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       default: { 'WGS' },
       enum: ['WES', 'WGS'],
       scope: "project"
+    ],
+    rna_res: [
+      type: "string",
     ]
   ]
 

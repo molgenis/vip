@@ -1,0 +1,2 @@
+##FORMAT=<ID=MAE_PVAL,Number=1,Type=Float,Description="Gagneurlab MAE module mono allelic expression adjusted pValue">
+##FORMAT=<ID=MAE_LOG2FC,Number=1,Type=Float,Description="Gagneurlab MAE module mono allelic expression log2 fold change">

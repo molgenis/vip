@@ -1,0 +1,2 @@
+##FORMAT=<ID=FRASER_PVAL,Number=1,Type=Float,Description="Gagneurlab FRASER module adjusted pValue">
+##FORMAT=<ID=FRASER_dPSI,Number=1,Type=Float,Description="Gagneurlab FRASER module delta percentage spliced in">
