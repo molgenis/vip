@@ -14,7 +14,7 @@ liftover() {
   args+=("--REFERENCE_SEQUENCE" "!{reference}")
   args+=("--REJECT" "picard_rejected.vcf.gz")
   # as suggested by picard documentation
-  args+=("--MAX_RECORDS_IN_RAM" "100000")
+  args+=("--MAX_RECORDS_IN_RAM" "10000")
   args+=("--TMP_DIR" "$(realpath .)")
   args+=("--VERBOSITY" "WARNING")
   args+=("--WARN_ON_MISSING_CONTIG" "true")
