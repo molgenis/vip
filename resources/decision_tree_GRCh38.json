@@ -389,7 +389,7 @@
       "query": {
         "field": "INFO/CSQ/CAPICE_SC",
         "operator": ">",
-        "value": 0.66
+        "value": 0.5
       },
       "outcomeTrue": {
         "nextNode": "exit_lp"
