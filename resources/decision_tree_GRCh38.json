@@ -384,7 +384,7 @@
       }
     },
     "capice": {
-      "description": "CAPICE prediction > 0.66",
+      "description": "CAPICE prediction > 0.5",
       "type": "BOOL",
       "query": {
         "field": "INFO/CSQ/CAPICE_SC",
