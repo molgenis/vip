@@ -35,6 +35,13 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+         "am_pathogenicity": {
+          "label": "AlphaMissense Score",
+          "description": "AlphaMissense pathogenicity score for missense variants",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "CAPICE_CL": {
           "label": "CAPICE",
           "description": "CAPICE classification",
