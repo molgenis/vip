@@ -134,6 +134,8 @@ download_files() {
   urls+=("9aea133bbe8dea635172e6de0cf05edf" "resources/hpo_20230822.tsv")
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
+  urls+=("9fd167735f16a1b87da6eb3e4c25fcb5" "_dev/resources/AlphaMissense_hg38.tsv.gz")
+  urls+=("d2b23d618660cb2a7acfba17170dfd4c" "_dev/resources/AlphaMissense_hg38.tsv.gz.tbi")
   # when modifying urls array, please keep list in 'ls -l' order
 
   for ((i = 0; i < ${#urls[@]}; i += 2)); do

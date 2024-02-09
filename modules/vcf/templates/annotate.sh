@@ -185,6 +185,9 @@ vep() {
   if [ -n "!{alphScorePath}" ]; then
     args+=("--plugin" "AlphScore,!{alphScorePath}")
   fi
+  if [ -n "!{alphaMissensePath}" ]; then
+    args+=("--plugin" "AlphaMissense,file=!{alphaMissensePath},transcript_match=1,cols=all")
+  fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
   fi

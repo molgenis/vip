@@ -29,6 +29,7 @@ process annotate {
     vepPluginNcerPath = params.vcf.annotate[assembly].vep_plugin_ncer
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
+    alphaMissensePath = params.vcf.annotate[assembly].vep_plugin_alphaMissense
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
