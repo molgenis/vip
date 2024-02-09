@@ -81,7 +81,7 @@ main() {
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
-  images+=("capice-5.1.1")
+  images+=("capice-5.1.2")
   images+=("cutesv-2.0.3")
   images+=("expansionhunter-5.0.0")
   images+=("fastp-0.23.4")
