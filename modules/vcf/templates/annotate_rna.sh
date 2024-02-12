@@ -33,19 +33,39 @@ mamba deactivate
 ml BCFtools
 ml BEDTools
 
-bedtools sort -i $fraserbed > "sorted_${fraserbed}"
-bedtools sort -i $outriderbed > "sorted_${outriderbed}"
-bedtools sort -i $maebed > "sorted_${maebed}"
+# check if bed file is empty or not, otherwise skip step but create proper file
+# sort bed files 
+# lift hg19 > hg38
+# annotate the vcf with the results bed.
 
-# Bed from hg19 to hg38
+if [ -s "!{vcf}" ];
+then
+    if [ -s $fraserbed ];
+    then
+        bedtools sort -i $fraserbed > "sorted_${fraserbed}"
+        $liftovertool "sorted_${fraserbed}" $chain_hg19_hg38 "sorted_lifted_${fraserbed}" "unMapped_${fraserbed}"
+        bcftools annotate -s $sampleid -a "sorted_lifted_${fraserbed}" -h "!{fraser_header}" -c $fraser_columns "!{vcf}" --output-type "z" -o "fraser_!{vcfOut}"
+    else
+        cp "!{vcf}" "fraser_!{vcfOut}"
+    fi
 
-$liftovertool "sorted_${fraserbed}" $chain_hg19_hg38 "sorted_lifted_${fraserbed}" "unMapped_${fraserbed}"
-$liftovertool "sorted_${outriderbed}" $chain_hg19_hg38 "sorted_lifted_${outriderbed}" "unMapped_${outriderbed}"
-$liftovertool "sorted_${maebed}" $chain_hg19_hg38 "sorted_lifted_${maebed}" "unMapped_${maebed}"
+    if [ -s $outriderbed ];
+    then
+        bedtools sort -i $outriderbed > "sorted_${outriderbed}"
+        $liftovertool "sorted_${outriderbed}" $chain_hg19_hg38 "sorted_lifted_${outriderbed}" "unMapped_${outriderbed}"
+        bcftools annotate -s $sampleid -a "sorted_lifted_${outriderbed}" -h "!{outrider_header}" -c $outrider_columns "fraser_!{vcfOut}" --output-type "z" -o "fraser_outrider_!{vcfOut}"
+    else
+        cp "fraser_!{vcfOut}" "fraser_outrider_!{vcfOut}"
+    fi
 
-#Iets met sample in samples, check of fraser/outrider/mae bed bij dit sample hoort (o.b.v. samplesheet?). 
-bcftools annotate -s $sampleid -a "sorted_lifted_${fraserbed}" -h "!{fraser_header}" -c $fraser_columns "!{vcf}" --output-type "z" -o "fraser_!{vcfOut}"
-bcftools annotate -s $sampleid -a "sorted_lifted_${outriderbed}" -h "!{outrider_header}" -c $outrider_columns "fraser_!{vcfOut}" --output-type "z" -o "fraser_outrider_!{vcfOut}"
-bcftools annotate -s $sampleid -a "sorted_lifted_${maebed}" -h "!{mae_header}" -c $mae_columns "fraser_outrider_!{vcfOut}" --output-type "z" -o "!{vcfOut}"
-
-
+    if [ -s $maebed ];
+    then
+        bedtools sort -i $maebed > "sorted_${maebed}"
+        $liftovertool "sorted_${maebed}" $chain_hg19_hg38 "sorted_lifted_${maebed}" "unMapped_${maebed}"
+        bcftools annotate -s $sampleid -a "sorted_lifted_${maebed}" -h "!{mae_header}" -c $mae_columns "fraser_outrider_!{vcfOut}" --output-type "z" -o "!{vcfOut}"
+    else
+        cp "fraser_outrider_!{vcfOut}" "!{vcfOut}"
+    fi
+else
+    touch "!{vcfOut}"
+fi

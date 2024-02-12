@@ -67,6 +67,8 @@ def format_res(res, pcutoff=0.5):
             res = res[["chr","start", "end", "padjust", "zScore"]]
         case "MAE":
             res = res[["chr","start", "end", "padjust", "log2FC"]]
+    # convert types of start and end to int
+    res = res.astype({"start":int, "end":int})
     return res
 
 def main():
