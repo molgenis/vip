@@ -171,6 +171,9 @@ vep() {
   if [ -n "!{gadoScores}" ]; then
     args+=("--plugin" "GADO,!{gadoScores},!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
+    if [ -n "!{gtexFile}" ]; then
+    args+=("--plugin" "GTeX,!{gtexFile},!{params.vcf.annotate.ensembl_gene_mapping}")
+  fi
   args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
     args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
