@@ -30,6 +30,7 @@ process annotate {
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
+    getxFile = params.vcf.annotate.vep_plugin_gtex
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
     gadoScores = meta.gado != null ? meta.gado : ""
