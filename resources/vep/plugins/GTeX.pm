@@ -118,9 +118,8 @@ sub parseGTeXFile {
         my $line = $_;
         chomp($line);
         @split = split(/\t/, $line);
-        my $gene = split(/\./, $split[0])[0];
-        print "gene: $gene\n";
-        $gene_data{$gene} = {
+        my @gene = split(/\./, $split[0]);
+        $gene_data{$gene[0]} = {
             Adipose_Subcutaneous => $split[2],
             Adipose_Visceral => $split[3],
             AdrenalGland => $split[4],
@@ -211,7 +210,6 @@ sub run {
     return {} unless $ensembl_gene_id;
 
     my $gene_value = $self->{gene_data}->{$ensembl_gene_id};
-    print "ensembl_gene_id: $ensembl_gene_id\n";
     return {} unless $gene_value;
     
     return {} unless $gene_value->{Adipose_Subcutaneous};
