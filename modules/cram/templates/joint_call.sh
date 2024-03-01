@@ -17,11 +17,11 @@ create_sliced_vcfs () {
 # workaround contains a workaround for https://github.com/samtools/bcftools/issues/1425
 reheader () {
   echo -e "##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO" > empty.vcf
-  ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --threads "!{task.cpus}" empty.vcf | ${CMD_BGZIP} -c > empty_contigs.vcf.gz
-  ${CMD_BCFTOOLS} index --csi --threads "!{task.cpus}" empty_contigs.vcf.gz
+  ${CMD_BCFTOOLS} reheader --fai "!{refSeqFaiPath}" --threads "!{task.cpus}" empty.vcf | sed '/^##FILTER/d'| sed '/^#CHROM/d' > empty_contigs.vcf
 
   for gVcf in !{gVcfs}; do
-    ${CMD_BCFTOOLS} merge --output-type z --output "reheadered_${gVcf}" --no-version --threads "!{task.cpus}" empty_contigs.vcf.gz "sliced_${gVcf}"
+    ${CMD_BCFTOOLS} view -h sliced_${gVcf} | sed '/^##contig/d'| sed '/^##fileformat/d' | cat empty_contigs.vcf - > new_header.vcf
+    ${CMD_BCFTOOLS} reheader --header new_header.vcf --threads "!{task.cpus}" sliced_${gVcf} > "reheadered_${gVcf}"
   done
 }
 
@@ -44,9 +44,9 @@ index () {
 }
 
 reheader_cleanup () {
-  for gVcf in !{gVcfs}; do
-    rm "reheadered_${gVcf}"
-  done
+  rm "empty_contigs.vcf"
+  rm "empty.vcf"
+  rm "new_header.vcf"
 }
 
 create_sliced_vcfs_cleanup () {
