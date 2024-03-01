@@ -128,6 +128,11 @@ execute_workflow() {
   else 
     envWork="${NXF_WORK}"
   fi
+  if [[ -z "${NXF_JVM_ARGS}" ]]; then
+    envJvm="-Xmx250m"
+  else 
+    envJvm="${NXF_JVM_ARGS}"
+  fi
   local envStrict="true"
 
   local args=()
@@ -147,7 +152,7 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.10.0" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.10.0" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
 }
 
 main() {
