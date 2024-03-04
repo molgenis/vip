@@ -186,7 +186,8 @@ create_symlinks() {
   local -r output_dir="${1}"
 
   local -r file="nextflow-23.10.0-all"
-  (cd "${output_dir}" && chmod +x "${file}" && rm -f nextflow && ln -s ${file} "nextflow")
+  (cd "${output_dir}" && chmod +x "${file}") || echo "Failed to set permissions for ${file}"
+  (cd "${output_dir}" && rm -f nextflow && ln -s ${file} "nextflow")
 
   chmod +x "${output_dir}/vip.sh"
   if [ ! -f "${output_dir}/vip" ]; then
