@@ -1,6 +1,0 @@
-# workaround for https://github.com/Ensembl/ensembl-vep/issues/1414
-bigWigToWig hg19.100way.phyloP100way.bw hg19.100way.phyloP100way.wig
-wig2bed < hg19.100way.phyloP100way.wig > hg19.100way.phyloP100way_5cols.bed
-cut -f1-3,5 hg19.100way.phyloP100way_5cols.bed > hg19.100way.phyloP100way.bed
-bgzip hg19.100way.phyloP100way.bed
-tabix -p bed hg19.100way.phyloP100way.bed.gz
