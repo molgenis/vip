@@ -97,6 +97,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#why-does-vip-fail-with-an-exit-code-137">Why does VIP fail with an exit code 137?</a>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-the-genome-browser-in-the-report-not-show-all-the-reads-for-my-structural-variant">Why does the genome browser in the report not show all the reads for my structural variant?</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -146,6 +148,9 @@ For example:</p>
 <p>You might need to update <code>APPTAINER_BIND</code>, for more details see <a href="../../usage/config/#environment">here</a>. To understand the cause of this issue take a look at the <a href="https://apptainer.org/docs/user/main/bind_paths_and_mounts.html">Apptainer documentation</a>.</p>
 <h2 id="why-does-vip-fail-with-an-exit-code-137">Why does VIP fail with an exit code 137?<a class="headerlink" href="#why-does-vip-fail-with-an-exit-code-137" title="Permanent link">¶</a></h2>
 <p>A process has run out of memory. See the <a href="../../usage/config/#process">config</a> documentation on how to update resource assignments for some or all processes.</p>
+<h2 id="why-does-the-genome-browser-in-the-report-not-show-all-the-reads-for-my-structural-variant">Why does the genome browser in the report not show all the reads for my structural variant?<a class="headerlink" href="#why-does-the-genome-browser-in-the-report-not-show-all-the-reads-for-my-structural-variant" title="Permanent link">¶</a></h2>
+<p>Since structural variants can be very large it is not possible to keep all reads for these variants in the report.
+The Cram file with all reads is produced as an intermediate result of VIP, and can be viewed using the desktop version of <a href="https://igv.org/doc/desktop/">IGV</a>.</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
