@@ -405,13 +405,6 @@
           "type": "STRING",
           "required": true
         },
-        "VIPL": {
-          "label": "VIP labels",
-          "description": "VIP decision tree labels",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "STRING"
-        },
         "VIPP": {
           "label": "VIP path",
           "description": "VIP decision tree path",

@@ -17,7 +17,6 @@ process classify_samples {
 
 		metadata = params.vcf.classify_samples.metadata
     decisionTree = params.vcf.classify_samples[meta.project.assembly].decision_tree
-    annotateLabels = params.vcf.classify_samples.annotate_labels
     annotatePath = params.vcf.classify_samples.annotate_path
 
     probands = meta.probands.collect{ proband -> proband.individual_id}.join(",")
