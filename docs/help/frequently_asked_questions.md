@@ -19,3 +19,7 @@ You might need to update `APPTAINER_BIND`, for more details see [here](../usage/
 
 ## Why does VIP fail with an exit code 137?
 A process has run out of memory. See the [config](../usage/config.md#process) documentation on how to update resource assignments for some or all processes.
+
+## Why does the genome browser in the report not show all the reads for my structural variant?
+Since structural variants can be very large it is not possible to keep all reads for these variants in the report.
+The Cram file with all reads is produced as an intermediate result of VIP, and can be viewed using the desktop version of [IGV](https://igv.org/doc/desktop/).
