@@ -185,6 +185,10 @@ vep() {
   if [ -n "!{alphScorePath}" ]; then
     args+=("--plugin" "AlphScore,!{alphScorePath}")
   fi
+  if [ -n "!{alphaMissensePath}" ]; then
+    #The plugin supports transcript matching, but we this wont work for us due to it being based on ensembl id's
+    args+=("--plugin" "AlphaMissense,file=!{alphaMissensePath},cols=all")
+  fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
   fi

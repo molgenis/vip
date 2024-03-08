@@ -395,10 +395,28 @@
         "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lb"
+        "nextNode": "alphaMissense"
       },
       "outcomeMissing": {
         "nextNode": "exit_vus"
+      }
+    },    
+    "alphaMissense": {
+      "description": "AlphaMissense pathogenicity score > 0.2977",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/am_pathogenicity",
+        "operator": ">",
+        "value": 0.2977
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp_am"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb_am"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_lb"
       }
     },
     "exit_rm": {
@@ -410,6 +428,11 @@
       "description": "Benign",
       "type": "LEAF",
       "class": "B"
+    },
+    "exit_lb_am": {
+      "description": "Benign (Alpha Missense)",
+      "type": "LEAF",
+      "class": "LB_AM"
     },
     "exit_lb": {
       "description": "Likely Benign",
@@ -425,6 +448,11 @@
       "description": "Likely Pathogenic",
       "type": "LEAF",
       "class": "LP"
+    },
+    "exit_lp_am": {
+      "description": "Likely Pathogenic (AlphaMissense)",
+      "type": "LEAF",
+      "class": "LP_AM"
     },
     "exit_p": {
       "description": "Pathogenic",
