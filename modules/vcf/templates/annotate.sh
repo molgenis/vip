@@ -37,7 +37,10 @@ annot_sv() {
 capice() {
   capice_vep
   capice_bcftools
-  capice_predict
+  #only run capice if there a variants with annotations, e.g. <STR> only VCF files do not yield any annotated lines
+  if [ "$(zcat "${capiceInputPath}" | grep -vc "^#")" -gt 0 ]; then
+    capice_predict
+  fi
 }
 
 capice_vep() {
