@@ -1,0 +1,22 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant">
+##INFO=<ID=REF,Number=1,Type=Integer,Description="Reference copy number">
+##INFO=<ID=REPID,Number=1,Type=String,Description="Repeat identifier as specified in the variant catalog">
+##INFO=<ID=VARID,Number=1,Type=String,Description="Variant identifier as specified in the variant catalog">
+##INFO=<ID=RL,Number=1,Type=Integer,Description="Reference length in bp">
+##INFO=<ID=RU,Number=1,Type=String,Description="Repeat unit in the reference orientation">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##contig=<ID=chr22,length=50818468>
+##ALT=<ID=STR13,Description="Allele comprised of 13 repeat units">
+##ALT=<ID=STR23,Description="Allele comprised of 23 repeat units">
+##ALT=<ID=STR103,Description="Allele comprised of 103 repeat units">
+##ALT=<ID=STR3,Description="Allele comprised of 3 repeat units">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	PROBAND0	MOTHER0	FATHER0
+chr22	17199629	.	A	<STR13>	15	PASS	SVTYPE=STR;END=149390841;REF=6;RL=13;RU=CGGCGG;REPID=BLA1;VARID=BLA1	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19134440	.	G	<STR23>	11	PASS	SVTYPE=STR;END=149390841;REF=6;RL=23;RU=CGGCGG;REPID=BLA2;VARID=BLA2	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19253958	.	C	<STR103>	11	PASS	SVTYPE=STR;END=149390841;REF=6;RL=103;RU=CGGCGG;REPID=BLA3;VARID=BLA3_I	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
+chr22	19718955	.	C	<STR3>	10	PASS	SVTYPE=STR;END=149390841;REF=6;RL=3;RU=CGGCGG;REPID=BLA4;VARID=BLA4	GT:AD:DP	1/1:0,50:50	0/0:50,0:50	0/0:50,0:50
