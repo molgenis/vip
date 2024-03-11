@@ -160,6 +160,8 @@ vep() {
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
+  args+=("--plugin" "fathmm,!{fathmmMKLScoresPath}")
+  args+=("--custom" "!{reMMScoresPath},ReMM,bed,exact,0")
   args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then

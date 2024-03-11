@@ -121,6 +121,8 @@ download_files() {
   urls+=("644aa23c29f4a9507bae23ef65b936d7" "resources/GRCh38/uORF_5UTR_PUBLIC.txt")
   urls+=("d39fa9cca9fb870b99e6c67b57ef1ad3" "resources/GRCh38/variant_catalog_grch38_fixed.json")
   urls+=("acd67fe42b2e2e5a162dcc8ba16f1345" "resources/GRCh38/vkgl_consensus_20231101.tsv")
+  urls+=("360f56abfe3e2ecb5e224733f948b3be" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz")
+  urls+=("d3e4a13d738a2946db261b92a57a0e86" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz.csi")
   urls+=("d149c60680991830056d593543994c56" "resources/annotsv/v3.3.6/2202_hg19.tar.gz")
   urls+=("6c5b6df41efc9a2e348536529a7320de" "resources/annotsv/v3.3.6/2202_phenotype.zip")
   urls+=("354380089157c6f541a9b1af05290c9c" "resources/annotsv/v3.3.6/Annotations_Human_3.3.6.tar.gz")
