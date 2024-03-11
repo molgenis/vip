@@ -160,8 +160,6 @@ vep() {
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
-  args+=("--plugin" "fathmm,!{fathmmMKLScoresPath}")
-  args+=("--custom" "!{reMMScoresPath},ReMM,bed,exact,0")
   args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then
@@ -189,6 +187,12 @@ vep() {
   fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
+  fi
+  if [ -n "!{fathmmMKLScoresPath}" ]; then
+    args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
+  fi
+  if [ -n "!{reMMScoresPath}" ]; then
+    args+=("--plugin" "ReMM,!{reMMScoresPath}")
   fi
   
   ${CMD_VEP} "${args[@]}"

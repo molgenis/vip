@@ -1,4 +1,4 @@
-package fathmm;
+package FATHMM_MKL_NC;
 
 use strict;
 use warnings;
@@ -7,11 +7,13 @@ use Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin;
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 
 =head1 NAME
- fathmm
+ FATHMM_MKL_NC
 =head1 SYNOPSIS
- 
+ Predict the Functional Consequences of Non-Coding Single Nucleotide Variants (SNVs)
+ ./vep -i variations.vcf --plugin FATHMM-MKL-NC,/FULL_PATH_TO_FATHMM-MKL-NC_file
 =head1 DESCRIPTION
- 
+ Predict the Functional Consequences of Non-Coding Single Nucleotide Variants (SNVs)
+ This plugin is build on top of the GREEN-DB dataset for FATHMM-MKL non coding scores: https://zenodo.org/records/3981121
 =cut
 
 my $output_vcf;
@@ -44,7 +46,7 @@ sub feature_types {
 
 sub get_header_info {
     return {
-      fathmm => "fathmm"
+      FATHMM_MKL_NC => "FATHMM_MKL_NC: Predict the Functional Consequences of Non-Coding Single Nucleotide Variants (SNVs)"
     }
 }
 
@@ -56,13 +58,8 @@ sub getScore {
 
   # get candidate annotations from precomputed scores file
   my @data = @{$self->get_data($chr, $pos, $pos)};
-
   for my $line (@data) {
     my @values = split("\t", $line);
-    print "c: $chr \n";
-    print "l: $line \n";
-    print "0: $values[0] \n";
-    print "4: $values[4] \n";
     return $values[4] unless $values[2] ne $ref || $values[3] ne $alt;
   }
 }
@@ -79,13 +76,10 @@ sub run {
   my $result = {};
 
   $score = getScore($chr, $pos, $ref, $alt);
-
-  print "TEST: $score";
-  if(length $score) {
-    $result->{fathmm} = $score;
-  }
-  print "TEST2: $result";
-  return $result;
+  return {} unless $score;
+  return {
+      FATHMM_MKL_NC => $score,
   };
+}
 1;
 
