@@ -191,6 +191,12 @@ vep() {
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
   fi
+  if [ -n "!{fathmmMKLScoresPath}" ]; then
+    args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
+  fi
+  if [ -n "!{reMMScoresPath}" ]; then
+    args+=("--plugin" "ReMM,!{reMMScoresPath}")
+  fi
   
   ${CMD_VEP} "${args[@]}"
 }

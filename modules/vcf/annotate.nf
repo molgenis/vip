@@ -27,6 +27,8 @@ process annotate {
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl
     vepPluginUtrAnnotatorPath = params.vcf.annotate[assembly].vep_plugin_utrannotator
     vepPluginNcerPath = params.vcf.annotate[assembly].vep_plugin_ncer
+    fathmmMKLScoresPath = params.vcf.annotate[assembly].vep_plugin_fathmm_MKL_scores
+    reMMScoresPath = params.vcf.annotate[assembly].vep_plugin_ReMM_scores
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
