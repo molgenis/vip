@@ -104,6 +104,10 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#ncer">ncER</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#remm">ReMM</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#fathmm-mkl">FATHMM-MKL</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -377,6 +381,12 @@ check the output file headers for the complete overview. Similarly, some annotat
 <td>VEP feature type. Categories: Transcript, RegulatoryFeature, MotifFeature</td>
 </tr>
 <tr>
+<td>INFO/CSQ/FATHMM_MKL_NC</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>The  FATHMM-MKL score for Non-Coding Single Nucleotide Variants (SNVs)</td>
+</tr>
+<tr>
 <td>INFO/CSQ/five_prime_UTR_variant_annotation</td>
 <td>string</td>
 <td>VEP plugin</td>
@@ -593,6 +603,12 @@ check the output file headers for the complete overview. Similarly, some annotat
 <td>?</td>
 </tr>
 <tr>
+<td>INFO/CSQ/ReMM</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>The Regulatory Mendelian Mutation (ReMM) score was created for relevance prediction of non-coding variations in the human genome in terms of Mendelian diseases.</td>
+</tr>
+<tr>
 <td>INFO/CSQ/SIFT</td>
 <td>float</td>
 <td>VEP</td>
@@ -746,6 +762,11 @@ check the output file headers for the complete overview. Similarly, some annotat
 <h4 id="ncer">ncER<a class="headerlink" href="#ncer" title="Permanent link">¶</a></h4>
 <p><a href="https://www.nature.com/articles/s41467-019-13212-3">The non-coding essential regulation (ncER)</a> score indicates if a region is likely to be essential in terms of regulation.
 The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on Zenodo: https://zenodo.org/records/5636163</p>
+<h4 id="remm">ReMM<a class="headerlink" href="#remm" title="Permanent link">¶</a></h4>
+<p><a href="https://charite.github.io/software-remm-score.html">The Regulatory Mendelian Mutation (ReMM)</a> score was created for relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM scores: https://zenodo.org/records/3955933</p>
+<h4 id="fathmm-mkl">FATHMM-MKL<a class="headerlink" href="#fathmm-mkl" title="Permanent link">¶</a></h4>
+<p><a href="https://fathmm.biocompute.org.uk/fathmmMKL.htm">FATHMM-MKL</a> predicts the Functional Consequences of Coding and Non-Coding Single Nucleotide Variants (SNVs)
+ This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non coding scores: https://zenodo.org/records/3981121</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
