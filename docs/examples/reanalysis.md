@@ -5,5 +5,3 @@ It is possible to start from the normalize, annotate, classify, filter, inherita
 For reanalysis the basics of running VIP remain the same, however the correct intermediate file should be provided as input in the sample sheet.
 Several intermediate results are available in the "intermediates" subfolder of your output folder.
 Furthermore the step form which you whish to start should be added in the configuration parameter "vcf.start"
-
-For an example on how to reanalyze VIP data using a different classification tree see [here](https://github.com/molgenis/vip/blob/main/test/test_vcf.sh#L104).
