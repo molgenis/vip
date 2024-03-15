@@ -10,7 +10,7 @@ Stage: build
 
     # download
     curl -Ls -o minimap2-${version_major}.${version_minor}.tar.bz2 https://github.com/lh3/minimap2/releases/download/v${version_major}.${version_minor}/minimap2-${version_major}.${version_minor}.tar.bz2
-    echo "6a588efbd273bff4f4808d5190957c50272833d2daeb4407ccf4c1b78143624c  minimap2-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+    echo "9f7d3ca20b8f795222440c00eef5131c0740065f87aa7f4a1e0bfb2d8e820753  minimap2-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
     tar xf minimap2-${version_major}.${version_minor}.tar.bz2
