@@ -120,7 +120,7 @@ download_files() {
   urls+=("a0f63b592b7b32fe36a9631793f341aa" "resources/GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
   urls+=("644aa23c29f4a9507bae23ef65b936d7" "resources/GRCh38/uORF_5UTR_PUBLIC.txt")
   urls+=("d39fa9cca9fb870b99e6c67b57ef1ad3" "resources/GRCh38/variant_catalog_grch38_fixed.json")
-  urls+=("acd67fe42b2e2e5a162dcc8ba16f1345" "resources/GRCh38/vkgl_consensus_20231101.tsv")
+  urls+=("46b2c2b0eb299227d5f8f7ebe51ef319" "resources/GRCh38/vkgl_consensus_20240201.tsv")
   urls+=("360f56abfe3e2ecb5e224733f948b3be" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz")
   urls+=("53827286f5827d2c2f0e4e6f02179ec2" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz.tbi")
   urls+=("4d725faf3a43d5e40af1568458596aac" "resources/GRCh38/GRCh38_ReMM.tsv.gz")
