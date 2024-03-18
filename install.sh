@@ -79,7 +79,7 @@ download_files() {
   urls+=("494c8c9e1031828f48027e34032de423" "images/gado-1.0.3.sif")
   urls+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif")
   urls+=("ff8aceb2c9f185307a69b981ba08efd8" "images/manta-1.6.0.sif")
-  urls+=("1e0caddbdd755bf608ef024e3d0a2f19" "images/minimap2-2.26.sif")
+  urls+=("7486bd5de526d9888df8eea2d8bdea48" "images/minimap2-2.27.sif")
   urls+=("06ac8a76a307fa42fffd80ab906fd24b" "images/picard-3.1.1.sif")
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
   urls+=("2c18fcda2660792a7c8ba390463ae7ac" "images/straglr-philres-1.4.2.sif")

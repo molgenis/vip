@@ -27,6 +27,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 |---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
 | GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
 | minimap2.soft_clipping    | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
+| minimap2.nanopore_preset  | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq', 'map-ont'.                                 |
 
 ### CRAM
 | key                                         | default        | description                                                                                                                                                     |
