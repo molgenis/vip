@@ -157,6 +157,7 @@ vep() {
   args+=("--fork" "!{task.cpus}")
   args+=("--hgvs")
   args+=("--pubmed")
+  args+=("--mirna")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
