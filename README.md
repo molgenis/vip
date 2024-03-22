@@ -6,6 +6,9 @@ VIP is a flexible human variant interpretation pipeline for rare disease using s
 ## Documentation
 VIP documentation is available at this link https://molgenis.github.io/vip/.
 
+> [!TIP]
+> Visit <a href="https://vip.molgeniscloud.org/">https://vip.molgeniscloud.org/</a> to analyse your own variants
+
 ## Quick Reference
 
 ### Requirements
