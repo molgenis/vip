@@ -7,6 +7,9 @@ as well as a interactive HTML report with the same variants, prioritized by the 
 and providing additional aids like a genome browser and a representation of the decisions leading to the VIP classification.
 VIP can be used for single patients, families or cohort data.
 
+!!! tip "Try it yourself"
+    Visit <a href="https://vip.molgeniscloud.org/">https://vip.molgeniscloud.org/</a> to analyse your own variants 
+
 [Click here for a live example](vip_giab_hg001.html)
 
 ![Example report](img/report_example.png)]
