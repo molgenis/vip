@@ -16,13 +16,19 @@ validate() {
 
   # version
   if [[ -z "${version}" ]]; then
-    echo -e "missing required -v, --version"
+    echo -e "error: missing required -v, --version"
     exit 1
   fi
 
   # output
   if [[ -f "${output}" ]]; then
-    echo -e "output '${output}' already exists"
+    echo -e "error: output '${output}' already exists"
+    exit 1
+  fi
+
+  # downloaded temporary resource
+  if [[ -f "phenotype_to_genes.txt" ]]; then
+    echo -e "error: phenotype_to_genes.txt already exists"
     exit 1
   fi
 }
@@ -31,10 +37,18 @@ create() {
   local -r version="${1}"
   local -r output="${2}"
 
-  curl --fail --silent --request GET "https://github.com/obophenotype/human-phenotype-ontology/releases/download/${version}/phenotype_to_genes.txt" --remote-name
+  local -r url="https://github.com/obophenotype/human-phenotype-ontology/releases/download/${version}/phenotype_to_genes.txt"
+  echo -e "downloading '${url}'..."
+  if ! curl --fail --silent --location --request GET "${url}" --remote-name; then
+    echo -e "error downloading '${url}': invalid version?"
+    exit 1
+  fi
+
   echo -e "creating '${output}'..."
   echo -e "#Format: entrez-gene-id<tab>HPO-Term-ID" > "${output}"
   sed -e 1d phenotype_to_genes.txt | awk -v FS='\t' -v OFS='\t' '{print $3 "\t" $1}' | sort | uniq >> "${output}"
+
+  # remove temporary file
   rm "phenotype_to_genes.txt"
 }
 
