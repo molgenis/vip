@@ -62,8 +62,8 @@ install() {
   if [ -f "${SCRIPT_DIR}/resources/nextflow-23.10.0-all" ]; then
     cp --link "${SCRIPT_DIR}/resources/nextflow-23.10.0-all" "${versionDir}"
   fi
-  if [ -f "${SCRIPT_DIR}/resources/hpo_20230822.tsv" ]; then
-    cp --link "${SCRIPT_DIR}/resources/hpo_20230822.tsv" "${versionDir}/resources"
+  if [ -f "${SCRIPT_DIR}/resources/hpo_20240208.tsv" ]; then
+    cp --link "${SCRIPT_DIR}/resources/hpo_20240208.tsv" "${versionDir}/resources"
   fi
   if [ -f "${SCRIPT_DIR}/resources/inheritance_20230608.tsv" ]; then
     cp --link "${SCRIPT_DIR}/resources/inheritance_20230608.tsv" "${versionDir}/resources"
@@ -79,8 +79,8 @@ install() {
   if [ -f "${versionDir}/nextflow-23.10.0-all" ] && [ ! -f "${SCRIPT_DIR}/resources/nextflow-23.10.0-all" ]; then
     cp --link "${versionDir}/nextflow-23.10.0-all" "${SCRIPT_DIR}/resources"
   fi
-  if [ -f "${versionDir}/resources/hpo_20230822.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20230822.tsv" ]; then
-    cp --link "${versionDir}/resources/hpo_20230822.tsv" "${SCRIPT_DIR}/resources"
+  if [ -f "${versionDir}/resources/hpo_20240208.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240208.tsv" ]; then
+    cp --link "${versionDir}/resources/hpo_20240208.tsv" "${SCRIPT_DIR}/resources"
   fi
   if [ -f "${versionDir}/resources/inheritance_20230608.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/inheritance_20230608.tsv" ]; then
     cp --link "${versionDir}/resources/inheritance_20230608.tsv" "${SCRIPT_DIR}/resources"
