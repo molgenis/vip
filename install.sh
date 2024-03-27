@@ -105,7 +105,7 @@ download_files() {
   urls+=("c8c50252f1874ce3e7029b2178b2991a" "resources/GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
   urls+=("16b2f104b5131c643efffbf3a1501ee8" "resources/GRCh38/GRCh38_ncER_perc.bed.gz")
   urls+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
-  urls+=("7a7173961b8e2a5ed1a91edcaec05370" "resources/GRCh38/capice_model_v5.1.2-v2.ubj")
+  urls+=("ad76ef0edeaeb0573775d44864551c54" "resources/GRCh38/capice_model_v5.1.2-v2.ubj")
   urls+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed")
   urls+=("332deddf7059631933df36869a326a30" "resources/GRCh38/clinvar_20240119_stripped.tsv.gz")
   urls+=("ffa99787dee2dc8d30e00075d526a559" "resources/GRCh38/clinvar_20240119_stripped.tsv.gz.tbi")
