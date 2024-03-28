@@ -134,7 +134,9 @@ download_files() {
   urls+=("aa3404ed9f3ff721cc949de54defb4ed" "resources/gado/v1.0.4/hp.obo")
   urls+=("2e41743e51c1744c157f7350cc31e4dd" "resources/gado/v1.0.4/genesProteinCoding.txt")
   urls+=("7303e9a130d4ac837afc739a5c320fb5" "resources/gado/v1.0.4/HPO_2024_02_12_prediction_info.txt.gz")
+  # update utils/install.sh when updating hpo.tsv
   urls+=("f0ea56d86cb6bdc2da323afbfac91a57" "resources/hpo_20240208.tsv")
+  # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
@@ -188,6 +190,7 @@ extract_files() {
 create_symlinks() {
   local -r output_dir="${1}"
 
+  # update utils/install.sh when updating nextflow
   local -r file="nextflow-23.10.0-all"
   (cd "${output_dir}" && chmod +x "${file}") || echo "Failed to set permissions for ${file}"
   (cd "${output_dir}" && rm -f nextflow && ln -s ${file} "nextflow")
