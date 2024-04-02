@@ -85,7 +85,7 @@ download_files() {
   urls+=("2c18fcda2660792a7c8ba390463ae7ac" "images/straglr-philres-1.4.2.sif")
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
   urls+=("4fbbd8642ead7754cb8cc19740e18175" "images/vcf-decision-tree-4.0.0.sif")
-  urls+=("e58983a7dd9cdfb4ca71bc8a0a40a4a3" "images/vcf-inheritance-matcher-3.0.2.sif")
+  urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("3a07c5cb8a5cd5ad3a05625685cbbf6c" "images/vcf-report-6.0.1.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
