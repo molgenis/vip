@@ -6,12 +6,18 @@ VIP is a flexible human variant interpretation pipeline for rare disease using s
 ## Documentation
 VIP documentation is available at this link https://molgenis.github.io/vip/.
 
+> [!TIP]
+> Visit <a href="https://vip.molgeniscloud.org/">https://vip.molgeniscloud.org/</a> to analyse your own variants
+
 ## Quick Reference
 
 ### Requirements
-- Java
-- [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages)
-- 150GB free disk space
+- [GNU-based Linux](https://en.wikipedia.org/wiki/Linux_distribution#Widely_used_GNU-based_or_GNU-compatible_distributions) (e.g. Ubuntu, [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) with [x86_64](https://en.wikipedia.org/wiki/X86-64) architecture
+- Bash ≥ 3.2
+- Java ≥ 11
+- [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages) (setuid installation)
+- 8GB RAM (an estimate, see also the [documentation](https://molgenis.github.io/vip/get_started/requirements/))
+- 220GB disk space
 
 ### Installation
 ```bash
