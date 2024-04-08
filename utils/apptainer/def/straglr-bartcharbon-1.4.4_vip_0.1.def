@@ -12,7 +12,7 @@ From: sif/build/ubuntu-22.04.sif
     chmod +x /opt/trf/trf
 
     # ce7d96cad4630d6a73114657e082f2402b1b1213 = v1.4.2
-    pip install git+https://github.com/philres/straglr.git@ce7d96cad4630d6a73114657e082f2402b1b1213#egg=straglr
+    pip install git+https://github.com/bartcharbon/straglr.git@a8e5e48c0f17bd9ec693ac0f389d718387505ac#egg=straglr
 
     # cleanup
     pip cache purge
