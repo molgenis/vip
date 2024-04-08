@@ -48,7 +48,7 @@ workflow str {
     ch_str_by_platform.straglr
       | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | straglr_call
-      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | map { meta, tsv, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_str_straglr }
 
     // group by project
