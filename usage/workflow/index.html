@@ -151,7 +151,7 @@ The following sections provide an overview of the steps of each of these workflo
 <li>Create validated, indexed <code>.bam</code> file from <code>bam/cram/sam</code> input</li>
 <li>Discover short tandem repeats and publish as intermediate result.<ol>
 <li>Using <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a> for Illumina short read data.</li>
-<li>Using this <a href="https://github.com/philres/straglr">fork of Straglr</a> for PacBio and Nanopore long read data, this fork is chosen over the original <a href="https://github.com/bcgsc/straglr">Straglr</a> because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.</li>
+<li>Using this <a href="https://github.com/molgenis/straglr">fork of Straglr</a> for PacBio and Nanopore long read data, this is a fork of this fork(https://github.com/philres/straglr) and is chosen over the original <a href="https://github.com/bcgsc/straglr">Straglr</a> because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.</li>
 </ol>
 </li>
 <li>Parallelize cram in chunks consisting of one or more contigs and for each chunk<ol>
