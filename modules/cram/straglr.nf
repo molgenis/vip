@@ -6,7 +6,7 @@ process straglr_call {
   input:
     tuple val(meta), path(cram), path(cramCrai)
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
+    tuple val(meta), path(tsvOut), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
     paramReference = params[meta.project.assembly].reference.fasta
     paramReferenceFai = params[meta.project.assembly].reference.fastaFai
@@ -17,6 +17,7 @@ process straglr_call {
     sampleSex = meta.sample.sex
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
+    tsvOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.tsv"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
