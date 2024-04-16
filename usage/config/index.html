@@ -368,6 +368,181 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 <td><em>installed</em></td>
 <td>from <a href="https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed">here</a></td>
 </tr>
+<tr>
+<td>sv.cutesv.batches</td>
+<td>10000000</td>
+<td>Batch of genome segmentation interval</td>
+</tr>
+<tr>
+<td>sv.cutesv.gt_round</td>
+<td>500</td>
+<td>Maximum round of iteration for alignments searching if perform genotyping</td>
+</tr>
+<tr>
+<td>sv.cutesv.include_bed</td>
+<td></td>
+<td>Only detect SVs in regions in the BED file</td>
+</tr>
+<tr>
+<td>sv.cutesv.ivcf</td>
+<td></td>
+<td>Enable to perform force calling using the given vcf file</td>
+</tr>
+<tr>
+<td>sv.cutesv.max_size</td>
+<td>100000</td>
+<td>Maximum size of SV to be reported. All SVs are reported when using -1</td>
+</tr>
+<tr>
+<td>sv.cutesv.max_split_parts</td>
+<td>7</td>
+<td>Maximum number of split segments a read may be aligned before it is ignored. All split segments are considered when using -1. (Recommand -1 when applying assembly-based alignment.)</td>
+</tr>
+<tr>
+<td>sv.cutesv.merge_del_threshold</td>
+<td>0</td>
+<td>Maximum distance of deletion signals to be merged</td>
+</tr>
+<tr>
+<td>sv.cutesv.merge_ins_threshold</td>
+<td>100</td>
+<td>Maximum distance of insertion signals to be merged</td>
+</tr>
+<tr>
+<td>sv.cutesv.min_mapq</td>
+<td>20</td>
+<td>Minimum mapping quality value of alignment to be taken into account (recommend 10 for force calling)</td>
+</tr>
+<tr>
+<td>sv.cutesv.min_read_len</td>
+<td>500</td>
+<td>Ignores reads that only report alignments with not longer than bp</td>
+</tr>
+<tr>
+<td>sv.cutesv.min_siglength</td>
+<td>10</td>
+<td>Minimum length of SV signal to be extracted</td>
+</tr>
+<tr>
+<td>sv.cutesv.min_size</td>
+<td>30</td>
+<td>Minimum size of SV to be reported</td>
+</tr>
+<tr>
+<td>sv.cutesv.min_support</td>
+<td>10</td>
+<td>Minimum number of reads that support a SV to be reported</td>
+</tr>
+<tr>
+<td>sv.cutesv.read_range</td>
+<td>1000</td>
+<td>The interval range for counting reads distribution</td>
+</tr>
+<tr>
+<td>sv.cutesv.report_readid</td>
+<td>false</td>
+<td>Enable to report supporting read ids for each SV</td>
+</tr>
+<tr>
+<td>sv.cutesv.retain_work_dir</td>
+<td>false</td>
+<td>Enable to retain temporary folder and files</td>
+</tr>
+<tr>
+<td>sv.cutesv.write_old_sigs</td>
+<td>false</td>
+<td>Enable to output temporary sig files</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.diff_ratio_filtering_TRA</td>
+<td>0.6</td>
+<td>Filter breakpoints with basepair identity less than <value> for translocation</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.diff_ratio_merging_DEL</td>
+<td>0.3</td>
+<td>Do not merge breakpoints with basepair identity more than <value> for deletion</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.diff_ratio_merging_INS</td>
+<td>0.3</td>
+<td>Do not merge breakpoints with basepair identity more than <value> for insertion</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.max_cluster_bias_DEL</td>
+<td>100</td>
+<td>Maximum distance to cluster read together for deletion</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.max_cluster_bias_DUP</td>
+<td>500</td>
+<td>Maximum distance to cluster read together for duplication</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.max_cluster_bias_INS</td>
+<td>100</td>
+<td>Maximum distance to cluster read together for insertion</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.max_cluster_bias_INV</td>
+<td>500</td>
+<td>Maximum distance to cluster read together for inversion</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.max_cluster_bias_TRA</td>
+<td>50</td>
+<td>Maximum distance to cluster read together for translocation</td>
+</tr>
+<tr>
+<td>sv.cutesv.nanopore.remain_reads_ratio</td>
+<td>1.0</td>
+<td>The ratio of reads remained in cluster. Set lower when the alignment data have high quality but recommand over 0.5</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.diff_ratio_filtering_TRA</td>
+<td>0.6</td>
+<td>Filter breakpoints with basepair identity less than <value> for translocation</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.diff_ratio_merging_DEL</td>
+<td>0.5</td>
+<td>Do not merge breakpoints with basepair identity more than <value> for deletion</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.diff_ratio_merging_INS</td>
+<td>0.9</td>
+<td>Do not merge breakpoints with basepair identity more than <value> for insertion</value></td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.max_cluster_bias_DEL</td>
+<td>1000</td>
+<td>Maximum distance to cluster read together for deletion</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.max_cluster_bias_DUP</td>
+<td>500</td>
+<td>Maximum distance to cluster read together for duplication</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.max_cluster_bias_INS</td>
+<td>1000</td>
+<td>Maximum distance to cluster read together for insertion</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.max_cluster_bias_INV</td>
+<td>500</td>
+<td>Maximum distance to cluster read together for inversion</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.max_cluster_bias_TRA</td>
+<td>50</td>
+<td>Maximum distance to cluster read together for translocation</td>
+</tr>
+<tr>
+<td>sv.cutesv.pacbio_hifi.remain_reads_ratio</td>
+<td>1.0</td>
+<td>The ratio of reads remained in cluster. Set lower when the alignment data have high quality but recommand over 0.5</td>
+</tr>
 </tbody>
 </table>
 <h3 id="gvcf">gVCF<a class="headerlink" href="#gvcf" title="Permanent link">¶</a></h3>
