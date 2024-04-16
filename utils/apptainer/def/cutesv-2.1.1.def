@@ -3,17 +3,17 @@ From: sif/build/alpine-3.18.3.sif
 
 %post
     version_major=2
-    version_minor=0
-    version_patch=3
+    version_minor=1
+    version_patch=1
 
     # install
     apk update
-    apk add python3 py3-numpy cython zlib libbz2 xz-libs libdeflate
+    apk add python3 py3-numpy py3-scikit-learn cython zlib libbz2 xz-libs libdeflate
     apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip
 
     # --root-user-action=ignore: https://stackoverflow.com/a/72551258, suppresses build warning
     # -no-deps                 : fixes pyvcf install and pins dependency versions
-    pip install --root-user-action=ignore pysam==0.21.0 biopython==1.81 cigar==0.1.3 PyVCF3==1.0.3
+    pip install --root-user-action=ignore scipy==1.13.0 pysam==0.22.0 biopython==1.83 cigar==0.1.3 PyVCF3==1.0.3
     pip install --root-user-action=ignore --no-deps cuteSV==${version_major}.${version_minor}.${version_patch}
 
     # cleanup
