@@ -10,9 +10,6 @@
       },
       "outcomeFalse": {
         "nextNode": "exit_rm"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_rm"
       }
     },
     "filter": {

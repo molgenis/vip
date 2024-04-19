@@ -171,6 +171,10 @@ extract_files() {
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
 
+  if [ ! -f "${output_dir}/resources/GTEx/GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct" ]; then
+    gunzip ${output_dir}/resources/GTEx/GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz
+  fi
+  
   local -r annotsv_dir="${output_dir}/resources/annotsv/v3.3.6"
 
   local -r annotsv_human_dir="${annotsv_dir}/Annotations_Human"
