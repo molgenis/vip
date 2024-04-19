@@ -248,7 +248,14 @@
           "description": "The HGNC gene ID",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "INTEGER"
+          "type": "STRING"
+        },
+        "GTEx_Tissues": {
+          "label": "Tissues",
+          "description": "Tissues with a TPM > 1.",
+          "numberType": "OTHER",
+          "separator": "&",
+          "type": "STRING"
         },
         "HGVSc": {
           "label": "HGVS C",

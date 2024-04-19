@@ -139,6 +139,9 @@ download_files() {
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
   done
+  download_file "https://ftp.ensembl.org/pub/release-111/variation/indexed_vep_cache/" "FIXME" "homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "${output_dir}/resources/vep/cache/" "false"
+  download_file "https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq/" "FIXME" "GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz" "${output_dir}/resources/GTEx" "false"
+  
 }
 
 extract_files() {
@@ -154,6 +157,11 @@ extract_files() {
   local -r vep_dir="${output_dir}/resources/vep/cache"
   if [ ! -d "${vep_dir}/homo_sapiens_refseq/111_GRCh38" ]; then
     local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
+    echo -e "extracting ${vep_gz} ..."
+    tar -xzf "${vep_gz}" -C "${vep_dir}"
+  fi
+  if [ ! -d "${vep_dir}/homo_sapiens/111_GRCh38" ]; then
+    local -r vep_gz="${vep_dir}/homo_sapiens_vep_111_GRCh38.tar.gz"
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
