@@ -1,4 +1,4 @@
-package GTeX;
+package GTEx;
 
 use strict;
 use warnings;
@@ -15,6 +15,8 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
  Plugin to annotate consequences with GADO scores modes based on their gene.
 =cut
 
+my $self;
+
 sub version {
     return '0.2';
 }
@@ -28,33 +30,37 @@ sub variant_feature_types {
 }
 
 sub get_header_info {
-    return {
-        GTeX_Tissues => "GTeX tissues with median TPM > 0.5",
-    };
-}
+    $self = GTEx->new;
+    my $result;
+    my %tissues = map {$_ => 1} split(';', $self->params->[1]);
 
-my $self;
+    $result->{"GTEx_Tissues"} = "GTEx tissues with a TPM > 1. (Filtered for input parameters:".(keys %tissues);
+    foreach (keys %tissues) {
+        my $desc = ("GTEx_" . $_);
+        $desc =~ s/_/ /g;
+        $result->{"GTEx_" . $_} = $desc . " TPM value.";
+    }
+    return $result;
+}
 
 sub new {
     if (!(defined $self)) {
         my $class = shift;
         $self = $class->SUPER::new(@_);
-        my $gtexFile = $self->params->[0];
-        my $mappingFile = $self->params->[1];
+        my $GTExFile = $self->params->[0];
 
-        die("ERROR: GTeX file not specified\n") unless $gtexFile;
-        die("ERROR: Gene mapping file not specified\n") unless $mappingFile;
-        my %gene_data = parseGTeXFile($gtexFile);
-        my %gene_mapping = parseMappingFile($mappingFile);
+        my %tissues = map {$_ => 1} split(';', $self->params->[1]);
+        die("ERROR: GTEx file not specified\n") unless $GTExFile;
+        my %transcript_data = parseGTExFile($GTExFile);
 
-        $self->{gene_mapping} = \%gene_mapping;
-        $self->{gene_data} = \%gene_data;
+        $self->{transcript_data} = \%transcript_data;
+        $self->{tissues} = \%tissues;
     }
     return $self;
 }
 
-sub parseGTeXFile {
-    my %gene_data;
+sub parseGTExFile {
+    my %transcript_data;
     my $file = $_[0];
     open(FH, '<', $file) or die $!;
 
@@ -64,8 +70,8 @@ sub parseGTeXFile {
         my $line = $_;
         chomp($line);
         @split = split(/\t/, $line);
-        my @gene = split(/\./, $split[0]);
-        $gene_data{$gene[0]} = {
+        my @transcript = split(/\./, $split[0]);
+        $transcript_data{$transcript[0]} = {
             Adipose_Subcutaneous => $split[2],
             Adipose_Visceral => $split[3],
             AdrenalGland => $split[4],
@@ -122,62 +128,38 @@ sub parseGTeXFile {
             WholeBlood => $split[55]
         };
     }
-    return %gene_data
-}
-
-sub parseMappingFile {
-    my %mapping_data;
-    my $file = $_[0];
-    open(MAPPING_FH, '<', $file) or die $!;
-
-    my @split;
-
-    while (<MAPPING_FH>) {
-        my $line = $_;
-        chomp($line);
-        @split = split(/\t/, $line);
-        if (defined $split[0] and length $split[0] and defined $split[1] and length $split[1]){
-            $mapping_data{$split[1]} = $split[0];
-        }
-    }
-    return %mapping_data
+    return %transcript_data
 }
 
 sub run {
     my ($self, $transcript_variation_allele) = @_;
 
     my $transcript = $transcript_variation_allele->transcript;
-    return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
 
-    my $entrez_gene_id = $transcript->{_gene_stable_id};
-    return {} unless $entrez_gene_id;
-
-    my $ensembl_gene_id = $self->{gene_mapping}->{$entrez_gene_id};
-    return {} unless $ensembl_gene_id;
-
-    my $gene_value = $self->{gene_data}->{$ensembl_gene_id};
-    return {} unless $gene_value;
+    my $transcript_value = $self->{transcript_data}->{$transcript->stable_id};
+    return {} unless $transcript_value;
     
-    my $gtex_exists = $gene_value->{Adipose_Subcutaneous};
-    return {} unless $gtex_exists;
+    return {} unless $transcript_value->{Adipose_Subcutaneous};
 
+    my %tissues = %{$self->{tissues}};
+
+    my $result = {};
     my $gtex_tissues = "";
-
-    my %gtex = %{$gene_value};
-
-    $gtex_tissues = "";
-    foreach my $key (keys %gtex) {
-         if($gtex{$key} > 0.5){
+    foreach (keys %tissues) {
+        my $tissue = $_;
+        $result->{"GTEx_" . $_} = $transcript_value->{$tissue};
+        if($transcript_value->{$tissue} > 1){
             if($gtex_tissues){
-                $gtex_tissues = $gtex_tissues.",".$key;
+                $gtex_tissues = $gtex_tissues.",".$tissue;
+                    print "TEST1:$gtex_tissues|\n";
             }else{
-                $gtex_tissues = $key;
+                $gtex_tissues = $tissue;
+                    print "TEST2:$gtex_tissues|\n";
             }
         }
     }
-
-    return {
-        GTeX_Tissues => $gtex_tissues
-    };
+    print "TEST3:$gtex_tissues|\n";
+    $result->{"GTEx_Tissues"} = $gtex_tissues;
+    return $result;
 }
 1;

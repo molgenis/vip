@@ -63,8 +63,32 @@ sub new {
         }
         die("ERROR: input file not specified\n") unless $file;
         parse_file($file);
+        # BEGIN - map ensembl back to refseq
+        my $mappingFile = $self->params->[2];
+        die("ERROR: Gene mapping file not specified\n") unless $mappingFile;
+        my %gene_mapping = parseMappingFile($mappingFile);
+        $self->{gene_mapping} = \%gene_mapping;
+        # END - map ensembl back to refseq
     }
     return $self;
+}
+
+sub parseMappingFile {
+    my %mapping_data;
+    my $file = $_[0];
+    open(MAPPING_FH, '<', $file) or die $!;
+
+    my @split;
+
+    while (<MAPPING_FH>) {
+        my $line = $_;
+        chomp($line);
+        @split = split(/\t/, $line);
+        if (defined $split[0] and length $split[0] and defined $split[1] and length $split[1]){
+            $mapping_data{$split[0]} = $split[1];
+        }
+    }
+    return %mapping_data
 }
 
 sub create_key {
@@ -266,10 +290,12 @@ sub run {
 		my $transcript = $base_variation_feature_overlap_allele->transcript;
 
 		# fail fast: gene identifier is not from NCBI's Entrez Gene
-		return {} unless ($transcript->{_gene_symbol_source} eq 'EntrezGene');
+    #return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
 
-		# fail fast: missing gene identifier
-		my $gene_id = $transcript->{_gene_stable_id};
+    my $ensembl_gene_id = $transcript->{_gene_stable_id};
+    return {} unless $ensembl_gene_id;
+
+    my $gene_id = $self->{gene_mapping}->{$ensembl_gene_id};
     return {} unless $gene_id;
 
     my @vcf_line = @{$base_variation_feature_overlap_allele->base_variation_feature->{_line}};

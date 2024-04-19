@@ -1,0 +1,449 @@
+{
+  "rootNode": "tissues",
+  "nodes": {
+      "tissues": {
+      "description": "Tissue is on the tissues list",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/GTEx_Tissues",
+      "outcomeTrue": {
+        "nextNode": "filter"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_rm"
+      }
+    },
+    "filter": {
+      "description": "Filter pass",
+      "type": "BOOL",
+      "query": {
+        "field": "FILTER",
+        "operator": "==",
+        "value": [
+          "PASS"
+        ]
+      },
+      "outcomeTrue": {
+        "nextNode": "vkgl"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "vkgl"
+      }
+    },
+    "vkgl": {
+      "description": "VKGL classification",
+      "type": "CATEGORICAL",
+      "field": "INFO/CSQ/VKGL_CL",
+      "outcomeMap": {
+        "P": {
+          "nextNode": "exit_p"
+        },
+        "LP": {
+          "nextNode": "exit_lp"
+        },
+        "VUS": {
+          "nextNode": "clinVar"
+        },
+        "LB": {
+          "nextNode": "exit_lb"
+        },
+        "B": {
+          "nextNode": "exit_b"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "clinVar"
+      },
+      "outcomeDefault": {
+        "nextNode": "clinVar"
+      }
+    },
+    "clinVar": {
+      "description": "ClinVar classification",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/clinVar_CLNSIG"
+      ],
+      "outcomes": [
+        {
+          "description": "Conflict",
+          "queries": [
+            {
+              "field": "INFO/CSQ/clinVar_CLNSIG",
+              "operator": "contains_any",
+              "value": [ "Conflicting_interpretations_of_pathogenicity" ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "chrom"
+          }
+        },
+        {
+          "description": "LP/P",
+          "queries": [
+            {
+              "field": "INFO/CSQ/clinVar_CLNSIG",
+              "operator": "contains_any",
+              "value": [ "Likely_pathogenic", "Pathogenic" ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "VUS",
+          "queries": [
+            {
+              "field": "INFO/CSQ/clinVar_CLNSIG",
+              "operator": "contains_any",
+              "value": [ "Uncertain_significance" ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "chrom"
+          }
+        },
+        {
+          "description": "B/LB",
+          "queries": [
+            {
+              "field": "INFO/CSQ/clinVar_CLNSIG",
+              "operator": "contains_any",
+              "value": [ "Likely_benign", "Benign" ]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "chrom"
+      },
+      "outcomeMissing": {
+        "nextNode": "chrom"
+      }
+    },
+    "chrom": {
+      "description": "Chromosome 1-22-X-Y-MT",
+      "type": "BOOL",
+      "query": {
+        "field": "#CHROM",
+        "operator": "in",
+        "value": [
+          "chr1",
+          "chr2",
+          "chr3",
+          "chr4",
+          "chr5",
+          "chr6",
+          "chr7",
+          "chr8",
+          "chr9",
+          "chr10",
+          "chr11",
+          "chr12",
+          "chr13",
+          "chr14",
+          "chr15",
+          "chr16",
+          "chr17",
+          "chr18",
+          "chr19",
+          "chr20",
+          "chr21",
+          "chr22",
+          "chrX",
+          "chrY",
+          "chrM"
+        ]
+      },
+      "outcomeTrue": {
+        "nextNode": "gene"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "gene"
+      }
+    },
+    "gene": {
+      "description": "Gene exists",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/Gene",
+      "outcomeTrue": {
+        "nextNode": "gnomAD"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      }
+    },
+    "sv": {
+      "description": "Structural Variant?",
+      "type": "EXISTS",
+      "field": "INFO/SVTYPE",
+      "outcomeTrue": {
+        "nextNode": "str"
+      },
+      "outcomeFalse": {
+        "nextNode": "spliceAI"
+      }
+    },
+    "str": {
+      "description": "Short tandem repeat?",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/SVTYPE",
+        "operator": "==",
+        "value": "STR"
+      },
+      "outcomeTrue": {
+        "nextNode": "str_status"
+      },
+      "outcomeFalse": {
+        "nextNode": "annotSV"
+      },
+      "outcomeMissing": {
+        "nextNode": "annotSV"
+      }
+    },
+    "str_status": {
+      "description": "Stranger str status (normal, pre_mutation, mutation)",
+      "type": "CATEGORICAL",
+      "field": "INFO/STR_STATUS",
+      "outcomeMap": {
+        "full_mutation": {
+          "nextNode": "exit_lp"
+        },
+        "pre_mutation": {
+          "nextNode": "exit_vus"
+        },
+        "normal": {
+          "nextNode": "exit_lb"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeDefault": {
+        "nextNode": "exit_vus"
+      }
+    },
+    "gnomAD": {
+      "description": "gnomAD QC filter failure",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/gnomAD_QC",
+      "outcomeTrue": {
+        "nextNode": "sv"
+      },
+      "outcomeFalse": {
+        "nextNode": "gnomAD_AF"
+      }
+    },
+    "gnomAD_AF": {
+      "description": "gnomAD",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/gnomAD_FAF99",
+        "INFO/CSQ/gnomAD_HN"
+      ],
+      "outcomes": [
+        {
+          "description": "Filtering allele Frequency (99% confidence) >= 0.02 or Number of Homozygotes > 5",
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_FAF99",
+              "operator": ">=",
+              "value": 0.02
+            },
+            {
+              "field": "INFO/CSQ/gnomAD_HN",
+              "operator": ">=",
+              "value": 5
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "sv"
+      },
+      "outcomeMissing": {
+        "nextNode": "sv"
+      }
+    },
+    "annotSV": {
+      "description": "AnnotSV classification",
+      "type": "CATEGORICAL",
+      "field": "INFO/CSQ/ASV_ACMG_class",
+      "outcomeMap": {
+        "5": {
+          "nextNode": "exit_p"
+        },
+        "4": {
+          "nextNode": "exit_lp"
+        },
+        "3": {
+          "nextNode": "exit_vus"
+        },
+        "2": {
+          "nextNode": "exit_lb"
+        },
+        "1": {
+          "nextNode": "exit_b"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "spliceAI"
+      },
+      "outcomeDefault": {
+        "nextNode": "spliceAI"
+      }
+    },
+    "spliceAI": {
+      "description": "SpliceAI prediction",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/SpliceAI_pred_DS_AG",
+        "INFO/CSQ/SpliceAI_pred_DS_AL",
+        "INFO/CSQ/SpliceAI_pred_DS_DG",
+        "INFO/CSQ/SpliceAI_pred_DS_DL"
+      ],
+      "outcomes": [
+        {
+          "description": "Delta score (acceptor/donor gain/loss) > 0.42",
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AG",
+              "operator": ">",
+              "value": 0.42
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AL",
+              "operator": ">",
+              "value": 0.42
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DG",
+              "operator": ">",
+              "value": 0.42
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DL",
+              "operator": ">",
+              "value": 0.42
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "Delta score (acceptor/donor gain/loss) > 0.13",
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AG",
+              "operator": ">",
+              "value": 0.13
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_AL",
+              "operator": ">",
+              "value": 0.13
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DG",
+              "operator": ">",
+              "value": 0.13
+            },
+            {
+              "field": "INFO/CSQ/SpliceAI_pred_DS_DL",
+              "operator": ">",
+              "value": 0.13
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_vus"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "utr5"
+      },
+      "outcomeMissing": {
+        "nextNode": "utr5"
+      }
+    },
+    "utr5": {
+      "description": "5' UTR",
+      "type": "EXISTS",
+      "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
+      "outcomeTrue": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeFalse": {
+        "nextNode": "capice"
+      }
+    },
+    "capice": {
+      "description": "CAPICE prediction > 0.5",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/CAPICE_SC",
+        "operator": ">",
+        "value": 0.5
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_vus"
+      }
+    },
+    "exit_rm": {
+      "description": "Remove",
+      "type": "LEAF",
+      "class": "LQ"
+    },
+    "exit_b": {
+      "description": "Benign",
+      "type": "LEAF",
+      "class": "B"
+    },
+    "exit_lb": {
+      "description": "Likely Benign",
+      "type": "LEAF",
+      "class": "LB"
+    },
+    "exit_vus": {
+      "description": "Uncertain Significance",
+      "type": "LEAF",
+      "class": "VUS"
+    },
+    "exit_lp": {
+      "description": "Likely Pathogenic",
+      "type": "LEAF",
+      "class": "LP"
+    },
+    "exit_p": {
+      "description": "Pathogenic",
+      "type": "LEAF",
+      "class": "P"
+    }
+  }
+}

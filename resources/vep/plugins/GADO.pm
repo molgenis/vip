@@ -94,13 +94,13 @@ sub run {
     # fail fast: sub-class doesn't contain transcript method
     return {} unless ($transcript_variation_allele->can('transcript'));
     my $transcript = $transcript_variation_allele->transcript;
-    return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
+    #return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
 
-    my $entrez_gene_id = $transcript->{_gene_stable_id};
-    return {} unless $entrez_gene_id;
-
-    my $ensembl_gene_id = $self->{gene_mapping}->{$entrez_gene_id};
+    my $ensembl_gene_id = $transcript->{_gene_stable_id};
     return {} unless $ensembl_gene_id;
+
+    # my $ensembl_gene_id = $self->{gene_mapping}->{$entrez_gene_id};
+    # return {} unless $ensembl_gene_id;
 
     my $gene_value = $self->{gene_data}->{$ensembl_gene_id};
     return {} unless $gene_value;

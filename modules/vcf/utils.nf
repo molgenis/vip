@@ -73,6 +73,18 @@ def determineChunks(meta) {
   return chunks
 }
 
+def getTissues(samples) {
+  def tissueKeys = samples.collectMany { sample -> sample.tissues }.unique()
+  def allTissues = ["Adipose_Subcutaneous","Adipose_Visceral","AdrenalGland","Artery_Aorta","Artery_Coronary","Artery_Tibial","Bladder","Brain_Amygdala","Brain_Anteriorcingulatecortex","Brain_Caudate","Brain_CerebellarHemisphere","Brain_Cerebellum","Brain_Cortex","Brain_FrontalCortex","Brain_Hippocampus","Brain_Hypothalamus","Brain_Nucleusaccumbens","Brain_Putamen","Brain_Spinalcord","Brain_Substantianigra","Breast_MammaryTissue","Cells_Culturedfibroblasts","Cells_EBV_transformedlymphocytes","Cervix_Ectocervix","Cervix_Endocervix","Colon_Sigmoid","Colon_Transverse","Esophagus_GastroesophagealJunction","Esophagus_Mucosa","Esophagus_Muscularis","FallopianTube","Heart_AtrialAppendage","Heart_LeftVentricle","Kidney_Cortex","Kidney_Medulla","Liver","Lung","MinorSalivaryGland","Muscle_Skeletal","Nerve_Tibial","Ovary","Pancreas","Pituitary","Prostate","Skin_NotSunExposed","Skin_SunExposed","SmallIntestine_TerminalIleum","Spleen","Stomach","Testis","Thyroid","Uterus","Vagina","WholeBlood"] as String[]
+  def tissues = []
+  for(tissueKey in tissueKeys){
+    tissues.addAll(Arrays.stream(allTissues)
+          .filter(tissue -> tissue.matches(".*${tissueKey}.*"))
+          .toArray(size -> new String[size]));
+  }
+  return tissues.join(",")
+}
+
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0

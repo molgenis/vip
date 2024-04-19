@@ -1,4 +1,4 @@
-include { basename; areProbandHpoIdsIndentical } from './utils'
+include { basename; areProbandHpoIdsIndentical; getTissues } from './utils'
 
 process annotate {
   label 'vcf_annotate'
@@ -35,6 +35,7 @@ process annotate {
     gtexFile = params.vcf.annotate.vep_plugin_gtex
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
+    tissues = getTissues(meta.project.samples)
     gadoScores = meta.gado != null ? meta.gado : ""
 
     template 'annotate.sh'
