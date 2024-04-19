@@ -139,8 +139,8 @@ download_files() {
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
   done
-  download_file "https://ftp.ensembl.org/pub/release-111/variation/indexed_vep_cache/" "FIXME" "homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "${output_dir}/resources/vep/cache/" "false"
-  download_file "https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq/" "FIXME" "GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz" "${output_dir}/resources/GTEx" "false"
+  download_file "https://ftp.ensembl.org/pub/release-111/variation/indexed_vep_cache/" "homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "FIXME" "${output_dir}/resources/vep/cache/" "false"
+  download_file "https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq/" "GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz" "FIXME" "${output_dir}/resources/GTEx" "false"
   
 }
 
