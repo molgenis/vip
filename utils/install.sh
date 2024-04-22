@@ -38,7 +38,7 @@ install() {
   local -r versionDir="${SCRIPT_DIR}/${version}"
   if [ "${continue}" == "1" ] || [ ! -d "${SCRIPT_DIR}/${version}" ]; then
     mkdir -p "${versionDir}"
-    if ! git clone --quiet --depth 1 --branch "${version}" https://github.com/molgenis/vip "${versionDir}"; then
+    if ! git -c advice.detachedHead=false clone --quiet --depth 1 --branch "${version}" https://github.com/molgenis/vip "${versionDir}"; then
       echo -e "error retrieving version ${version}. version does not exist?"
       rm "${versionDir}"
       return 1
