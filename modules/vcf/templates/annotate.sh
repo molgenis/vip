@@ -37,7 +37,10 @@ annot_sv() {
 capice() {
   capice_vep
   capice_bcftools
-  capice_predict
+  #only run capice if there a variants with annotations, e.g. <STR> only VCF files do not yield any annotated lines
+  if [ "$(wc -l < "${capiceInputPath}")" -gt 1 ]; then
+    capice_predict
+  fi
 }
 
 capice_vep() {
@@ -72,7 +75,7 @@ capice_vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
-  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
 
   ${CMD_VEP} "${args[@]}"
@@ -159,7 +162,7 @@ vep() {
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Capice,${capiceOutputPath},!{params.vcf.annotate.ensembl_gene_mapping}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
-  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bed,exact,0")
+  args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then
@@ -191,6 +194,12 @@ vep() {
   fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
+  fi
+  if [ -n "!{fathmmMKLScoresPath}" ]; then
+    args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
+  fi
+  if [ -n "!{reMMScoresPath}" ]; then
+    args+=("--plugin" "ReMM,!{reMMScoresPath}")
   fi
   
   ${CMD_VEP} "${args[@]}"

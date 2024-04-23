@@ -19,7 +19,7 @@ process minimap2_align {
     
     sampleId=meta.sample.individual_id;
     platform=meta.project.sequencing_platform
-    preset=platform == "nanopore" ? "map-ont" : (platform == "pacbio_hifi" ? "map-hifi" : "")
+    preset=platform == "nanopore" ? params.minimap2.nanopore_preset : (platform == "pacbio_hifi" ? "map-hifi" : "")
     softClipping=params.minimap2.soft_clipping 
 
     //fastp params

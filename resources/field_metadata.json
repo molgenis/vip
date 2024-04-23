@@ -151,6 +151,13 @@
           "separator": "&",
           "type": "STRING"
         },
+        "FATHMM_MKL_NC": {
+          "label": "FATHMM-MKL-NC",
+          "description": "Predict the Functional Consequences of Non-Coding Single Nucleotide Variants (SNVs)",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "Feature_type": {
           "label": "Feature Type.",
           "description": "The VEP feature type",
@@ -348,6 +355,13 @@
           "separator": "&",
           "type": "INTEGER"
         },
+        "ReMM": {
+          "label": "ReMM",
+          "description": "The Regulatory Mendelian Mutation (ReMM) score was created for relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian diseases.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "SIFT": {
           "label": "SIFT",
           "description": "SIFT score.",
@@ -411,13 +425,6 @@
           "numberCount": 1,
           "type": "STRING",
           "required": true
-        },
-        "VIPL": {
-          "label": "VIP labels",
-          "description": "VIP decision tree labels",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "STRING"
         },
         "VIPP": {
           "label": "VIP path",

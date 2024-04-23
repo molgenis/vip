@@ -17,7 +17,6 @@ process classify {
 
     metadata = params.vcf.classify.metadata
     decisionTree = params.vcf.classify[meta.project.assembly].decision_tree
-    annotateLabels = params.vcf.classify.annotate_labels
     annotatePath = params.vcf.classify.annotate_path
     
     template 'classify.sh'

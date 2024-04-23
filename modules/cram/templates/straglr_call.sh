@@ -6,6 +6,7 @@ call_short_tandem_repeats () {
     args+=("--loci" "!{paramLoci}")
     args+=("--sample" "!{sampleId}")
     args+=("--vcf" "straglr.vcf")
+    args+=("--tsv" "!{tsvOut}")
     if [ -z "!{sampleSex}" ]; then
         args+=("--sex" "!{sampleSex}")
     fi

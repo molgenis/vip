@@ -82,21 +82,21 @@ main() {
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
   images+=("capice-5.1.2")
-  images+=("cutesv-2.0.3")
+  images+=("cutesv-2.1.1")
   images+=("expansionhunter-5.0.0")
   images+=("fastp-0.23.4")
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("gado-1.0.3")
   images+=("manta-1.6.0")
-  images+=("minimap2-2.26")
+  images+=("minimap2-2.27")
   images+=("picard-3.1.1")
   images+=("samtools-1.17-patch1")
   images+=("stranger-0.8.1")
-  images+=("straglr-philres-1.4.2")
+  images+=("straglr-1.4.4_vip_v2")
   images+=("vcf-decision-tree-4.0.0")
-  images+=("vcf-inheritance-matcher-3.0.2")
-  images+=("vcf-report-6.0.1")
+  images+=("vcf-inheritance-matcher-3.1.0")
+  images+=("vcf-report-6.0.2")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"

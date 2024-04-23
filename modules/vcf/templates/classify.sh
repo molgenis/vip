@@ -10,9 +10,6 @@ classify () {
   args+=("--input" "!{vcf}")
   args+=("--metadata" "!{metadata}")
   args+=("--config" "!{decisionTree}")
-  if [ !{annotateLabels} -eq 1 ]; then
-    args+=("--labels")
-  fi
   if [ !{annotatePath} -eq 1 ]; then
     args+=("--path")
   fi

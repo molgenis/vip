@@ -1,0 +1,4 @@
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	hpo_ids	vcf
+FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	HP:0001250,HP:0001166	str.vcf
+FAM0	FATHER0			male	false			str.vcf
+FAM0	MOTHER0			female	false			str.vcf
