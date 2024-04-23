@@ -17,6 +17,7 @@
 !/resources/README.txt
 !/resources/decision_tree_*.json
 /resources/vep/cache
+resources/GTEx/GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct
 !/resources/vep/plugins
 !/resources/*.chain
 !/resources/*.chain.gz
