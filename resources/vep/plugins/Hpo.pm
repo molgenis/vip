@@ -111,7 +111,6 @@ sub run {
     my $entrez_gene_id = $self->{gene_mapping}->{$ensembl_gene_id};
     return {} unless $entrez_gene_id;
 
-    my $entrez_gene_id = $transcript->{_gene_stable_id};
     my $entrez_gene_ids = $self->{entrez_gene_ids};
     my $hpo_ids = $entrez_gene_ids->{$entrez_gene_id};
     return {} unless $hpo_ids;
