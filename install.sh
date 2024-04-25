@@ -82,7 +82,7 @@ download_files() {
   urls+=("7486bd5de526d9888df8eea2d8bdea48" "images/minimap2-2.27.sif")
   urls+=("06ac8a76a307fa42fffd80ab906fd24b" "images/picard-3.1.1.sif")
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
-  urls+=("FIXME" "images/straglr-1.4.4_vip_v3.sif")
+  urls+=("8f6e06847776448e004df8b863571109" "images/straglr-1.4.4_vip_v3.sif")
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
   urls+=("57401e7b835fed2f52fafadc0dd744d4" "images/vcf-decision-tree-4.1.1.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
