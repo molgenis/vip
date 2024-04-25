@@ -84,7 +84,7 @@ download_files() {
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
   urls+=("556d7e6b523e282f9920729edc3d0842" "images/straglr-1.4.4_vip_v2.sif")
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
-  urls+=("4fbbd8642ead7754cb8cc19740e18175" "images/vcf-decision-tree-4.0.0.sif")
+  urls+=("TODO" "images/vcf-decision-tree-4.1.1.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.0.2.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
