@@ -1,4 +1,9 @@
 {
+  "files": {
+    "tissues" : {
+      "path" : "TISSUE_FILE_PATH"
+    }
+  },
   "rootNode": "filter",
   "nodes": {
     "filter": {

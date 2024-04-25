@@ -1,4 +1,4 @@
-include { basename } from './utils'
+include { basename; getTissues } from './utils'
 
 process classify {
   label 'vcf_classify'
@@ -18,7 +18,8 @@ process classify {
     metadata = params.vcf.classify.metadata
     decisionTree = params.vcf.classify[meta.project.assembly].decision_tree
     annotatePath = params.vcf.classify.annotate_path
-    
+    tissues = getTissues(meta.project.samples)
+
     template 'classify.sh'
   
   stub:

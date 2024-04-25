@@ -9,7 +9,7 @@ classify () {
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcf}")
   args+=("--metadata" "!{metadata}")
-  args+=("--config" "!{decisionTree}")
+  args+=("--config" "decision_tree_updated.json")
   if [ !{annotatePath} -eq 1 ]; then
     args+=("--path")
   fi
@@ -42,7 +42,18 @@ insert_alt(){
   fi
 }
 
+write_tissue_file(){
+  echo !{tissues} | tr ',' '\n' > tissues.tsv
+}
+
+update_tree(){
+  tissuePath=$(realpath tissues.tsv)
+  sed "s|TISSUE_FILE_PATH|${tissuePath}|g" "!{decisionTree}" > decision_tree_updated.json
+}
+
 main () {
+  write_tissue_file
+  update_tree
   store_alt
   classify
   insert_alt
