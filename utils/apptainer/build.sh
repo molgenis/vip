@@ -93,8 +93,8 @@ main() {
   images+=("picard-3.1.1")
   images+=("samtools-1.17-patch1")
   images+=("stranger-0.8.1")
-  images+=("straglr-1.4.4_vip_v2")
-  images+=("vcf-decision-tree-4.0.0")
+  images+=("straglr-1.4.4_vip_v3")
+  images+=("vcf-decision-tree-4.1.1")
   images+=("vcf-inheritance-matcher-3.1.0")
   images+=("vcf-report-6.0.2")
 
