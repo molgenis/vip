@@ -139,7 +139,7 @@ vep() {
   args+=("--dir_cache" "!{params.vcf.annotate.vep_cache_dir}")
   args+=("--species" "homo_sapiens")
   args+=("--assembly" "!{assembly}")
-  args+=("--refseq")
+  #args+=("--refseq")
   args+=("--exclude_predicted")
   args+=("--use_given_ref")
   args+=("--symbol")
@@ -160,20 +160,24 @@ vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  args+=("--plugin" "Capice,${capiceOutputPath}")
+  args+=("--plugin" "Capice,${capiceOutputPath},!{params.vcf.annotate.ensembl_gene_mapping}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--safe")
 
   if [ -n "!{hpoIds}" ]; then
-    args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")
+    args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')},!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   if [ -n "!{gadoScores}" ]; then
     args+=("--plugin" "GADO,!{gadoScores},!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
-  args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance}")
+  if [ -n "!{gtexFile}" ]; then
+    echo !{tissues}
+    args+=("--plugin" "GTEx,!{gtexFile},!{tissues.replace(',', ';')}")
+  fi
+  args+=("--plugin" "Inheritance,!{params.vcf.annotate.vep_plugin_inheritance},,!{params.vcf.annotate.ensembl_gene_mapping}")
   if [ -n "!{vepPluginVkglPath}" ] && [ -n "!{params.vcf.annotate.vep_plugin_vkgl_mode}" ]; then
-    args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode}")
+    args+=("--plugin" "VKGL,!{vepPluginVkglPath},!{params.vcf.annotate.vep_plugin_vkgl_mode},!{params.vcf.annotate.ensembl_gene_mapping}")
   fi
   if [ -n "!{vepPluginGnomAdPath}" ]; then
     args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")

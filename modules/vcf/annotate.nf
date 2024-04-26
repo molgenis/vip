@@ -1,4 +1,4 @@
-include { basename; areProbandHpoIdsIndentical } from './utils'
+include { basename; areProbandHpoIdsIndentical; getTissues } from './utils'
 
 process annotate {
   label 'vcf_annotate'
@@ -32,8 +32,10 @@ process annotate {
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
+    gtexFile = params.vcf.annotate.vep_plugin_gtex
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
+    tissues = getTissues(meta.project.samples)
     gadoScores = meta.gado != null ? meta.gado : ""
 
     template 'annotate.sh'

@@ -144,6 +144,9 @@ download_files() {
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
   done
+  download_file "https://ftp.ensembl.org/pub/release-111/variation/indexed_vep_cache" "homo_sapiens_vep_111_GRCh38.tar.gz" "FIXME" "${output_dir}/resources/vep/cache/" "false"
+  download_file "https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq" "GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz" "FIXME" "${output_dir}/resources/GTEx" "false"
+  
 }
 
 extract_files() {
@@ -162,7 +165,16 @@ extract_files() {
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
+  if [ ! -d "${vep_dir}/homo_sapiens/111_GRCh38" ]; then
+    local -r vep_gz="${vep_dir}/homo_sapiens_vep_111_GRCh38.tar.gz"
+    echo -e "extracting ${vep_gz} ..."
+    tar -xzf "${vep_gz}" -C "${vep_dir}"
+  fi
 
+  if [ ! -f "${output_dir}/resources/GTEx/GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct" ]; then
+    gunzip ${output_dir}/resources/GTEx/GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz
+  fi
+  
   local -r annotsv_dir="${output_dir}/resources/annotsv/v3.3.6"
 
   local -r annotsv_human_dir="${annotsv_dir}/Annotations_Human"

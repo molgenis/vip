@@ -42,6 +42,10 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
+    tissues: [
+      type: "string",
+      list: true
+    ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },

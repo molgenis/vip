@@ -1,11 +1,29 @@
-{
+{  
   "files": {
     "tissues" : {
       "path" : "TISSUE_FILE_PATH"
     }
   },
-  "rootNode": "filter",
+  "rootNode": "tissues",
   "nodes": {
+    "tissues": {
+      "description": "Tissue is on the tissues list",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/GTEx_Tissues",
+        "operator": "contains_any",
+        "value": "file:tissues"
+      },
+      "outcomeTrue": {
+        "nextNode": "filter"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_rm"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_rm"
+      }
+    },
     "filter": {
       "description": "Filter pass",
       "type": "BOOL",

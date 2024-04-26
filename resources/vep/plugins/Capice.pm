@@ -40,8 +40,33 @@ sub new {
         my $file = $self->params->[0];
         die("ERROR: input file not specified\n") unless $file;
         parse_file($file);
+
+        # BEGIN - map ensembl back to refseq
+        my $mappingFile = $self->params->[1];
+        die("ERROR: Gene mapping file not specified\n") unless $mappingFile;
+        my %gene_mapping = parseMappingFile($mappingFile);
+        $self->{gene_mapping} = \%gene_mapping;
+        # END - map ensembl back to refseq
     }
     return $self;
+}
+
+sub parseMappingFile {
+    my %mapping_data;
+    my $file = $_[0];
+    open(MAPPING_FH, '<', $file) or die $!;
+
+    my @split;
+
+    while (<MAPPING_FH>) {
+        my $line = $_;
+        chomp($line);
+        @split = split(/\t/, $line);
+        if (defined $split[0] and length $split[0] and defined $split[1] and length $split[1]){
+            $mapping_data{$split[0]} = $split[1];
+        }
+    }
+    return %mapping_data
 }
 
 sub create_key {
@@ -49,11 +74,8 @@ sub create_key {
     my $pos = $_[1];
     my $ref = $_[2];
     my $alt = $_[3];
-    my $gene = $_[4]?$_[4]:"";
-    my $source = $_[5]?$_[5]:"";
     my $feature_type = $_[6]?$_[6]:"";
-    my $feature = $_[7]?$_[7]:"";
-    return "${chr}_${pos}_${ref}_${alt}_${gene}_${source}_${feature_type}_${feature}";
+    return "${chr}_${pos}_${ref}_${alt}_${feature_type}";
 }
 
 sub getFeatureType {
@@ -125,7 +147,7 @@ sub parse_file {
         $line =~ s/\s*\z//;
         my @tokens = split /\t/, $line;
 
-        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene}], $tokens[$col_idx->{idx_source}], $tokens[$col_idx->{idx_feature_type}], $tokens[$col_idx->{idx_feature}]);
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_feature_type}]);
 
         my %values;
         $values{s} = $tokens[$col_idx->{idx_score}];
@@ -152,19 +174,20 @@ sub run {
     my $transcript_id = "";
 
     if ($tva->can("transcript")) {
-        $source = $tva->transcript->{_gene_symbol_source};
-        return {} unless ($source eq "EntrezGene");
+        my $transcript = $tva->transcript;
+            #return {} unless ($transcript->{_gene_symbol_source} eq "EntrezGene");
 
-        $gene = $tva->transcript->{_gene_stable_id};
+        my $ensembl_gene_id = $transcript->{_gene_stable_id};
+        return {} unless $ensembl_gene_id;
+
+        my $gene = $self->{gene_mapping}->{$ensembl_gene_id};
+        return {} unless $gene;
     }
 
-    if($tva->feature) {
-        $transcript_id = $tva->feature->stable_id;
-    }
 
     my $feature_type = getFeatureType($tva);
 
-    my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$feature_type,$transcript_id);
+    my $key = create_key($chr,$pos,$ref,$alt,$feature_type);
 
     my $result = {};
     $result->{CAPICE_SC} = undef;
