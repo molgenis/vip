@@ -22,7 +22,7 @@ def getHpoIds(samples) {
 }
 
 def getProbandHpoIds(samples) {
-     getProbands(samples).collectMany { sample -> sample.hpo_ids }.unique()
+  getProbands(samples).collectMany { sample -> sample.hpo_ids }.unique()
 }
 
 def areProbandHpoIdsIndentical(samples) {
