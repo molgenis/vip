@@ -45,11 +45,15 @@ sub feature_types {
 
 sub get_header_info {
     return {
-      GREEN_DB => "GREEN_DB TODO."
+      GDB_PRO => "GREEN_DB Promotor maximum constraint score.",
+      GDB_ENH => "GREEN_DB Enhancer maximum constraint score.",
+      GDB_BIV => "GREEN_DB Bivalent maximum constraint score.",
+      GDB_SIL => "GREEN_DB Silencer maximum constraint score.",
+      GDB_INS => "GREEN_DB Insulator maximum constraint score."
     }
 }
 
-sub getScore {
+sub getScores {
   my $chr = $_[0];
   my $one_based_pos = $_[1];
 
@@ -65,9 +69,18 @@ sub getScore {
   if($size == 0){
     return;
   }
-  #list of lines, tab separated values
-  my @values = split("\t", $data[0]);
-  return $values[6];
+
+  my %values;
+
+  if($size > 1){
+    for my $i (0 .. $#data) {
+      my @line = split("\t", $data[0]);
+      if(!$values{$line[4]} || $line[6] > $values{$line[4]}){
+        $values{$line[4]} = $line[6];
+      }
+    }
+  }
+  return %values;
 }
 
 sub run {
@@ -80,27 +93,16 @@ sub run {
   my $chr = $variation_feature->{chr};
   my $start = $variation_feature->{start};
   my $end = $variation_feature->{end};
-  my $score;
+  my %scores;
   my $result = {};
 
-  if($start == $end){
-    $score = getScore($chr, $start);
-  }
-  else{
-    my $scoreStart = getScore($chr, $start);
-    my $scoreEnd = getScore($chr, $start);
-    if(length $scoreStart && length $scoreEnd){
-        $score = $scoreStart > $scoreEnd ? $scoreStart : $scoreEnd;
-    }elsif(length $scoreStart){
-        $score = $scoreStart;
-    }else{
-        $score = $scoreEnd;
-    }
-  }
+  %scores = getScore($chr, $start);
 
-  if(length $score) {
-    $result->{GREEN_DB} = $score;
-  }
+  $result->{GDB_PRO} = $scores{"promotor"};
+  $result->{GDB_ENH} = $scores{"enhancer"};
+  $result->{GDB_BIV} = $scores{"bivalent"};
+  $result->{GDB_SIL} = $scores{"silencer"};
+  $result->{GDB_INS} = $scores{"insulator"};
   
   return $result;
   };
