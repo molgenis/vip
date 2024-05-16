@@ -7,12 +7,12 @@ use Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin;
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 
 =head1 NAME
- GREEN_DB
+ GREEN_DB constraint score annotations
 =head1 SYNOPSIS
  mv GREEN_DB.pm ~/.vep/Plugins
  ./vep -i variations.vcf --plugin GREEN_DB,/FULL_PATH_TO_GREEN_DB_file
 =head1 DESCRIPTION
- TODO GREEN_DB
+ Plugin to annotate GREEN_DB constrain score for each of the GREEN-DB region types; enhancer, silencer, bivalent, promoter, insulator.
 =cut
 
 my $output_vcf;
