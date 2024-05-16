@@ -158,3 +158,8 @@ The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.co
 #### FATHMM-MKL
 [FATHMM-MKL](https://fathmm.biocompute.org.uk/fathmmMKL.htm) predicts the Functional Consequences of Coding and Non-Coding Single Nucleotide Variants (SNVs)
  This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non coding scores: https://zenodo.org/records/3981121
+
+ #### GREEN-DB constraint scores
+[GREEN-DB](https://doi.org/10.1101/2020.09.17.301960) GREEN-DB is a comprehensive collection of 2.4 million regulatory elements in the human genome collected from previously published databases, high-throughput screenings and functional studies.
+This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (GRCh38): https://zenodo.org/records/5636209
+GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If multiple regions of the same type overlap, VIP annotates the highest constraint score.
