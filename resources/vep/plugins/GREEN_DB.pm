@@ -71,11 +71,13 @@ sub getScores {
 
   my $values;
 
-  if($size > 1){
+  if($size >= 1){
     for my $i (0 .. $#data) {
       my @line = split("\t", $data[0]);
       if(!$values->{$line[4]} || $line[6] > $values->{$line[4]}){
-        $values->{$line[4]} = $line[6];
+        if($line[6] != "NA"){
+          $values->{$line[4]} = $line[6];
+        }
       }
     }
   }
