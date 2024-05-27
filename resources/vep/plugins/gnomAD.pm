@@ -110,7 +110,7 @@ sub parse_data {
   my @qc;
   if($src eq 'E') {
     @qc = split(/,/, $qc_e);
-  } elsif($src eq 'E') {
+  } elsif($src eq 'G') {
     @qc = split(/,/, $qc_g);
   } else {
     @qc = uniq(split(/,/, $qc_e . ',' . $qc_g));
