@@ -405,7 +405,7 @@
         "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-        "nextNode": "non_coding"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
         "nextNode": "non_coding"
@@ -449,7 +449,7 @@
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "exit_lb"
+        "nextNode": "exit_vus"
       }
     },
     "GREEN_DB": {
@@ -499,7 +499,7 @@
         }
       ],
       "outcomeDefault": {
-        "nextNode": "exit_vus"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
         "nextNode": "exit_vus"
