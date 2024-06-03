@@ -70,12 +70,6 @@ workflow fastq {
 
     ch_input_paired_end_aligned.mix(ch_input_single_aligned)
       | merge_cram
-      | multiMap { it -> done: coverage: it }
-      | set { ch_input_aligned }
-
-    ch_input_aligned.coverage
-      | 
-    ch_input_aligned.done
       | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | cram
 }
