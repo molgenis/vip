@@ -2,7 +2,7 @@
 set -euo pipefail
 
 coverage () {
-  ${CMD_SAMTOOLS} coverage --reference "!{paramReference}" "!{cram}" | gzip "!{cramCoverageOut}"
+  ${CMD_SAMTOOLS} coverage --reference "!{paramReference}" "!{cram}" | gzip > "!{cramCoverageOut}"
 }
 
 depth () {
