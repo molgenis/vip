@@ -8,6 +8,7 @@ include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
 include { sv; validateCallSvParams } from './subworkflows/call_sv'
 include { concat_vcf } from './modules/cram/concat_vcf'
+include { coverage } from './modules/cram/coverage'
 
 /**
  * input:  [project, sample, ...]
@@ -21,10 +22,15 @@ workflow cram {
     if(params.cram.call_str) ++nrActivateVariantCallerTypes;
     if(params.cram.call_sv)  ++nrActivateVariantCallerTypes;
 
-    // output pre-preprocessed crams to snv, str and sv channels
+    // output pre-preprocessed crams to coverage, snv, str and sv channels
     meta
-      | multiMap { it -> snv: str: sv: it }
+      | multiMap { it -> coverage: snv: str: sv: it }
       | set { ch_cram_multi }
+
+		// coverage
+		ch_cram_multi.coverage
+		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
+		  | coverage
 
     // snv
     ch_cram_multi.snv
