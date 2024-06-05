@@ -88,7 +88,7 @@ download_files() {
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.0.2.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
-  urls+=("b1ece372a2c4db0c57a204d5a6175eb9" "nextflow-23.10.0-all")
+  urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
     urls+=("772484cc07983aba1355c7fb50f176d4" "resources/GRCh37/human_g1k_v37.fasta.gz.fai")
@@ -191,7 +191,7 @@ create_symlinks() {
   local -r output_dir="${1}"
 
   # update utils/install.sh when updating nextflow
-  local -r file="nextflow-23.10.0-all"
+  local -r file="nextflow-24.04.2-all"
   (cd "${output_dir}" && chmod +x "${file}") || echo "Failed to set permissions for ${file}"
   (cd "${output_dir}" && rm -f nextflow && ln -s ${file} "nextflow")
 
