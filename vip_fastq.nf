@@ -1,6 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet } from './modules/sample_sheet'
+include { filter_reads } from './modules/fastq/adaptive_sampling'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
 include { splitPerFastqSingle; splitPerFastqPaired } from './modules/fastq/utils'
@@ -58,9 +59,22 @@ workflow fastq {
 
     ch_input_single.ready
       | map { meta -> [*:meta, sample: [*:meta.sample, fastq: [data: meta.sample.fastq, total: 1, index: 0]]] }
-      | set{ch_input_single_ready}
+      | set { ch_input_single_ready }
 
     ch_input_single_flattened.mix(ch_input_single_ready)
+      | branch { meta ->
+          filter: meta.sample.adaptive_sampling != null
+          ready: true
+        }
+      | set { ch_input_single_preprocess }
+
+    ch_input_single_preprocess.filter
+    	| map { meta -> [meta, meta.sample.fastq.data, meta.sample.adaptive_sampling] }
+    	| filter_reads
+    	| map { meta, fastq -> [*:meta, sample: [*:meta.sample, fastq: [*:meta.sample.fastq, data: fastq]]] }
+      | set { ch_input_single_preprocessed }
+
+    ch_input_single_preprocessed.mix(ch_input_single_preprocess.ready)
       | map { meta -> [meta, meta.sample.fastq.data] }
       | minimap2_align
       | map {meta, cram, cramCrai, cramStats -> [groupKey(meta.sample.individual_id, meta.sample.fastq.total), meta, cram]}
@@ -100,6 +114,10 @@ def parseSampleSheet(csvFile) {
   def fastqRegex = /.+\.(fastq|fq)(\.gz)?/
   
   def cols = [
+    adaptive_sampling: [
+      type: "file",
+      regex: /.+\.csv/
+    ],
     fastq: [
       type: "file",
       list: true,
@@ -139,6 +157,8 @@ def validate(projects) {
       }
       if (!sample.fastq.isEmpty() && (!sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty())) exit 1, "'fastq' column cannot be combined with 'fastq_r1' and/or 'fastq_r2'."
       if ((!sample.fastq_r1.isEmpty() && sample.fastq_r2.isEmpty()) || (sample.fastq_r1.isEmpty() && !sample.fastq_r2.isEmpty()))   exit 1, "Either both 'fastq_r1' and 'fastq_r2' should be present or neither should be present, use the 'fastq' column for single fastq files."
+      if (sample.adaptive_sampling != null && project.sequencing_platform != 'nanopore') exit 1, "'adaptive_sampling' column cannot be used for sequencing_platform other than 'nanopore'."
+      if (sample.adaptive_sampling != null && (!sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty())) exit 1, "'adaptive_sampling' column cannot be combined with 'fastq_r1' and/or 'fastq_r2'."
     }
   }
 }
