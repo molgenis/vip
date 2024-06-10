@@ -88,7 +88,7 @@ download_files() {
   urls+=("57401e7b835fed2f52fafadc0dd744d4" "images/vcf-decision-tree-4.1.1.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.0.2.sif")
-  urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
+  urls+=("24d98b0e5f05267fe212e56f319dedb0" "images/vep-112.0.sif")
   urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
@@ -139,7 +139,7 @@ download_files() {
   urls+=("42e31fe6e3502fb9bc0b14121f0f844b" "resources/hpo_20240404.tsv")
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
-  urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
+  urls+=("9c05a34b974afd404deeef31d1ca1c30" "resources/vep/cache/homo_sapiens_refseq_vep_112_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
 
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
@@ -158,8 +158,8 @@ extract_files() {
   fi
 
   local -r vep_dir="${output_dir}/resources/vep/cache"
-  if [ ! -d "${vep_dir}/homo_sapiens_refseq/111_GRCh38" ]; then
-    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
+  if [ ! -d "${vep_dir}/homo_sapiens_refseq/112_GRCh38" ]; then
+    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_112_GRCh38.tar.gz"
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
