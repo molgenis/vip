@@ -88,7 +88,7 @@ download_files() {
   urls+=("57401e7b835fed2f52fafadc0dd744d4" "images/vcf-decision-tree-4.1.1.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.0.2.sif")
-  urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
+  urls+=("24d98b0e5f05267fe212e56f319dedb0" "images/vep-112.0.sif")
   urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
