@@ -139,7 +139,7 @@ download_files() {
   urls+=("42e31fe6e3502fb9bc0b14121f0f844b" "resources/hpo_20240404.tsv")
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
-  urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
+  urls+=("9c05a34b974afd404deeef31d1ca1c30" "resources/vep/cache/homo_sapiens_refseq_vep_112_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
 
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
@@ -158,8 +158,8 @@ extract_files() {
   fi
 
   local -r vep_dir="${output_dir}/resources/vep/cache"
-  if [ ! -d "${vep_dir}/homo_sapiens_refseq/111_GRCh38" ]; then
-    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
+  if [ ! -d "${vep_dir}/homo_sapiens_refseq/112_GRCh38" ]; then
+    local -r vep_gz="${vep_dir}/homo_sapiens_refseq_vep_112_GRCh38.tar.gz"
     echo -e "extracting ${vep_gz} ..."
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
