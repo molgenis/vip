@@ -65,7 +65,7 @@ sub get_scores {
 
   # get candidate annotations from precomputed scores file
   my @data;
-  if($start =< $end){
+  if($start <= $end){
     @data = @{$self->get_data($chr, $start, $end)};
   }else{
     #structural variant on the reverse strand
