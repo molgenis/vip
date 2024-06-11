@@ -58,11 +58,19 @@ sub get_scores {
   my $one_based_start = $_[1];
   my $one_based_end = $_[2];
 
+  my $start = $one_based_start - 1;
+  my $end = $one_based_end - 1;
   #VEP is 1 based, bed 0 based -> correct the positions for that
-  die "ERROR: Encountered a negative zero-based position" unless $pos >= 0;
+  die "ERROR: Encountered a negative zero-based position" unless $start >= 0 && $end >= 0;
 
   # get candidate annotations from precomputed scores file
-  my @data = @{$self->get_data($chr, $one_based_start - 1, $one_based_end - 1)};
+  my @data;
+  if($start =< $end){
+    @data = @{$self->get_data($chr, $start, $end)};
+  }else{
+    #structural variant on the reverse strand
+    @data = @{$self->get_data($chr, $end, $start)};
+  }
 
   my $size = @data;
   if($size == 0){
