@@ -390,6 +390,25 @@
         "nextNode": "exit_vus"
       },
       "outcomeFalse": {
+        "nextNode": "intron"
+      }
+    },
+    "intron": {
+      "description": "is intron variant?",
+      "type": "BOOL",
+      "query":
+      {
+        "field": "INFO/CSQ/Consequence",
+        "operator": "==",
+        "value": ["intron_variant"]
+      },
+      "outcomeTrue": {
+        "nextNode": "non_coding"
+      },
+      "outcomeFalse": {
+        "nextNode": "capice"
+      },
+      "outcomeMissing": {
         "nextNode": "capice"
       }
     },
@@ -408,7 +427,7 @@
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "non_coding"
+        "nextNode": "exit_vus"
       }
     },
     "non_coding": {
