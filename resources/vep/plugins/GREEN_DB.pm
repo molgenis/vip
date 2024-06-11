@@ -59,12 +59,10 @@ sub get_scores {
   my $one_based_end = $_[2];
 
   #VEP is 1 based, bed 0 based -> correct the positions for that
-  my $pos = $one_based_start - 1;
-  my $pos = $one_based_end - 1;
   die "ERROR: Encountered a negative zero-based position" unless $pos >= 0;
 
   # get candidate annotations from precomputed scores file
-  my @data = @{$self->get_data($chr, $one_based_start, $one_based_end)};
+  my @data = @{$self->get_data($chr, $one_based_start - 1, $one_based_end - 1)};
 
   my $size = @data;
   if($size == 0){
