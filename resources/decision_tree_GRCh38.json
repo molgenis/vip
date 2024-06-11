@@ -412,7 +412,7 @@
       }
     },
     "non_coding": {
-      "description": "Non coding tools above threshold",
+      "description": "ReMM, ncER or FATHMM_MKL_NC above threshold",
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/ReMM",
@@ -453,7 +453,7 @@
       }
     },
     "GREEN_DB": {
-      "description": "GREEN DB constraint threshold",
+      "description": "GREEN-DB constraint threshold",
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/GDB_PRO",

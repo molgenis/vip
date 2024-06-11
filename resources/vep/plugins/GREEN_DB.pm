@@ -7,12 +7,12 @@ use Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin;
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 
 =head1 NAME
- GREEN_DB constraint score annotations
+ GREEN-DB constraint score annotations
 =head1 SYNOPSIS
  mv GREEN_DB.pm ~/.vep/Plugins
  ./vep -i variations.vcf --plugin GREEN_DB,/FULL_PATH_TO_GREEN_DB_file
 =head1 DESCRIPTION
- Plugin to annotate GREEN_DB constrain score for each of the GREEN-DB region types; enhancer, silencer, bivalent, promoter, insulator.
+ Plugin to annotate GREEN-DB constrain score for each of the GREEN-DB region types; enhancer, silencer, bivalent, promoter, insulator.
 =cut
 
 my $output_vcf;
@@ -53,16 +53,18 @@ sub get_header_info {
     }
 }
 
-sub getScores {
+sub get_scores {
   my $chr = $_[0];
-  my $one_based_pos = $_[1];
+  my $one_based_start = $_[1];
+  my $one_based_end = $_[2];
 
-  #VEP is 1 based, bed 0 based -> correct the pos for that
-  my $pos = $one_based_pos - 1;
+  #VEP is 1 based, bed 0 based -> correct the positions for that
+  my $pos = $one_based_start - 1;
+  my $pos = $one_based_end - 1;
   die "ERROR: Encountered a negative zero-based position" unless $pos >= 0;
 
   # get candidate annotations from precomputed scores file
-  my @data = @{$self->get_data($chr, $pos, $pos)};
+  my @data = @{$self->get_data($chr, $one_based_start, $one_based_end)};
 
   my $size = @data;
   if($size == 0){
@@ -71,9 +73,11 @@ sub getScores {
 
   my $values;
 
+  #if data is present
   if($size >= 1){
     for my $i (0 .. $#data) {
       my @line = split("\t", $data[0]);
+      #if no value present for the type of region (line[4]), or the current line has a higher score (line[6]) for this type of region, add/overwrite it in the result.
       if(!$values->{$line[4]} || $line[6] > $values->{$line[4]}){
         if($line[6] != "NA"){
           $values->{$line[4]} = $line[6];
@@ -96,7 +100,7 @@ sub run {
   my $end = $variation_feature->{end};
   my $result = {};
 
-  my $scores = getScores($chr, $start);
+  my $scores = get_scores($chr, $start, $end);
 
   $result->{GDB_PRO} = $scores->{"promoter"};
   $result->{GDB_ENH} = $scores->{"enhancer"};
