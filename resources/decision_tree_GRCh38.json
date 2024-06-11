@@ -421,7 +421,7 @@
       ],
       "outcomes": [
         {
-          "description": "Delta score (acceptor/donor gain/loss) > 0.42",
+          "description": "ReMM, ncER or FATHMM_MKL_NC above threshold",
           "operator": "OR",
           "queries": [
             {
