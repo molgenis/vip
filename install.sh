@@ -87,7 +87,7 @@ download_files() {
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
   urls+=("57401e7b835fed2f52fafadc0dd744d4" "images/vcf-decision-tree-4.1.1.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
-  urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.0.2.sif")
+  urls+=("7f3c5115f68998067a404c922b2e3b15" "images/vcf-report-6.1.0.sif") #FIXME update checksum
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -143,7 +143,6 @@ download_files() {
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   # when modifying urls array, please keep list in 'ls -l' order
-
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
   done
