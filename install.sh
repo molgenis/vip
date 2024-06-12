@@ -124,6 +124,8 @@ download_files() {
   urls+=("bd235d92bbb731302ad3b34edf6f28a2" "resources/GRCh38/vkgl_consensus_20240401.tsv")
   urls+=("360f56abfe3e2ecb5e224733f948b3be" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz")
   urls+=("53827286f5827d2c2f0e4e6f02179ec2" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz.tbi")
+  urls+=("b773b1eb1ef6e03ccdea70dcf736a17f" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz")
+  urls+=("7837b9e42da9674e78d9874218f07f00" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz.tbi")
   urls+=("4d725faf3a43d5e40af1568458596aac" "resources/GRCh38/GRCh38_ReMM.tsv.gz")
   urls+=("95c78fce499e8c64f69a3d7780fae377" "resources/GRCh38/GRCh38_ReMM.tsv.gz.tbi")
   urls+=("d149c60680991830056d593543994c56" "resources/annotsv/v3.3.6/2202_hg19.tar.gz")
