@@ -62,9 +62,7 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [
-                "Conflicting_interpretations_of_pathogenicity"
-              ]
+              "value": [ "Conflicting_interpretations_of_pathogenicity" ]
             }
           ],
           "outcomeTrue": {
@@ -77,10 +75,7 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [
-                "Likely_pathogenic",
-                "Pathogenic"
-              ]
+              "value": [ "Likely_pathogenic", "Pathogenic" ]
             }
           ],
           "outcomeTrue": {
@@ -93,9 +88,7 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [
-                "Uncertain_significance"
-              ]
+              "value": [ "Uncertain_significance" ]
             }
           ],
           "outcomeTrue": {
@@ -108,10 +101,7 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [
-                "Likely_benign",
-                "Benign"
-              ]
+              "value": [ "Likely_benign", "Benign" ]
             }
           ],
           "outcomeTrue": {
@@ -390,25 +380,6 @@
         "nextNode": "exit_vus"
       },
       "outcomeFalse": {
-        "nextNode": "intron"
-      }
-    },
-    "intron": {
-      "description": "is intron variant?",
-      "type": "BOOL",
-      "query":
-      {
-        "field": "INFO/CSQ/Consequence",
-        "operator": "==",
-        "value": ["intron_variant"]
-      },
-      "outcomeTrue": {
-        "nextNode": "non_coding"
-      },
-      "outcomeFalse": {
-        "nextNode": "capice"
-      },
-      "outcomeMissing": {
         "nextNode": "capice"
       }
     },
@@ -424,100 +395,6 @@
         "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-        "nextNode": "exit_lb"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_vus"
-      }
-    },
-    "non_coding": {
-      "description": "ReMM, ncER or FATHMM_MKL_NC above threshold",
-      "type": "BOOL_MULTI",
-      "fields": [
-        "INFO/CSQ/ReMM",
-        "INFO/CSQ/ncER",
-        "INFO/CSQ/FATHMM_MKL_NC"
-      ],
-      "outcomes": [
-        {
-          "description": "ReMM, ncER or FATHMM_MKL_NC above threshold",
-          "operator": "OR",
-          "queries": [
-            {
-              "field": "INFO/CSQ/ReMM",
-              "operator": ">",
-              "value": 0.499
-            },
-            {
-              "field": "INFO/CSQ/ncER",
-              "operator": ">",
-              "value": 0.5
-            },
-            {
-              "field": "INFO/CSQ/FATHMM_MKL_NC",
-              "operator": ">",
-              "value": 0.5
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "GREEN_DB"
-          }
-        }
-      ],
-      "outcomeDefault": {
-        "nextNode": "exit_lb"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_vus"
-      }
-    },
-    "GREEN_DB": {
-      "description": "GREEN-DB constraint threshold",
-      "type": "BOOL_MULTI",
-      "fields": [
-        "INFO/CSQ/GDB_PRO",
-        "INFO/CSQ/GDB_ENH",
-        "INFO/CSQ/GDB_BIV",
-        "INFO/CSQ/GDB_SIL",
-        "INFO/CSQ/GDB_INS"
-      ],
-      "outcomes": [
-        {
-          "description": "GREEN-DB threshold above > 0.7",
-          "operator": "OR",
-          "queries": [
-            {
-              "field": "INFO/CSQ/GDB_PRO",
-              "operator": ">",
-              "value": 0.7
-            },
-            {
-              "field": "INFO/CSQ/GDB_ENH",
-              "operator": ">",
-              "value": 0.7
-            },
-            {
-              "field": "INFO/CSQ/GDB_BIV",
-              "operator": ">",
-              "value": 0.7
-            },
-            {
-              "field": "INFO/CSQ/GDB_SIL",
-              "operator": ">",
-              "value": 0.7
-            },
-            {
-              "field": "INFO/CSQ/GDB_INS",
-              "operator": ">",
-              "value": 0.7
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_lp"
-          }
-        }
-      ],
-      "outcomeDefault": {
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
