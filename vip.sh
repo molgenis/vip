@@ -129,7 +129,7 @@ execute_workflow() {
     envWork="${NXF_WORK}"
   fi
   if [[ -z "${NXF_JVM_ARGS}" ]]; then
-    envJvm="-Xmx250m"
+    envJvm="-Xmx512m"
   else 
     envJvm="${NXF_JVM_ARGS}"
   fi
