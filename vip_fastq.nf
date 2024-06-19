@@ -104,6 +104,9 @@ def validateFastqParams(assemblies) {
   def softClipping = params.minimap2.soft_clipping
   if (!(softClipping ==~ /true|false/))  exit 1, "parameter 'minimap2.soft_clipping' value '${softClipping}' is invalid. allowed values are [true, false]"
 
+  def pcr = params.cram.pcr_performed
+  if (!(pcr ==~ /true|false/))  exit 1, "parameter 'cram.pcr_performed' value '${pcr}' is invalid. allowed values are [true, false]"
+  
   assemblies.each { assembly ->
     def fastaMmi = params[assembly].reference.fastaMmi
     if(!fastaMmi.isEmpty() && !file(fastaMmi).exists() )   exit 1, "parameter '${assembly}.reference.fastaMmi' value '${fastaMmi}' does not exist"

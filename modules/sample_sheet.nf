@@ -47,6 +47,11 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       default: { 'WGS' },
       enum: ['WES', 'WGS'],
       scope: "project"
+    ],
+    pcr_performed: [
+      type: "boolean",
+      default: { false },
+      scope: "project"
     ]
   ]
 
