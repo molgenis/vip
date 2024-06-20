@@ -45,6 +45,9 @@ report() {
   if [ -n "!{decisionTree}" ]; then
     args+=("--decision_tree" "!{decisionTree}")
   fi
+  if [ -n "!{sampleTree}" ]; then
+    args+=("--sample_tree" "!{sampleTree}")
+  fi
   if [ -n "!{maxRecords}" ]; then
     args+=("--max_records" "!{maxRecords}")
   fi
