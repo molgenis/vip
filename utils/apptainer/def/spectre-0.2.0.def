@@ -11,7 +11,7 @@ From: sif/build/alpine-3.18.3.sif
     apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
 
     # install
-    pip install --editable .
+    pip install spectre-cnv
 
     # cleanup
     pip cache purge
