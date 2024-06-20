@@ -28,9 +28,9 @@ workflow str {
     // split channel in crams based on tool that supports sequencing platform
     ch_str.with_reads
       | branch { meta ->
-          expansionhunter: meta.project.sequencing_platform == 'illumina' && meta.project.pcr_performed != 'true'
+          expansionhunter: meta.project.sequencing_platform == 'illumina' && !meta.project.pcr_performed
                            return meta
-          straglr: params.str.straglr[meta.project.assembly] != null && (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')  && meta.project.pcr_performed != 'true'
+          straglr: params.str.straglr[meta.project.assembly] != null && (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')  && !meta.project.pcr_performed
                            return meta
           ignore:          true
                            return [meta, null]
