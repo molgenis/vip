@@ -1,0 +1,22 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+
+%post
+    version_major=0
+    version_minor=2
+    version_patch=0
+
+    apk update
+    apk add python3 cython zlib libbz2 xz-libs libdeflate py3-setuptools
+    apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
+
+    # install
+    pip install --editable .
+
+    # cleanup
+    pip cache purge
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
+
+%help
+   Spectre is a long read copy number variation (CNV) caller.
