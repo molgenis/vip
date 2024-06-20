@@ -3,6 +3,7 @@ nextflow.enable.dsl=2
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; validateGroup } from './modules/utils'
 include { validate as validate_cram } from './modules/cram/validate'
+include { spectre } from './modules/cram/spectre'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
@@ -36,7 +37,21 @@ workflow cram {
     ch_cram_multi.snv
       | filter { params.cram.call_snv == true }
       | snv
+      | branch {meta ->
+          cnv: params.cram.call_cnv == true && (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')
+            return meta
+          ignore: true
+            return [meta, null]  
       | set { ch_cram_snv }
+
+    ch_cram_snv.cnv
+      | map { meta, vcf -> [*:meta, vcf: vcf] }
+      | spectre
+      //merge vcf's\
+      | set { ch_cram_snv }
+
+    ch_cram_snv.ready.mix(ch_cram_cnv)
+      | set { ch_cram_snv_cnv }
 
     // str
     ch_cram_multi.str
@@ -51,7 +66,7 @@ workflow cram {
       | set { ch_cram_sv }
 
     // merge outputs of snv, str and sv workflows
-    Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv)
+    Channel.empty().mix(ch_cram_snv_cnv, ch_cram_str, ch_cram_sv)
       | map { meta, vcf -> [groupKey(meta, nrActivateVariantCallerTypes), vcf] }
       | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
       | map { key, group -> validateGroup(key, group) }
