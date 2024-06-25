@@ -23,6 +23,7 @@ process report {
     refSeqPath = params[meta.project.assembly].reference.fasta
     metadata = params.vcf.classify_samples.metadata
     decisionTree = params.vcf.classify[meta.project.assembly].decision_tree
+    sampleTree = params.vcf.classify_samples[meta.project.assembly].decision_tree
     maxRecords = params.vcf.report.max_records
     maxSamples = params.vcf.report.max_samples
     genesPath = params.vcf.report[meta.project.assembly].genes
