@@ -152,7 +152,7 @@ run() {
         job_status="${jobs_status["${job_id}"]}"
 
         # retrieve status for non-terminal jobs
-        if [[ "${job_status}" != "COMPLETED" && "${job_status}" != "FAILED" && "${job_status}" != "CANCELLED" && "${job_status}" != "PREEMPTED" ]]; then
+        if [[ "${job_status}" != "COMPLETED" && "${job_status}" != "FAILED" && "${job_status}" != "CANCELLED" && "${job_status}" != "PREEMPTED" && "${job_status}" != "TIMEOUT" ]]; then
           job_status="$(sacct -j "${job_id}" -o State | awk 'FNR == 3 {print $1}')"
           jobs_status[${job_id}]="${job_status}"
 
@@ -203,7 +203,7 @@ run() {
           test_result_display="FAILED"
           test_result_color="${RED}"
         fi
-      elif [[ "${job_status}" == "FAILED" || "${job_status}" == "CANCELLED" || "${job_status}" == "PREEMPTED" ]]; then
+      elif [[ "${job_status}" == "FAILED" || "${job_status}" == "CANCELLED" || "${job_status}" == "PREEMPTED" || "${job_status}" == "TIMEOUT" ]]; then
         test_result_display="KAPUTT"
         test_result_color="${YELLOW}"
       else
@@ -219,7 +219,7 @@ run() {
     is_running=false
     for job_id in "${!jobs_status[@]}"; do
         job_status="${jobs_status["${job_id}"]}"
-        if [[ "${job_status}" != "COMPLETED" && "${job_status}" != "FAILED" && "${job_status}" != "CANCELLED" && "${job_status}" != "PREEMPTED" ]]; then
+        if [[ "${job_status}" != "COMPLETED" && "${job_status}" != "FAILED" && "${job_status}" != "CANCELLED" && "${job_status}" != "PREEMPTED" && "${job_status}" != "TIMEOUT" ]]; then
           is_running=true
           break
         fi
