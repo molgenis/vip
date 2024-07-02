@@ -1,2 +1,2 @@
-individual_id	sequencing_platform	cram
-HG002	nanopore	downloads/nanopore.cram
+individual_id	sequencing_platform	pcr_performed	cram
+HG002	nanopore	true	downloads/nanopore.cram
