@@ -222,6 +222,11 @@ An additional configuration file can be supplied on the command-line to overwrit
 <td></td>
 <td></td>
 </tr>
+<tr>
+<td>pcr_performed</td>
+<td>false</td>
+<td>Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Warning:</strong>
@@ -254,7 +259,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 <tr>
 <td>minimap2.nanopore_preset</td>
 <td>lr:hq</td>
-<td>Preset to use for aligning Nanopore data, options: 'lr:hq', 'map-ont'.</td>
+<td>Preset to use for aligning Nanopore data, options: 'lr:hq' 'map-ont'.</td>
 </tr>
 </tbody>
 </table>
