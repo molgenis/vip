@@ -33,12 +33,17 @@ call_copy_number_variation () {
     ${CMD_SPECTRE} "${args[@]}"
 }
 
+split_vcf () {
+    #TODO single sample VCF
+}
+
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {
+    split_vcf
     mosdepth
     call_copy_number_variation
     index
