@@ -10,6 +10,7 @@ Features include:
 - Short variant detection
 - Structural variant detection
 - Short tandem repeat detection
+- Copy number variant detection
 - [Consequence](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html) aware
 - Rich set of variant annotations
 - Pathogenic variant prioritization [(CAPICE)](https://github.com/molgenis/capice)

@@ -22,7 +22,7 @@ workflow cram {
     if(params.cram.call_snv) ++nrActivateVariantCallerTypes;
     if(params.cram.call_str) ++nrActivateVariantCallerTypes;
     if(params.cram.call_sv)  ++nrActivateVariantCallerTypes;
-    // no cnv line here since merging happens independent of the rest
+    if(params.cram.call_cnv)  ++nrActivateVariantCallerTypes;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
     meta
@@ -38,8 +38,7 @@ workflow cram {
     ch_cram_multi.snv
       | filter { params.cram.call_snv == true }
       | snv
-      | multiMap { it -> ready: cnv: it }
-      | set { ch_cram_snv }
+            | set { ch_cram_snv }
 
     // str
     ch_cram_multi.str
@@ -53,23 +52,14 @@ workflow cram {
       | sv
       | set { ch_cram_sv }
 
+// cnv
     ch_cram_multi.cnv
-      | filter { params.cram.call_snv == false }
-      | set { ch_cram_cnv_no_snv }
-
-    ch_cram_snv.cnv
-      | map { meta, vcf -> [*:meta, vcf: vcf] }
-      | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample ] } }
-      | set { ch_cram_cnv_snv }
-
-
-    ch_cram_cnv_snv.mix(ch_cram_cnv_no_snv)
-      | filter { params.cram.call_cnv == true }
+            | filter { params.cram.call_cnv == true }
       | cnv
       | set { ch_cram_cnv }
 
     // merge outputs of cnv, snv, str and sv workflows
-    Channel.empty().mix(ch_cram_snv.ready, ch_cram_str, ch_cram_sv)
+    Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv, ch_cram_cnv)
       | map { meta, vcf -> [groupKey(meta, nrActivateVariantCallerTypes), vcf] }
       | groupTuple(remainder: true)
       | map { key, group -> validateGroup(key, group) }
@@ -147,8 +137,8 @@ def validateCramParams(inputAssemblies) {
 
   if(callSnv) validateCallSnvParams(outputAssemblies)
   if(callStr) validateCallStrParams(outputAssemblies)
-  if(callSv)  validateCallSvParams(outputAssemblies)
-  if(callCnv)  validateCallCnvParams(outputAssemblies)
+  if(callSv) validateCallSvParams(outputAssemblies)
+  if(callCnv) validateCallCnvParams(outputAssemblies)
 }
 
 def parseSampleSheet(csvFile) {

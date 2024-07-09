@@ -6,7 +6,7 @@ include { validateGroup } from '../modules/utils'
 include { merge_cnv_vcf } from '../modules/cram/merge_vcf'
 
 /*
- * Variant calling: structural variants
+ * Variant calling: copy number variants
  *
  * input:  meta[project, sample, ...]
  * output: meta[project, ...        ], vcf
@@ -27,16 +27,17 @@ workflow cnv {
     // split channel in crams based on tool that supports sequencing platform
     ch_cnv.with_reads
       | branch { meta ->
-          spectre: meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi'
+          spectre: (meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi')
                   return meta
-          ignore: true
+          ignore:          true
                   return [meta, null]
         }
       | set { ch_cnv_by_platform }
 
-    // cnv calling: spectre
+    
+    // copy number variation detection with straglr
     ch_cnv_by_platform.spectre
-      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.sample.vcf.data] }
+      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | spectre_call
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_cnv_spectre }
@@ -62,9 +63,9 @@ workflow cnv {
       | map { meta, vcfs -> [meta, vcfs.collect { it.data }, vcfs.collect { it.index }] }
       | merge_cnv_vcf
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set { ch_cnv_project_merged }
+      | set { ch_cnv_project_multiple }
     
-    Channel.empty().mix(ch_cnv_project_merged, ch_cnv_by_project.single, ch_cnv_by_project.zero)
+    Channel.of().mix(ch_cnv_project_multiple, ch_cnv_by_project.single, ch_cnv_by_project.zero)
       | set { ch_cnv_processed }
 
     emit:
