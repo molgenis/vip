@@ -21,6 +21,7 @@ call_copy_number_variation () {
     args+=("--output-dir" "spectre")
     args+=("--reference" "!{paramReference}")
     args+=("--metadata" "!{paramMetadata}")
+    args+=("--blacklist" "!{paramBlacklist}")
     if [ "!{sampleSex}" == "male" ]; then
         args+=("--ploidy-chr" "chrX:1,chrY:1")
     else

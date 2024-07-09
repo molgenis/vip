@@ -15,7 +15,8 @@ process spectre_call {
     vcfOutStats = "${vcfOut}.stats"
 
     paramReference = params[meta.project.assembly].reference.fasta
-    paramReference = params.cnv.spectre[meta.project.assembly].metadata
+    paramMetadata = params.cnv.spectre[meta.project.assembly].metadata
+    paramBlacklist = params.cnv.spectre[meta.project.assembly].blacklist
     sampleId = meta.sample.individual_id
     sampleSex = meta.sample.sex
     
