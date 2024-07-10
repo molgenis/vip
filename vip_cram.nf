@@ -9,6 +9,7 @@ include { str; validateCallStrParams } from './subworkflows/call_str'
 include { sv; validateCallSvParams } from './subworkflows/call_sv'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { coverage } from './modules/cram/coverage'
+include { cram_filter } from './modules/cram/filter'
 
 /**
  * input:  [project, sample, ...]
@@ -24,6 +25,19 @@ workflow cram {
 
     // output pre-preprocessed crams to coverage, snv, str and sv channels
     meta
+      | branch { meta ->
+          filter: !meta.project.bed.isEmpty()
+          skip: true
+        }
+      | set { ch_cram_bed }
+
+    ch_cram_bed.filter
+      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
+      | cram_filter
+      | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+      | set { ch_cram_bed_filtered }
+
+    Channel.empty().mix(ch_cram_bed.skip, ch_cram_bed_filtered)
       | multiMap { it -> coverage: snv: str: sv: it }
       | set { ch_cram_multi }
 

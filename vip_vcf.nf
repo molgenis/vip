@@ -19,6 +19,7 @@ include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
 include { gado } from './modules/vcf/gado'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input: [project, vcf, chunk (optional), ...]
@@ -38,7 +39,20 @@ workflow vcf {
         | map { meta, gado_scores -> [*:meta, gado: gado_scores] }
         | set { ch_gado_done }
 
-        ch_gado_done.mix(ch_gado.skip)
+    ch_gado_done.mix(ch_gado.skip)
+      | branch { meta ->
+        filter: !meta.project.bed.isEmpty()
+        skip: true
+      }
+      | set { ch_vcf_bed }
+
+    ch_vcf_bed.filter
+      | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
+      | bed_filter
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_vcf_bed_filtered }
+
+    Channel.empty().mix(ch_vcf_bed.skip, ch_vcf_bed_filtered)
         | branch { meta ->
             scatter: meta.chunk == null
             ready: true
