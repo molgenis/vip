@@ -47,7 +47,7 @@ workflow vcf {
       | set { ch_vcf_bed }
 
     ch_vcf_bed.filter
-      | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
+      | map { meta -> [meta, meta.project.bed, meta.vcf.data, meta.vcf.index] }
       | bed_filter
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_vcf_bed_filtered }

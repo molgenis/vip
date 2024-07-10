@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; validateGroup } from './modules/utils'
+include { getBedRegex; getCramRegex; validateGroup } from './modules/utils'
 include { validate as validate_cram } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
@@ -32,7 +32,7 @@ workflow cram {
       | set { ch_cram_bed }
 
     ch_cram_bed.filter
-      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
+      | map { meta -> [meta, meta.project.bed, meta.sample.cram.data, meta.sample.cram.index] }
       | cram_filter
       | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | set { ch_cram_bed_filtered }
@@ -155,6 +155,11 @@ def parseSampleSheet(csvFile) {
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
+    ],
+    bed: [
+      type: "file",
+      scope: "project",
+      regex: getBedRegex()
     ]
   ]
 

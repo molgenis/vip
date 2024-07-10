@@ -2,7 +2,7 @@
 set -euo pipefail
 
 filter () {
- #FIXME: ${CMD_SAMTOOLS} view -@ "!{task.cpus}" --no-PG --write-index "!{cram}" "!{cramOut}"
+ ${CMD_SAMTOOLS} view -@ "!{task.cpus}" --region-file "!{bed}" --output "!{cramOut}" --no-PG --write-index "!{cram}"
 }
 
 stats () {
