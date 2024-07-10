@@ -14,7 +14,7 @@ def getProbands(samples) {
   if (samples.findAll{ sample -> sample.proband }.size == 0){
     return samples
   }
-  samples.findAll{ sample -> sample.proband }.collect()
+  samples.findAll{ sample -> sample.proband }
 }
 
 def getHpoIds(samples) {
