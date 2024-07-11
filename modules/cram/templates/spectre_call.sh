@@ -34,12 +34,14 @@ call_copy_number_variation () {
 
 index () {
   # empty result of spectre is a vcf file and not a vcf.gz. FIXME: register issue
-  if [[ $file == *.gz ]]; then
+  if [ -f "./spectre/HG002.vcf" ]; then
     # empty result of spectre results in an extra empty line.
     if [ -z "$(tail -n 1 ./spectre/HG002.vcf)" ]; then
       sed -i '$ d' "spectre/!{sampleId}.vcf"
     fi
     ${CMD_BGZIP} -c "spectre/!{sampleId}.vcf" > "!{vcfOut}"
+    else
+      mv "./spectre/HG002.vcf.gz" "!{vcfOut}"
   fi
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
