@@ -1,5 +1,5 @@
-process filter {
-  label 'filter'
+process filter_cram {
+  label 'filter_cram'
   
   publishDir "$params.output/intermediates", mode: 'link'
 
@@ -10,20 +10,20 @@ process filter {
     tuple val(meta), path(cramOut), path(cramOutCrai), path(cramOutStats)
   
   shell:
-    cramOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_filtered.cram"
-    cramOutCrai="${cram}.crai"
-    cramOutStats="${cram}.stats"
+    cramOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_filtered.bam"
+    cramOutCrai="${cramOut}.bai"
+    cramOutStats="${cramOut}.stats"
 
     template 'filter.sh'
   
   stub:
-    cramOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_filtered.cram"
-    cramOutCrai="${cram}.crai"
-    cramOutStats="${cram}.stats"
+    cramOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_filtered.bam"
+    cramOutCrai="${cramOut}.bai"
+    cramOutStats="${cramOut}.stats"
     
     """
-    touch "${cram}"
-    touch "${cramCrai}"
+    touch "${cramOut}"
+    touch "${cramOutCrai}"
     echo -e "chr1\t248956422\t16617476\t118422" > "${cramStats}"
     """
 }

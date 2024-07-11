@@ -39,20 +39,7 @@ workflow vcf {
         | map { meta, gado_scores -> [*:meta, gado: gado_scores] }
         | set { ch_gado_done }
 
-    ch_gado_done.mix(ch_gado.skip)
-      | branch { meta ->
-        filter: !meta.project.bed.isEmpty()
-        skip: true
-      }
-      | set { ch_vcf_bed }
-
-    ch_vcf_bed.filter
-      | map { meta -> [meta, meta.project.bed, meta.vcf.data, meta.vcf.index] }
-      | bed_filter
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set { ch_vcf_bed_filtered }
-
-    Channel.empty().mix(ch_vcf_bed.skip, ch_vcf_bed_filtered)
+        ch_gado_done.mix(ch_gado.skip)
         | branch { meta ->
             scatter: meta.chunk == null
             ready: true
@@ -259,15 +246,24 @@ workflow {
 	ch_project.vcf
 	  | map { meta -> [meta, meta.project.vcf] }
 	  | validate_vcf
-	  | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+    | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
 	  | branch { meta, vcf ->
-	      liftover: meta.project.assembly != params.assembly
+	      bed_filter: meta.project.bed != null
 	      ready: true
 	    }
     | set { ch_project_vcf_validated }
 
+  //filter
+  ch_project_vcf_validated.filter
+    | bed_filter
+	  | branch { meta, vcf ->
+	      liftover: meta.project.assembly != params.assembly
+	      ready: true
+	    }
+    | set { ch_project_vcf_filtered }
+
   // liftover vcf
-  ch_project_vcf_validated.liftover
+  Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_validated.ready)
     | map { meta, vcf -> [meta, vcf.data] }
     | liftover_vcf
     | map { meta, vcf, vcfIndex, vcfStats, vcfRejected, vcfIndexRejected, vcfStatsRejected -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }

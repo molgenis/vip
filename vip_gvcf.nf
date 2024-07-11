@@ -48,14 +48,23 @@ workflow {
     | map { meta -> [meta, meta.sample.gvcf] }
     | validate_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | branch { meta, gVcf ->
-	      liftover: meta.sample.assembly != params.assembly
+    | branch { meta, vcf ->
+	      bed_filter: meta.project.bed != null
 	      ready: true
 	    }
     | set { ch_sample_validated }
 
+  //filter
+  ch_sample_validated.filter
+    | bed_filter
+	  | branch { meta, vcf ->
+	      liftover: meta.project.assembly != params.assembly
+	      ready: true
+	    }
+    | set { ch_project_vcf_filtered }
+
   // liftover gvcf
-  ch_sample_validated.liftover
+  Channel.empty().mix(ch_sample_vcf_filtered, chsample__vcf_validated.ready)
     | map { meta, gVcf -> [meta, gVcf.data] }
     | liftover_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats, gVcfRejected, gVcfRejectedIndex, gVcfRejectedStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
