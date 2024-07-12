@@ -27,30 +27,35 @@ call_copy_number_variation () {
     else
         args+=("--ploidy-chr" "chrX:2")
     fi
-                    
+
     ${CMD_SPECTRE} "${args[@]}"
 }
 
-
-index () {
-  # empty result of spectre is a vcf file and not a vcf.gz. FIXME: register issue
-  if [ -f "./spectre/HG002.vcf" ]; then
-    # empty result of spectre results in an extra empty line.
-    if [ -z "$(tail -n 1 ./spectre/HG002.vcf)" ]; then
-      sed -i '$ d' "spectre/!{sampleId}.vcf"
-    fi
-    ${CMD_BGZIP} -c "spectre/!{sampleId}.vcf" > "!{vcfOut}"
+postprocess() {
+    # empty result of spectre is a vcf file and not a vcf.gz. FIXME: register issue
+    if [ -f "./spectre/HG002.vcf" ]; then
+      # empty result of spectre results in an extra empty line.
+      sed -i '$ d' "spectre/!{sampleId}.vcf" |\
+      sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
+      sed "s/:DP/:DPS/g" |\
+      ${CMD_BGZIP} -c > "!{vcfOut}"
     else
-      mv "./spectre/HG002.vcf.gz" "!{vcfOut}"
-  fi
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+      zcat "./spectre/!{sampleId}.vcf.gz" |\
+      sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
+      sed "s/:DP/:DPS/g" |\
+      ${CMD_BGZIP} -c > "!{vcfOut}"
+    fi
 }
 
+index () {
+    ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+    ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
 
 main() {
     mosdepth
     call_copy_number_variation
+	  postprocess
     index
 }
 
