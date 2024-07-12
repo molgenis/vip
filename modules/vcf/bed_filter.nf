@@ -11,7 +11,7 @@ process bed_filter {
 
   shell:
     basename = basename(meta)
-    vcfOut = "${basename}_bed_filtered.vcf.gz"
+    vcfOut = "${meta.project.id}_bed_filtered.g.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

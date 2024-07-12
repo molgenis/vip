@@ -1,13 +1,14 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
+include { getBedRegex; getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate as validate_gvcf } from './modules/gvcf/validate'
 include { liftover as liftover_gvcf } from './modules/gvcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
 include { scatter; validateGroup } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input:  [project, sample, ...]
@@ -48,30 +49,35 @@ workflow {
     | map { meta -> [meta, meta.sample.gvcf] }
     | validate_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | branch { meta, vcf ->
+    | branch { meta, gVcf ->
 	      bed_filter: meta.project.bed != null
 	      ready: true
 	    }
     | set { ch_sample_validated }
 
   //filter
-  ch_sample_validated.filter
+  ch_sample_validated.bed_filter
+    | map { meta, gVcf -> [meta, meta.project.bed, gVcf.data, gVcf.index] }
     | bed_filter
-	  | branch { meta, vcf ->
-	      liftover: meta.project.assembly != params.assembly
-	      ready: true
-	    }
-    | set { ch_project_vcf_filtered }
+    | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
+    | set { ch_sample_filtered }
+
+  Channel.empty().mix(ch_sample_filtered, ch_sample_validated.ready)
+  	| branch { meta, vcf ->
+	    liftover: meta.sample.assembly != params.assembly
+	    ready: true
+	  }
+    | set { ch_sample_liftover }
 
   // liftover gvcf
-  Channel.empty().mix(ch_sample_vcf_filtered, chsample__vcf_validated.ready)
+  ch_sample_liftover.liftover
     | map { meta, gVcf -> [meta, gVcf.data] }
     | liftover_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats, gVcfRejected, gVcfRejectedIndex, gVcfRejectedStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | set { ch_sample_liftover }
+    | set { ch_sample_liftovered }
 
   // merge vcf channels
-  Channel.empty().mix(ch_sample_liftover, ch_sample_validated.ready)
+  Channel.empty().mix(ch_sample_liftovered, ch_sample_liftover.ready)
     | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, gvcf: gVcf]] }
     | set { ch_sample_processed }
 
@@ -112,6 +118,11 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
+    ],
+    bed: [
+      type: "file",
+      scope: "project",
+      regex: getBedRegex()
     ]
   ]
   

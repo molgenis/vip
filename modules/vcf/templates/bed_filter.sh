@@ -2,7 +2,7 @@
 set -euo pipefail
 
 filter () {
-  ${CMD_BCFTOOLS} view --region-file "!{bed}" --output-type z -output "!{vcfOut}" "!{vcf}" 
+  ${CMD_BCFTOOLS} view --regions-file "!{bed}" --output-type z --output "!{vcfOut}" "!{vcf}" 
 }
 
 index () {
