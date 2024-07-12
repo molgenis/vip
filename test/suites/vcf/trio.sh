@@ -11,7 +11,7 @@ args+=("--resume")
 vip "${args[@]}" 1> /dev/null
 
 # compare expected to actual output and store result
-if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 3 ] && [ ! -z "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep "##GADO_PD")" ]; then
+if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 2 ] && [ ! -z "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep "##GADO_PD")" ]; then
   result="0"
 else
   result="1"

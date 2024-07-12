@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
+include { getBedRegex; getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
 include { validate as validate_vcf } from './modules/vcf/validate'
 include { liftover as liftover_vcf } from './modules/vcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
@@ -254,23 +254,28 @@ workflow {
     | set { ch_project_vcf_validated }
 
   //filter
-  ch_project_vcf_validated.filter
+  ch_project_vcf_validated.bed_filter
+    | map { meta, vcf -> [meta, meta.project.bed, vcf.data, vcf.index] }
     | bed_filter
-	  | branch { meta, vcf ->
-	      liftover: meta.project.assembly != params.assembly
-	      ready: true
-	    }
+    | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
     | set { ch_project_vcf_filtered }
 
-  // liftover vcf
   Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_validated.ready)
+  	| branch { meta, vcf ->
+	    liftover: meta.project.assembly != params.assembly
+	    ready: true
+	  }
+    | set { ch_project_liftover }
+
+  // liftover vcf
+  ch_project_liftover.liftover
     | map { meta, vcf -> [meta, vcf.data] }
     | liftover_vcf
     | map { meta, vcf, vcfIndex, vcfStats, vcfRejected, vcfIndexRejected, vcfStatsRejected -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-    | set { ch_project_vcf_liftover }
+    | set { ch_project_vcf_liftovered }
 
   // merge vcf channels
-  Channel.empty().mix(ch_project_vcf_liftover, ch_project_vcf_validated.ready)
+  Channel.empty().mix(ch_project_vcf_liftovered, ch_project_liftover.ready)
     | map { meta, vcf -> [meta, [vcf: vcf]] }
     | set { ch_project_vcf_processed }
 
@@ -405,6 +410,11 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
+    ],
+    bed: [
+      type: "file",
+      scope: "project",
+      regex: getBedRegex()
     ]
   ]
 

@@ -1,4 +1,4 @@
-family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	hpo_ids	vcf	cram
-FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	HP:0001250,HP:0001166	trio.vcf	trio_proband0.cram
-FAM0	FATHER0			male	false			trio.vcf	trio_father0.cram
-FAM0	MOTHER0			female	false			trio.vcf	
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	hpo_ids	vcf	cram	bed
+FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	HP:0001250,HP:0001166	trio.vcf	trio_proband0.cram	trio.bed
+FAM0	FATHER0			male	false			trio.vcf	trio_father0.cram	trio.bed
+FAM0	MOTHER0			female	false			trio.vcf		trio.bed
