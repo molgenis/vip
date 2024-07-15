@@ -3,10 +3,10 @@ set -euo pipefail
 
 mosdepth () {
     local args=()
-        args+=("--threads"  "!{task.cpus}")
+    args+=("--threads"  "!{task.cpus}")
     args+=("--by" "1000")
     args+=("--fasta" "!{paramReference}")
-        args+=("--mapq" "20")
+    args+=("--mapq" "20")
     args+=("--fast-mode")
     args+=("mosdepth")
     args+=("!{cram}")
