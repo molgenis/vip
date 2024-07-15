@@ -33,7 +33,7 @@ call_copy_number_variation () {
 
 postprocess() {
     # empty result of spectre is a vcf file and not a vcf.gz. https://github.com/fritzsedlazeck/Spectre/issues/26
-    if [ -f "./spectre/HG002.vcf" ]; then
+    if [ -f "./spectre/!{sampleId}.vcf" ]; then
       # empty result of spectre results in an extra empty line. https://github.com/fritzsedlazeck/Spectre/issues/26
       # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
       sed -i '$ d' "spectre/!{sampleId}.vcf" |\
