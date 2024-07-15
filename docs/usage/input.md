@@ -52,20 +52,23 @@ The following sections describe the columns that can be used in every sample-she
 ## Columns: CRAM
 | column                  | type     | required | default      | description                                                                                                 |
 |-------------------------|----------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
+| ``bed``                 | ``file`` |          |              | Bed file to filter the input data with. allowed file extensions: [``bed``]                                  |
 | ``cram``                | ``file`` | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
 | ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
 
 ## Columns: gVCF
-| column       | type     | required | default    | description                                                                                                                        |
-|--------------|----------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
-| ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
-| ``gvcf``     | ``file`` | yes      |            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
-| ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
+| column       | type     | required | default                                                                    | description                                                                                                                        |
+|--------------|----------|----------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ``assembly`` | ``enum`` |          | ``GRCh38``                                                                 | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
+| ``bed``      | ``file`` |          | Bed file to filter the input data with. allowed file extensions: [``bed``] |
+| ``gvcf``     | ``file`` | yes      |                                                                            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
+| ``cram``     | ``file`` |          |                                                                            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
 
 
 ## Columns: VCF
 | column       | type     | required | default    | description                                                                                                                                   |
 |--------------|----------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |
+| ``bed``      | ``file`` |          |            | Bed file to filter the input data with. allowed file extensions: [``bed``]                                                                    |
 | ``vcf``      | ``file`` | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
 | ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
