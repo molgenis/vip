@@ -32,15 +32,17 @@ call_copy_number_variation () {
 }
 
 postprocess() {
-    # empty result of spectre is a vcf file and not a vcf.gz. FIXME: register issue
+    # empty result of spectre is a vcf file and not a vcf.gz. https://github.com/fritzsedlazeck/Spectre/issues/26
     if [ -f "./spectre/HG002.vcf" ]; then
-      # empty result of spectre results in an extra empty line.
+      # empty result of spectre results in an extra empty line. https://github.com/fritzsedlazeck/Spectre/issues/26
+      # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
       sed -i '$ d' "spectre/!{sampleId}.vcf" |\
       sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
       sed "s/:DP/:DPS/g" |\
       ${CMD_BGZIP} -c > "!{vcfOut}"
     else
       zcat "./spectre/!{sampleId}.vcf.gz" |\
+      # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
       sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
       sed "s/:DP/:DPS/g" |\
       ${CMD_BGZIP} -c > "!{vcfOut}"
