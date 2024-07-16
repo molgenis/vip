@@ -21,8 +21,8 @@ workflow cram {
     def nrActivateVariantCallerTypes = 0
     if(params.cram.call_snv) ++nrActivateVariantCallerTypes;
     if(params.cram.call_str) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_sv)  ++nrActivateVariantCallerTypes;
-    if(params.cram.call_cnv)  ++nrActivateVariantCallerTypes;
+    if(params.cram.call_sv) ++nrActivateVariantCallerTypes;
+    if(params.cram.call_cnv) ++nrActivateVariantCallerTypes;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
     meta
@@ -38,7 +38,7 @@ workflow cram {
     ch_cram_multi.snv
       | filter { params.cram.call_snv == true }
       | snv
-            | set { ch_cram_snv }
+      | set { ch_cram_snv }
 
     // str
     ch_cram_multi.str
@@ -54,7 +54,7 @@ workflow cram {
 
 // cnv
     ch_cram_multi.cnv
-            | filter { params.cram.call_cnv == true }
+      | filter { params.cram.call_cnv == true }
       | cnv
       | set { ch_cram_cnv }
 

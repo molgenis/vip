@@ -54,7 +54,7 @@ workflow cnv {
           single:   vcfs.count { it != null } == 1
                     return [meta, vcfs.find { it != null }]
           zero:     true
-                    return [meta, null]
+                    return [meta, [data: null, index: null, stats: null]]
         }
       | set { ch_cnv_by_project }
 
