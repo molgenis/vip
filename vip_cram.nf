@@ -9,7 +9,7 @@ include { str; validateCallStrParams } from './subworkflows/call_str'
 include { sv; validateCallSvParams } from './subworkflows/call_sv'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { coverage } from './modules/cram/coverage'
-include { filter_cram } from './modules/cram/filter'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input:  [project, sample, ...]
@@ -25,19 +25,6 @@ workflow cram {
 
     // output pre-preprocessed crams to coverage, snv, str and sv channels
     meta
-      | branch { meta ->
-          filter: meta.project.bed != null
-          skip: true
-        }
-      | set { ch_cram_bed }
-
-    ch_cram_bed.filter
-      | map { meta -> [meta, meta.project.bed, meta.sample.cram.data, meta.sample.cram.index] }
-      | filter_cram
-      | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
-      | set { ch_cram_bed_filtered }
-
-    Channel.empty().mix(ch_cram_bed.skip, ch_cram_bed_filtered)
       | multiMap { it -> coverage: snv: str: sv: it }
       | set { ch_cram_multi }
 
@@ -86,8 +73,22 @@ workflow cram {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_cram_called_multiple }
 
-    // continue with vcf workflow
     Channel.empty().mix(ch_cram_called_multiple, ch_cram_called.single ) // FIXME deal with projects ending up in ch_cram_called.zero
+    | branch { meta, vcf ->
+	      bed_filter: meta.project.bed != null
+	      ready: true
+	    }
+    | set { ch_project_vcf_called }
+    
+    //filter
+    ch_project_vcf_called.bed_filter
+      | map { meta, vcf -> [meta, meta.project.bed, vcf.data, vcf.index] }
+      | bed_filter
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_project_vcf_filtered }
+
+    // continue with vcf workflow
+    Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_called.ready)
       | map { meta, vcf -> [*:meta, vcf: vcf] }
       | vcf
 }
