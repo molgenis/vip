@@ -36,16 +36,16 @@ postprocess() {
     if [ -f "./spectre/!{sampleId}.vcf" ]; then
       # empty result of spectre results in an extra empty line. https://github.com/fritzsedlazeck/Spectre/issues/26
       # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
-      sed -i '$ d' "spectre/!{sampleId}.vcf" |\
+      head -n -1 "spectre/!{sampleId}.vcf" |\
       sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
       sed "s/:DP/:DPS/g" |\
-      ${CMD_BGZIP} -c > "!{vcfOut}"
+      ${CMD_BGZIP} -c "temp.vcf" > "!{vcfOut}"
     else
       zcat "./spectre/!{sampleId}.vcf.gz" |\
       # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
       sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
       sed "s/:DP/:DPS/g" |\
-      ${CMD_BGZIP} -c > "!{vcfOut}"
+      ${CMD_BGZIP} -c "temp.vcf"  "!{vcfOut}"
     fi
 }
 
@@ -57,7 +57,7 @@ index () {
 main() {
     mosdepth
     call_copy_number_variation
-	  postprocess
+    postprocess
     index
 }
 
