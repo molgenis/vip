@@ -42,6 +42,11 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
+    regions: [
+      type: "file",
+      scope: "project",
+      regex: /.+(?:\.bed)/
+    ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },

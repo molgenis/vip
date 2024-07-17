@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getBedRegex; getCramRegex; getGenomeVcfRegex } from './modules/utils'
+include { getCramRegex; getGenomeVcfRegex } from './modules/utils'
 include { validate as validate_gvcf } from './modules/gvcf/validate'
 include { liftover as liftover_gvcf } from './modules/gvcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
@@ -118,11 +118,6 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
-    ],
-    regions: [
-      type: "file",
-      scope: "project",
-      regex: getBedRegex()
     ]
   ]
   

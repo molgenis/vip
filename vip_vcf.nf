@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateCommonParams } from './modules/cli'
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getBedRegex; getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
+include { getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
 include { validate as validate_vcf } from './modules/vcf/validate'
 include { liftover as liftover_vcf } from './modules/vcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
@@ -410,11 +410,6 @@ def parseSampleSheet(csvFile) {
     cram: [
       type: "file",
       regex: getCramRegex()
-    ],
-    regions: [
-      type: "file",
-      scope: "project",
-      regex: getBedRegex()
     ]
   ]
 

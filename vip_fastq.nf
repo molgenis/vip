@@ -1,7 +1,6 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet } from './modules/sample_sheet'
-include { getBedRegex } from './modules/utils'
 include { fastp; fastp_paired_end } from './modules/fastq/fastp'
 include { filter_reads } from './modules/fastq/adaptive_sampling'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
@@ -110,11 +109,6 @@ def parseSampleSheet(csvFile) {
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
-    ],
-    regions: [
-      type: "file",
-      scope: "project",
-      regex: getBedRegex()
     ]
   ]
 

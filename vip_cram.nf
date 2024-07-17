@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
-include { getBedRegex; getCramRegex; validateGroup } from './modules/utils'
+include { getCramRegex; validateGroup } from './modules/utils'
 include { validate as validate_cram } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
@@ -156,11 +156,6 @@ def parseSampleSheet(csvFile) {
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
-    ],
-    regions: [
-      type: "file",
-      scope: "project",
-      regex: getBedRegex()
     ]
   ]
 
