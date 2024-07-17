@@ -32,7 +32,7 @@ call_copy_number_variation () {
 
     ${CMD_SPECTRE} "${args[@]}"
 
-    mv "./spectre/!{sampleId}.vcf" "!{vcfOut}"
+    mv "./spectre/!{sampleId}.vcf.gz" "!{vcfOut}"
 }
 
 index () {
