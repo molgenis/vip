@@ -35,7 +35,7 @@ workflow cnv {
       | set { ch_cnv_by_platform }
 
     
-    // copy number variation detection with straglr
+    // copy number variation detection with Spectr
     ch_cnv_by_platform.spectre
       | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | spectre_call
