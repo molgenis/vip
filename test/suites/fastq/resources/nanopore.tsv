@@ -1,2 +1,2 @@
-individual_id	sequencing_platform	fastq
-HG002	nanopore	downloads/m54238_180628_014238_s0_10000.Q20.part_001.fastq.gz,downloads/m54238_180628_014238_s0_10000.Q20.part_002.fastq.gz
+individual_id	sequencing_platform	fastq	bed
+HG002	nanopore	downloads/m54238_180628_014238_s0_10000.Q20.part_001.fastq.gz,downloads/m54238_180628_014238_s0_10000.Q20.part_002.fastq.gz	nanopore.bed
