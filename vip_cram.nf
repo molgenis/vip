@@ -75,14 +75,14 @@ workflow cram {
 
     Channel.empty().mix(ch_cram_called_multiple, ch_cram_called.single ) // FIXME deal with projects ending up in ch_cram_called.zero
     | branch { meta, vcf ->
-	      bed_filter: meta.project.bed != null
+	      bed_filter: meta.project.regions != null
 	      ready: true
 	    }
     | set { ch_project_vcf_called }
     
     //filter
     ch_project_vcf_called.bed_filter
-      | map { meta, vcf -> [meta, meta.project.bed, vcf.data, vcf.index] }
+      | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index] }
       | bed_filter
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_project_vcf_filtered }
@@ -157,7 +157,7 @@ def parseSampleSheet(csvFile) {
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
     ],
-    bed: [
+    regions: [
       type: "file",
       scope: "project",
       regex: getBedRegex()

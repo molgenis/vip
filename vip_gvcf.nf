@@ -50,14 +50,14 @@ workflow {
     | validate_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
     | branch { meta, gVcf ->
-	      bed_filter: meta.project.bed != null
+	      bed_filter: meta.project.regions != null
 	      ready: true
 	    }
     | set { ch_sample_validated }
 
   //filter
   ch_sample_validated.bed_filter
-    | map { meta, gVcf -> [meta, meta.project.bed, gVcf.data, gVcf.index] }
+    | map { meta, gVcf -> [meta, meta.project.regions, gVcf.data, gVcf.index] }
     | bed_filter
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
     | set { ch_sample_filtered }
@@ -119,7 +119,7 @@ def parseSampleSheet(csvFile) {
       type: "file",
       regex: getCramRegex()
     ],
-    bed: [
+    regions: [
       type: "file",
       scope: "project",
       regex: getBedRegex()

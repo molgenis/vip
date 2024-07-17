@@ -248,14 +248,14 @@ workflow {
 	  | validate_vcf
     | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
 	  | branch { meta, vcf ->
-	      bed_filter: meta.project.bed != null
+	      bed_filter: meta.project.regions != null
 	      ready: true
 	    }
     | set { ch_project_vcf_validated }
 
   //filter
   ch_project_vcf_validated.bed_filter
-    | map { meta, vcf -> [meta, meta.project.bed, vcf.data, vcf.index] }
+    | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index] }
     | bed_filter
     | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
     | set { ch_project_vcf_filtered }
@@ -411,7 +411,7 @@ def parseSampleSheet(csvFile) {
       type: "file",
       regex: getCramRegex()
     ],
-    bed: [
+    regions: [
       type: "file",
       scope: "project",
       regex: getBedRegex()

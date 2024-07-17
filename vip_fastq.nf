@@ -111,7 +111,7 @@ def parseSampleSheet(csvFile) {
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
     ],
-    bed: [
+    regions: [
       type: "file",
       scope: "project",
       regex: getBedRegex()
