@@ -110,7 +110,7 @@ main() {
   uris["docker://ensemblorg/ensembl-vep:release_111.0"]="vep-111.0"
   uris["docker://google/deepvariant:1.6.1"]="deepvariant-1.6.1"
   uris["docker://google/deepvariant:deeptrio-1.6.1"]="deepvariant_deeptrio-1.6.1"
-  uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0]="mosdepth-0.3.8"
+  uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

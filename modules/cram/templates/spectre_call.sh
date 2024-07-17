@@ -2,6 +2,7 @@
 set -euo pipefail
 
 mosdepth () {
+    # Spectre recommends running Mosdepth with a bin size of 1kb and a mapping quality of at least 20
     local args=()
     args+=("--threads"  "!{task.cpus}")
     args+=("--by" "1000")
@@ -22,6 +23,7 @@ call_copy_number_variation () {
     args+=("--reference" "!{paramReference}")
     args+=("--metadata" "!{paramMetadata}")
     args+=("--blacklist" "!{paramBlacklist}")
+    args+=("--threads" "!{task.cpus}")
     if [ "!{sampleSex}" == "male" ]; then
         args+=("--ploidy-chr" "chrX:1,chrY:1")
     else
@@ -29,24 +31,8 @@ call_copy_number_variation () {
     fi
 
     ${CMD_SPECTRE} "${args[@]}"
-}
 
-postprocess() {
-    # empty result of spectre is a vcf file and not a vcf.gz. https://github.com/fritzsedlazeck/Spectre/issues/26
-    if [ -f "./spectre/!{sampleId}.vcf" ]; then
-      # empty result of spectre results in an extra empty line. https://github.com/fritzsedlazeck/Spectre/issues/26
-      # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
-      head -n -1 "spectre/!{sampleId}.vcf" |\
-      sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
-      sed "s/:DP/:DPS/g" |\
-      ${CMD_BGZIP} -c > "!{vcfOut}"
-    else
-      zcat "./spectre/!{sampleId}.vcf.gz" |\
-      # Fix illegal DP FORMAT field in Spectre output https://github.com/fritzsedlazeck/Spectre/issues/27
-      sed "s/##FORMAT=<ID=DP,Number=2,Type=Float,Description=\"Read depth\">/##FORMAT=<ID=DPS,Number=1,Type=Float,Description=\"Spectre read depth\">/g" |\
-      sed "s/:DP/:DPS/g" |\
-      ${CMD_BGZIP} -c > "!{vcfOut}"
-    fi
+    mv "./spectre/!{sampleId}.vcf" "!{vcfOut}"
 }
 
 index () {
@@ -57,7 +43,6 @@ index () {
 main() {
     mosdepth
     call_copy_number_variation
-    postprocess
     index
 }
 

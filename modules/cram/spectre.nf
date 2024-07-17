@@ -11,7 +11,7 @@ process spectre_call {
 
   shell:
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_cnv.vcf.gz"
-        vcfOutIndex = "${vcfOut}.csi"
+    vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
     paramReference = params[meta.project.assembly].reference.fasta
