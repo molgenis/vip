@@ -133,7 +133,7 @@ def validateCramParams(inputAssemblies) {
     def callSv = params.cram.call_sv
   if (!(callSv ==~ /true|false/))  exit 1, "parameter 'cram.call_sv' value '${callSv}' is invalid. allowed values are [true, false]"
   
-  if (callSnv == false && callStr == false && callSv == false && call_cnv == false) exit 1, "parameters 'cram.call_cnv', 'cram.call_snv', 'cram.call_str' and 'cram.call_sv' are false. at least one must be true"
+  if (callSnv == false && callStr == false && callSv == false && callCnv == false) exit 1, "parameters 'cram.call_cnv', 'cram.call_snv', 'cram.call_str' and 'cram.call_sv' are false. at least one must be true"
 
   if(callSnv) validateCallSnvParams(outputAssemblies)
   if(callStr) validateCallStrParams(outputAssemblies)
