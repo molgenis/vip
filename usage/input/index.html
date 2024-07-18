@@ -274,9 +274,22 @@
 <td><code>WGS</code></td>
 <td>allowed values: [<code>WES</code>,<code>WGS</code>], value must be the same for all project samples</td>
 </tr>
+<tr>
+<td><code>regions</code></td>
+<td><code>file</code></td>
+<td></td>
+<td></td>
+<td>allowed file extensions: [<code>bed</code>]. filter variants overlapping with regions in bed file<sup>2</sup></td>
+</tr>
+<tr>
+<td><sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
 </tbody>
 </table>
-<p><sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.</p>
 <h2 id="columns-fastq">Columns: FASTQ<a class="headerlink" href="#columns-fastq" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -299,21 +312,21 @@
 <tr>
 <td><code>fastq</code></td>
 <td><code>file list</code></td>
-<td>yes<sup>2</sup></td>
+<td>yes<sup>3</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. single-reads file(s)</td>
 </tr>
 <tr>
 <td><code>fastq_r1</code></td>
 <td><code>file list</code></td>
-<td>yes<sup>2</sup></td>
+<td>yes<sup>3</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #1</td>
 </tr>
 <tr>
 <td><code>fastq_r2</code></td>
 <td><code>file list</code></td>
-<td>yes<sup>2</sup></td>
+<td>yes<sup>3</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #2</td>
 </tr>
@@ -326,7 +339,7 @@
 </tr>
 </tbody>
 </table>
-<p><sup>2</sup> Either the <code>fastq</code> or the <code>fastq_r1</code> and <code>fastq_r2</code> are required.  </p>
+<p><sup>3</sup> Either the <code>fastq</code> or the <code>fastq_r1</code> and <code>fastq_r2</code> are required.</p>
 <h2 id="columns-cram">Columns: CRAM<a class="headerlink" href="#columns-cram" title="Permanent link">¶</a></h2>
 <table>
 <thead>
