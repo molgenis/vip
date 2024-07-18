@@ -59,7 +59,6 @@ The following sections describe the columns that can be used in every sample-she
 | column       | type     | required | default    | description                                                                                                                        |
 |--------------|----------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
 | ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
-| ``regions``  | ``file`` |          |            | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file<sup>3</sup>                               |
 | ``gvcf``     | ``file`` | yes      |            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
 | ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
 
