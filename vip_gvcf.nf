@@ -8,6 +8,7 @@ include { validate as validate_cram } from './modules/cram/validate'
 include { scatter; validateGroup } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input:  [project, sample, ...]
@@ -49,20 +50,34 @@ workflow {
     | validate_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
     | branch { meta, gVcf ->
-	      liftover: meta.sample.assembly != params.assembly
+	      bed_filter: meta.project.regions != null
 	      ready: true
 	    }
     | set { ch_sample_validated }
 
+  //filter
+  ch_sample_validated.bed_filter
+    | map { meta, gVcf -> [meta, meta.project.regions, gVcf.data, gVcf.index, true] }
+    | bed_filter
+    | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
+    | set { ch_sample_filtered }
+
+  Channel.empty().mix(ch_sample_filtered, ch_sample_validated.ready)
+  	| branch { meta, vcf ->
+	    liftover: meta.sample.assembly != params.assembly
+	    ready: true
+	  }
+    | set { ch_sample_liftover }
+
   // liftover gvcf
-  ch_sample_validated.liftover
+  ch_sample_liftover.liftover
     | map { meta, gVcf -> [meta, gVcf.data] }
     | liftover_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats, gVcfRejected, gVcfRejectedIndex, gVcfRejectedStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | set { ch_sample_liftover }
+    | set { ch_sample_liftovered }
 
   // merge vcf channels
-  Channel.empty().mix(ch_sample_liftover, ch_sample_validated.ready)
+  Channel.empty().mix(ch_sample_liftovered, ch_sample_liftover.ready)
     | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, gvcf: gVcf]] }
     | set { ch_sample_processed }
 
