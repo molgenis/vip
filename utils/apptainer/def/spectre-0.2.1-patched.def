@@ -7,7 +7,7 @@ From: sif/build/alpine-3.18.3.sif
     apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
 
     # install
-    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.24.3 scipy==1.11.4 matplotlib==3.9.1
+    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.24.3 scipy==1.11.4 matplotlib==3.9.1 pandas==2.2.2
 
     pip install build
     git clone https://github.com/fritzsedlazeck/Spectre.git
