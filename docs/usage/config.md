@@ -4,20 +4,21 @@ An additional configuration file can be supplied on the command-line to overwrit
 
 ## Parameters
 
-| key                           | default     | description                                 |
-|-------------------------------|-------------|---------------------------------------------|
-| assembly                      | GRCh38      | output assembly, allowed values: [GRCh38]   |
-| GRCh37.reference.chain.GRCh38 | *installed* | chain file to convert GRCh37 to GRCh38 data |
-| GRCh37.reference.fasta        | *installed* |                                             |
-| GRCh37.reference.fastaFai     | *installed* |                                             |
-| GRCh37.reference.fastaGzi     | *installed* |                                             |
-| GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set |
-| GRCh38.reference.fastaFai     | *installed* |                                             |
-| GRCh38.reference.fastaGzi     | *installed* |                                             |
-| T2T.reference.chain.GRCh38    | *installed* | chain file to convert T2T to GRCh38 data    |
-| T2T.reference.fasta           |             |                                             |
-| T2T.reference.fastaFai        |             |                                             |
-| T2T.reference.fastaGzi        |             |                                             |
+| key                           | default     | description                                                                                                                       |
+|-------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| assembly                      | GRCh38      | output assembly, allowed values: [GRCh38]                                                                                         |
+| GRCh37.reference.chain.GRCh38 | *installed* | chain file to convert GRCh37 to GRCh38 data                                                                                       |
+| GRCh37.reference.fasta        | *installed* |                                                                                                                                   |
+| GRCh37.reference.fastaFai     | *installed* |                                                                                                                                   |
+| GRCh37.reference.fastaGzi     | *installed* |                                                                                                                                   |
+| GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set                                                                                       |
+| GRCh38.reference.fastaFai     | *installed* |                                                                                                                                   |
+| GRCh38.reference.fastaGzi     | *installed* |                                                                                                                                   |
+| T2T.reference.chain.GRCh38    | *installed* | chain file to convert T2T to GRCh38 data                                                                                          |
+| T2T.reference.fasta           |             |                                                                                                                                   |
+| T2T.reference.fastaFai        |             |                                                                                                                                   |
+| T2T.reference.fastaGzi        |             |                                                                                                                                   |
+| pcr_performed                 | false       | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data. |
 
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
@@ -26,8 +27,9 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | key                       | default     | description                                                                                            |
 |---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
 | GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
+| fastp.options             |             | for details, see[here](https://github.com/OpenGene/fastp)                                              |
 | minimap2.soft_clipping    | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
-| minimap2.nanopore_preset  | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq', 'map-ont'.                                 |
+| minimap2.nanopore_preset  | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq' 'map-ont'.                                  |
 
 ### CRAM
 | key                                            | default        | description                                                                                                                                                                          |

@@ -19,6 +19,7 @@ include { slice } from './modules/vcf/slice'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
 include { gado } from './modules/vcf/gado'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input: [project, vcf, chunk (optional), ...]
@@ -245,22 +246,36 @@ workflow {
 	ch_project.vcf
 	  | map { meta -> [meta, meta.project.vcf] }
 	  | validate_vcf
-	  | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+    | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
 	  | branch { meta, vcf ->
-	      liftover: meta.project.assembly != params.assembly
+	      bed_filter: meta.project.regions != null
 	      ready: true
 	    }
     | set { ch_project_vcf_validated }
 
+  //filter
+  ch_project_vcf_validated.bed_filter
+    | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index, false] }
+    | bed_filter
+    | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+    | set { ch_project_vcf_filtered }
+
+  Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_validated.ready)
+  	| branch { meta, vcf ->
+	    liftover: meta.project.assembly != params.assembly
+	    ready: true
+	  }
+    | set { ch_project_liftover }
+
   // liftover vcf
-  ch_project_vcf_validated.liftover
+  ch_project_liftover.liftover
     | map { meta, vcf -> [meta, vcf.data] }
     | liftover_vcf
     | map { meta, vcf, vcfIndex, vcfStats, vcfRejected, vcfIndexRejected, vcfStatsRejected -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-    | set { ch_project_vcf_liftover }
+    | set { ch_project_vcf_liftovered }
 
   // merge vcf channels
-  Channel.empty().mix(ch_project_vcf_liftover, ch_project_vcf_validated.ready)
+  Channel.empty().mix(ch_project_vcf_liftovered, ch_project_liftover.ready)
     | map { meta, vcf -> [meta, [vcf: vcf]] }
     | set { ch_project_vcf_processed }
 

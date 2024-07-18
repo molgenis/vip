@@ -14,7 +14,7 @@ def getProbands(samples) {
   if (samples.findAll{ sample -> sample.proband }.size == 0){
     return samples
   }
-  samples.findAll{ sample -> sample.proband }.collect{ sample -> [family_id:sample.family_id, individual_id:sample.individual_id] }
+  samples.findAll{ sample -> sample.proband }
 }
 
 def getHpoIds(samples) {
@@ -29,7 +29,7 @@ def areProbandHpoIdsIndentical(samples) {
   def hpo_ids=[]
   def isIdentical = true
   getProbands(samples).each{ sample ->
-    if(hpo_ids.isEmpty() && sample.hpo_ids != null && !sample.hpo_ids.isEmpty){
+    if(hpo_ids.isEmpty() && sample.hpo_ids != null && !sample.hpo_ids.isEmpty()){
       hpo_ids = sample.hpo_ids
     }else{
       if(sample.hpo_ids as Set != hpo_ids as Set){

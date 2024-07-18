@@ -42,10 +42,20 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
       list: true,
       regex: /HP:\d{7}/
     ],
+    regions: [
+      type: "file",
+      scope: "project",
+      regex: /.+(?:\.bed)/
+    ],
     sequencing_method: [
       type: "string",
       default: { 'WGS' },
       enum: ['WES', 'WGS'],
+      scope: "project"
+    ],
+    pcr_performed: [
+      type: "boolean",
+      default: { 'false' },
       scope: "project"
     ]
   ]
@@ -123,6 +133,9 @@ def validate(project){
       if(sample.paternal_id == sample.maternal_id) throw new IllegalArgumentException("line ${sample.index}: paternal_id '${sample.paternal_id}' cannot be the same as maternal_id '${sample.maternal_id}'")
     }
   }
+  def pcr = project.pcr_performed
+  if (!(pcr ==~ /true|false/))  exit 1, "parameter 'project.pcr_performed' value '${pcr}' is invalid. allowed values are [true, false]"
+  
 }
 
 def parseHeader(tokens, colMetaMap) {
