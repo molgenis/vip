@@ -4,14 +4,14 @@ process bed_filter {
   label 'bed_filter'
   
   input:
-    tuple val(meta), path(bed), path(vcf), path(vcfIndex)
+    tuple val(meta), path(bed), path(vcf), path(vcfIndex), val(isGvcf)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
     basename = basename(meta)
-    vcfOut = "${meta.project.id}_bed_filtered.vcf.gz"
+    vcfOut = isGvcf ? "${meta.project.id}_bed_filtered.g.vcf.gz" : "${meta.project.id}_bed_filtered.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 

@@ -82,7 +82,7 @@ workflow cram {
     
     //filter
     ch_project_vcf_called.bed_filter
-      | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index] }
+      | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index, false] }
       | bed_filter
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_project_vcf_filtered }

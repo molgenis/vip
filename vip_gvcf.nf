@@ -57,7 +57,7 @@ workflow {
 
   //filter
   ch_sample_validated.bed_filter
-    | map { meta, gVcf -> [meta, meta.project.regions, gVcf.data, gVcf.index] }
+    | map { meta, gVcf -> [meta, meta.project.regions, gVcf.data, gVcf.index, true] }
     | bed_filter
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
     | set { ch_sample_filtered }
