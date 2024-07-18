@@ -17,6 +17,7 @@ done
 args=()
 args+=("--workflow" "cram")
 args+=("--input" "${TEST_RESOURCES_DIR}/NA12878_nanopore_bam.tsv")
+args+=("--config" "${TEST_RESOURCES_DIR}/NA12878_nanopore_bam.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
