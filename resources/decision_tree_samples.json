@@ -41,24 +41,6 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "dp"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_u3"
-      },
-      "outcomeMissing": {
-        "nextNode": "dp"
-      }
-    },
-    "dp": {
-      "type": "BOOL",
-      "description": "Sequencing depth",
-      "query": {
-        "field": "FORMAT/DP",
-        "operator": ">=",
-        "value": 10
-      },
-      "outcomeTrue": {
         "nextNode": "vim"
       },
       "outcomeFalse": {
