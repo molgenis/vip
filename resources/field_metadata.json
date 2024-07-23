@@ -158,6 +158,41 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "GDB_PRO": {
+          "label": "GDB_PRO",
+          "description": "Highest GREEN-DB constraint score for overlapping promotor regions.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
+        "GDB_ENH": {
+          "label": "GDB_ENH",
+          "description": "Highest GREEN-DB constraint score for overlapping enhancer regions.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
+        "GDB_BIV": {
+          "label": "GDB_BIV",
+          "description": "Highest GREEN-DB constraint score for overlapping bivalent regions.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
+        "GDB_SIL": {
+          "label": "GDB_SIL",
+          "description": "Highest GREEN-DB constraint score for overlapping silencer regions.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
+        "GDB_INS": {
+          "label": "GDB_INS",
+          "description": "Highest GREEN-DB constraint score for overlapping insulater regions.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "Feature_type": {
           "label": "Feature Type.",
           "description": "The VEP feature type",

@@ -7,7 +7,7 @@ SCRIPT_NAME="$(basename "$0")"
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 
-VIP_VERSION="7.7.0"
+VIP_VERSION="7.9.0"
 
 display_version() {
   echo -e "${VIP_VERSION}"
@@ -129,7 +129,7 @@ execute_workflow() {
     envWork="${NXF_WORK}"
   fi
   if [[ -z "${NXF_JVM_ARGS}" ]]; then
-    envJvm="-Xmx250m"
+    envJvm="-Xmx512m"
   else 
     envJvm="${NXF_JVM_ARGS}"
   fi
@@ -152,7 +152,7 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="23.10.0" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="24.04.2" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
 }
 
 main() {

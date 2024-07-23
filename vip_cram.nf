@@ -7,7 +7,10 @@ include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
 include { sv; validateCallSvParams } from './subworkflows/call_sv'
+include { cnv; validateCallCnvParams } from './subworkflows/call_cnv'
 include { concat_vcf } from './modules/cram/concat_vcf'
+include { coverage } from './modules/cram/coverage'
+include { bed_filter } from './modules/vcf/bed_filter'
 
 /**
  * input:  [project, sample, ...]
@@ -19,12 +22,18 @@ workflow cram {
     def nrActivateVariantCallerTypes = 0
     if(params.cram.call_snv) ++nrActivateVariantCallerTypes;
     if(params.cram.call_str) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_sv)  ++nrActivateVariantCallerTypes;
+    if(params.cram.call_sv) ++nrActivateVariantCallerTypes;
+    if(params.cram.call_cnv) ++nrActivateVariantCallerTypes;
 
-    // output pre-preprocessed crams to snv, str and sv channels
+    // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
     meta
-      | multiMap { it -> snv: str: sv: it }
+      | multiMap { it -> coverage: snv: str: sv: cnv: it }
       | set { ch_cram_multi }
+
+		// coverage
+		ch_cram_multi.coverage
+		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
+		  | coverage
 
     // snv
     ch_cram_multi.snv
@@ -44,10 +53,16 @@ workflow cram {
       | sv
       | set { ch_cram_sv }
 
-    // merge outputs of snv, str and sv workflows
-    Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv)
+// cnv
+    ch_cram_multi.cnv
+      | filter { params.cram.call_cnv == true }
+      | cnv
+      | set { ch_cram_cnv }
+
+    // merge outputs of cnv, snv, str and sv workflows
+    Channel.empty().mix(ch_cram_snv, ch_cram_str, ch_cram_sv, ch_cram_cnv)
       | map { meta, vcf -> [groupKey(meta, nrActivateVariantCallerTypes), vcf] }
-      | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+      | groupTuple(remainder: true)
       | map { key, group -> validateGroup(key, group) }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
@@ -66,8 +81,22 @@ workflow cram {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_cram_called_multiple }
 
-    // continue with vcf workflow
     Channel.empty().mix(ch_cram_called_multiple, ch_cram_called.single ) // FIXME deal with projects ending up in ch_cram_called.zero
+    | branch { meta, vcf ->
+	      bed_filter: meta.project.regions != null
+	      ready: true
+	    }
+    | set { ch_project_vcf_called }
+
+    //filter
+    ch_project_vcf_called.bed_filter
+      | map { meta, vcf -> [meta, meta.project.regions, vcf.data, vcf.index, false] }
+      | bed_filter
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_project_vcf_filtered }
+
+    // continue with vcf workflow
+    Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_called.ready)
       | map { meta, vcf -> [*:meta, vcf: vcf] }
       | vcf
 }
@@ -113,14 +142,18 @@ def validateCramParams(inputAssemblies) {
   def callStr = params.cram.call_str
   if (!(callStr ==~ /true|false/))  exit 1, "parameter 'cram.call_str' value '${callStr}' is invalid. allowed values are [true, false]"
 
-  def callSv = params.cram.call_sv
+  def callCnv = params.cram.call_cnv
+  if (!(callCnv ==~ /true|false/))  exit 1, "parameter 'cram.call_cnv' value '${callCnv}' is invalid. allowed values are [true, false]"
+
+    def callSv = params.cram.call_sv
   if (!(callSv ==~ /true|false/))  exit 1, "parameter 'cram.call_sv' value '${callSv}' is invalid. allowed values are [true, false]"
   
-  if (callSnv == false && callStr == false && callSv == false) exit 1, "parameters 'cram.call_snv', 'cram.call_str' and 'cram.call_sv' are false. at least one must be true"
+  if (callSnv == false && callStr == false && callSv == false && callCnv == false) exit 1, "parameters 'cram.call_cnv', 'cram.call_snv', 'cram.call_str' and 'cram.call_sv' are false. at least one must be true"
 
   if(callSnv) validateCallSnvParams(outputAssemblies)
   if(callStr) validateCallStrParams(outputAssemblies)
-  if(callSv)  validateCallSvParams(outputAssemblies)
+  if(callSv) validateCallSvParams(outputAssemblies)
+  if(callCnv) validateCallCnvParams(outputAssemblies)
 }
 
 def parseSampleSheet(csvFile) {

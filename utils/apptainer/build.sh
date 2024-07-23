@@ -92,11 +92,13 @@ main() {
   images+=("minimap2-2.27")
   images+=("picard-3.1.1")
   images+=("samtools-1.17-patch1")
+  images+=("seqtk-1.4")
+  images+=("spectre-0.2.1-patched")
   images+=("stranger-0.8.1")
   images+=("straglr-1.5.0")
   images+=("vcf-decision-tree-4.1.1")
   images+=("vcf-inheritance-matcher-3.1.0")
-  images+=("vcf-report-6.0.2")
+  images+=("vcf-report-7.0.0")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
@@ -106,8 +108,9 @@ main() {
 
   declare -A uris
   uris["docker://ensemblorg/ensembl-vep:release_111.0"]="vep-111.0"
-  uris["docker://google/deepvariant:1.6.0"]="deepvariant-1.6.0"
-  uris["docker://google/deepvariant:deeptrio-1.6.0"]="deepvariant_deeptrio-1.6.0"
+  uris["docker://google/deepvariant:1.6.1"]="deepvariant-1.6.1"
+  uris["docker://google/deepvariant:deeptrio-1.6.1"]="deepvariant_deeptrio-1.6.1"
+  uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

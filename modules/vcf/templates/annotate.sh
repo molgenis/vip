@@ -197,6 +197,9 @@ vep() {
   if [ -n "!{reMMScoresPath}" ]; then
     args+=("--plugin" "ReMM,!{reMMScoresPath}")
   fi
+  if [ -n "!{vepPluginGreenDbPath}" ] && [ "!{vepPluginGreenDbEnabled}" = true  ]; then
+    args+=("--plugin" "GREEN_DB,!{vepPluginGreenDbPath}")
+  fi
   
   ${CMD_VEP} "${args[@]}"
 }

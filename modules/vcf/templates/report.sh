@@ -27,7 +27,7 @@ report() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx!{task.memory.toMega() - 256}m")
+  args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
   args+=("--input" "!{vcfOut}")
   args+=("--metadata" "!{metadata}")
@@ -44,6 +44,9 @@ report() {
   fi
   if [ -n "!{decisionTree}" ]; then
     args+=("--decision_tree" "!{decisionTree}")
+  fi
+  if [ -n "!{sampleTree}" ]; then
+    args+=("--sample_tree" "!{sampleTree}")
   fi
   if [ -n "!{maxRecords}" ]; then
     args+=("--max_records" "!{maxRecords}")

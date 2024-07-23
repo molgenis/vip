@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.18.3.sif
+
+%post
+    apk update
+    apk add python3 cython zlib libbz2 xz-libs libdeflate py3-setuptools
+    apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
+
+    # install
+    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.24.3 scipy==1.11.4 matplotlib==3.9.1 pandas==2.2.2
+
+    pip install build
+    git clone https://github.com/fritzsedlazeck/Spectre.git
+    cd ./Spectre
+    # checkout bugfixes commit from the main branch.
+    git checkout 07e61de
+    python3 -m build
+    pip install dist/spectre_cnv-0.2.1.tar.gz --root-user-action=ignore --no-deps
+
+    # cleanup
+    pip cache purge
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
+
+%help
+   Spectre is a long read copy number variation (CNV) caller.
