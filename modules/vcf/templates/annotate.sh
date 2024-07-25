@@ -114,15 +114,11 @@ capice_predict() {
 }
 
 stranger() {
-    cp "!{vcfOut}" stranger_input.vcf.gz
-
-    local args=()
-    args+=("--repeats-file" "!{strangerCatalog}")
-    args+=("--loglevel" "ERROR")
-    args+=("stranger_input.vcf.gz")
-    
-    ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "!{vcfOut}"
-    rm "stranger_input.vcf.gz"
+    cp "!{vcfOut}" str_input.vcf.gz
+    zcat str_input.vcf.gz | awk 'BEGIN{FS=OFS="\t"} /^#/ {print; next} {$8="SVTYPE=STR;"$8; print; next;} { print; }'h |\
+    ${CMD_BCFTOOLS} annotate -a "!{strCatalog}" -c CHROM,FROM,TO,repeat_unit,Repeat_id,Gene_id,Disease,HGNCId,-,-,LocusStructure,NormalMax,PathogenicMin -i 'SVTYPE="STR"' -h "!{strHeader}" |\
+    ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "!{vcfOut}"
+    rm "str_input.vcf.gz"
 }
 
 vep() {
@@ -215,7 +211,7 @@ main () {
   fi
   capice
   vep
-  if [ -n "!{strangerCatalog}" ]; then
+  if [ -n "!{strCatalog}" ]; then
     stranger
   fi
   index

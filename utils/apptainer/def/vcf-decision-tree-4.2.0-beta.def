@@ -6,17 +6,14 @@ From: sif/build/openjdk-17.sif
     Usage: java -jar /opt/vcf-decision-tree/lib/vcf-decision-tree.jar
 
 %post
-    version_major=4
-    version_minor=1
-    version_patch=1
 
     # install
     apk update
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-decision-tree/lib
-    curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
-    echo "5c18aa3c302bbc4120c0fae50bca99828f7304837a52d96606bea0133a140780  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
+    curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://download.molgeniscloud.org/downloads/vip/_dev/github/vcf-decision-tree-4.2.0-beta.jar"
+    echo "620fcf1fc29bfb0bbf178b29534bb45d0ee0d266c5bcef4195d29282d40c3d7f  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
