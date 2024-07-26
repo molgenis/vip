@@ -85,7 +85,7 @@ download_files() {
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
   urls+=("8f6e06847776448e004df8b863571109" "images/straglr-1.5.0.sif")
   urls+=("bcc157242cd9b09c66f015c52ef2d61d" "images/stranger-0.8.1.sif")
-  urls+=("TODO" "images/vcf-decision-tree-4.2.0-beta.sif")
+  urls+=("94a555ad14e88a60ab6b993dbd1404c1" "images/vcf-decision-tree-4.2.0-beta.sif")
   urls+=("9c4d7b48138f29651cdd45eb8d0cc4b6" "images/vcf-inheritance-matcher-3.1.0.sif")
   urls+=("53f9265acb2041b2b93c692177d91d74" "images/vcf-report-7.0.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
@@ -144,7 +144,7 @@ download_files() {
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
-  urls+=("78962f0c7c6fe5c63ef7c66b627c95a0" "resources/vip-report-template-v6.2.0.html")
+  urls+=("0bd1d5f66f4cf90038c73c1ba72dd820" "resources/vip-report-template-v6.2.0-str-poc.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"

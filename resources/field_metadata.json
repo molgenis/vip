@@ -16,6 +16,14 @@
         "YL",
         "MT"
       ]
+    },
+    "ALR": {
+      "label": "Allelic length ranges",
+      "description": "Straglr: Allelic length ranges",
+      "numberType": "PER_GENOTYPE",
+      "numberCount": 2,
+      "separator": "-",
+      "type": "FLOAT"
     }
   },
   "info": {
