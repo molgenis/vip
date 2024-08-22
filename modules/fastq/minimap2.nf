@@ -1,6 +1,8 @@
 process minimap2_align {
   label 'minimap2_align'
 
+  publishDir "$params.output/intermediates", mode: 'link'
+
   input:
     tuple val(meta), path(fastq, arity: '1')
 
@@ -37,6 +39,8 @@ process minimap2_align {
 process minimap2_align_paired_end {
   label 'minimap2_align_paired_end'
 
+  publishDir "$params.output/intermediates", mode: 'link'
+  
   input:
     tuple val(meta), path(fastqR1, arity: '1'), path(fastqR2, arity: '1')
 
