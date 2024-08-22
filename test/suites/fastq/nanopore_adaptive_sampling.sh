@@ -23,7 +23,12 @@ vip "${args[@]}" 1> /dev/null
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
-  result="0"
+  # check if intermediate cram was published
+  if [ -f "${OUTPUT_DIR}/intermediates/vip_fam0_HG002.cram" ]; then
+    result="0"
+  else
+    result="1"
+  fi
 else
   result="1"
 fi
