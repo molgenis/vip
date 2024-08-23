@@ -114,8 +114,10 @@ capice_predict() {
 }
 
 stranger() {
+    #FIXME: annotate strips all but STR's due to -i
+    #e.g. strip out all non-STR to separate file and merge after annotation
     cp "!{vcfOut}" str_input.vcf.gz
-    zcat str_input.vcf.gz | awk 'BEGIN{FS=OFS="\t"} /^#/ {print; next} {$8="SVTYPE=STR;"$8; print; next;} { print; }'h |\
+    zcat str_input.vcf.gz |\
     ${CMD_BCFTOOLS} annotate -a "!{strCatalog}" -c CHROM,FROM,TO,repeat_unit,Repeat_id,Gene_id,Disease,HGNCId,-,-,LocusStructure,NormalMax,PathogenicMin -i 'SVTYPE="STR"' -h "!{strHeader}" |\
     ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "!{vcfOut}"
     rm "str_input.vcf.gz"

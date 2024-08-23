@@ -20,7 +20,8 @@ call_short_tandem_repeats () {
 }
 
 index () {
-  awk '/#CHROM*/{print "##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">"}1' ./straglr.vcf > straglr_headered.vcf
+  awk '/#CHROM*/{print "##INFO=<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">"}1' ./straglr.vcf |\
+  awk 'BEGIN{FS=OFS="\t"} /^#/ {print; next} {$8="SVTYPE=STR;"$8; print; next;} { print; }'h > straglr_headered.vcf
   ${CMD_BCFTOOLS} reheader --fai "!{paramReferenceFai}" --temp-prefix . --threads "!{task.cpus}" straglr_headered.vcf |\
   ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}"
 

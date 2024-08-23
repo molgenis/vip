@@ -17,9 +17,17 @@
         "MT"
       ]
     },
-    "ALR": {
-      "label": "Allelic length ranges",
-      "description": "Straglr: Allelic length ranges",
+    "ACR": {
+      "label": "Allelic copy ranges",
+      "description": "Straglr: Allelic copy ranges",
+      "numberType": "PER_GENOTYPE",
+      "numberCount": 2,
+      "separator": "-",
+      "type": "FLOAT"
+    },
+    "AC": {
+      "label": "Allelic copies",
+      "description": "Straglr: Allelic copies",
       "numberType": "PER_GENOTYPE",
       "numberCount": 2,
       "separator": "-",

@@ -168,7 +168,7 @@
         "nextNode": "gnomAD"
       },
       "outcomeFalse": {
-        "nextNode": "exit_rm"
+        "nextNode": "gnomAD"
       }
     },
     "sv": {
@@ -191,7 +191,7 @@
         "value": "STR"
       },
       "outcomeTrue": {
-        "nextNode": "str_status"
+        "nextNode": "str_sequence"
       },
       "outcomeFalse": {
         "nextNode": "annotSV"
@@ -200,25 +200,21 @@
         "nextNode": "annotSV"
       }
     },
-    "str_status": {
-      "description": "Stranger str status (normal, pre_mutation, mutation)",
-      "type": "CATEGORICAL",
-      "field": "INFO/STR_STATUS",
-      "outcomeMap": {
-        "full_mutation": {
-          "nextNode": "exit_lp"
-        },
-        "pre_mutation": {
-          "nextNode": "exit_vus"
-        },
-        "normal": {
-          "nextNode": "exit_lb"
-        }
+    "str_sequence": {
+      "description": "STR sequence matches requested repeat unit",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/repeat_unit",
+        "operator": "eq_seq",
+        "value": "field:INFO/RU"
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_str"
       },
       "outcomeMissing": {
         "nextNode": "exit_vus"
       },
-      "outcomeDefault": {
+      "outcomeFalse": {
         "nextNode": "exit_vus"
       }
     },
@@ -430,6 +426,11 @@
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
+    },
+    "exit_str": {
+      "description": "Short Tandem Repeat - pathogenicity based on sample info",
+      "type": "LEAF",
+      "class": "s"
     }
   }
 }

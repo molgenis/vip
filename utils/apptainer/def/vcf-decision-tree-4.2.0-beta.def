@@ -13,7 +13,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/vcf-decision-tree/lib
     curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://download.molgeniscloud.org/downloads/vip/_dev/github/vcf-decision-tree-4.2.0-beta.jar"
-    echo "186ce4e2459f2f0088d1b195f7dd1ff6091e48c0a8d72075d7db4bdd8658932d  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
+    echo "af61d7c763b575a285364b72c37a93e9a3be22a5e34597242111406ee5514b04  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
