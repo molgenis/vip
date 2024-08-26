@@ -17,4 +17,4 @@ cd vip
 vip --workflow cram --input path/to/samplesheet.tsv --output path/to/output/folder
 ```
 
-For an example on how to generate output for FASTQ files using the Oxford Nanopore platform see [here](https://github.com/molgenis/vip/blob/main/test/test_fastq.sh#L9).
+For an example on how to generate output for FASTQ files using the Oxford Nanopore platform see [here](https://github.com/molgenis/vip/blob/main/test/suites/fastq/nanopore.sh#L17).
