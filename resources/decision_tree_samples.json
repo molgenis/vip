@@ -1,6 +1,24 @@
 {
-  "rootNode": "gt",
+  "rootNode": "vipc",
   "nodes": {
+    "vipc": {
+      "type": "BOOL",
+      "description": "Genotype quality",
+      "query": {
+        "field": "INFO/CSQ/VIPC",
+        "operator": "==",
+        "value": "s"
+      },
+      "outcomeTrue": {
+        "nextNode": "str_pathogenic_min"
+      },
+      "outcomeFalse": {
+        "nextNode": "gt"
+      },
+      "outcomeMissing": {
+        "nextNode": "gt"
+      }
+    },
     "gt": {
       "description": "Genotype",
       "type": "CATEGORICAL",
@@ -86,6 +104,42 @@
         "nextNode": "exit_u2"
       }
     },
+    "str_pathogenic_min": {
+      "description": "Nr of repeat units above pathogenic_min",
+      "type": "BOOL",
+      "query": {
+        "field": "FORMAT/AC",
+        "operator": "range_above",
+        "value": "field:INFO/PathogenicMin"
+      },
+      "outcomeTrue": {
+        "nextNode": "str_pathogenic_min"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_vus"
+      }
+    },
+    "str_normal_max": {
+      "description": "Range of repeat units below normal_max",
+      "type": "BOOL",
+      "query": {
+        "field": "FORMAT/ACR",
+        "operator": "range_below",
+        "value": "field:INFO/NormalMax"
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_vus"
+      }
+    },
     "exit_u1": {
       "description": "Usable: probably",
       "type": "LEAF",
@@ -100,6 +154,21 @@
       "description": "Usable: probably not",
       "type": "LEAF",
       "class": "U3"
+    },
+    "exit_lb": {
+      "description": "STR Likely Benign",
+      "type": "LEAF",
+      "class": "LB"
+    },
+    "exit_vus": {
+      "description": "STR VUS",
+      "type": "LEAF",
+      "class": "VUS"
+    },
+    "exit_lp": {
+      "description": "STR Likely Pathogenic",
+      "type": "LEAF",
+      "class": "LP"
     }
   }
 }
