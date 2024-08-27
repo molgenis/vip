@@ -7,7 +7,7 @@ call_short_tandem_repeats () {
     args+=("--sample" "!{sampleId}")
     args+=("--vcf" "straglr.vcf")
     args+=("--tsv" "!{tsvOut}")
-    if [ -z "!{sampleSex}" ]; then
+    if [ -n "!{sampleSex}" ]; then
         args+=("--sex" "!{sampleSex}")
     fi
     args+=("--min_support" "!{paramMinSupport}")
