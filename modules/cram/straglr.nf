@@ -14,7 +14,7 @@ process straglr_call {
     paramMinSupport = params.str.straglr.min_support
     paramMinClusterSize = params.str.straglr.min_cluster_size
     sampleId = meta.sample.individual_id
-    sampleSex = meta.sample.sex
+    sampleSex = meta.sample.sex != null ? meta.sample.sex : ""
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
     tsvOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.tsv"
