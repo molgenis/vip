@@ -20,7 +20,7 @@ call_short_tandem_repeats () {
 postprocess () {
   # workaround: ExpansionHunter extracts the sample name from the .cram, this might not be equals to the actual sample identifier
   # workaround: ExpansionHunter produces an invalid .vcf due to missing contig headers, see https://github.com/Illumina/ExpansionHunter/issues/153
-  # workaround: ExpansionHunter produces an invalid .vcf due to missing headers if all calls are ./., see <TODO report issue>
+  # workaround: ExpansionHunter produces an invalid .vcf due to missing headers if all calls are ./.
   # workaround: ExpansionHunter are missing SVTYPE INFO field, see https://github.com/Illumina/ExpansionHunter/issues/186
   echo -e "!{sampleId}" > "samples.txt"
   ${CMD_BCFTOOLS} reheader --fai "!{paramReferenceFai}" --samples samples.txt --threads "!{task.cpus}" "short_tandem_repeats.vcf" | \
