@@ -114,20 +114,40 @@ capice_predict() {
 }
 
 stranger() {
-    cp "!{vcfOut}" stranger_input.vcf.gz
+  local -r vcf="${1}"
+  local -r vcfOut="${2}"
 
-    local args=()
-    args+=("--repeats-file" "!{strangerCatalog}")
-    args+=("--loglevel" "ERROR")
-    args+=("stranger_input.vcf.gz")
-    
-    ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "!{vcfOut}"
-    rm "stranger_input.vcf.gz"
+  local args=()
+  args+=("--repeats-file" "!{strangerCatalog}")
+  args+=("--loglevel" "ERROR")
+  args+=("${vcf}")
+
+  ${CMD_STRANGER} "${args[@]}" | ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "${vcfOut}"
+}
+
+vep_preprocess() {
+  local -r vcf="${1}"
+  local -r vcfOut="${2}"
+
+  # use <CNV:TR> symbolic alleles instead of <STR..> to align with VCF v4.4 section 5.6 and enable VEP annotation
+  # 1. add CNV:TR ALT header
+  # 2. remove STR[number] ALT headers
+  # 3. rename <STR[number]> symbolic alleles to <CNV:TR>
+  echo -e '##ALT=<ID=CNV:TR,Description="Tandem repeat determined based on DNA abundance">' > vcf_header_cnv-tr.txt
+  ${CMD_BCFTOOLS} annotate --header-lines vcf_header_cnv-tr.txt --no-version --threads "!{task.cpus}" "${vcf}" | \
+    sed '/^##ALT=<ID=STR[0-9]\+,/d' | \
+    sed 's/<STR[0-9]\+>/<CNV:TR>/g' | \
+    ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" --output-type "z" --output-file "${vcfOut}"
 }
 
 vep() {
+  local -r vcf="${1}"
+  local -r vcfPreprocessed="preprocessed_${vcf}"
+
+  vep_preprocess "${vcf}" "${vcfPreprocessed}"
+
   local args=()
-  args+=("--input_file" "!{vcf}")
+  args+=("--input_file" "${vcfPreprocessed}")
   args+=("--format" "vcf")
   args+=("--output_file" "!{vcfOut}")
   args+=("--vcf")
@@ -214,10 +234,16 @@ main () {
     annot_sv
   fi
   capice
-  vep
+
+  local vepInputPath=""
   if [ -n "!{strangerCatalog}" ]; then
-    stranger
+    stranger "!{vcf}" "stranger_!{vcf}"
+    vepInputPath="stranger_!{vcf}"
+  else
+    vepInputPath="!{vcf}"
   fi
+
+  vep "${vepInputPath}"
   index
 }
 
