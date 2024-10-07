@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/openjdk-17.sif
+From: sif/build/graalvm-ce-21.0.2.sif
 
 %help
     A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats..
