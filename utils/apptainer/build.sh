@@ -76,8 +76,8 @@ main() {
   mkdir -p "${outputDir}/build"
 
   local images=()
-  images+=("build/alpine-3.18.3")
-  images+=("build/openjdk-17")
+  images+=("build/alpine-3.20.3")
+  images+=("build/graalvm-ce-21.0.2")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6")
@@ -96,9 +96,9 @@ main() {
   images+=("spectre-0.2.1-patched")
   images+=("stranger-0.8.1")
   images+=("straglr-1.4.4_vip_v3")
-  images+=("vcf-decision-tree-4.1.1")
+  images+=("vcf-decision-tree-4.1.2")
   images+=("vcf-inheritance-matcher-3.1.1")
-  images+=("vcf-report-7.0.0")
+  images+=("vcf-report-7.0.1")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"

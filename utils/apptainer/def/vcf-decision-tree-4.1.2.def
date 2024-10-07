@@ -8,7 +8,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 %post
     version_major=4
     version_minor=1
-    version_patch=1
+    version_patch=2
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 
     mkdir -p /opt/vcf-decision-tree/lib
     curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
-    echo "5c18aa3c302bbc4120c0fae50bca99828f7304837a52d96606bea0133a140780  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
+    echo "0c305234cbd4e5231a7bac4f6524afa2bb7d9153e2395d1496368081542c69a0  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

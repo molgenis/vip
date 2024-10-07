@@ -16,7 +16,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 
     mkdir -p /opt/vcf-inheritance/lib
     curl -Ls -o /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
-    echo "bb39d20d1a6ce5cf5cf88de6dc0135ea9108f684bbae29bc9aa123a8c8c3962f  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
+    echo "fe480f31b19ae42c65193ddb92ddc1a4cfef94280426a3f9424e9b1e30d15bb8  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

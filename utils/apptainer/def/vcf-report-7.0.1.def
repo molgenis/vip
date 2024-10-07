@@ -8,7 +8,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 %post
     version_major=7
     version_minor=0
-    version_patch=0
+    version_patch=1
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 
     mkdir -p /opt/vcf-report/lib
     curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
-    echo "0178acabe55a8c69988abb0e656977f5b7c0c5762e27022f897d9839c34fabfb  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+    echo "d28c9ca6711ed42406a684a8e244dbb466b9f9a671d398908761b4f385778aa8  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
