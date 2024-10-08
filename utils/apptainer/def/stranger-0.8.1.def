@@ -14,7 +14,7 @@ From: sif/build/alpine-3.20.3.sif
     git clone --depth 1 --branch v${version_major}.${version_minor}.${version_patch} https://github.com/moonso/stranger
     # install
     cd stranger
-    pip install --editable .
+    pip install --editable . --break-system-packages
 
     # cleanup
     pip cache purge
