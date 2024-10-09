@@ -71,7 +71,7 @@ download_files() {
   urls+=("51c904d9992c3748d4e266dd883f86f9" "images/annotsv-3.3.6.sif")
   urls+=("7ee92c85e1f4d1151dfe9ae6b1fa06ac" "images/bcftools-1.17.sif")
   urls+=("0879586dfdb49f7cf94d4b9a4c65e2b8" "images/capice-5.1.2.sif")
-  urls+=("bc4be7f94aa38add1bf4cfe2a41a1f02" "images/cutesv-2.1.1.sif")
+  urls+=("bc4be7f94aa38add1bf4cfe2a41a1f02" "images/cutesv-2.1.1_v2.sif")
   urls+=("fe0d5bbcf4d3fb7c3331189ed7ddcb2a" "images/deepvariant-1.6.1.sif")
   urls+=("1baf5312d77bdb65fab2f1efec3ba1b7" "images/deepvariant_deeptrio-1.6.1.sif")
   urls+=("47396916f1940bff61ad092cbfda3bd2" "images/expansionhunter-5.0.0.sif")
