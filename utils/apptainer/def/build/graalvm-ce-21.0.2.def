@@ -11,7 +11,7 @@ From: sif/build/alpine-3.20.3.sif
     apk add --virtual=.build-dependencies ca-certificates wget
 
     mkdir -p "/usr/lib/jvm"
-    wget "https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz"; \
+    wget "https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz"
     tar -xzf graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz -C /usr/lib/jvm; \
     rm -f graalvm-ce-21.0.2-linux-amd64.tar.gz
 
