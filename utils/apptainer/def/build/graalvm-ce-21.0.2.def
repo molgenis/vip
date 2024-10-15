@@ -7,13 +7,16 @@ From: sif/build/alpine-3.20.3.sif
 %post
     # install
     apk update
-    apk add gcc zlib zlib-dev libc-dev gcompat libstdc++
-    apk add --virtual=.build-dependencies ca-certificates wget
+    apk add gcompat ca-certificates 
+    apk add --virtual=.build-dependencies wget
 
     mkdir -p "/usr/lib/jvm"
-    wget "https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz"
-    tar -xzf graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz -C /usr/lib/jvm
+    wget "https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz"; \
+    tar -xzf graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz -C /usr/lib/jvm; \
     rm -f graalvm-ce-21.0.2-linux-amd64.tar.gz
+
+    # cleanup
+    apk del .build-dependencies
 
 %environment
    JAVA_HOME=/usr/lib/jvm/graalvm-community-openjdk-21.0.2+13.1

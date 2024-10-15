@@ -80,7 +80,7 @@ main() {
   images+=("build/graalvm-ce-21.0.2")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.17")
-  images+=("annotsv-3.3.6")
+  images+=("annotsv-3.3.6_v2")
   images+=("capice-5.1.2")
   images+=("cutesv-2.1.1_v2")
   images+=("expansionhunter-5.0.0_v2")
