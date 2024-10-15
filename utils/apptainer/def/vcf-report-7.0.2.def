@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/graalvm-ce-21.0.2.sif
+From: sif/build/openjdk-21.sif
 
 %help
     Command-line application to generate a report for any VCF (Variant Call Format) file based on a report template.
@@ -8,7 +8,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 %post
     version_major=7
     version_minor=0
-    version_patch=1
+    version_patch=2
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/graalvm-ce-21.0.2.sif
 
     mkdir -p /opt/vcf-report/lib
     curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
-    echo "d28c9ca6711ed42406a684a8e244dbb466b9f9a671d398908761b4f385778aa8  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+    echo "12fad082e56b9a5d226ee2b335b478c030df731a4de34a1f7c5d3a54eb868d7d  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

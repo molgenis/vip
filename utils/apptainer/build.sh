@@ -77,7 +77,7 @@ main() {
 
   local images=()
   images+=("build/alpine-3.20.3")
-  images+=("build/graalvm-ce-21.0.2")
+  images+=("build/openjdk-21")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.17")
   images+=("annotsv-3.3.6_v2")
@@ -96,9 +96,9 @@ main() {
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.8.1_v2")
   images+=("straglr-1.4.4_vip_v3")
-  images+=("vcf-decision-tree-4.1.3")
+  images+=("vcf-decision-tree-4.1.4")
   images+=("vcf-inheritance-matcher-3.1.1_v2")
-  images+=("vcf-report-7.0.1")
+  images+=("vcf-report-7.0.2")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
