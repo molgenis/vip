@@ -5,7 +5,7 @@ Bootstrap: scratch
  
 %setup
     version_major=3
-    version_minor=18
+    version_minor=20
     version_patch=3
     
     alpine_minirootfs="alpine-minirootfs-${version_major}.${version_minor}.${version_patch}-x86_64.tar.gz"
@@ -13,6 +13,5 @@ Bootstrap: scratch
     alpine_minirootfs_path="${APPTAINER_TMPDIR}/${alpine_minirootfs}"
 
     curl -s -o "${alpine_minirootfs_path}" "${alpine_minirootfs_url}"
-    echo "fc577324b7e9439863118c7e5209d25d7eddea6ba62b58badbc33c96861b9c4e  ${alpine_minirootfs_path}" | sha256sum -c
+    echo "d4e6fd67dcf75e40c451560ac7265166c2b72a0f38ddc9aae756a7de3d1efa0c  ${alpine_minirootfs_path}" | sha256sum -c
     tar xzf "${alpine_minirootfs_path}" -C "${APPTAINER_ROOTFS}" --exclude=./dev --exclude=./etc/hosts
-
