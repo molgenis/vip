@@ -11,8 +11,8 @@ inheritance () {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
-  args+=("--input" "!{vcf}")
-  args+=("--output" "!{vcfOut}")
+  args+=("--input" "!{vcf}_replaced.vcf.gz")
+  args+=("--output" "!{vcfOut}_replaced.vcf.gz")
   if [ -n "!{pedigree}" ]; then
     args+=("--pedigree" "!{pedigree}")
   fi
@@ -28,6 +28,20 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+replace_cnv_tr(){
+  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {cnv_count = 1;while (gsub(/<CNV:TR>/, "<CNV:TR" cnv_count ">" $4) > 1 ) {cnv_count++;}print;}' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
+}
+
+restore_cnv_tr(){
+  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/, "<CNV:TR>", $4); print}' | ${CMD_BGZIP} -c > !{vcfOut}
+}
+
+cleanup(){
+  rm !{vcf}_replaced.vcf.gz
+  rm !{vcfOut}_replaced.vcf.gz
+  rm header.tmp
+}
+
 #Workaround for https://github.com/samtools/htsjdk/issues/500https://github.com/samtools/htsjdk/issues/500
 store_alt(){
   #store ALT headers
@@ -41,16 +55,18 @@ insert_alt(){
     #re-insert the ALT headers
     f1=$(<header.tmp)
     awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
-    #rm header.tmp
   fi
 }
 
 main() {
+  replace_cnv_tr
   create_ped
   store_alt
   inheritance
+  restore_cnv_tr
   insert_alt
   index
+  cleanup
 }
 
 main "$@"

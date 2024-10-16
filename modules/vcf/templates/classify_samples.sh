@@ -41,15 +41,31 @@ insert_alt(){
     #re-insert the ALT headers
     f1=$(<header.tmp)
     awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
-    #rm header.tmp
   fi
 }
 
+replace_cnv_tr(){
+  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {cnv_count = 1;while (gsub(/<CNV:TR>/, "<CNV:TR" cnv_count ">" $4) > 1 ) {cnv_count++;}print;}' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
+}
+
+restore_cnv_tr(){
+  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/, "<CNV:TR>", $4); print}' | ${CMD_BGZIP} -c > !{vcfOut}
+}
+
+cleanup(){
+  rm !{vcf}_replaced.vcf.gz
+  rm !{vcfOut}_replaced.vcf.gz
+  rm header.tmp
+}
+
 main() {
+  replace_cnv_tr
   store_alt
   classify_samples
+  restore_cnv_tr
   insert_alt
   index
+  cleanup
 }
 
 main "$@"
