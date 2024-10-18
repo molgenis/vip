@@ -28,21 +28,7 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
-replace_cnv_tr(){
-  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {cnv_count = 1;while (gsub(/<CNV:TR>/, "<CNV:TR" cnv_count ">" $4) > 1 ) {cnv_count++;}print;}' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
-}
-
-restore_cnv_tr(){
-  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/, "<CNV:TR>", $4); print}' | ${CMD_BGZIP} -c > !{vcfOut}
-}
-
-cleanup(){
-  rm !{vcf}_replaced.vcf.gz
-  rm !{vcfOut}_replaced.vcf.gz
-  rm header.tmp
-}
-
-#Workaround for https://github.com/samtools/htsjdk/issues/500https://github.com/samtools/htsjdk/issues/500
+#Workaround for https://github.com/samtools/htsjdk/issues/500
 store_alt(){
   #store ALT headers
   zcat "!{vcf}" | sed --quiet --expression='/^##ALT/p' > header.tmp
@@ -56,6 +42,21 @@ insert_alt(){
     f1=$(<header.tmp)
     awk -vf1="$f1" '/^#CHROM/{print f1;print;next}1' "!{vcfOut}".tmp | ${CMD_BGZIP} -c > "!{vcfOut}"
   fi
+}
+
+#Workaround for https://github.com/samtools/htsjdk/issues/1718
+replace_cnv_tr(){
+  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
+}
+
+restore_cnv_tr(){
+  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/,"<CNV:TR>",$5);}1' | ${CMD_BGZIP} -c > !{vcfOut}
+}
+
+cleanup(){
+  rm !{vcf}_replaced.vcf.gz
+  rm !{vcfOut}_replaced.vcf.gz
+  rm header.tmp
 }
 
 main() {

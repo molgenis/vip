@@ -7,7 +7,7 @@ classify_samples() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
-  args+=("--input" "!{vcf}")
+  args+=("--input" "!{vcf}_replaced.vcf.gz")
   args+=("--metadata" "!{metadata}")
   args+=("--type" "sample")
   args+=("--config" "!{decisionTree}")
@@ -17,7 +17,7 @@ classify_samples() {
   if [ -n "!{probands}" ]; then
     args+=("--probands" "!{probands}")
   fi
-  args+=("--output" "!{vcfOut}")
+  args+=("--output" "!{vcfOut}_replaced.vcf.gz")
 
   ${CMD_VCFDECISIONTREE} java "${args[@]}"
 }
@@ -28,7 +28,7 @@ index () {
 }
 
 
-#Workaround for https://github.com/samtools/htsjdk/issues/500https://github.com/samtools/htsjdk/issues/500
+#Workaround for https://github.com/samtools/htsjdk/issues/500
 store_alt(){
   #store ALT headers
   zcat "!{vcf}" | sed --quiet --expression='/^##ALT/p' > header.tmp
@@ -44,12 +44,13 @@ insert_alt(){
   fi
 }
 
+#Workaround for https://github.com/samtools/htsjdk/issues/1718
 replace_cnv_tr(){
-  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {cnv_count = 1;while (gsub(/<CNV:TR>/, "<CNV:TR" cnv_count ">" $4) > 1 ) {cnv_count++;}print;}' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
+  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
 }
 
 restore_cnv_tr(){
-  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/, "<CNV:TR>", $4); print}' | ${CMD_BGZIP} -c > !{vcfOut}
+  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/,"<CNV:TR>",$5);}1' | ${CMD_BGZIP} -c > !{vcfOut}
 }
 
 cleanup(){

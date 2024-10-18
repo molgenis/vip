@@ -10,6 +10,7 @@ normalize () {
   args+=("--output-type" "z")
   args+=("--output" "!{vcfOut}")
   args+=("--no-version")
+  args+=("--old-rec-tag" "OLD_REC") # if variant is normalized, keep the original location in this field
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcf}")
 
