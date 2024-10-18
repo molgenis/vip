@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.18.3.sif
+From: sif/build/alpine-3.20.3.sif
 
 %post
     apk update
@@ -7,15 +7,15 @@ From: sif/build/alpine-3.18.3.sif
     apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
 
     # install
-    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.24.3 scipy==1.11.4 matplotlib==3.9.1 pandas==2.2.2
+    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.26.4 scipy==1.11.4 matplotlib==3.9.1 pandas==2.2.2 --break-system-packages
 
-    pip install build
+    pip install build --break-system-packages
     git clone https://github.com/fritzsedlazeck/Spectre.git
     cd ./Spectre
     # checkout bugfixes commit from the main branch.
     git checkout 07e61de
     python3 -m build
-    pip install dist/spectre_cnv-0.2.1.tar.gz --root-user-action=ignore --no-deps
+    pip install dist/spectre_cnv-0.2.1.tar.gz --root-user-action=ignore --no-deps --break-system-packages
 
     # cleanup
     pip cache purge

@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.18.3.sif
+From: sif/build/alpine-3.20.3.sif
 Stage: build
 
 %post
@@ -17,7 +17,7 @@ Stage: build
     mv  fastp.${version_major}.${version_minor}.${version_patch} /opt/fastp
 
 Bootstrap: localimage
-From: sif/build/alpine-3.18.3.sif
+From: sif/build/alpine-3.20.3.sif
 Stage: final
 
 %files from build

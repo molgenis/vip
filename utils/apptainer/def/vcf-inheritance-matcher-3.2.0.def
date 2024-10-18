@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/openjdk-17.sif
+From: sif/build/openjdk-21.sif
 
 %help
     Command-line application to annotate VCF samples with denovo and possible compound flags and matching inheritance modes and genes.
@@ -7,7 +7,7 @@ From: sif/build/openjdk-17.sif
 
 %post
     version_major=3
-    version_minor=1
+    version_minor=2
     version_patch=0
 
     # install
@@ -16,7 +16,7 @@ From: sif/build/openjdk-17.sif
 
     mkdir -p /opt/vcf-inheritance-matcher/lib
     curl -Ls -o /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
-    echo "1b4b9f33542ce0e19c7bc22542e857137ca12f2e62f68f4d7f0254da43f2143b  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
+    echo "17962743d32e45bb0b302a4f46147a16ceb31a90b80d00d9d1a5badc7c3a8183  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
