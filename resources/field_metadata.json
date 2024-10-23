@@ -366,7 +366,7 @@
           "type": "STRING"
         },
         "GADO_PD": {
-          "label": "Gene-phenotype association (GADO)",
+          "label": "GADO_PD",
           "description": "Gene-phenotypes association based on the GeneNetwork Assisted Diagnostic Optimization (GADO) gene prioritization Z-scores, see https://www.genenetwork.nl/gado and https://doi.org/10.1038/s41467-019-10649-4",
           "numberType": "NUMBER",
           "numberCount": 1,
@@ -472,7 +472,7 @@
           "type": "STRING"
         },
         "HPO": {
-          "label": "Gene-phenotype association (HPO)",
+          "label": "HPO",
           "description": "Human Phenotype Ontology (HPO) terms describing phenotypic abnormalities, see https://hpo.jax.org/ and https://doi.org/10.1093/nar/gkad1005",
           "numberType": "OTHER",
           "separator": "&",
@@ -739,7 +739,7 @@
       }
     },
     "SVTYPE": {
-      "label": "Type",
+      "label": "SV type",
       "description": "Type of structural variant",
       "numberType": "NUMBER",
       "numberCount": 1,
