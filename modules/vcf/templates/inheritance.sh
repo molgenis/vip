@@ -46,7 +46,7 @@ insert_alt(){
 
 #Workaround for https://github.com/samtools/htsjdk/issues/1718
 replace_cnv_tr(){
-  zcat !{vcf} | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > !{vcf}_replaced.vcf.gz
+  zcat "!{vcf}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "!{vcf}_replaced.vcf.gz"
 }
 
 restore_cnv_tr(){
