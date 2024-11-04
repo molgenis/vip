@@ -52,7 +52,7 @@ restore_cnv_tr(){
 
 cleanup(){
   rm !{vcf}_replaced.vcf.gz
-  rm !{vcfOut}_replaced.vcf.gz
+  rm "!{vcfOut}_replaced.vcf.gz"
   rm header.tmp
 }
 
