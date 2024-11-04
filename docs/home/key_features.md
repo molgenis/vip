@@ -7,6 +7,7 @@ Features include:
 - Long-read sequencing support (Oxford Nanopore, PacBio HiFi)
 - Short-read sequencing support (Illumina, both single and paired-end reads)
 - Supports GRCh38, supports GRCh37 and T2T via liftover
+- Supports multiallelic variants
 - Short variant detection
 - Structural variant detection
 - Short tandem repeat detection

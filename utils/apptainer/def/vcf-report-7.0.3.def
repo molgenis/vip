@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: sif/build/openjdk-21.sif
+
+%help
+    Command-line application to generate a report for any VCF (Variant Call Format) file based on a report template.
+    Usage: java -jar /opt/vcf-report/lib/vcf-report.jar
+
+%post
+    version_major=7
+    version_minor=0
+    version_patch=3
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/vcf-report/lib
+    curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
+    echo "c081d478d14378136c1fd0691068d7760911602bf308dd48386016a2284e0458  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
