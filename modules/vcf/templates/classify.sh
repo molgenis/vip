@@ -47,7 +47,7 @@ replace_cnv_tr(){
 }
 
 restore_cnv_tr(){
-  zcat !{vcfOut}_replaced.vcf.gz | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/,"<CNV:TR>",$5);}1' | ${CMD_BGZIP} -c > "!{vcfOut}"
+  zcat "!{vcfOut}_replaced.vcf.gz" | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/,"<CNV:TR>",$5);}1' | ${CMD_BGZIP} -c > "!{vcfOut}"
 }
 
 cleanup(){
