@@ -73,11 +73,11 @@
       "description": "Possible inheritance match: only for incomplete penetrance.",
       "query": {
         "field": "FORMAT/VI",
-        "operator": "contains_any",
+        "operator": "contains_none",
         "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
       },
       "outcomeTrue": {
-        "nextNode": "exit_u4"
+        "nextNode": "exit_u5"
       },
       "outcomeFalse": {
         "nextNode": "exit_u2"
@@ -91,11 +91,11 @@
       "description": "Inheritance match: only for incomplete penetrance.",
       "query": {
         "field": "FORMAT/VI",
-        "operator": "contains_any",
+        "operator": "contains_none",
         "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
       },
       "outcomeTrue": {
-        "nextNode": "exit_u5"
+        "nextNode": "exit_u4"
       },
       "outcomeFalse": {
         "nextNode": "exit_u1"
