@@ -80,10 +80,10 @@
         "nextNode": "exit_u4"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u1"
+        "nextNode": "exit_u2"
       },
       "outcomeMissing": {
-        "nextNode": "exit_u1"
+        "nextNode": "exit_u2"
       }
     },
     "only_IP_match": {
@@ -98,10 +98,10 @@
         "nextNode": "exit_u5"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u2"
+        "nextNode": "exit_u1"
       },
       "outcomeMissing": {
-        "nextNode": "exit_u2"
+        "nextNode": "exit_u1"
       }
     },
     "vid": {
@@ -116,7 +116,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "vim"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
