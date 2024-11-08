@@ -41,13 +41,13 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "vim"
+        "nextNode": "vid"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "vim"
+        "nextNode": "vid"
       }
     },
     "vim": {
@@ -59,10 +59,46 @@
         "value": "field:INFO/CSQ/Gene"
       },
       "outcomeTrue": {
-        "nextNode": "exit_u1"
+        "nextNode": "only_IP_match"
       },
       "outcomeFalse": {
-        "nextNode": "vid"
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "only_IP_potential"
+      }
+    },
+    "only_IP_potential": {
+      "type": "BOOL",
+      "description": "Possible inheritance match: only for incomplete penetrance.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_any",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u4"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u1"
+      }
+    },
+    "only_IP_match": {
+      "type": "BOOL",
+      "description": "Inheritance match: only for incomplete penetrance.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_any",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u5"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u2"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
@@ -100,6 +136,16 @@
       "description": "Usable: probably not",
       "type": "LEAF",
       "class": "U3"
+    },
+    "exit_u4": {
+      "description": "Usable in case of incomplete penetrance: probably",
+      "type": "LEAF",
+      "class": "U4"
+    },
+    "exit_u5": {
+      "description": "Usable in case of incomplete penetrance: maybe",
+      "type": "LEAF",
+      "class": "U5"
     }
   }
 }
