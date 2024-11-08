@@ -41,13 +41,13 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "vid"
+        "nextNode": "vim"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "vid"
+        "nextNode": "vim"
       }
     },
     "vim": {
@@ -62,7 +62,7 @@
         "nextNode": "only_IP_match"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "vid"
       },
       "outcomeMissing": {
         "nextNode": "only_IP_potential"
@@ -116,7 +116,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "vim"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
