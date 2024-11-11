@@ -41,10 +41,28 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "vim"
+        "nextNode": "only_IP"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "only_IP"
+      }
+    },
+    "only_IP": {
+      "type": "BOOL",
+      "description": "Only AD IP suitable for pedigree.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_none",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "vid_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim"
       },
       "outcomeMissing": {
         "nextNode": "vim"
@@ -59,49 +77,31 @@
         "value": "field:INFO/CSQ/Gene"
       },
       "outcomeTrue": {
-        "nextNode": "only_IP_match"
+        "nextNode": "exit_u1"
       },
       "outcomeFalse": {
         "nextNode": "vid"
       },
       "outcomeMissing": {
-        "nextNode": "only_IP_potential"
-      }
-    },
-    "only_IP_potential": {
-      "type": "BOOL",
-      "description": "Possible inheritance match: only for incomplete penetrance.",
-      "query": {
-        "field": "FORMAT/VI",
-        "operator": "contains_none",
-        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_u5"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_u2"
-      },
-      "outcomeMissing": {
         "nextNode": "exit_u2"
       }
     },
-    "only_IP_match": {
+    "vim_IP": {
       "type": "BOOL",
-      "description": "Inheritance match: only for incomplete penetrance.",
+      "description": "Inheritance match",
       "query": {
-        "field": "FORMAT/VI",
-        "operator": "contains_none",
-        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
       },
       "outcomeTrue": {
         "nextNode": "exit_u4"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u1"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
-        "nextNode": "exit_u1"
+        "nextNode": "exit_u4"
       }
     },
     "vid": {
@@ -117,6 +117,24 @@
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
+    "vid_IP": {
+      "type": "BOOL",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim_IP"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
@@ -138,14 +156,9 @@
       "class": "U3"
     },
     "exit_u4": {
-      "description": "Usable in case of incomplete penetrance: probably",
+      "description": "Usable: in case of incomplete penetrance",
       "type": "LEAF",
       "class": "U4"
-    },
-    "exit_u5": {
-      "description": "Usable in case of incomplete penetrance: maybe",
-      "type": "LEAF",
-      "class": "U5"
     }
   }
 }
