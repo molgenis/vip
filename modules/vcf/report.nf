@@ -1,5 +1,6 @@
 include { basename } from './utils'
 include { createPedigree } from '../utils'
+import groovy.json.JsonOutput
 
 process report {
   label 'vcf_report'
@@ -30,11 +31,14 @@ process report {
     template = params.vcf.report.template
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
     includeCrams = params.vcf.report.include_crams
-
+    config = params.vcf.report.config
+    paramsJson = JsonOutput.toJson(params).replaceAll ("/","\\\\/").replaceAll ("\\\"","\\\\\"");
+    
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.project.samples.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
     pedigree = "${meta.project.id}.ped"
     pedigreeContent = createPedigree(meta.project.samples)
+
 
     template 'report.sh'
 
