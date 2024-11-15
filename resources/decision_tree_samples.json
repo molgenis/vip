@@ -41,10 +41,28 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "vim"
+        "nextNode": "only_IP"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "only_IP"
+      }
+    },
+    "only_IP": {
+      "type": "BOOL",
+      "description": "Only AD IP suitable for pedigree.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_none",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "vid_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim"
       },
       "outcomeMissing": {
         "nextNode": "vim"
@@ -68,6 +86,24 @@
         "nextNode": "exit_u2"
       }
     },
+    "vim_IP": {
+      "type": "BOOL",
+      "description": "Inheritance match",
+      "query": {
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u4"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u4"
+      }
+    },
     "vid": {
       "type": "BOOL",
       "description": "Inheritance denovo",
@@ -81,6 +117,24 @@
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
+    "vid_IP": {
+      "type": "BOOL",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim_IP"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
@@ -100,6 +154,11 @@
       "description": "Usable: probably not",
       "type": "LEAF",
       "class": "U3"
+    },
+    "exit_u4": {
+      "description": "Usable: in case of incomplete penetrance",
+      "type": "LEAF",
+      "class": "U4"
     }
   }
 }
