@@ -1,5 +1,5 @@
 os: linux
-dist: focal
+dist: jammy
 language: python
 python:
   - "3.10"
@@ -11,11 +11,6 @@ install:
   - pip install mkdocs==1.5.2 mkdocs-mermaid2-plugin==1.0.8
 script:
   - mkdocs build
-before_deploy:
-  - yes | gem update --system --force
-  - gem install bundler
-  - gem install uri
-  - gem install logger
 deploy:
   provider: pages
   strategy: git
