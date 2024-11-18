@@ -12,7 +12,9 @@ install:
 script:
   - mkdocs build
 before_deploy:
+# workaround for: https://travis-ci.community/t/deployments-are-failing-due-to-uri-dependency/14375
   - yes | gem update --system --force
+  - gem install faraday-net_http -v '3.3.0' # workaround for the workaround - https://travis-ci.community/t/cannot-load-such-file-faraday-net-http-loaderror/14455/3
   - gem install bundler
   - gem install uri
   - gem install logger
