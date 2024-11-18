@@ -148,15 +148,15 @@
 <p>The default decision tree to classify variant-consequences works as follows:</p>
 <ol>
 <li>Each variant-consequence is classified as <code>Benign</code>, <code>Likely Benign</code>, <code>VUS</code>, <code>Likely Pathogenic</code>, <code>Pathogenic</code> or <code>Remove</code></li>
-<li>Variant-consequences classified as <code>Benign</code>, <code>Likely Benign</code> and <code>Remove</code> are removed</li>
+<li>Variant-consequences classified as <code>Benign</code>, <code>Likely Benign</code> and <code>Remove</code> are removed by default.</li>
 </ol>
 <p><img alt="Default classification tree" src="../../img/GRCh38_decision_tree.png"/></p>
 <p><em>Above: default GRCh38 variant classification tree</em></p>
 <h3 id="variant-consequences-samples">Variant-consequences (samples)<a class="headerlink" href="#variant-consequences-samples" title="Permanent link">¶</a></h3>
 <p>The default decision tree to classify variant-consequences in the context of samples works as follows:</p>
 <ol>
-<li>Each variant-consequence-sample is classified as <code>U1</code> (usable: probably), <code>U2</code> (usable: maybe) and <code>U3</code> (usable: probably not)</li>
-<li>Variant-consequences classified as <code>U3</code> for all samples are removed</li>
+<li>Each variant-consequence-sample is classified as <code>U1</code> (usable: probably), <code>U2</code> (usable: maybe), <code>U3</code> (usable: probably not) and <code>U4</code> (usable: only in cases of suspected incomplete penetrance).</li>
+<li>Variant-consequences classified as <code>U3</code> and <code>U4</code> for all samples are removed by default.</li>
 </ol>
 <p><img alt="Default variant-sample classification tree" src="../../img/sample_decision_tree.png"/></p>
 <p><em>Above: default variant sample classification tree</em></p>
