@@ -21,6 +21,7 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [VKGL](https://vkgl.molgeniscloud.org/)
 - [phyloP](http://compgen.cshl.edu/phast)
 - [cuteSV](https://github.com/tjiangHIT/cuteSV)
+- [Mosdepth](https://github.com/brentp/mosdepth)
 - [Spectre](https://github.com/fritzsedlazeck/Spectre)
 - [Straglr](https://github.com/philres/straglr)
 - [Stranger](https://github.com/Clinical-Genomics/stranger)

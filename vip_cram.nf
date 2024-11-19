@@ -32,7 +32,6 @@ workflow cram {
 
 		// coverage
 		ch_cram_multi.coverage
-      | view
       | filter { meta -> meta.project.regions != null }
 		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.project.regions] }
       | coverage
