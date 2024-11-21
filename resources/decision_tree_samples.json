@@ -2,6 +2,7 @@
   "rootNode": "gt",
   "nodes": {
     "gt": {
+      "label": "Genotype",
       "description": "Genotype",
       "type": "CATEGORICAL",
       "field": "FORMAT/GENOTYPE/TYPE",
@@ -34,6 +35,7 @@
     },
     "gq": {
       "type": "BOOL",
+      "label": "Genotype quality",
       "description": "Genotype quality",
       "query": {
         "field": "FORMAT/GQ",
@@ -52,6 +54,7 @@
     },
     "only_IP": {
       "type": "BOOL",
+      "label": "Only if AD IP",
       "description": "Only AD IP suitable for pedigree.",
       "query": {
         "field": "FORMAT/VI",
@@ -70,6 +73,7 @@
     },
     "vim": {
       "type": "BOOL",
+      "label": "Inheritance match",
       "description": "Inheritance match",
       "query": {
         "field": "FORMAT/VIG",
@@ -88,6 +92,7 @@
     },
     "vim_IP": {
       "type": "BOOL",
+      "label": "Inheritance match (IP)",
       "description": "Inheritance match",
       "query": {
         "field": "FORMAT/VIG",
@@ -106,6 +111,7 @@
     },
     "vid": {
       "type": "BOOL",
+      "label": "Inheritance denovo",
       "description": "Inheritance denovo",
       "query": {
         "field": "FORMAT/VID",
@@ -124,6 +130,7 @@
     },
     "vid_IP": {
       "type": "BOOL",
+      "label": "Inheritance denovo (IP)",
       "description": "Inheritance denovo",
       "query": {
         "field": "FORMAT/VID",
@@ -141,21 +148,25 @@
       }
     },
     "exit_u1": {
+      "label": "Usable: probably",
       "description": "Usable: probably",
       "type": "LEAF",
       "class": "U1"
     },
     "exit_u2": {
+      "label": "Usable: maybe",
       "description": "Usable: maybe",
       "type": "LEAF",
       "class": "U2"
     },
     "exit_u3": {
+      "label": "Usable: probably not",
       "description": "Usable: probably not",
       "type": "LEAF",
       "class": "U3"
     },
     "exit_u4": {
+      "label": "Usable: if IP",
       "description": "Usable: in case of incomplete penetrance",
       "type": "LEAF",
       "class": "U4"
