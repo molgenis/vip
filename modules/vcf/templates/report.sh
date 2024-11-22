@@ -61,8 +61,8 @@ report() {
     args+=("--template" "!{template}")
   fi
   if [ -n "!{config}" ]; then
-    sed 's/VIP_PARAMS_PLACEHOLDER/!{paramsJson}/g' "!{config}" > "processed_config.json"
-    args+=("--template_config" "processed_config.json")
+    echo "!{configJsonStr}" > "vip_report_config.json"
+    args+=("--template_config" "vip_report_config.json")
   fi
   if [ -n "!{crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
     args+=("--cram" "!{crams}")
