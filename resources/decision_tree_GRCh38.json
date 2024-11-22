@@ -2,6 +2,7 @@
   "rootNode": "filter",
   "nodes": {
     "filter": {
+      "label": "Filter",
       "description": "Filter pass",
       "type": "BOOL",
       "query": {
@@ -22,6 +23,7 @@
       }
     },
     "vkgl": {
+      "label": "VKGL",
       "description": "VKGL classification",
       "type": "CATEGORICAL",
       "field": "INFO/CSQ/VKGL_CL",
@@ -50,6 +52,7 @@
       }
     },
     "clinVar": {
+      "label": "ClinVar",
       "description": "ClinVar classification",
       "type": "BOOL_MULTI",
       "fields": [
@@ -117,6 +120,7 @@
       }
     },
     "chrom": {
+      "label": "Chromosome",
       "description": "Chromosome 1-22-X-Y-MT",
       "type": "BOOL",
       "query": {
@@ -161,6 +165,7 @@
       }
     },
     "gene": {
+      "label": "Gene",
       "description": "Gene exists",
       "type": "EXISTS",
       "field": "INFO/CSQ/Gene",
@@ -172,6 +177,7 @@
       }
     },
     "sv": {
+      "label": "Is SV",
       "description": "Structural Variant?",
       "type": "EXISTS",
       "field": "INFO/SVTYPE",
@@ -183,6 +189,7 @@
       }
     },
     "str": {
+      "label": "Is STR",
       "description": "Short tandem repeat?",
       "type": "BOOL",
       "query": {
@@ -201,6 +208,7 @@
       }
     },
     "str_status": {
+      "label": "STR Status",
       "description": "Stranger str status (normal, pre_mutation, mutation)",
       "type": "CATEGORICAL",
       "field": "INFO/STR_STATUS",
@@ -223,6 +231,7 @@
       }
     },
     "gnomAD": {
+      "label": "GnomAD",
       "description": "gnomAD QC filter failure",
       "type": "EXISTS",
       "field": "INFO/CSQ/gnomAD_QC",
@@ -234,6 +243,7 @@
       }
     },
     "gnomAD_AF": {
+      "label": "GnomAD AF",
       "description": "gnomAD",
       "type": "BOOL_MULTI",
       "fields": [
@@ -269,6 +279,7 @@
       }
     },
     "annotSV": {
+      "label": "AnnotSV",
       "description": "AnnotSV classification",
       "type": "CATEGORICAL",
       "field": "INFO/CSQ/ASV_ACMG_class",
@@ -297,6 +308,7 @@
       }
     },
     "spliceAI": {
+      "label": "SpliceAI",
       "description": "SpliceAI prediction",
       "type": "BOOL_MULTI",
       "fields": [
@@ -373,6 +385,7 @@
       }
     },
     "utr5": {
+      "label": "5' UTR",
       "description": "5' UTR",
       "type": "EXISTS",
       "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
@@ -384,6 +397,7 @@
       }
     },
     "capice": {
+      "label": "CAPICE",
       "description": "CAPICE prediction > 0.5",
       "type": "BOOL",
       "query": {
@@ -402,31 +416,37 @@
       }
     },
     "exit_rm": {
+      "label": "Remove",
       "description": "Remove",
       "type": "LEAF",
       "class": "LQ"
     },
     "exit_b": {
+      "label": "Benign",
       "description": "Benign",
       "type": "LEAF",
       "class": "B"
     },
     "exit_lb": {
+      "label": "Likely Benign",
       "description": "Likely Benign",
       "type": "LEAF",
       "class": "LB"
     },
     "exit_vus": {
+      "label": "Uncertain Significance",
       "description": "Uncertain Significance",
       "type": "LEAF",
       "class": "VUS"
     },
     "exit_lp": {
+      "label": "Likely Pathogenic",
       "description": "Likely Pathogenic",
       "type": "LEAF",
       "class": "LP"
     },
     "exit_p": {
+      "label": "Pathogenic",
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"

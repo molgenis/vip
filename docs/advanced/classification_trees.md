@@ -17,7 +17,7 @@ VIP contains default filtration strategies for variant-consequences as well as v
 The default decision tree to classify variant-consequences works as follows:
 
 1. Each variant-consequence is classified as `Benign`, `Likely Benign`, `VUS`, `Likely Pathogenic`, `Pathogenic` or `Remove`
-2. Variant-consequences classified as `Benign`, `Likely Benign` and `Remove` are removed
+2. Variant-consequences classified as `Benign`, `Likely Benign` and `Remove` are removed by default.
 
 ![Default classification tree](../img/GRCh38_decision_tree.png)
 
@@ -26,8 +26,8 @@ The default decision tree to classify variant-consequences works as follows:
 ### Variant-consequences (samples)
 The default decision tree to classify variant-consequences in the context of samples works as follows:
 
-1. Each variant-consequence-sample is classified as `U1` (usable: probably), `U2` (usable: maybe) and `U3` (usable: probably not)
-2. Variant-consequences classified as `U3` for all samples are removed
+1. Each variant-consequence-sample is classified as `U1` (usable: probably), `U2` (usable: maybe), `U3` (usable: probably not) and `U4` (usable: only in cases of suspected incomplete penetrance).
+2. Variant-consequences classified as `U3` and `U4` for all samples are removed by default.
  
 ![Default variant-sample classification tree](../img/sample_decision_tree.png)
 
