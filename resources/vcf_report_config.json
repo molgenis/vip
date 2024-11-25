@@ -109,7 +109,7 @@
           "name": "locus"
         },
         {
-          "type": "composed",
+          "type": "fixed",
           "name": "ref"
         },
         {
@@ -119,7 +119,18 @@
         },
         {
           "type": "composed",
-          "name": "genotype"
+          "name": "genotype",
+          "label": "Proband"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_maternal",
+          "label": "Mother"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_paternal",
+          "label": "Father"
         },
         {
           "type": "group",
@@ -189,7 +200,7 @@
           "name": "locus"
         },
         {
-          "type": "composed",
+          "type": "fixed",
           "name": "ref"
         },
         {
@@ -198,7 +209,18 @@
         },
         {
           "type": "composed",
-          "name": "genotype"
+          "name": "genotype",
+          "label": "Proband"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_maternal",
+          "label": "Mother"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_paternal",
+          "label": "Father"
         },
         {
           "type": "group",
@@ -241,6 +263,10 @@
             },
             {
               "type": "composed",
+              "name": "vipCS"
+            },
+            {
+              "type": "composed",
               "name": "vkgl"
             },
             {
@@ -269,7 +295,18 @@
         },
         {
           "type": "composed",
-          "name": "genotype"
+          "name": "genotype",
+          "label": "Proband"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_maternal",
+          "label": "Mother"
+        },
+        {
+          "type": "composed",
+          "name": "genotype_paternal",
+          "label": "Father"
         },
         {
           "type": "genotype",
