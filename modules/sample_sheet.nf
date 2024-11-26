@@ -12,7 +12,7 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 		if (line == null) continue;
 
 		def tokens = line.split('\t', -1)
-		if (tokens.length != 2) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected 2 columns instead of ${tokens.length}"
+		if (tokens.length != 2) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 2 columns instead of ${tokens.length}"
 
 		def hpoTermId=tokens[0]
 		hpoTermIds[hpoTermId]=null
