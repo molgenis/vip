@@ -103,7 +103,7 @@ workflow cram {
 }
 
 workflow {
-  def projects = parseSampleSheet(params.input)
+  def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateCramParams(assemblies)
 
@@ -157,7 +157,7 @@ def validateCramParams(inputAssemblies) {
   if(callCnv) validateCallCnvParams(outputAssemblies)
 }
 
-def parseSampleSheet(csvFile) {
+def parseSampleSheet(params) {
   def cols = [
     cram: [
       type: "file",
@@ -172,6 +172,6 @@ def parseSampleSheet(csvFile) {
     ]
   ]
 
-  def projects = parseCommonSampleSheet(csvFile, cols)
+	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
   return projects.collect { project -> [*:project, assembly: params.assembly] }
 }
