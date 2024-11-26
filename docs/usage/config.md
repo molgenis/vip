@@ -1,6 +1,8 @@
 # Config
+
 The VIP configuration is stored in [Nextflow configuration](https://www.nextflow.io/docs/latest/config.html) files.
-An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update profiles, configure processes and update environment variables. 
+An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update
+profiles, configure processes and update environment variables.
 
 ## Parameters
 
@@ -21,9 +23,11 @@ An additional configuration file can be supplied on the command-line to overwrit
 | pcr_performed                 | false       | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data. |
 
 **Warning:**
-Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.
+Please take note of the fact that for a different reference fasta.gz the unzipped referenfasta file is also required.
+Both the zipped and unzipped fasta should have an index.
 
 ### FASTQ
+
 | key                       | default     | description                                                                                            |
 |---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
 | GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
@@ -32,6 +36,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | minimap2.nanopore_preset  | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq' 'map-ont'.                                  |
 
 ### CRAM
+
 | key                                            | default        | description                                                                                                                                                                          |
 |------------------------------------------------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | cnv.spectre.GRCh38.blacklist                   | *installed*    | blacklist in bed format for sites that will be ignored                                                                                                                               |
@@ -94,11 +99,13 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | sv.cutesv.pacbio_hifi.remain_reads_ratio       | 1.0            | The ratio of reads remained in cluster. Set lower when the alignment data have high quality but recommand over 0.5                                                                   |
 
 ### gVCF
+
 | key               | default     | description                                                                  |
 |-------------------|-------------|------------------------------------------------------------------------------|
 | gvcf.merge_preset | DeepVariant | allowed values: [gatk, gatk_unfiltered, DeepVariant, DeepVariant_unfiltered] |
 
 ### VCF
+
 | key                                             | default     | description                                                                                                                                                                                                                                                 |
 |-------------------------------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | vcf.start                                       |             | allowed values: [normalize, annotate, classify, filter, inheritance, classify_samples, filter_samples]. for reanalysis this defines from which step to start the workflow                                                                                   |
@@ -111,6 +118,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | vcf.annotate.vep_plugin_inheritance             | *installed* |                                                                                                                                                                                                                                                             |
 | vcf.annotate.vep_plugin_vkgl_mode               | 1           | allowed values: [0=full VKGL, 1=public VKGL]. update `vcf.annotate.GRCh38.vep_plugin_vkgl` accordingly                                                                                                                                                      |
 | vcf.annotate.GRCh38.capice_model                | *installed* |                                                                                                                                                                                                                                                             |
+| vcf.annotate.GRCh38.stranger_catalog            | *installed* | for details, see [here](https://github.com/Clinical-Genomics/stranger/tree/v0.8.1)                                                                                                                                                                          |
 | vcf.annotate.GRCh38.vep_custom_phylop           | *installed* |                                                                                                                                                                                                                                                             |
 | vcf.annotate.GRCh38.vep_plugin_clinvar          | *installed* |                                                                                                                                                                                                                                                             |
 | vcf.annotate.GRCh38.vep_plugin_gnomad           | *installed* |                                                                                                                                                                                                                                                             |
@@ -138,6 +146,7 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 | vcf.report.GRCh38.genes                         | *installed* |                                                                                                                                                                                                                                                             |
 
 ## Profiles
+
 VIP pre-defines two profiles. The default profile is Slurm with fallback to local in case Slurm cannot be discovered.
 
 | key   | description                                                                      |
@@ -145,13 +154,19 @@ VIP pre-defines two profiles. The default profile is Slurm with fallback to loca
 | local | for details, see [here](https://www.nextflow.io/docs/latest/executor.html#local) |
 | slurm | for details, see [here](https://www.nextflow.io/docs/latest/executor.html#slurm) |                                                        |
 
-Additional profiles (for details, see [here](https://www.nextflow.io/docs/latest/config.html#config-profiles)) can be added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google Cloud.
+Additional profiles (for details, see [here](https://www.nextflow.io/docs/latest/config.html#config-profiles)) can be
+added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google
+Cloud.
 
 ## Process
-By default, each process gets assigned `4 cpus`, `8GB of memory` and a `max runtime of 4 hours`. Depending on your system specifications and your analysis you might need to use updated values. For information on how to update process configuration see the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#scope-process).
+
+By default, each process gets assigned `4 cpus`, `8GB of memory` and a `max runtime of 4 hours`. Depending on your
+system specifications and your analysis you might need to use updated values. For information on how to update process
+configuration see the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#scope-process).
 The following sections list all processes and their non-default configuration.
 
 ### FASTQ
+
 | process label             | configuration                   |
 |---------------------------|---------------------------------|
 | concat_fastq              | *default*                       |
@@ -160,6 +175,7 @@ The following sections list all processes and their non-default configuration.
 | minimap2_align_paired_end | cpus=8 memory='16GB' time='23h' |
 
 ### CRAM
+
 | process label           | configuration                                |
 |-------------------------|----------------------------------------------|
 | concat_vcf              | *default*                                    |
@@ -178,6 +194,7 @@ The following sections list all processes and their non-default configuration.
 | vcf_merge_sv            | *default*                                    |
 
 ### gVCF
+
 | process label | configuration             |
 |---------------|---------------------------|
 | gvcf_liftover | *default*                 |
@@ -185,6 +202,7 @@ The following sections list all processes and their non-default configuration.
 | gvcf_merge    | memory='2GB' time='30m'   |
 
 ### VCF
+
 | process label                | configuration                 |
 |------------------------------|-------------------------------|
 | vcf_annotate                 | cpus=4 memory='8GB' time='4h' |
@@ -205,5 +223,7 @@ The following sections list all processes and their non-default configuration.
 | vcf_validate                 | memory='100MB' time='30m'     |
 
 ## Environment
-See [https://github.com/molgenis/vip/tree/main/config](https://github.com/molgenis/vip/tree/main/config) for an overview of available environment variables.
+
+See [https://github.com/molgenis/vip/tree/main/config](https://github.com/molgenis/vip/tree/main/config) for an overview
+of available environment variables.
 Notably this allows to use different Apptainer containers for the tools that VIP relies on.
