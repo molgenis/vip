@@ -151,7 +151,8 @@
 <div class="section" itemprop="articleBody">
 <h1 id="config">Config<a class="headerlink" href="#config" title="Permanent link">¶</a></h1>
 <p>The VIP configuration is stored in <a href="https://www.nextflow.io/docs/latest/config.html">Nextflow configuration</a> files.
-An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update profiles, configure processes and update environment variables. </p>
+An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update
+profiles, configure processes and update environment variables.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -230,7 +231,8 @@ An additional configuration file can be supplied on the command-line to overwrit
 </tbody>
 </table>
 <p><strong>Warning:</strong>
-Please take note of the fact that for a different reference fasta.gz the  unzipped referenfasta file is also required. Both the zipped and unzipped fasta should have an index.</p>
+Please take note of the fact that for a different reference fasta.gz the unzipped referenfasta file is also required.
+Both the zipped and unzipped fasta should have an index.</p>
 <h3 id="fastq">FASTQ<a class="headerlink" href="#fastq" title="Permanent link">¶</a></h3>
 <table>
 <thead>
@@ -643,6 +645,11 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 <td></td>
 </tr>
 <tr>
+<td>vcf.annotate.GRCh38.stranger_catalog</td>
+<td><em>installed</em></td>
+<td>for details, see <a href="https://github.com/Clinical-Genomics/stranger/tree/v0.8.1">here</a></td>
+</tr>
+<tr>
 <td>vcf.annotate.GRCh38.vep_custom_phylop</td>
 <td><em>installed</em></td>
 <td></td>
@@ -789,9 +796,13 @@ Please take note of the fact that for a different reference fasta.gz the  unzipp
 </tr>
 </tbody>
 </table>
-<p>Additional profiles (for details, see <a href="https://www.nextflow.io/docs/latest/config.html#config-profiles">here</a>) can be added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google Cloud.</p>
+<p>Additional profiles (for details, see <a href="https://www.nextflow.io/docs/latest/config.html#config-profiles">here</a>) can be
+added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google
+Cloud.</p>
 <h2 id="process">Process<a class="headerlink" href="#process" title="Permanent link">¶</a></h2>
-<p>By default, each process gets assigned <code>4 cpus</code>, <code>8GB of memory</code> and a <code>max runtime of 4 hours</code>. Depending on your system specifications and your analysis you might need to use updated values. For information on how to update process configuration see the <a href="https://www.nextflow.io/docs/latest/config.html#scope-process">Nextflow documentation</a>.
+<p>By default, each process gets assigned <code>4 cpus</code>, <code>8GB of memory</code> and a <code>max runtime of 4 hours</code>. Depending on your
+system specifications and your analysis you might need to use updated values. For information on how to update process
+configuration see the <a href="https://www.nextflow.io/docs/latest/config.html#scope-process">Nextflow documentation</a>.
 The following sections list all processes and their non-default configuration.</p>
 <h3 id="fastq_1">FASTQ<a class="headerlink" href="#fastq_1" title="Permanent link">¶</a></h3>
 <table>
@@ -986,7 +997,8 @@ The following sections list all processes and their non-default configuration.</
 </tbody>
 </table>
 <h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">¶</a></h2>
-<p>See <a href="https://github.com/molgenis/vip/tree/main/config">https://github.com/molgenis/vip/tree/main/config</a> for an overview of available environment variables.
+<p>See <a href="https://github.com/molgenis/vip/tree/main/config">https://github.com/molgenis/vip/tree/main/config</a> for an overview
+of available environment variables.
 Notably this allows to use different Apptainer containers for the tools that VIP relies on.</p>
 </div>
 </div><footer>
