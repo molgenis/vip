@@ -4,6 +4,10 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
   def lines = hpoFile.readLines("UTF-8")
 	if (lines.size() == 0) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file is empty"
 
+	if (lines[0] != "id\label\description") {
+	  exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file header invalid, expected 'id<tab>label<description>'"
+	}
+
 	def hpoTermIds=[:]
 	for (int i = 1; i < lines.size(); i++) {
 		def lineNr = i + 1
@@ -12,7 +16,7 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 		if (line == null) continue;
 
 		def tokens = line.split('\t', -1)
-		if (tokens.length != 2) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 2 columns instead of ${tokens.length}"
+		if (tokens.length != 2) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
 
 		def hpoTermId=tokens[0]
 		hpoTermIds[hpoTermId]=null
