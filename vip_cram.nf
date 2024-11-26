@@ -26,14 +26,15 @@ workflow cram {
     if(params.cram.call_cnv) ++nrActivateVariantCallerTypes;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
-    meta
+    meta    
       | multiMap { it -> coverage: snv: str: sv: cnv: it }
       | set { ch_cram_multi }
 
 		// coverage
 		ch_cram_multi.coverage
-		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
-		  | coverage
+      | filter { meta -> meta.project.regions != null }
+		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.project.regions] }
+      | coverage
 
     // snv
     ch_cram_multi.snv
@@ -53,7 +54,7 @@ workflow cram {
       | sv
       | set { ch_cram_sv }
 
-// cnv
+    // cnv
     ch_cram_multi.cnv
       | filter { params.cram.call_cnv == true }
       | cnv

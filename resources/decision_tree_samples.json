@@ -2,6 +2,7 @@
   "rootNode": "gt",
   "nodes": {
     "gt": {
+      "label": "Genotype",
       "description": "Genotype",
       "type": "CATEGORICAL",
       "field": "FORMAT/GENOTYPE/TYPE",
@@ -34,6 +35,7 @@
     },
     "gq": {
       "type": "BOOL",
+      "label": "Genotype quality",
       "description": "Genotype quality",
       "query": {
         "field": "FORMAT/GQ",
@@ -41,10 +43,29 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "vim"
+        "nextNode": "only_IP"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "only_IP"
+      }
+    },
+    "only_IP": {
+      "type": "BOOL",
+      "label": "Only if AD IP",
+      "description": "Only AD IP suitable for pedigree.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_none",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "vid_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim"
       },
       "outcomeMissing": {
         "nextNode": "vim"
@@ -52,6 +73,7 @@
     },
     "vim": {
       "type": "BOOL",
+      "label": "Inheritance match",
       "description": "Inheritance match",
       "query": {
         "field": "FORMAT/VIG",
@@ -68,8 +90,28 @@
         "nextNode": "exit_u2"
       }
     },
+    "vim_IP": {
+      "type": "BOOL",
+      "label": "Inheritance match (IP)",
+      "description": "Inheritance match",
+      "query": {
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u4"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u4"
+      }
+    },
     "vid": {
       "type": "BOOL",
+      "label": "Inheritance denovo",
       "description": "Inheritance denovo",
       "query": {
         "field": "FORMAT/VID",
@@ -86,20 +128,48 @@
         "nextNode": "exit_u2"
       }
     },
+    "vid_IP": {
+      "type": "BOOL",
+      "label": "Inheritance denovo (IP)",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "vim_IP"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
     "exit_u1": {
+      "label": "Usable: probably",
       "description": "Usable: probably",
       "type": "LEAF",
       "class": "U1"
     },
     "exit_u2": {
+      "label": "Usable: maybe",
       "description": "Usable: maybe",
       "type": "LEAF",
       "class": "U2"
     },
     "exit_u3": {
+      "label": "Usable: probably not",
       "description": "Usable: probably not",
       "type": "LEAF",
       "class": "U3"
+    },
+    "exit_u4": {
+      "label": "Usable: if IP",
+      "description": "Usable: in case of incomplete penetrance",
+      "type": "LEAF",
+      "class": "U4"
     }
   }
 }

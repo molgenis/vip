@@ -20,15 +20,16 @@ The `cram` workflow consists of the following steps:
 
 1. Parallelize sample sheet per sample and for each sample
 2. Create validated, indexed `.bam` file from `bam/cram/sam` input
-3. Discover short tandem repeats and publish as intermediate result.
+4. If a bed file was provide via the sample sheet: generate coverage metrics using [MosDepth](https://github.com/brentp/mosdepth)
+5. Discover short tandem repeats and publish as intermediate result.
     1. Using [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) for Illumina short read data.
     2. Using this [fork of Straglr](https://github.com/molgenis/straglr) for PacBio and Nanopore long read data, this is a fork of this fork(https://github.com/philres/straglr) and is chosen over the original [Straglr](https://github.com/bcgsc/straglr) because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.
-4. Discover copy number variants for for PacBio and Nanopore long read data using [Spectre](https://github.com/fritzsedlazeck/Spectre) data and publish as intermediate result.
-5. Parallelize cram in chunks consisting of one or more contigs and for each chunk
+6. Discover copy number variants for for PacBio and Nanopore long read data using [Spectre](https://github.com/fritzsedlazeck/Spectre) data and publish as intermediate result.
+7. Parallelize cram in chunks consisting of one or more contigs and for each chunk
     1. Perform short variant calling with [DeepVariant](https://github.com/google/deepvariant) producing a `gvcf` file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using [GLnexus](https://github.com/dnanexus-rnd/GLnexus).
     2. Perform structural variant calling with [Manta](https://github.com/Illumina/manta) or [cuteSV](https://github.com/tjiangHIT/cuteSV) producing a `vcf` file per chunk per project.
-6. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
-7. Continue with step 3. of the `vcf` workflow
+8. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
+9. Continue with step 3. of the `vcf` workflow
 
 For details, see [here](https://github.com/molgenis/vip/blob/main/vip_cram.nf).
 
