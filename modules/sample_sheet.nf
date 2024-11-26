@@ -4,17 +4,6 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
   def lines = hpoFile.readLines("UTF-8")
 	if (lines.size() == 0) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file is empty"
 
-	def headerTokens = lines[0].split('\t', -1)
-	def colsWithIndex
-	try {
-		colsWithIndex = parseHeader(headerTokens, cols)
-	} catch(IllegalArgumentException e) {
-		exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line 1: ${e.message}"
-	}
-
-	def col=colsWithIndex["id"]
-	if(col == null) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line 1: missing column 'id'"
-
 	def hpoTermIds=[:]
 	for (int i = 1; i < lines.size(); i++) {
 		def lineNr = i + 1
@@ -25,7 +14,7 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 		def tokens = line.split('\t', -1)
 		if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
 
-		def hpoTermId=tokens[col.index]
+		def hpoTermId=tokens[0]
 		hpoTermIds[hpoTermId]=null
 	}
 	return hpoTermIds
