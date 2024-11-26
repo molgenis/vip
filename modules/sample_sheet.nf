@@ -4,7 +4,7 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
   def lines = hpoFile.readLines("UTF-8")
 	if (lines.size() == 0) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file is empty"
 
-	if (lines[0] != "id\label\description") {
+	if (lines[0] != "id\tlabel\tdescription") {
 	  exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file header invalid, expected 'id<tab>label<description>'"
 	}
 
