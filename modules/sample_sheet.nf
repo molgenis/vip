@@ -259,7 +259,7 @@ def parseSample(tokens, cols, rootDir, hpoTermIdMap) {
       def token = col.index != null ? tokens[col.index] : ''
       try {
         def value = parseValue(token, col, rootDir)
-        if(col.name == "hpo_ids") {
+        if(colId == "hpo_ids") {
         	value.each { hpoTermId ->
         	  if(!hpoTermIdMap.containsKey(hpoTermId)) {
         	    throw new IllegalArgumentException("HPO term '${hpoTermId}' is not a child of 'HP:0000118' (phenotypic abnormality)")
