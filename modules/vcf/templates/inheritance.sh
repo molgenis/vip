@@ -13,6 +13,7 @@ inheritance () {
   args+=("-jar" "/opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar")
   args+=("--input" "!{vcf}_replaced.vcf.gz")
   args+=("--output" "!{vcfOut}_replaced.vcf.gz")
+  args+=("--metadata" "!{metadata}")
   if [ -n "!{pedigree}" ]; then
     args+=("--pedigree" "!{pedigree}")
   fi

@@ -16,6 +16,7 @@ process inheritance {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
+    metadata = params.vcf.classify.metadata
     probands = meta.probands.collect{ proband -> proband.individual_id}.join(",")
     pedigree = "${meta.project.id}.ped"
     pedigreeContent = createPedigree(meta.project.samples)
