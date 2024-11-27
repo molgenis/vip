@@ -35,7 +35,7 @@ workflow gvcf {
 }
 
 workflow {
-  def projects = parseSampleSheet(params.input)
+  def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateGenomeVcfParams(assemblies)
 
@@ -103,7 +103,7 @@ def validateGenomeVcfParams(assemblies) {
   if (!(mergePreset ==~ /gatk|gatk_unfiltered|DeepVariant|DeepVariant_unfiltered/))  exit 1, "parameter 'gvcf.merge_preset' value '${mergePreset}' is invalid. allowed values are [gatk, gatk_unfiltered, DeepVariant, DeepVariant_unfiltered]"
 }
 
-def parseSampleSheet(csvFile) {
+def parseSampleSheet(params) {
   def cols = [
 		assembly: [
 			type: "string",
@@ -120,8 +120,8 @@ def parseSampleSheet(csvFile) {
       regex: getCramRegex()
     ]
   ]
-  
-  def projects = parseCommonSampleSheet(csvFile, cols)
+
+	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
   validate(projects)
   return projects
 }

@@ -60,7 +60,7 @@ workflow fastq {
 }
 
 workflow {
-  def projects = parseSampleSheet(params.input)
+  def projects = parseSampleSheet(params)
   validateFastqParams([params.assembly])
 
   // run fastq workflow for each sample in each project
@@ -81,7 +81,7 @@ def validateFastqParams(assemblies) {
   }  
 }
 
-def parseSampleSheet(csvFile) {
+def parseSampleSheet(params) {
   def fastqRegex = /.+\.(fastq|fq)(\.gz)?/
   
   def cols = [
@@ -112,7 +112,7 @@ def parseSampleSheet(csvFile) {
     ]
   ]
 
-  def projects = parseCommonSampleSheet(csvFile, cols)
+	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
   validate(projects)
   return projects
 }

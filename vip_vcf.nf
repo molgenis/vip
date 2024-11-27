@@ -232,7 +232,7 @@ workflow vcf {
 }
 
 workflow {
-  def projects = parseSampleSheet(params.input)
+  def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
 
@@ -393,7 +393,7 @@ def validateVcfParams(inputAssemblies) {
   }
 }
 
-def parseSampleSheet(csvFile) {
+def parseSampleSheet(params) {
   def cols = [
   	assembly: [
 			type: "string",
@@ -413,7 +413,7 @@ def parseSampleSheet(csvFile) {
     ]
   ]
 
-  def projects = parseCommonSampleSheet(csvFile, cols)
+  def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
   validate(projects)
   return projects
 }
