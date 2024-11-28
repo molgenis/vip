@@ -89,7 +89,7 @@ download_files() {
   urls+=("9c69ac645e04b91c8f480289c536429c" "images/stranger-0.8.1_v2.sif")
   urls+=("8575e48d7da8a7f0728d08dc204e42a5" "images/vcf-decision-tree-5.1.1.sif")
   urls+=("57a7329781d3cb0e5491c5f84fd49dcd" "images/vcf-inheritance-matcher-3.3.2.sif")
-  urls+=("87b2d9031b1b8351d2da14dd0095fbea" "images/vcf-report-7.2.0.sif")
+  urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -147,7 +147,7 @@ download_files() {
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   #FIXME update to released template once available
-  urls+=("603e4ab9cecdd30e00147defabd7720f" "resources/vip-report-template-v7.0.0-dev.html")
+  urls+=("0643d06a7bae77f8e749406dfbb0fdef" "resources/vip-report-template-v7.0.1.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
