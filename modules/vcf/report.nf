@@ -33,6 +33,7 @@ process report {
     includeCrams = params.vcf.report.include_crams
 
     configJsonStr = JsonOutput.toJson(new File(params.vcf.report.config).getText('UTF-8').replaceFirst("\\{", "{\"vip\": {\"filter_field\": {\"type\": \"genotype\",\"name\": \"VIPC_S\"},\"params\":" + JsonOutput.toJson(params) + "}"))
+    configJsonStr = configJsonStr.replaceAll ("/","\\\\/").replaceAll ("\\\"","\\\\\"")
 
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
     hpoIds = meta.project.samples.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
