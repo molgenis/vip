@@ -32,7 +32,7 @@ process report {
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
     includeCrams = params.vcf.report.include_crams
 
-    configJsonStr = JsonOutput.toJson(new File(params.vcf.report.config).getText('UTF-8').replaceFirst("\\{", "{\"vip\": {\"filter_field\": {\"type\": \"genotype\",\"name\": \"VIPC_S\"},\"params\":" + JsonOutput.toJson(params) + "}"))
+    configJsonStr = new File(params.vcf.report.config).getText('UTF-8').replaceFirst("\\{", "{\"vip\": {\"filter_field\": {\"type\": \"genotype\",\"name\": \"VIPC_S\"},\"params\":" + JsonOutput.toJson(params) + "}")
     configJsonStr = configJsonStr.replaceAll ("/","\\\\/").replaceAll ("\\\"","\\\\\"")
 
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
