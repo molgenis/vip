@@ -61,7 +61,7 @@ report() {
     args+=("--template" "!{template}")
   fi
   if [ -n "!{configJsonStr}" ]; then
-    echo "!{configJsonStr}" > "vip_report_config.json"
+    echo -e "!{configJsonStr}" > "vip_report_config.json"
     args+=("--template_config" "vip_report_config.json")
   fi
   if [ -n "!{crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
