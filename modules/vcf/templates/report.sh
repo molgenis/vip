@@ -60,7 +60,7 @@ report() {
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi
-  if [ -n "!{config}" ]; then
+  if [ -n "!{configJsonStr}" ]; then
     echo "!{configJsonStr}" > "vip_report_config.json"
     args+=("--template_config" "vip_report_config.json")
   fi
