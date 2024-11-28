@@ -98,7 +98,7 @@ main() {
   images+=("straglr-1.4.4_vip_v3")
   images+=("vcf-decision-tree-5.1.1")
   images+=("vcf-inheritance-matcher-3.3.2")
-  images+=("vcf-report-7.0.3")
+  images+=("vcf-report-7.2.0")
 
   for i in "${!images[@]}"; do
     echo "---Building ${images[$i]}---"
