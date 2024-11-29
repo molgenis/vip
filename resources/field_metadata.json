@@ -287,6 +287,15 @@
             },
             "no_assertion_provided": {
               "label": "No assertion provided"
+            },
+            "no_classification_for_the_single_variant": {
+              "label": "No classification for the single variant"
+            },
+            "no_classification_provided": {
+              "label": "No classification provided"
+            },
+            "no_classifications_from_unflagged_records": {
+              "label": "No classifications from unflagged records"
             }
           }
         },
