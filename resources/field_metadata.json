@@ -180,7 +180,7 @@
           "label": "ClinVar",
           "description": "Clinical significance for this single variant",
           "numberType": "OTHER",
-          "separator": "/",
+          "separator": "&",
           "type": "CATEGORICAL",
           "categories": {
             "Benign": {
