@@ -277,8 +277,8 @@
               "label": "Single submitter",
               "description": "There is a single submitted record with a classification"
             },
-            "_conflicting_interpretations": {
-              "label": "Conflicting_interpretations",
+            "_conflicting_classifications": {
+              "label": "Conflicting_classifications",
               "description": "There are conflicting classifications"
             },
             "no_assertion_criteria_provided": {
