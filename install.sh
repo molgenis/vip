@@ -147,8 +147,7 @@ download_files() {
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
-  #FIXME update to released template once available
-  urls+=("0643d06a7bae77f8e749406dfbb0fdef" "resources/vip-report-template-v7.0.1.html")
+  urls+=("e5d17440fc84b49b2fba7a30b500ca93" "resources/vip-report-template-v7.0.2.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
