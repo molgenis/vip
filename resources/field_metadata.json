@@ -203,9 +203,13 @@
               "label": "P",
               "description": "Pathogenic"
             },
-            "Conflicting_interpretations_of_pathogenicity": {
+            "Conflicting_classifications_of_pathogenicity": {
               "label": "Conflict",
-              "description": "Conflicting interpretations of pathogenicity"
+              "description": "Conflicting classifications of pathogenicity"
+            },
+            "Other": {
+              "label": "Other",
+              "description": "Classifications that do not match the common categorical values."
             }
           }
         },
@@ -236,9 +240,9 @@
               "label": "P",
               "description": "Pathogenic"
             },
-            "Conflicting_interpretations_of_pathogenicity": {
+            "Conflicting_classifications_of_pathogenicity": {
               "label": "Conflict",
-              "description": "Conflicting interpretations of pathogenicity"
+              "description": "Conflicting classifications of pathogenicity"
             }
           }
         },
