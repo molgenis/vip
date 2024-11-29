@@ -65,6 +65,9 @@ install() {
   if [ -f "${SCRIPT_DIR}/resources/hpo_20240404.tsv" ]; then
     cp --link "${SCRIPT_DIR}/resources/hpo_20240404.tsv" "${versionDir}/resources"
   fi
+  if [ -f "${SCRIPT_DIR}/resources/hpo_20240404_phenotypic_abnormality.tsv" ]; then
+      cp --link "${SCRIPT_DIR}/resources/hpo_20240404_phenotypic_abnormality.tsv" "${versionDir}/resources"
+    fi
   if [ -f "${SCRIPT_DIR}/resources/inheritance_20240115.tsv" ]; then
     cp --link "${SCRIPT_DIR}/resources/inheritance_20240115.tsv" "${versionDir}/resources"
   fi
@@ -82,6 +85,9 @@ install() {
   if [ -f "${versionDir}/resources/hpo_20240404.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240404.tsv" ]; then
     cp --link "${versionDir}/resources/hpo_20240404.tsv" "${SCRIPT_DIR}/resources"
   fi
+  if [ -f "${versionDir}/resources/hpo_20240404_phenotypic_abnormality.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240404_phenotypic_abnormality.tsv" ]; then
+      cp --link "${versionDir}/resources/hpo_20240404_phenotypic_abnormality.tsv" "${SCRIPT_DIR}/resources"
+    fi
   if [ -f "${versionDir}/resources/inheritance_20240115.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/inheritance_20240115.tsv" ]; then
     cp --link "${versionDir}/resources/inheritance_20240115.tsv" "${SCRIPT_DIR}/resources"
   fi
