@@ -1,4 +1,30 @@
-def parseCommonSampleSheet(csvFilename, additionalCols) {
+def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
+  def hpoFile = new File(hpoPhenotypicAbnormalityFilename)
+
+  def lines = hpoFile.readLines("UTF-8")
+	if (lines.size() == 0) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file is empty"
+
+	if (lines[0] != "id\tlabel\tdescription") {
+	  exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}': file header invalid, expected 'id<tab>label<description>'"
+	}
+
+	def hpoTermIds=[:]
+	for (int i = 1; i < lines.size(); i++) {
+		def lineNr = i + 1
+
+		def line = lines[i]
+		if (line == null) continue;
+
+		def tokens = line.split('\t', -1)
+		if (tokens.length != 3) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
+
+		def hpoTermId=tokens[0]
+		hpoTermIds[hpoTermId]=null
+	}
+	return hpoTermIds
+}
+
+def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additionalCols) {
   def csvFile = new File(csvFilename)
 
   def seq_nr = 0
@@ -61,7 +87,9 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
   ]
 
   def cols = [*:commonCols, *:additionalCols]
-    
+
+  def hpoTermIdMap = parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename)
+
   def lines = csvFile.readLines("UTF-8")
   if (lines.size() == 0) exit 1, "error parsing '${csvFilename}': file is empty"
   
@@ -87,7 +115,7 @@ def parseCommonSampleSheet(csvFilename, additionalCols) {
     
     def sample
     try {
-      sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile())
+      sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile(), hpoTermIdMap)
     } catch(IllegalArgumentException e) {
       exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
     }
@@ -225,12 +253,21 @@ def parseValue(token, col, rootDir) {
   return value;
 }
 
-def parseSample(tokens, cols, rootDir) {
+def parseSample(tokens, cols, rootDir, hpoTermIdMap) {
     def sample = [:]
     cols.each { colId, col -> 
       def token = col.index != null ? tokens[col.index] : ''
       try {
-        sample[colId] = parseValue(token, col, rootDir)
+        def value = parseValue(token, col, rootDir)
+        if(colId == "hpo_ids") {
+        	value.each { hpoTermId ->
+        	  if(!hpoTermIdMap.containsKey(hpoTermId)) {
+        	    throw new IllegalArgumentException("HPO term '${hpoTermId}' is not a child of 'HP:0000118' (phenotypic abnormality)")
+        	  }
+        	}
+        }
+
+        sample[colId] = value
       } catch(IllegalArgumentException e) {
         throw new IllegalArgumentException("column '${colId}': ${e.message}")
       }

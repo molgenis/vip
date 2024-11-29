@@ -143,11 +143,11 @@ download_files() {
   urls+=("5d4d1c938ff58dbf2d2799a5e4dd06c4" "resources/gado/v1.0.4_HPO_v2024-04-04/HPO_2024_04_04_prediction_info.txt.gz")
   # update utils/install.sh when updating hpo.tsv
   urls+=("42e31fe6e3502fb9bc0b14121f0f844b" "resources/hpo_20240404.tsv")
+  urls+=("c2efd2d7f37ca5e20cdfc908cc28475b" "resources/hpo_20240404_phenotypic_abnormality.tsv")
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
-  #FIXME update to released template once available
-  urls+=("0643d06a7bae77f8e749406dfbb0fdef" "resources/vip-report-template-v7.0.1.html")
+  urls+=("e5d17440fc84b49b2fba7a30b500ca93" "resources/vip-report-template-v7.0.2.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
