@@ -39,7 +39,10 @@ map(){
       mapping["Benign/Likely_benign"]="Likely_benign";
       mapping["Pathogenic/Likely_pathogenic"]="Likely_pathogenic";
       }
-      {
+      NR==1 {
+          print
+      }
+      NR>1 {
           split($6, values, "|");
           new_values = "";
           delete seen;
