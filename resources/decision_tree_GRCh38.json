@@ -65,7 +65,9 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [ "Conflicting_interpretations_of_pathogenicity" ]
+              "value": [
+                "Conflicting_classifications_of_pathogenicity"
+              ]
             }
           ],
           "outcomeTrue": {
@@ -78,7 +80,10 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [ "Likely_pathogenic", "Pathogenic" ]
+              "value": [
+                "Likely_pathogenic",
+                "Pathogenic"
+              ]
             }
           ],
           "outcomeTrue": {
@@ -91,7 +96,9 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [ "Uncertain_significance" ]
+              "value": [
+                "Uncertain_significance"
+              ]
             }
           ],
           "outcomeTrue": {
@@ -104,7 +111,10 @@
             {
               "field": "INFO/CSQ/clinVar_CLNSIG",
               "operator": "contains_any",
-              "value": [ "Likely_benign", "Benign" ]
+              "value": [
+                "Likely_benign",
+                "Benign"
+              ]
             }
           ],
           "outcomeTrue": {
