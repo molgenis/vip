@@ -1,9 +1,15 @@
 # Annotations
-VIP annotates variant effects and genotype data for samples using a rich set of tools. Annotions can be used to [classify variants using classification trees](classification_trees.md) and displayed in [reports](report_templates.md).
+
+VIP annotates variant effects and genotype data for samples using a rich set of tools. Annotions can be used
+to [classify variants using classification trees](classification_trees.md) and displayed
+in [reports](report_templates.md).
 
 ## Overview
-The table contains annotations available in most output files. Depending on the workflow and the configuration used additional annotations might be available, 
-check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from your output file depending on the sample sheet content and configuration. 
+
+The table contains annotations available in most output files. Depending on the workflow and the configuration used
+additional annotations might be available,
+check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from
+your output file depending on the sample sheet content and configuration.
 
 | annotation                                  | type             | source                                                                          | description                                                                                                                                                                                                                                                                                                                   |
 |---------------------------------------------|------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -30,7 +36,7 @@ check the output file headers for the complete overview. Similarly, some annotat
 | INFO/CSQ/CLIN_SIG                           | string list      | VEP                                                                             | ClinVar classification(s) (do not use, see [here](https://github.com/Ensembl/ensembl-vep/issues/1213))                                                                                                                                                                                                                        |
 | INFO/CSQ/clinVar_CLNID                      | integer list     | VEP plugin                                                                      | ClinVar variation identifier                                                                                                                                                                                                                                                                                                  |
 | INFO/CSQ/clinVar_CLNREVSTAT                 | categorical list | VEP plugin                                                                      | ClinVar review status for the Variation ID. Categories: practice_guideline, reviewed_by_expert_panel, criteria_provided, _multiple_submitters, _no_conflicts, _single_submitter, _conflicting_interpretations, no_assertion_criteria_provided, no_assertion_provided                                                          |
-| INFO/CSQ/clinVar_CLNSIG                     | string           | VEP plugin                                                                      | Clinical significance for this single variant; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_interpretations_of_pathogenicity                                                                                        |
+| INFO/CSQ/clinVar_CLNSIG                     | string           | VEP plugin                                                                      | Clinical significance for this single variant; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_classifications_of_pathogenicity, Other                                                                                 |
 | INFO/CSQ/clinVar_CLNSIGINCL                 | string           | VEP plugin                                                                      | Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_interpretations_of_pathogenicity |
 | INFO/CSQ/Codons                             | string           | VEP                                                                             | Reference and variant codon sequence                                                                                                                                                                                                                                                                                          |
 | INFO/CSQ/Consequence                        | string list      | VEP                                                                             | Effect(s) described as Sequence Ontology term(s)                                                                                                                                                                                                                                                                              |
@@ -102,64 +108,114 @@ check the output file headers for the complete overview. Similarly, some annotat
 | INFO/CSQ/VKGL_CL                            | string           | VEP plugin                                                                      | VKGL consensus variant classification                                                                                                                                                                                                                                                                                         |
 
 ## Details
-VIP uses the [Ensemble Effect Predictor](https://github.com/Ensembl/ensembl-vep) to annotate all variants with their consequences. We use VEP with the `refseq` option for the transcripts, and with the flags for `sift` and `polyphen` annotations enabled.
+
+VIP uses the [Ensemble Effect Predictor](https://github.com/Ensembl/ensembl-vep) to annotate all variants with their
+consequences. We use VEP with the `refseq` option for the transcripts, and with the flags for `sift` and `polyphen`
+annotations enabled.
 
 ### Plugins
+
 Below we describe the other sources which we annotate using the VEP plugin framework.
 
 #### CAPICE
-[CAPICE](https://github.com/molgenis/capice) is a computational method for predicting the pathogenicity of SNVs and InDels. It is a gradient boosting tree model trained using a variety of genomic annotations used by CADD score and trained on the clinical significance. CAPICE performs consistently across diverse independent synthetic, and real clinical data sets. It ourperforms the current best method in pathogenicity estimation for variants of different molecular consequences and allele frequency.
 
-We run the CAPICE application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the CAPICE output file.
+[CAPICE](https://github.com/molgenis/capice) is a computational method for predicting the pathogenicity of SNVs and
+InDels. It is a gradient boosting tree model trained using a variety of genomic annotations used by CADD score and
+trained on the clinical significance. CAPICE performs consistently across diverse independent synthetic, and real
+clinical data sets. It ourperforms the current best method in pathogenicity estimation for variants of different
+molecular consequences and allele frequency.
+
+We run the CAPICE application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from
+the CAPICE output file.
 
 #### VKGL
-The datashare workgroup of VKGL has set up a [central database](https://www.vkgl.nl/nl/diagnostiek/vkgl-datashare-database) to enable mutual sharing of variant classifications through a partly automatic process. An additional goal is the public sharing of these data. The currently publicly available part of the database consists of DNA variant classifications established based on (former) diagnostic questions.
 
-We add the classifications from an export of the database and use a VEP plugin to annotate the VEP output with the classifications from the this file.
+The datashare workgroup of VKGL has set up
+a [central database](https://www.vkgl.nl/nl/diagnostiek/vkgl-datashare-database) to enable mutual sharing of variant
+classifications through a partly automatic process. An additional goal is the public sharing of these data. The
+currently publicly available part of the database consists of DNA variant classifications established based on (former)
+diagnostic questions.
+
+We add the classifications from an export of the database and use a VEP plugin to annotate the VEP output with the
+classifications from the this file.
 
 #### SpliceAI
-SpliceAI is an open-source deep learning splicing prediction algorithm that has demonstrated in the past few years its high ability to predict splicing defects caused by DNA variations.
 
-We add the scores from the available precomputed scores of SpliceAI and use a copy of the available [VEP plugin](https://github.com/Ensembl/VEP_plugins/blob/release/109/SpliceAI.pm) to annotate the VEP output with the classifications from the this file.
+SpliceAI is an open-source deep learning splicing prediction algorithm that has demonstrated in the past few years its
+high ability to predict splicing defects caused by DNA variations.
+
+We add the scores from the available precomputed scores of SpliceAI and use a copy of the
+available [VEP plugin](https://github.com/Ensembl/VEP_plugins/blob/release/109/SpliceAI.pm) to annotate the VEP output
+with the classifications from the this file.
 
 #### AnnotSV
-[AnnotSV](https://lbgi.fr/AnnotSV/) is a program for annotating and ranking structural variations from genomes of several organisms.
 
-We run the AnnotSV application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the AnnotSV output file.
+[AnnotSV](https://lbgi.fr/AnnotSV/) is a program for annotating and ranking structural variations from genomes of
+several organisms.
+
+We run the AnnotSV application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from
+the AnnotSV output file.
 
 #### HPO
-A file based on the HPO [phenotype_to_genes.txt](http://purl.obolibrary.org/obo/hp/hpoa/phenotype_to_genes.txt) is used to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.
+
+A file based on the HPO [phenotype_to_genes.txt](http://purl.obolibrary.org/obo/hp/hpoa/phenotype_to_genes.txt) is used
+to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.
 
 #### Inheritance
-A file based on the [CGD database](https://research.nhgri.nih.gov/CGD/) is used to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.
+
+A file based on the [CGD database](https://research.nhgri.nih.gov/CGD/) is used to annotate VEP consequences with the
+inheritance modes associated with the gene of this consequence.
 
 #### Grantham
-The [Grantham score](https://www.science.org/doi/10.1126/science.185.4154.862) attempts to predict the distance between two amino acids, in an evolutionary sense. A lower Grantham score reflects less evolutionary distance. A higher Grantham score reflects a greater evolutionary distance.
 
-We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with  Grantham scores.
+The [Grantham score](https://www.science.org/doi/10.1126/science.185.4154.862) attempts to predict the distance between
+two amino acids, in an evolutionary sense. A lower Grantham score reflects less evolutionary distance. A higher Grantham
+score reflects a greater evolutionary distance.
+
+We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with Grantham scores.
 
 #### GADO
-[GADO](https://www.nature.com/articles/s41467-019-10649-4/) can be used to prioritize genes based on the HPO terms of a patient..
 
-We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the GADO output file.
+[GADO](https://www.nature.com/articles/s41467-019-10649-4/) can be used to prioritize genes based on the HPO terms of a
+patient..
+
+We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the
+scores from the GADO output file.
 
 #### AlphScore
-[AlphScore](https://doi.org/10.5281/zenodo.6288138) is a method to predict the pathogenicity of missense variants using features derived from AlphaFold2.
+
+[AlphScore](https://doi.org/10.5281/zenodo.6288138) is a method to predict the pathogenicity of missense variants using
+features derived from AlphaFold2.
 
 We add the available precomputed scores of AlphScore using a custom VEP plugin.
 
 #### ncER
-[The non-coding essential regulation (ncER)](https://www.nature.com/articles/s41467-019-13212-3) score indicates if a region is likely to be essential in terms of regulation.
-The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on Zenodo: https://zenodo.org/records/5636163
+
+[The non-coding essential regulation (ncER)](https://www.nature.com/articles/s41467-019-13212-3) score indicates if a
+region is likely to be essential in terms of regulation.
+The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on
+Zenodo: https://zenodo.org/records/5636163
 
 #### ReMM
-[The Regulatory Mendelian Mutation (ReMM)](https://charite.github.io/software-remm-score.html) score was created for relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM scores: https://zenodo.org/records/3955933
+
+[The Regulatory Mendelian Mutation (ReMM)](https://charite.github.io/software-remm-score.html) score was created for
+relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian
+diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM
+scores: https://zenodo.org/records/3955933
 
 #### FATHMM-MKL
-[FATHMM-MKL](https://fathmm.biocompute.org.uk/fathmmMKL.htm) predicts the Functional Consequences of Coding and Non-Coding Single Nucleotide Variants (SNVs)
- This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non coding scores: https://zenodo.org/records/3981121
 
- #### GREEN-DB constraint scores
-[GREEN-DB](https://doi.org/10.1101/2020.09.17.301960) GREEN-DB is a comprehensive collection of 2.4 million regulatory elements in the human genome collected from previously published databases, high-throughput screenings and functional studies.
-This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (GRCh38): https://zenodo.org/records/5636209
-GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If multiple regions of the same type overlap, VIP annotates the highest constraint score.
+[FATHMM-MKL](https://fathmm.biocompute.org.uk/fathmmMKL.htm) predicts the Functional Consequences of Coding and
+Non-Coding Single Nucleotide Variants (SNVs)
+This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non
+coding scores: https://zenodo.org/records/3981121
+
+#### GREEN-DB constraint scores
+
+[GREEN-DB](https://doi.org/10.1101/2020.09.17.301960) GREEN-DB is a comprehensive collection of 2.4 million regulatory
+elements in the human genome collected from previously published databases, high-throughput screenings and functional
+studies.
+This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (
+GRCh38): https://zenodo.org/records/5636209
+GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If
+multiple regions of the same type overlap, VIP annotates the highest constraint score.
