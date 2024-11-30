@@ -87,9 +87,9 @@ download_files() {
   urls+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif")
   urls+=("8f6e06847776448e004df8b863571109" "images/straglr-1.4.4_vip_v3.sif")
   urls+=("9c69ac645e04b91c8f480289c536429c" "images/stranger-0.8.1_v2.sif")
-  urls+=("599813c5c0d547c955bd071ccdf220f8" "images/vcf-decision-tree-5.0.0.sif")
-  urls+=("f238b75e85e8a097447bad471369d0b2" "images/vcf-inheritance-matcher-3.2.1.sif")
-  urls+=("87b2d9031b1b8351d2da14dd0095fbea" "images/vcf-report-7.0.3.sif")
+  urls+=("8575e48d7da8a7f0728d08dc204e42a5" "images/vcf-decision-tree-5.1.1.sif")
+  urls+=("57a7329781d3cb0e5491c5f84fd49dcd" "images/vcf-inheritance-matcher-3.3.2.sif")
+  urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
@@ -110,8 +110,8 @@ download_files() {
   urls+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
   urls+=("7cc9cafbdde0b00f8007bc2911310b50" "resources/GRCh38/capice_model_v5.1.2-v3.ubj")
   urls+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed")
-  urls+=("52a5ef527d2509d2196329a67b447975" "resources/GRCh38/clinvar_20241001-stripped.tsv.gz")
-  urls+=("1231b9c88fb19034d313c4e003667238" "resources/GRCh38/clinvar_20241001-stripped.tsv.gz.tbi")
+  urls+=("8da13608d59915f031beade9c3981c2e" "resources/GRCh38/clinvar_20241126-stripped.tsv.gz")
+  urls+=("6b1ed6d55e870e37d2bed360abc26fe2" "resources/GRCh38/clinvar_20241126-stripped.tsv.gz.tbi")
   urls+=("72f12f9ee918878030022c46ec850038" "resources/GRCh38/expansionhunter_variant_catalog.json")
   urls+=("e4c68d0e98a9b5401542b2e8d5b05e82" "resources/GRCh38/gnomad.total.v4.1.sites.stripped.tsv.gz")
   urls+=("eebfca693425c159d87479fef26d3774" "resources/GRCh38/gnomad.total.v4.1.sites.stripped.tsv.gz.tbi")
@@ -147,7 +147,7 @@ download_files() {
   # update utils/install.sh when updating inheritance.tsv
   urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
-  urls+=("78962f0c7c6fe5c63ef7c66b627c95a0" "resources/vip-report-template-v6.2.0.html")
+  urls+=("e5d17440fc84b49b2fba7a30b500ca93" "resources/vip-report-template-v7.0.2.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"

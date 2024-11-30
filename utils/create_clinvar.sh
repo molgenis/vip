@@ -19,9 +19,57 @@ strip() {
   echo -e "1 chr1\n2 chr2\n3 chr3\n4 chr4\n5 chr5\n6 chr6\n7 chr7\n8 chr8\n9 chr9\n10 chr10\n11 chr11\n12 chr12\n13 chr13\n14 chr14\n15 chr15\n16 chr16\n17 chr17\n18 chr18\n19 chr19\n20 chr20\n21 chr21\n22 chr22\nX chrX\nY chrY\nMT chrM\n" > "chr_mapping.tmp"
   bcftools annotate --rename-chrs chr_mapping.tmp --no-version --threads 8 "${input}" |\
   bcftools query --print-header --format '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/CLNSIG\t%INFO/CLNSIGINCL\t%INFO/CLNREVSTAT\n' |\
-    bgzip --stdout --compress-level 9 --threads 8 > "${output}"
-  tabix	"${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
+  bgzip --stdout --compress-level 9 --threads 8 > "${output}"
+  
   rm "chr_mapping.tmp"
+}
+
+map(){
+  local -r input="${1}"
+  local -r output="${2}"
+
+  zcat "${input}" | awk 'BEGIN {
+      FS=OFS="\t";
+      mapping["Benign"]="Benign";
+      mapping["Likely_benign"]="Likely_benign";
+      mapping["Uncertain_significance"]="Uncertain_significance";
+      mapping["Likely_pathogenic"]="Likely_pathogenic";
+      mapping["Pathogenic"]="Pathogenic";
+      mapping["Conflicting_classifications_of_pathogenicity"]="Conflicting_classifications_of_pathogenicity";
+      mapping["Benign/Likely_benign"]="Likely_benign";
+      mapping["Pathogenic/Likely_pathogenic"]="Likely_pathogenic";
+      }
+      NR==1 {
+          print
+      }
+      NR>1 {
+          split($6, values, "|");
+          new_values = "";
+          delete seen;
+
+          for (i in values) {
+              val = values[i];
+              if (val in mapping) {
+                  val = mapping[val];
+              }
+              else{
+                  val = "Other";
+              }
+              if (!seen[val]++) {
+                  new_values = (new_values == "" ? val : new_values "|" val);
+              }
+          }
+          $6 = new_values;
+          print
+      }' | 
+      bgzip --stdout --compress-level 9 --threads 8 > "${output}"
+
+  rm "${input}"
+}
+
+index(){
+  local -r output="${1}"
+  tabix	"${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
 }
 
 validate() {
@@ -126,7 +174,9 @@ main() {
   fi
 
   validate "${input}" "${output}" "${assembly}"
-  strip "${input}" "${output}" "${assembly}"
+  strip "${input}" "${input}_stripped.tsv" "${assembly}"
+  map "${input}_stripped.tsv" "${output}"
+  index "${output}"
 }
 
 main "${@}"
