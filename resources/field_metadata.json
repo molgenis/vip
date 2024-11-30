@@ -218,33 +218,7 @@
           "description": "Clinical significance for a haplotype or genotype that includes this variant",
           "numberType": "OTHER",
           "separator": "&",
-          "type": "CATEGORICAL",
-          "categories": {
-            "Benign": {
-              "label": "B",
-              "description": "Benign"
-            },
-            "Likely_benign": {
-              "label": "LB",
-              "description": "Likely benign"
-            },
-            "Uncertain_significance": {
-              "label": "VUS",
-              "description": "Variant of uncertain significance"
-            },
-            "Likely_pathogenic": {
-              "label": "LP",
-              "description": "Likely pathogenic"
-            },
-            "Pathogenic": {
-              "label": "P",
-              "description": "Pathogenic"
-            },
-            "Conflicting_classifications_of_pathogenicity": {
-              "label": "Conflict",
-              "description": "Conflicting classifications of pathogenicity"
-            }
-          }
+          "type": "STRING"
         },
         "clinVar_CLNREVSTAT": {
           "label": "ClinVar status",
