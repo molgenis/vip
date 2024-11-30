@@ -86,6 +86,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#customization">Customization</a>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -133,7 +135,8 @@ The report is based on the input sample sheet information and the output variant
 <p><img alt="Example report" src="../../img/report_example.png"/></p>
 <p><em>Above: default report template</em></p>
 <h2 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">¶</a></h2>
-<p>Using the <code>vcf.report.template</code> parameter (see <a href="../../usage/config/#parameters">here</a>) it is possible to specify a different report template to create reports tailered to your needs. </p>
+<p>Using the <code>vcf.report.template</code> parameter (see <a href="../../usage/config/#parameters">here</a>) it is possible to specify a
+different report template to create reports tailered to your needs.</p>
 <p>The following repositories might be of interest when creating a new report template:</p>
 <ul>
 <li><a href="https://github.com/molgenis/vip-report-api">vip-report-api</a></li>
@@ -146,6 +149,11 @@ The report is based on the input sample sheet information and the output variant
 <li><a href="https://github.com/molgenis/vip-report">vip-report</a></li>
 <li><a href="https://github.com/molgenis/vip-utils">vip-utils</a></li>
 </ul>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
+<p>A configuration .json file can be used in combination with a <code>vcf.report.template</code> to create reports that e.g. show
+specific variant content or variant filters. The allowed contents of a configuration .json file depends on the
+<code>vcf.report.template</code> used. For the default <code>vcf.report.template</code> the configuration options are
+described <a href="https://github.com/molgenis/vip-report-template">here</a>.    </p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">

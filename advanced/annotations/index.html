@@ -108,6 +108,8 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#fathmm-mkl">FATHMM-MKL</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#green-db-constraint-scores">GREEN-DB constraint scores</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -156,10 +158,14 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="annotations">Annotations<a class="headerlink" href="#annotations" title="Permanent link">¶</a></h1>
-<p>VIP annotates variant effects and genotype data for samples using a rich set of tools. Annotions can be used to <a href="../classification_trees/">classify variants using classification trees</a> and displayed in <a href="../report_templates/">reports</a>.</p>
+<p>VIP annotates variant effects and genotype data for samples using a rich set of tools. Annotions can be used
+to <a href="../classification_trees/">classify variants using classification trees</a> and displayed
+in <a href="../report_templates/">reports</a>.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>The table contains annotations available in most output files. Depending on the workflow and the configuration used additional annotations might be available, 
-check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from your output file depending on the sample sheet content and configuration. </p>
+<p>The table contains annotations available in most output files. Depending on the workflow and the configuration used
+additional annotations might be available,
+check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from
+your output file depending on the sample sheet content and configuration.</p>
 <table>
 <thead>
 <tr>
@@ -312,7 +318,7 @@ check the output file headers for the complete overview. Similarly, some annotat
 <td>INFO/CSQ/clinVar_CLNSIG</td>
 <td>string</td>
 <td>VEP plugin</td>
-<td>Clinical significance for this single variant; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_interpretations_of_pathogenicity</td>
+<td>Clinical significance for this single variant; multiple values are separated by a vertical bar. Categories: Benign, Likely_benign, Uncertain_significance, Likely_pathogenic, Pathogenic, Conflicting_classifications_of_pathogenicity, Other</td>
 </tr>
 <tr>
 <td>INFO/CSQ/clinVar_CLNSIGINCL</td>
@@ -731,46 +737,81 @@ check the output file headers for the complete overview. Similarly, some annotat
 </tbody>
 </table>
 <h2 id="details">Details<a class="headerlink" href="#details" title="Permanent link">¶</a></h2>
-<p>VIP uses the <a href="https://github.com/Ensembl/ensembl-vep">Ensemble Effect Predictor</a> to annotate all variants with their consequences. We use VEP with the <code>refseq</code> option for the transcripts, and with the flags for <code>sift</code> and <code>polyphen</code> annotations enabled.</p>
+<p>VIP uses the <a href="https://github.com/Ensembl/ensembl-vep">Ensemble Effect Predictor</a> to annotate all variants with their
+consequences. We use VEP with the <code>refseq</code> option for the transcripts, and with the flags for <code>sift</code> and <code>polyphen</code>
+annotations enabled.</p>
 <h3 id="plugins">Plugins<a class="headerlink" href="#plugins" title="Permanent link">¶</a></h3>
 <p>Below we describe the other sources which we annotate using the VEP plugin framework.</p>
 <h4 id="capice">CAPICE<a class="headerlink" href="#capice" title="Permanent link">¶</a></h4>
-<p><a href="https://github.com/molgenis/capice">CAPICE</a> is a computational method for predicting the pathogenicity of SNVs and InDels. It is a gradient boosting tree model trained using a variety of genomic annotations used by CADD score and trained on the clinical significance. CAPICE performs consistently across diverse independent synthetic, and real clinical data sets. It ourperforms the current best method in pathogenicity estimation for variants of different molecular consequences and allele frequency.</p>
-<p>We run the CAPICE application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the CAPICE output file.</p>
+<p><a href="https://github.com/molgenis/capice">CAPICE</a> is a computational method for predicting the pathogenicity of SNVs and
+InDels. It is a gradient boosting tree model trained using a variety of genomic annotations used by CADD score and
+trained on the clinical significance. CAPICE performs consistently across diverse independent synthetic, and real
+clinical data sets. It ourperforms the current best method in pathogenicity estimation for variants of different
+molecular consequences and allele frequency.</p>
+<p>We run the CAPICE application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from
+the CAPICE output file.</p>
 <h4 id="vkgl">VKGL<a class="headerlink" href="#vkgl" title="Permanent link">¶</a></h4>
-<p>The datashare workgroup of VKGL has set up a <a href="https://www.vkgl.nl/nl/diagnostiek/vkgl-datashare-database">central database</a> to enable mutual sharing of variant classifications through a partly automatic process. An additional goal is the public sharing of these data. The currently publicly available part of the database consists of DNA variant classifications established based on (former) diagnostic questions.</p>
-<p>We add the classifications from an export of the database and use a VEP plugin to annotate the VEP output with the classifications from the this file.</p>
+<p>The datashare workgroup of VKGL has set up
+a <a href="https://www.vkgl.nl/nl/diagnostiek/vkgl-datashare-database">central database</a> to enable mutual sharing of variant
+classifications through a partly automatic process. An additional goal is the public sharing of these data. The
+currently publicly available part of the database consists of DNA variant classifications established based on (former)
+diagnostic questions.</p>
+<p>We add the classifications from an export of the database and use a VEP plugin to annotate the VEP output with the
+classifications from the this file.</p>
 <h4 id="spliceai">SpliceAI<a class="headerlink" href="#spliceai" title="Permanent link">¶</a></h4>
-<p>SpliceAI is an open-source deep learning splicing prediction algorithm that has demonstrated in the past few years its high ability to predict splicing defects caused by DNA variations.</p>
-<p>We add the scores from the available precomputed scores of SpliceAI and use a copy of the available <a href="https://github.com/Ensembl/VEP_plugins/blob/release/109/SpliceAI.pm">VEP plugin</a> to annotate the VEP output with the classifications from the this file.</p>
+<p>SpliceAI is an open-source deep learning splicing prediction algorithm that has demonstrated in the past few years its
+high ability to predict splicing defects caused by DNA variations.</p>
+<p>We add the scores from the available precomputed scores of SpliceAI and use a copy of the
+available <a href="https://github.com/Ensembl/VEP_plugins/blob/release/109/SpliceAI.pm">VEP plugin</a> to annotate the VEP output
+with the classifications from the this file.</p>
 <h4 id="annotsv">AnnotSV<a class="headerlink" href="#annotsv" title="Permanent link">¶</a></h4>
-<p><a href="https://lbgi.fr/AnnotSV/">AnnotSV</a> is a program for annotating and ranking structural variations from genomes of several organisms.</p>
-<p>We run the AnnotSV application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the AnnotSV output file.</p>
+<p><a href="https://lbgi.fr/AnnotSV/">AnnotSV</a> is a program for annotating and ranking structural variations from genomes of
+several organisms.</p>
+<p>We run the AnnotSV application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from
+the AnnotSV output file.</p>
 <h4 id="hpo">HPO<a class="headerlink" href="#hpo" title="Permanent link">¶</a></h4>
-<p>A file based on the HPO <a href="http://purl.obolibrary.org/obo/hp/hpoa/phenotype_to_genes.txt">phenotype_to_genes.txt</a> is used to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.</p>
+<p>A file based on the HPO <a href="http://purl.obolibrary.org/obo/hp/hpoa/phenotype_to_genes.txt">phenotype_to_genes.txt</a> is used
+to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.</p>
 <h4 id="inheritance">Inheritance<a class="headerlink" href="#inheritance" title="Permanent link">¶</a></h4>
-<p>A file based on the <a href="https://research.nhgri.nih.gov/CGD/">CGD database</a> is used to annotate VEP consequences with the inheritance modes associated with the gene of this consequence.</p>
+<p>A file based on the <a href="https://research.nhgri.nih.gov/CGD/">CGD database</a> is used to annotate VEP consequences with the
+inheritance modes associated with the gene of this consequence.</p>
 <h4 id="grantham">Grantham<a class="headerlink" href="#grantham" title="Permanent link">¶</a></h4>
-<p>The <a href="https://www.science.org/doi/10.1126/science.185.4154.862">Grantham score</a> attempts to predict the distance between two amino acids, in an evolutionary sense. A lower Grantham score reflects less evolutionary distance. A higher Grantham score reflects a greater evolutionary distance.</p>
-<p>We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with  Grantham scores.</p>
+<p>The <a href="https://www.science.org/doi/10.1126/science.185.4154.862">Grantham score</a> attempts to predict the distance between
+two amino acids, in an evolutionary sense. A lower Grantham score reflects less evolutionary distance. A higher Grantham
+score reflects a greater evolutionary distance.</p>
+<p>We use a copy of the VEP plugin by Duarte Molha to annotate the VEP output with Grantham scores.</p>
 <h4 id="gado">GADO<a class="headerlink" href="#gado" title="Permanent link">¶</a></h4>
-<p><a href="https://www.nature.com/articles/s41467-019-10649-4/">GADO</a> can be used to prioritize genes based on the HPO terms of a patient..</p>
-<p>We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the scores from the GADO output file.</p>
+<p><a href="https://www.nature.com/articles/s41467-019-10649-4/">GADO</a> can be used to prioritize genes based on the HPO terms of a
+patient..</p>
+<p>We run the GADO commandline application in the VIP pipeline and use a VEP plugin to annotate the VEP output with the
+scores from the GADO output file.</p>
 <h4 id="alphscore">AlphScore<a class="headerlink" href="#alphscore" title="Permanent link">¶</a></h4>
-<p><a href="https://doi.org/10.5281/zenodo.6288138">AlphScore</a> is a method to predict the pathogenicity of missense variants using features derived from AlphaFold2.</p>
+<p><a href="https://doi.org/10.5281/zenodo.6288138">AlphScore</a> is a method to predict the pathogenicity of missense variants using
+features derived from AlphaFold2.</p>
 <p>We add the available precomputed scores of AlphScore using a custom VEP plugin.</p>
 <h4 id="ncer">ncER<a class="headerlink" href="#ncer" title="Permanent link">¶</a></h4>
-<p><a href="https://www.nature.com/articles/s41467-019-13212-3">The non-coding essential regulation (ncER)</a> score indicates if a region is likely to be essential in terms of regulation.
-The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on Zenodo: https://zenodo.org/records/5636163</p>
+<p><a href="https://www.nature.com/articles/s41467-019-13212-3">The non-coding essential regulation (ncER)</a> score indicates if a
+region is likely to be essential in terms of regulation.
+The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on
+Zenodo: https://zenodo.org/records/5636163</p>
 <h4 id="remm">ReMM<a class="headerlink" href="#remm" title="Permanent link">¶</a></h4>
-<p><a href="https://charite.github.io/software-remm-score.html">The Regulatory Mendelian Mutation (ReMM)</a> score was created for relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM scores: https://zenodo.org/records/3955933</p>
+<p><a href="https://charite.github.io/software-remm-score.html">The Regulatory Mendelian Mutation (ReMM)</a> score was created for
+relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian
+diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM
+scores: https://zenodo.org/records/3955933</p>
 <h4 id="fathmm-mkl">FATHMM-MKL<a class="headerlink" href="#fathmm-mkl" title="Permanent link">¶</a></h4>
-<p><a href="https://fathmm.biocompute.org.uk/fathmmMKL.htm">FATHMM-MKL</a> predicts the Functional Consequences of Coding and Non-Coding Single Nucleotide Variants (SNVs)
- This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non coding scores: https://zenodo.org/records/3981121</p>
-<p>#### GREEN-DB constraint scores
-<a href="https://doi.org/10.1101/2020.09.17.301960">GREEN-DB</a> GREEN-DB is a comprehensive collection of 2.4 million regulatory elements in the human genome collected from previously published databases, high-throughput screenings and functional studies.
-This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (GRCh38): https://zenodo.org/records/5636209
-GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If multiple regions of the same type overlap, VIP annotates the highest constraint score.</p>
+<p><a href="https://fathmm.biocompute.org.uk/fathmmMKL.htm">FATHMM-MKL</a> predicts the Functional Consequences of Coding and
+Non-Coding Single Nucleotide Variants (SNVs)
+This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non
+coding scores: https://zenodo.org/records/3981121</p>
+<h4 id="green-db-constraint-scores">GREEN-DB constraint scores<a class="headerlink" href="#green-db-constraint-scores" title="Permanent link">¶</a></h4>
+<p><a href="https://doi.org/10.1101/2020.09.17.301960">GREEN-DB</a> GREEN-DB is a comprehensive collection of 2.4 million regulatory
+elements in the human genome collected from previously published databases, high-throughput screenings and functional
+studies.
+This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (
+GRCh38): https://zenodo.org/records/5636209
+GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If
+multiple regions of the same type overlap, VIP annotates the highest constraint score.</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
