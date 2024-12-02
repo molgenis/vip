@@ -220,57 +220,19 @@
     "str_status": {
       "label": "STR Status",
       "description": "Stranger str status (normal, pre_mutation, mutation)",
-      "type": "BOOL_MULTI",
-      "fields": [
-        "INFO/STR_STATUS"
-      ],
-      "outcomes": [
-        {
-          "description": "Full mutation",
-          "queries": [
-            {
-              "field": "INFO/STR_STATUS",
-              "operator": "contains_any",
-              "value": [
-                "full_mutation"
-              ]
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_lp"
-          }
+      "type": "CATEGORICAL",
+      "field": "INFO/STR_STATUS",
+      "outcomeMap": {
+        "full_mutation": {
+          "nextNode": "exit_lp"
         },
-        {
-          "description": "Pre-mutation",
-          "queries": [
-            {
-              "field": "INFO/STR_STATUS",
-              "operator": "contains_any",
-              "value": [
-                "pre_mutation"
-              ]
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_vus"
-          }
+        "pre_mutation": {
+          "nextNode": "exit_vus"
         },
-        {
-          "description": "Normal",
-          "queries": [
-            {
-              "field": "INFO/STR_STATUS",
-              "operator": "contains_any",
-              "value": [
-                "normal"
-              ]
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_lb"
-          }
+        "normal": {
+          "nextNode": "exit_lb"
         }
-      ],
+      },
       "outcomeMissing": {
         "nextNode": "exit_vus"
       },
