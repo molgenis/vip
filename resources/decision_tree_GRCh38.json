@@ -432,31 +432,31 @@
       "class": "LQ"
     },
     "exit_b": {
-      "label": "Benign",
+      "label": "B",
       "description": "Benign",
       "type": "LEAF",
       "class": "B"
     },
     "exit_lb": {
-      "label": "Likely Benign",
+      "label": "LB",
       "description": "Likely Benign",
       "type": "LEAF",
       "class": "LB"
     },
     "exit_vus": {
-      "label": "Uncertain Significance",
+      "label": "VUS",
       "description": "Uncertain Significance",
       "type": "LEAF",
       "class": "VUS"
     },
     "exit_lp": {
-      "label": "Likely Pathogenic",
+      "label": "LP",
       "description": "Likely Pathogenic",
       "type": "LEAF",
       "class": "LP"
     },
     "exit_p": {
-      "label": "Pathogenic",
+      "label": "P",
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
