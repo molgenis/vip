@@ -752,8 +752,8 @@
     "STR_STATUS": {
       "label": "STR status",
       "description": "Repeat expansion status as decided by Stranger",
-      "numberType": "NUMBER",
-      "numberCount": 1,
+      "numberType": "PER_ALT",
+      "separator": ",",
       "type": "CATEGORICAL",
       "categories": {
         "normal": {
