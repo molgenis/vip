@@ -4,7 +4,7 @@ Stage: build
 
 %post
     version_major=1
-    version_minor=17
+    version_minor=21
 
     apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
     

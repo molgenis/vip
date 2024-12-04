@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/bcftools-1.17.sif
+From: sif/bcftools-1.21.sif
 Stage: build
 
 Bootstrap: localimage
@@ -14,8 +14,8 @@ From: sif/build/openjdk-21.sif
 
 %post
     version_major=3
-    version_minor=3
-    version_patch=6
+    version_minor=4
+    version_patch=4
 
     apk update
     apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
