@@ -68,8 +68,8 @@ download_files() {
 
   # when modifying urls array, please keep list in 'ls -l' order
   local urls=()
-  urls+=("" "images/annotsv-3.4.4.sif")
-  urls+=("" "images/bcftools-1.21.sif")
+  urls+=("d55a541bc86f8ac93eccd3785443652e" "images/annotsv-3.4.4.sif")
+  urls+=("1c5ebd29bb7beac8b3c29d25dffaa593" "images/bcftools-1.21.sif")
   urls+=("0879586dfdb49f7cf94d4b9a4c65e2b8" "images/capice-5.1.2.sif")
   urls+=("bc4be7f94aa38add1bf4cfe2a41a1f02" "images/cutesv-2.1.1_v2.sif")
   urls+=("fe0d5bbcf4d3fb7c3331189ed7ddcb2a" "images/deepvariant-1.6.1.sif")
