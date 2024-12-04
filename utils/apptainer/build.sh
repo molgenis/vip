@@ -79,8 +79,8 @@ main() {
   images+=("build/alpine-3.20.3")
   images+=("build/openjdk-21")
   images+=("build/ubuntu-22.04")
-  images+=("bcftools-1.17")
-  images+=("annotsv-3.3.6_v2")
+  images+=("bcftools-1.20")
+  images+=("annotsv-3.4.4")
   images+=("capice-5.1.2")
   images+=("cutesv-2.1.1_v2")
   images+=("expansionhunter-5.0.0_v2")
@@ -95,9 +95,9 @@ main() {
   images+=("seqtk-1.4_v2")
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.8.1_v2")
-  images+=("straglr-1.4.4_vip_v3")
+  images+=("straglr-1.4.5-vip-v1")
   images+=("vcf-decision-tree-5.1.2")
-  images+=("vcf-inheritance-matcher-3.3.2")
+  images+=("vcf-inheritance-matcher-3.3.5")
   images+=("vcf-report-7.2.0")
 
   for i in "${!images[@]}"; do

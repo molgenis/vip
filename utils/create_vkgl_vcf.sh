@@ -32,11 +32,11 @@ create_output() {
   ' "${input}" >> "${output}.tmp"
   regions=$(zcat ${reference} | awk '/^>/{print substr($1,2)}' | paste -sd "," -)
   bcftools reheader --fai "${reference}.fai" --output "${output}_reheadered.vcf" "${output}.tmp"
-  # Remove contigs that are not part of the specified| 
+  # Remove contigs that are not part of the specified in the reference
   bgzip "${output}_reheadered.vcf"
   tabix "${output}_reheadered.vcf.gz"
   bcftools view --regions "$regions" --output "${output}" "${output}_reheadered.vcf.gz"
-  rm "${output}.tmp" "${output}_reheadered.vcf.gz" "${output}_reheadered.vcf.gz.tbi" "regions.txt"
+  rm "${output}.tmp" "${output}_reheadered.vcf.gz" "${output}_reheadered.vcf.gz.tbi"
 }
 
 validate() {
