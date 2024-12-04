@@ -45,7 +45,7 @@ The following sections describe the columns that can be used in every sample-she
 | ``fastq``               | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                               |
 | ``fastq_r1``            | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                        |
 | ``fastq_r2``            | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                        |
-| ``sequencing_platform`` | ``enum``      |                 | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples               |
+| ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples               |
 
 <sup>3</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 
