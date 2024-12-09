@@ -171,25 +171,25 @@ extract_files() {
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
 
-  local -r annotsv_dir="${output_dir}/resources/annotsv/v3.3.6"
+  local -r annotsv_dir="${output_dir}/resources/annotsv/v3.4.4"
 
   local -r annotsv_human_dir="${annotsv_dir}/Annotations_Human"
   if [ ! -d "${annotsv_human_dir}" ]; then
-    local -r annotsv_human_gz="${annotsv_dir}/Annotations_Human_3.3.6.tar.gz"
+    local -r annotsv_human_gz="${annotsv_dir}/Annotations_Human_3.4.4.tar.gz"
     echo -e "extracting ${annotsv_human_gz} ..."
     tar -xzf "${annotsv_human_gz}" -C "${annotsv_dir}"
   fi
 
   local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2202"
-  if [ ! -d "${annotsv_exomiser_dir}/2202_hg19" ]; then
+  if [ ! -d "${annotsv_exomiser_dir}/2309_hg19" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
-    local -r annotsv_hg19_gz="${annotsv_dir}/2202_hg19.tar.gz"
+    local -r annotsv_hg19_gz="${annotsv_dir}/2309_hg19.tar.gz"
     echo -e "extracting ${annotsv_hg19_gz} ..."
     tar -xzf "${annotsv_hg19_gz}" -C "${annotsv_exomiser_dir}"
   fi
-  if [ ! -d "${annotsv_exomiser_dir}/2202_phenotype" ]; then
+  if [ ! -d "${annotsv_exomiser_dir}/2309_phenotype" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
-    local -r annotsv_phenotype_zip="${annotsv_dir}/2202_phenotype.zip"
+    local -r annotsv_phenotype_zip="${annotsv_dir}/2309_phenotype.zip"
     echo -e "extracting ${annotsv_phenotype_zip} ..."
     unzip -qq "${annotsv_phenotype_zip}" -d "${annotsv_exomiser_dir}"
   fi
