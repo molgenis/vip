@@ -8,7 +8,7 @@ From: sif/build/openjdk-21.sif
 %post
     version_major=3
     version_minor=3
-    version_patch=2
+    version_patch=3
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/openjdk-21.sif
 
     mkdir -p /opt/vcf-inheritance-matcher/lib
     curl -Ls -o /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
-    echo "92331d16c06c00c00b84c3c28aab910ee50b439add0c23e7219515514a2875ae  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
+    echo "b6258c9695ce35dcaca92711713cb49fc66447e37348476555f4db82a327fa62  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
