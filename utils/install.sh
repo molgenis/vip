@@ -59,8 +59,8 @@ install() {
   ln -s "${SCRIPT_DIR}/resources/gado" "${versionDir}/resources/gado"
 
   # prevent downloading shared resource
-  if [ -f "${SCRIPT_DIR}/resources/nextflow-24.04.2-all" ]; then
-    cp --link "${SCRIPT_DIR}/resources/nextflow-24.04.2-all" "${versionDir}"
+  if [ -f "${SCRIPT_DIR}/resources/nextflow-24.10.2-dist" ]; then
+    cp --link "${SCRIPT_DIR}/resources/nextflow-24.10.2-dist" "${versionDir}"
   fi
   if [ -f "${SCRIPT_DIR}/resources/hpo_20240404.tsv" ]; then
     cp --link "${SCRIPT_DIR}/resources/hpo_20240404.tsv" "${versionDir}/resources"
@@ -79,8 +79,8 @@ install() {
   fi
 
   # make resource shared
-  if [ -f "${versionDir}/nextflow-24.04.2-all" ] && [ ! -f "${SCRIPT_DIR}/resources/nextflow-24.04.2-all" ]; then
-    cp --link "${versionDir}/nextflow-24.04.2-all" "${SCRIPT_DIR}/resources"
+  if [ -f "${versionDir}/nextflow-24.10.2-dist" ] && [ ! -f "${SCRIPT_DIR}/resources/nextflow-24.10.2-dist" ]; then
+    cp --link "${versionDir}/nextflow-24.10.2-dist" "${SCRIPT_DIR}/resources"
   fi
   if [ -f "${versionDir}/resources/hpo_20240404.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240404.tsv" ]; then
     cp --link "${versionDir}/resources/hpo_20240404.tsv" "${SCRIPT_DIR}/resources"
