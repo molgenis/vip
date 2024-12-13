@@ -51,7 +51,7 @@ main() {
   echo -e "downloading ..."
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/images/utils/vcf-inheritance-3.2.1.sif
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
-  wget --quiet --continue https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-04-04/phenotype.hpoa
+  wget --quiet --continue https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-08-13/phenotype.hpoa
   wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
   echo -e "downloading done"
 
