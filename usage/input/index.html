@@ -191,7 +191,8 @@
 </tr>
 </tbody>
 </table>
-<p>The following sections describe the columns that can be used in every sample-sheet followed by <a href="../workflow/">workflow</a> specific columns.   </p>
+<p>The following sections describe the columns that can be used in every sample-sheet followed by <a href="../workflow/">workflow</a>
+specific columns.</p>
 <h2 id="columns">Columns<a class="headerlink" href="#columns" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -265,7 +266,7 @@
 <td><code>string list</code></td>
 <td></td>
 <td></td>
-<td>regex: <code>/HP:\d{7}/</code></td>
+<td>regex: <code>/HP:\d{7}/</code> from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)</td>
 </tr>
 <tr>
 <td><code>sequencing_method</code></td>
@@ -281,15 +282,9 @@
 <td></td>
 <td>allowed file extensions: [<code>bed</code>]. filter variants overlapping with regions in bed file<sup>2</sup></td>
 </tr>
-<tr>
-<td><sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
 </tbody>
 </table>
+<p><sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.</p>
 <h2 id="columns-fastq">Columns: FASTQ<a class="headerlink" href="#columns-fastq" title="Permanent link">¶</a></h2>
 <table>
 <thead>
