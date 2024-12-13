@@ -195,6 +195,7 @@ We add the available precomputed scores of AlphScore using a custom VEP plugin.
 region is likely to be essential in terms of regulation.
 The ncER file VIP uses is the version provided by GREEN-VARAN (https://github.com/edg1983/GREEN-VARAN) on
 Zenodo: https://zenodo.org/records/5636163
+If overlapping regions are encountered (which can occur in liftovered resources) the highest score is annotated.
 
 #### ReMM
 
@@ -202,6 +203,7 @@ Zenodo: https://zenodo.org/records/5636163
 relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian
 diseases. The VEP plugin is build on top of the GREEN-DB dataset (GRCh38) for ReMM
 scores: https://zenodo.org/records/3955933
+If overlapping regions are encountered (which can occur in liftovered resources) the highest score is annotated.
 
 #### FATHMM-MKL
 

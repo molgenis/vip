@@ -64,13 +64,15 @@ sub getScore {
   my @data = @{$self->get_data($chr, $pos, $pos)};
 
   my $size = @data;
-  die("ERROR: Expecting no more than one score for a position.\n") unless $size <= 1;
-  if($size == 0){
-    return;
+  my $line;
+  my $score;
+  foreach my $data_value (@data) {
+    my @values = split("\t", $data_value);
+    if(!$score || $score < $values[3]){
+      $score = $values[3];
+    }
   }
-  #list of lines, tab separated values
-  my @values = split("\t", $data[0]);
-  return $values[3];
+  return $score;
 }
 
 sub run {
