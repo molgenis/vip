@@ -91,7 +91,7 @@ download_files() {
   urls+=("f1658b18249f5b90df6544413ae8174d" "images/vcf-inheritance-matcher-3.3.5.sif")
   urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
-  urls+=("82be3c18406e7c027ee4cec83a723d71" "nextflow-24.04.2-all")
+  urls+=("4e8093cd83391e9d3679e1c7610184a7" "nextflow-24.10.2-dist")
   if [ "${assembly}" == "ALL" ] || [ "${assembly}" == "GRCh37" ]; then
     urls+=("11b8eb3d28482729dd035458ad5bda01" "resources/GRCh37/human_g1k_v37.fasta.gz")
     urls+=("772484cc07983aba1355c7fb50f176d4" "resources/GRCh37/human_g1k_v37.fasta.gz.fai")
@@ -135,17 +135,17 @@ download_files() {
   urls+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz")
   urls+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.4/2309_phenotype.zip")
   urls+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.4/Annotations_Human_3.4.4.tar.gz")
-  urls+=("7683903ac59930d8772505adf3df8a68" "resources/gado/v1.0.4_HPO_v2024-04-04/HPO_2024_04_04_prediction_matrix.cols.txt.gz")
-  urls+=("5afc2eb5749e90145e08c424ec250c84" "resources/gado/v1.0.4_HPO_v2024-04-04/HPO_2024_04_04_prediction_matrix.datg")
-  urls+=("1769aff19e3b6327fbe1902e7437a34a" "resources/gado/v1.0.4_HPO_v2024-04-04/HPO_2024_04_04_prediction_matrix.rows.txt.gz")
-  urls+=("944dfe531af857f3622438a4e00d5f58" "resources/gado/v1.0.4_HPO_v2024-04-04/hp.obo")
-  urls+=("a80c7db1a2cb63e42e5bb8a6d8cee2ce" "resources/gado/v1.0.4_HPO_v2024-04-04/genesProteinCoding.txt")
-  urls+=("5d4d1c938ff58dbf2d2799a5e4dd06c4" "resources/gado/v1.0.4_HPO_v2024-04-04/HPO_2024_04_04_prediction_info.txt.gz")
+  urls+=("94bac97fe4dbc4ad1a74bde3afb55603" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.cols.txt.gz")
+  urls+=("4461c232ae1be508e7aa1fb44ade2292" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.datg")
+  urls+=("6d50fbb9b2f74221265dede2aae13e71" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.rows.txt.gz")
+  urls+=("31788f6a17183a5da370f338b808e325" "resources/gado/v1.0.4_HPO_v2024-08-13/hp.obo")
+  urls+=("da5e5e6fefd338d8224b1c075ae4aa74" "resources/gado/v1.0.4_HPO_v2024-08-13/genesProteinCoding.txt")
+  urls+=("74b9abc9a94c81fc27393e2f77ad498b" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_info.txt.gz")
   # update utils/install.sh when updating hpo.tsv
-  urls+=("42e31fe6e3502fb9bc0b14121f0f844b" "resources/hpo_20240404.tsv")
-  urls+=("c2efd2d7f37ca5e20cdfc908cc28475b" "resources/hpo_20240404_phenotypic_abnormality.tsv")
+  urls+=("d94140e762dfc6da23011718cccf2609" "resources/hpo_20240813.tsv")
+  urls+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv")
   # update utils/install.sh when updating inheritance.tsv
-  urls+=("df31eb0fe9ebd9ae26c8d6f5f7ba6e57" "resources/inheritance_20240115.tsv")
+  urls+=("519185b8b3b7688b9e99339d4045e3f0" "resources/inheritance_20241211.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
   urls+=("d79bde5e130fb268c3b96d0beba2abd2" "resources/vip-report-template-v7.0.6.html")
   # when modifying urls array, please keep list in 'ls -l' order
@@ -199,7 +199,7 @@ create_symlinks() {
   local -r output_dir="${1}"
 
   # update utils/install.sh when updating nextflow
-  local -r file="nextflow-24.04.2-all"
+  local -r file="nextflow-24.10.2-dist"
   (cd "${output_dir}" && chmod +x "${file}") || echo "Failed to set permissions for ${file}"
   (cd "${output_dir}" && rm -f nextflow && ln -s ${file} "nextflow")
 
