@@ -149,7 +149,7 @@ vep() {
   local args=()
   args+=("--input_file" "${vcfPreprocessed}")
   args+=("--format" "vcf")
-  args+=("--output_file" "!{vcfOut}")
+  args+=("--output_file" "vep_!{vcfOut}")
   args+=("--vcf")
   args+=("--compress_output" "bgzip")
   args+=("--no_stats")
@@ -224,6 +224,54 @@ vep() {
   ${CMD_VEP} "${args[@]}"
 }
 
+viab(){
+  local -r input="${1}"
+
+  zcat "${input}" | awk 'BEGIN {OFS="\t"} 
+    # Skip header lines
+    /^##/ { print; next }
+    /^#/ { print "##FORMAT=<ID=VIAB,Number=1,Type=Float,Description=\"VIP calculated allele balance\">"; print; next }
+    {
+      # Extract the FORMAT column and samples
+      split($9, format_fields, ":");
+      # Check if AD exists in FORMAT
+      ad_index = -1;
+      for (i = 1; i <= length(format_fields); i++) {
+        if (format_fields[i] == "AD") {
+          ad_index = i;
+          break;
+        }
+      }
+      if(ad_index != -1){
+        # append AB to the FORMAT column
+        $9 = $9":VIAB";
+        # Start at column 10, first sample in the vcf, and increment until the end of line
+        for (sample = 10; sample <= NF; sample++) {
+          split($sample, sample_fields, ":");
+          split(sample_fields[ad_index], ad_values, ",");
+          
+          # Calculate allele balance (VIAB)
+          if (length(ad_values) == 2) {
+            allele1_depth = ad_values[1]
+              total_depth = ad_values[1] + ad_values[2];
+              viab = allele1_depth / total_depth;
+          } else {
+              viab = ".";
+          }
+          # Add missing values for trailing missing values
+          trailing = length(sample_fields) - length(format_fields)
+          for(j = 0; j < trailing; j++){
+            $sample = $sample ":.";
+          }
+          # append VIAB to the sample FORMAT values
+          $sample = $sample ":" viab;
+        }
+      }
+      print
+    }' | ${CMD_BGZIP} -c > "!{vcfOut}"
+
+}
+
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
@@ -244,6 +292,7 @@ main () {
   fi
 
   vep "${vepInputPath}"
+  viab "vep_!{vcfOut}"
   index
 }
 
