@@ -224,10 +224,11 @@ vep() {
   ${CMD_VEP} "${args[@]}"
 }
 
+#replace with bcftools fill-tags when https://github.com/samtools/bcftools/issues/2338 is resolved
 viab(){
   local -r input="${1}"
 
-  zcat "${input}" | awk 'BEGIN {OFS="\t"} 
+  zcat "${input}" | awk 'BEGIN{FS=OFS="\t"}
     # Skip header lines
     /^##/ { print; next }
     /^#/ { print "##FORMAT=<ID=VIAB,Number=1,Type=Float,Description=\"VIP calculated allele balance\">"; print; next }
