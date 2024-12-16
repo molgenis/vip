@@ -68,8 +68,8 @@ download_files() {
 
   # when modifying urls array, please keep list in 'ls -l' order
   local urls=()
-  urls+=("4e7f34d49ecca596cb7a1b5babc9648e" "images/annotsv-3.3.6_v2.sif")
-  urls+=("7ee92c85e1f4d1151dfe9ae6b1fa06ac" "images/bcftools-1.17.sif")
+  urls+=("2c21479ee78b1b6eac25dc993511af0c" "images/annotsv-3.4.4.sif")
+  urls+=("40594154f81dec76779ffa5d5e3ad052" "images/bcftools-1.20.sif")
   urls+=("0879586dfdb49f7cf94d4b9a4c65e2b8" "images/capice-5.1.2.sif")
   urls+=("bc4be7f94aa38add1bf4cfe2a41a1f02" "images/cutesv-2.1.1_v2.sif")
   urls+=("fe0d5bbcf4d3fb7c3331189ed7ddcb2a" "images/deepvariant-1.6.1.sif")
@@ -85,10 +85,10 @@ download_files() {
   urls+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif")
   urls+=("ccbb1e1887f11d9e3cda1ae8bf2d67da" "images/seqtk-1.4_v2.sif")
   urls+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif")
-  urls+=("8f6e06847776448e004df8b863571109" "images/straglr-1.4.4_vip_v3.sif")
+  urls+=("a11f9e4a1288d92963d63c9d8bfe3a1d" "images/straglr-1.4.5-vip-v1.sif")
   urls+=("9c69ac645e04b91c8f480289c536429c" "images/stranger-0.8.1_v2.sif")
   urls+=("40a7b115e92eb6a2d3395224edaff72c" "images/vcf-decision-tree-5.1.2.sif")
-  urls+=("57a7329781d3cb0e5491c5f84fd49dcd" "images/vcf-inheritance-matcher-3.3.2.sif")
+  urls+=("f1658b18249f5b90df6544413ae8174d" "images/vcf-inheritance-matcher-3.3.5.sif")
   urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("4e8093cd83391e9d3679e1c7610184a7" "nextflow-24.10.2-dist")
@@ -108,7 +108,7 @@ download_files() {
   urls+=("c8c50252f1874ce3e7029b2178b2991a" "resources/GRCh38/GCF_000001405.39_GRCh38.p13_genomic_mapped.gff.gz")
   urls+=("16b2f104b5131c643efffbf3a1501ee8" "resources/GRCh38/GRCh38_ncER_perc.bed.gz")
   urls+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi")
-  urls+=("7cc9cafbdde0b00f8007bc2911310b50" "resources/GRCh38/capice_model_v5.1.2-v3.ubj")
+  urls+=("fbfbaa3e90c2888823f0e17ce631396e" "resources/GRCh38/capice_model_v5.1.2-v4.ubj")
   urls+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed")
   urls+=("8da13608d59915f031beade9c3981c2e" "resources/GRCh38/clinvar_20241126-stripped.tsv.gz")
   urls+=("6b1ed6d55e870e37d2bed360abc26fe2" "resources/GRCh38/clinvar_20241126-stripped.tsv.gz.tbi")
@@ -125,16 +125,16 @@ download_files() {
   urls+=("a0f63b592b7b32fe36a9631793f341aa" "resources/GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi")
   urls+=("644aa23c29f4a9507bae23ef65b936d7" "resources/GRCh38/uORF_5UTR_PUBLIC.txt")
   urls+=("d39fa9cca9fb870b99e6c67b57ef1ad3" "resources/GRCh38/variant_catalog_grch38_fixed.json")
-  urls+=("82c43e1642735b0b113727066e03fea3" "resources/GRCh38/vkgl_consensus_20240701.tsv")
+  urls+=("ef2716679b0d9dca9df4b67af821f6f9" "resources/GRCh38/vkgl_consensus_20241001.tsv")
   urls+=("360f56abfe3e2ecb5e224733f948b3be" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz")
   urls+=("53827286f5827d2c2f0e4e6f02179ec2" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz.tbi")
   urls+=("b773b1eb1ef6e03ccdea70dcf736a17f" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz")
   urls+=("7837b9e42da9674e78d9874218f07f00" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz.tbi")
   urls+=("4d725faf3a43d5e40af1568458596aac" "resources/GRCh38/GRCh38_ReMM.tsv.gz")
   urls+=("95c78fce499e8c64f69a3d7780fae377" "resources/GRCh38/GRCh38_ReMM.tsv.gz.tbi")
-  urls+=("d149c60680991830056d593543994c56" "resources/annotsv/v3.3.6/2202_hg19.tar.gz")
-  urls+=("6c5b6df41efc9a2e348536529a7320de" "resources/annotsv/v3.3.6/2202_phenotype.zip")
-  urls+=("354380089157c6f541a9b1af05290c9c" "resources/annotsv/v3.3.6/Annotations_Human_3.3.6.tar.gz")
+  urls+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz")
+  urls+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.4/2309_phenotype.zip")
+  urls+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.4/Annotations_Human_3.4.4.tar.gz")
   urls+=("94bac97fe4dbc4ad1a74bde3afb55603" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.cols.txt.gz")
   urls+=("4461c232ae1be508e7aa1fb44ade2292" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.datg")
   urls+=("6d50fbb9b2f74221265dede2aae13e71" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.rows.txt.gz")
@@ -171,25 +171,25 @@ extract_files() {
     tar -xzf "${vep_gz}" -C "${vep_dir}"
   fi
 
-  local -r annotsv_dir="${output_dir}/resources/annotsv/v3.3.6"
+  local -r annotsv_dir="${output_dir}/resources/annotsv/v3.4.4"
 
   local -r annotsv_human_dir="${annotsv_dir}/Annotations_Human"
   if [ ! -d "${annotsv_human_dir}" ]; then
-    local -r annotsv_human_gz="${annotsv_dir}/Annotations_Human_3.3.6.tar.gz"
+    local -r annotsv_human_gz="${annotsv_dir}/Annotations_Human_3.4.4.tar.gz"
     echo -e "extracting ${annotsv_human_gz} ..."
     tar -xzf "${annotsv_human_gz}" -C "${annotsv_dir}"
   fi
 
   local -r annotsv_exomiser_dir="${annotsv_dir}/Annotations_Exomiser/2202"
-  if [ ! -d "${annotsv_exomiser_dir}/2202_hg19" ]; then
+  if [ ! -d "${annotsv_exomiser_dir}/2309_hg19" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
-    local -r annotsv_hg19_gz="${annotsv_dir}/2202_hg19.tar.gz"
+    local -r annotsv_hg19_gz="${annotsv_dir}/2309_hg19.tar.gz"
     echo -e "extracting ${annotsv_hg19_gz} ..."
     tar -xzf "${annotsv_hg19_gz}" -C "${annotsv_exomiser_dir}"
   fi
-  if [ ! -d "${annotsv_exomiser_dir}/2202_phenotype" ]; then
+  if [ ! -d "${annotsv_exomiser_dir}/2309_phenotype" ]; then
     mkdir -p "${annotsv_exomiser_dir}"
-    local -r annotsv_phenotype_zip="${annotsv_dir}/2202_phenotype.zip"
+    local -r annotsv_phenotype_zip="${annotsv_dir}/2309_phenotype.zip"
     echo -e "extracting ${annotsv_phenotype_zip} ..."
     unzip -qq "${annotsv_phenotype_zip}" -d "${annotsv_exomiser_dir}"
   fi
