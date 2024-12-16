@@ -1,13 +1,14 @@
 # Input
+
 The `--input` value is a tab-separated file (sample-sheet) with each row describing the data and metadata of a sample.
 
 A minimal sample-sheet for the `vcf` workflow could look like this:
 
-| individual_id  | vcf            |
-|----------------|----------------|
-| sample0        | sample0.vcf.gz |
-| sample1        | sample1.vcf.gz |
-| sample2        | sample2.vcf.gz |
+| individual_id | vcf            |
+|---------------|----------------|
+| sample0       | sample0.vcf.gz |
+| sample1       | sample1.vcf.gz |
+| sample2       | sample2.vcf.gz |
 
 Sample-sheet values are case sensitive. Columns can contain values of different types:
 
@@ -20,9 +21,11 @@ Sample-sheet values are case sensitive. Columns can contain values of different 
 | string      | text                                                         |
 | string list | comma-separated list of strings                              |
 
-The following sections describe the columns that can be used in every sample-sheet followed by [workflow](workflow.md) specific columns.   
+The following sections describe the columns that can be used in every sample-sheet followed by [workflow](workflow.md)
+specific columns.
 
 ## Columns
+
 | column                | type            | required | default                 | description                                                                                                                                                     |                                        
 |-----------------------|-----------------|----------|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ``project_id``        | ``string``      |          | ``vip``                 | project identifier, see [here](../examples/multi-project.md)                                                                                                    |
@@ -33,12 +36,14 @@ The following sections describe the columns that can be used in every sample-she
 | ``sex``               | ``enum``        |          | unknown sex             | ``values: [male,female]`` Please note that an unknown sex leads to a Spectre CNV analysis that assumes ``female`` for the ploidy determination of chromosome X. |
 | ``affected``          | ``boolean``     |          | unknown affected status | whether the individual is affected                                                                                                                              |
 | ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
-| ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/`                                                                                                                                             |
+| ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
 | ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples                                                                               |
 | ``regions``           | ``file``        |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file<sup>2</sup>                                                            |
+
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
 ## Columns: FASTQ
+
 | column                  | type          | required        | default      | description                                                                                                               |
 |-------------------------|---------------|-----------------|--------------|---------------------------------------------------------------------------------------------------------------------------|
 | ``adaptive_sampling``   | ``file``      |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving` reads | 
@@ -50,12 +55,14 @@ The following sections describe the columns that can be used in every sample-she
 <sup>3</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 
 ## Columns: CRAM
+
 | column                  | type     | required | default      | description                                                                                                 |
 |-------------------------|----------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
 | ``cram``                | ``file`` | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
 | ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
 
 ## Columns: gVCF
+
 | column       | type     | required | default    | description                                                                                                                        |
 |--------------|----------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
 | ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
@@ -63,6 +70,7 @@ The following sections describe the columns that can be used in every sample-she
 | ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
 
 ## Columns: VCF
+
 | column       | type     | required | default    | description                                                                                                                                   |
 |--------------|----------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |

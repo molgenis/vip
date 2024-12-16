@@ -1,1 +1,1 @@
-see /groups/umcg-gcc/prm02/projects/GADO/exampleHpoPredictions/README on gearshift HPC cluster
+see /groups/umcg-gcc/prm02/projects/archive/GADO/exampleHpoPredictions/README on nibbler HPC cluster
