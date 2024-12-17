@@ -86,7 +86,7 @@ download_files() {
   urls+=("ccbb1e1887f11d9e3cda1ae8bf2d67da" "images/seqtk-1.4_v2.sif")
   urls+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif")
   urls+=("a11f9e4a1288d92963d63c9d8bfe3a1d" "images/straglr-1.4.5-vip-v1.sif")
-  urls+=("" "images/stranger-0.9.3.sif")
+  urls+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif")
   urls+=("40a7b115e92eb6a2d3395224edaff72c" "images/vcf-decision-tree-5.1.2.sif")
   urls+=("f1658b18249f5b90df6544413ae8174d" "images/vcf-inheritance-matcher-3.3.5.sif")
   urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
