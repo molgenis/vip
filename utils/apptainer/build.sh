@@ -96,7 +96,7 @@ main() {
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.9.3")
   images+=("straglr-1.4.5-vip-v1")
-  images+=("vcf-decision-tree-5.1.2")
+  images+=("vcf-decision-tree-5.1.3")
   images+=("vcf-inheritance-matcher-3.3.5")
   images+=("vcf-report-7.2.0")
 
