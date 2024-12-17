@@ -23,7 +23,8 @@ usage() {
   -r, --resume                   resume execution using cached results (default: false)
   -s, --stub                     quickly prototype workflow logic using process script stubs
   -h, --help                     display this help and exit
-  -v, --version                  display version information and exit"
+  -v, --version                  display version information and exit
+For complete documentation, visit <https://molgenis.github.io/vip/>"
 }
 
 validate() {
