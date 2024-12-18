@@ -3,8 +3,8 @@ From: sif/build/alpine-3.20.3.sif
 
 %post
     version_major=0
-    version_minor=8
-    version_patch=1
+    version_minor=9
+    version_patch=3
 
     apk update
     apk add python3 cython zlib libbz2 xz-libs libdeflate py3-setuptools

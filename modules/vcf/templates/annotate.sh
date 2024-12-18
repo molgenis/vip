@@ -255,7 +255,12 @@ viab(){
           if (length(ad_values) == 2) {
             allele1_depth = ad_values[1]
               total_depth = ad_values[1] + ad_values[2];
-              viab = allele1_depth / total_depth;
+              if (total_depth > 0) {
+                viab = allele1_depth / total_depth;
+              }
+              else {
+                viab = ".";
+              }
           } else {
               viab = ".";
           }
