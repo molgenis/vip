@@ -7,7 +7,7 @@ SCRIPT_NAME="$(basename "$0")"
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 
-VIP_VERSION="8.1.0"
+VIP_VERSION="8.1.1"
 
 display_version() {
   echo -e "${VIP_VERSION}"
