@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 APPTAINER_CACHEDIR="put_your_dir_here"
-CMD_BCFTOOLS="apptainer exec --no-mount home --bind /groups ${APPTAINER_CACHEDIR}/bcftools-1.19.sif bcftools"
+CMD_BCFTOOLS="apptainer exec --no-mount home --bind /groups ${APPTAINER_CACHEDIR}/bcftools-1.20.sif bcftools"
 CMD_BGZIP="apptainer exec --no-mount home --bind /groups ${APPTAINER_CACHEDIR}/vep-111.0.sif bgzip"
 CMD_TABIX="apptainer exec --no-mount home --bind /groups ${APPTAINER_CACHEDIR}/vep-111.0.sif tabix"
 

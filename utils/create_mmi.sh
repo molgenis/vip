@@ -14,7 +14,7 @@ set -euo pipefail
 main() {
   local -r resourceDir="../vip/resources/GRCh38"
   cd "${resourceDir}"
-  APPTAINER_BIND=/groups apptainer exec "../vip/images/minimap2-2.26.sif" minimap2 -t 8 -d GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+  APPTAINER_BIND=/groups apptainer exec "../vip/images/minimap2-2.27_v2.sif" minimap2 -t 8 -d GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
 }
 
 main "${@}"
