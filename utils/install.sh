@@ -60,16 +60,16 @@ install() {
 
   # prevent downloading shared resource
   if [ -f "${SCRIPT_DIR}/resources/nextflow-24.10.3-dist" ]; then
-    cp --link "${SCRIPT_DIR}/resources/nextflow-24.10.3-dist" "${versionDir}"
+    cp --symbolic-link "${SCRIPT_DIR}/resources/nextflow-24.10.3-dist" "${versionDir}"
   fi
   if [ -f "${SCRIPT_DIR}/resources/hpo_20240813.tsv" ]; then
-    cp --link "${SCRIPT_DIR}/resources/hpo_20240813.tsv" "${versionDir}/resources"
+    cp --symbolic-link "${SCRIPT_DIR}/resources/hpo_20240813.tsv" "${versionDir}/resources"
   fi
   if [ -f "${SCRIPT_DIR}/resources/hpo_20240813_phenotypic_abnormality.tsv" ]; then
-      cp --link "${SCRIPT_DIR}/resources/hpo_20240813_phenotypic_abnormality.tsv" "${versionDir}/resources"
+      cp --symbolic-link "${SCRIPT_DIR}/resources/hpo_20240813_phenotypic_abnormality.tsv" "${versionDir}/resources"
     fi
   if [ -f "${SCRIPT_DIR}/resources/inheritance_20241211.tsv" ]; then
-    cp --link "${SCRIPT_DIR}/resources/inheritance_20241211.tsv" "${versionDir}/resources"
+    cp --symbolic-link "${SCRIPT_DIR}/resources/inheritance_20241211.tsv" "${versionDir}/resources"
   fi
 
   if [ "${validate}" == "false" ]; then
@@ -80,16 +80,16 @@ install() {
 
   # make resource shared
   if [ -f "${versionDir}/nextflow-24.10.3-dist" ] && [ ! -f "${SCRIPT_DIR}/resources/nextflow-24.10.3-dist" ]; then
-    cp --link "${versionDir}/nextflow-24.10.3-dist" "${SCRIPT_DIR}/resources"
+    cp --symbolic-link "${versionDir}/nextflow-24.10.3-dist" "${SCRIPT_DIR}/resources"
   fi
   if [ -f "${versionDir}/resources/hpo_20240813.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240813.tsv" ]; then
-    cp --link "${versionDir}/resources/hpo_20240813.tsv" "${SCRIPT_DIR}/resources"
+    cp --symbolic-link "${versionDir}/resources/hpo_20240813.tsv" "${SCRIPT_DIR}/resources"
   fi
   if [ -f "${versionDir}/resources/hpo_20240813_phenotypic_abnormality.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/hpo_20240813_phenotypic_abnormality.tsv" ]; then
-      cp --link "${versionDir}/resources/hpo_20240813_phenotypic_abnormality.tsv" "${SCRIPT_DIR}/resources"
+      cp --symbolic-link "${versionDir}/resources/hpo_20240813_phenotypic_abnormality.tsv" "${SCRIPT_DIR}/resources"
     fi
   if [ -f "${versionDir}/resources/inheritance_20241211.tsv" ] && [ ! -f "${SCRIPT_DIR}/resources/inheritance_20241211.tsv" ]; then
-    cp --link "${versionDir}/resources/inheritance_20241211.tsv" "${SCRIPT_DIR}/resources"
+    cp --symbolic-link "${versionDir}/resources/inheritance_20241211.tsv" "${SCRIPT_DIR}/resources"
   fi
 }
 
