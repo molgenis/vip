@@ -28,7 +28,9 @@ create() {
 		while ((getline line < mapfile) > 0) {
 			if (line ~ /^#/) continue;
 			split(line, fields, "\t");
-			contig_map[fields[7]] = gsub(/[\r\n]+/, "", fields[10]);;
+      contig = fields[10]
+      gsub(/[\r\n]+/, "", contig)
+			contig_map[fields[7]] = contig;
 		}
 		close(mapfile);
 	
