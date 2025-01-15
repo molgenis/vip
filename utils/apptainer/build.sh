@@ -78,7 +78,7 @@ main() {
   local images=()
   images+=("build/alpine-3.20.3")
   ##images+=("build/openjdk-21")
-  ##images+=("build/ubuntu-22.04")
+  images+=("build/ubuntu-22.04")
   ##images+=("bcftools-1.20")
   ##images+=("annotsv-3.4.4")
   ##images+=("capice-5.1.2")
@@ -109,10 +109,10 @@ main() {
   done
 
   declare -A uris
-  uris["docker://ensemblorg/ensembl-vep:release_111.0"]="vep-111.0"
-  uris["docker://google/deepvariant:1.6.1"]="deepvariant-1.6.1"
-  uris["docker://google/deepvariant:deeptrio-1.6.1"]="deepvariant_deeptrio-1.6.1"
-  uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
+  ##uris["docker://ensemblorg/ensembl-vep:release_111.0"]="vep-111.0"
+  ##uris["docker://google/deepvariant:1.6.1"]="deepvariant-1.6.1"
+  ##uris["docker://google/deepvariant:deeptrio-1.6.1"]="deepvariant_deeptrio-1.6.1"
+  ##uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
