@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.20.3.sif
+
+%post
+    version_major=2
+    version_minor=3
+
+    apk update
+    apk add python3 zlib #cython libbz2 xz-libs libdeflate py3-setuptools FIXME
+    apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
+
+
+    # install
+    pip3 install whatshap==${version_major}.${version_minor}
+    pip show whatshap
+
+    # cleanup
+    pip cache purge
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
+
+%environment
+   PATH=$PATH:/usr/.local/bin:$PATH
+
+%help
+   TODO.
