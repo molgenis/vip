@@ -1,6 +1,7 @@
 include { nrMappedReadsInChunk; getPaternalCram; getMaternalCram } from '../modules/cram/utils'
 include { call; call_duo; call_trio; concat_gvcfs; concat_vcfs; joint_call;} from '../modules/cram/deepvariant'
 include { hasChild; validateGroup } from '../modules/utils'
+include { whatshap } from '../modules/cram/whatshap'
 /*
  * Variant calling using DeepVariant
  *
@@ -139,6 +140,8 @@ workflow deepvariant {
     ch_gvcf_per_chunk_by_project.non_zero
       | map { meta, gvcfs -> [meta, gvcfs.collect { it.data }, gvcfs.collect { it.index }] }
       | joint_call
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, vcf, meta.project.samples.collect { it.cram.data }, meta.project.samples.collect { it.cram.index } ] }
+      | whatshap
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_vcf_per_chunk_called }
  
