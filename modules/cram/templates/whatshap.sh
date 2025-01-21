@@ -7,27 +7,79 @@ create_ped () {
 
 filter_bams () {
   # filter all reads without readgroups
+  count=$(${CMD_BCFTOOLS} query -l "!{vcf}" | wc -l)
+  if [ "${count}" -gt 1 ]; then
     for cram in !{crams}; do
         ${CMD_SAMTOOLS} view -h ${cram} | awk 'substr($0, 1, 1) == "@" || $0 ~ /RG:Z:/' | ${CMD_SAMTOOLS} view -b > "${cram}_filtered.bam"
         ${CMD_SAMTOOLS} index "${cram}_filtered.bam"
     done
+  fi
 }
 
 phase_variants () {
       local args=()
       local cramAdded=false
-
       args+=("--ped" "!{pedigree}") 
       args+=("--reference" "!{paramReference}" )
       args+=("--output" "!{vcfOut}")
       args+=("!{vcf}")
-      for cram in !{crams}; do
-          count=$(${CMD_SAMTOOLS} view -c "${cram}_filtered.bam")
-          if [ "${count}" -gt 0 ]; then
-            cramAdded="true"
-            args+=("${cram}_filtered.bam")
-          fi
-      done
+      # use filtered cram files if multiple samples are present
+      sampleCount=$(${CMD_BCFTOOLS} query -l "!{vcf}" | wc -l)
+      if [ "${sampleCount}" -gt 1 ]; then
+        for cram in !{crams}; do
+            count=$(${CMD_SAMTOOLS} view -c "${cram}_filtered.bam")
+            if [ "${count}" -gt 0 ]; then
+              cramAdded="true"
+              args+=("${cram}_filtered.bam")
+            fi
+        done
+      # assume all reads belong to the sample if only one sample is present
+      else
+        args+=("!{crams}")
+        args+=("--ignore-read-groups")
+      fi
+      args+=("--algorithm" "!{algorithm}")
+      args+=("--internal-downsampling" "!{internalDownsampling}")
+      args+=("--mapping-duality" "!{mappingQuality}")
+      args+=("--error-rate" "!{errorRate}")
+      args+=("--maximum-error-rate" "!{maximumErrorRate}")
+      args+=("--threshold" "!{threshold}")
+      args+=("--negative-threshold" "!{negativeThreshold}")
+      args+=("--default-gq" "!{defaultGq}")
+      args+=("--gl-regularizer" "!{glRegularizer}")
+      args+=("--recombrate" "!{recombrate}")
+      args+=("--supplementary-distance" "!{supplementaryDistance}")
+      if [ -n "!{changedGenotypeList}" ]; then
+        args+=("--changed-genotype-list" "!{changedGenotypeList}")
+      fi
+      if [ -n "!{recombinationList}" ]; then
+        args+=("--recombination-list" "!{recombinationList}")
+      fi
+      if [ -n "!{genmap}" ]; then
+        args+=("--genmap" "!{genmap}")
+      fi
+      if [ -n "!{outputReadList}" ]; then
+        args+=("--output-read-list" "!{outputReadList}")
+      fi
+      if [[ "!{onlySnvs}" == "true" ]]; then
+        args+=("--only-snvs" "!{onlySnvs}")
+      fi
+      if [[ "!{distrustGenotypes}" == "true" ]]; then
+        args+=("--distrust-genotypes")
+      fi
+      if [[ "!{includeHomozygous}" == "true" ]]; then
+        args+=("--include-homozygous")
+      fi
+      if [[ "!{noGeneticHaplotyping}" == "true" ]]; then
+        args+=("--no-genetic-haplotyping")
+      fi
+      if [[ "!{usePedSamples}" == "true" ]]; then
+        args+=("--use-ped-samples")
+      fi
+      if [[ "!{useSupplementary}" == "true" ]]; then
+        args+=("--use-supplementary")
+      fi
+
       if [ "${cramAdded}" eq "true" ]; then
         ${CMD_WHATSHAP} "${args[@]}"
       else
@@ -42,10 +94,12 @@ index () {
 }
 
 cleanup () {
-    for cram in !{crams}; do
+  for cram in !{crams}; do
+    if [ -f "${cram}_filtered.bam" ] ; then
         rm ${cram}_filtered.bam
         rm ${cram}_filtered.bam.bai
-    done
+      fi
+  done
 }
 
 main() {
@@ -53,7 +107,7 @@ main() {
     filter_bams
     phase_variants
     index
-    #cleanup
+    cleanup
 }
 
 main "$@"

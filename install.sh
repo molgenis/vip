@@ -88,7 +88,7 @@ download_files() {
   urls+=("a11f9e4a1288d92963d63c9d8bfe3a1d" "images/straglr-1.4.5-vip-v1.sif")
   urls+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif")
   urls+=("b3251b3329e92d5c67b383353d3d3f5d" "images/vcf-decision-tree-5.1.3.sif")
-  urls+=("f1658b18249f5b90df6544413ae8174d" "images/vcf-inheritance-matcher-3.3.5.sif")
+  urls+=("f1658b18249f5b90df6544413ae8174d" "images/vcf-inheritance-matcher-3.3.6.sif")
   urls+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif")
   urls+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif")
   urls+=("80caa995d188621766fccf2b35f4111c" "images/whatshap-2.3.sif")

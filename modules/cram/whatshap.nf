@@ -20,7 +20,30 @@ process whatshap {
     vcfOut = "${meta.project.id}_${meta.chunk.index}_phased.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
-    
+
+    algorithm = params.snv.whatshap.algorithm
+    internalDownsampling = params.snv.whatshap.internal_downsampling
+    mappingQuality = params.snv.whatshap.mapping_quality
+    onlySnvs = params.snv.whatshap.only_snvs
+    ignoreReadGroups = params.snv.whatshap.ignore_read_groups
+    errorRate = params.snv.whatshap.error_rate
+    maximumErrorRate = params.snv.whatshap.maximum_error_rate
+    threshold = params.snv.whatshap.threshold
+    negativeThreshold = params.snv.whatshap.negative_threshold
+    distrustGenotypes = params.snv.whatshap.distrust_genotype
+    includeHomozygous = params.snv.whatshap.include_homozygous
+    defaultGq = params.snv.whatshap.default_gq
+    glRegularizer = params.snv.whatshap.gl_regularizer
+    changedGenotypeList = params.snv.whatshap.changed_genotype_list
+    recombinationList = params.snv.whatshap.recombination_list
+    recombrate = params.snv.whatshap.recombrate
+    genmap = params.snv.whatshap.genmap
+    noGeneticHaplotyping = params.snv.whatshap.no_genetic_haplotyping
+    usePedSamples = params.snv.whatshap.use_ped_samples
+    useSupplementary = params.snv.whatshap.use_supplementary
+    supplementaryDistance = params.snv.whatshap.supplementary_distance
+    outputReadList = params.snv.whatshap.output_read_list
+
     template 'whatshap.sh'
 
   stub:    
