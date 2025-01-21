@@ -19,4 +19,4 @@ From: sif/build/ubuntu-22.04.sif
    PATH=$PATH:/usr/local/lib/python3.10/dist-packages/
 
 %help
-   TODO.
+   WhatsHap is a read-based phasing tool.
