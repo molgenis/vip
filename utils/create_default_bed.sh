@@ -3,6 +3,11 @@ set -euo pipefail
 
 SCRIPT_NAME="$(basename "$0")"
 
+#Commands:
+#bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic.gff.gz -m ../resources/GCF_000001405.40_GRCh38.p14_assembly_report.txt -s BestRefSeq -t gene -o ./default_gene_<DATE>.bed
+#bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic.gff.gz -m ../resources/GCF_000001405.40_GRCh38.p14_assembly_report.txt -s BestRefSeq -t exon -o ./default_exon_<DATE>.bed
+#
+
 usage() {
   echo -e "usage: ${SCRIPT_NAME} -v <arg>
 create default bed file
@@ -63,6 +68,13 @@ create() {
 				split(fields[i], annotation_map, "=");
 				if (annotation_map[1] == "ID") {
 					id = annotation_map[2];
+					break;
+				}
+			}
+      for (i in fields) {
+				split(fields[i], annotation_map, "=");
+				if (annotation_map[1] == "gene") {
+					id = id";"annotation_map[2];
 					break;
 				}
 			}
