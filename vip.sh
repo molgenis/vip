@@ -6,7 +6,7 @@ SCRIPT_NAME="$(basename "$0")"
 
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
-
+VIP_DIR_DATA="${VIP_DIR_DATA:-"${VIP_DIR}/../data"}"
 VIP_VERSION="8.1.1"
 
 display_version() {
@@ -110,7 +110,7 @@ execute_workflow() {
   binds+=("/$(realpath "${paramInput}" | cut -f 2 -d "/")")
 
   local envBind="$(IFS=, ; echo "${binds[*]}")"
-  local envCacheDir="${VIP_DIR}/images"
+  local envCacheDir="${VIP_DIR_DATA}/images"
   local envHome
   if [[ -z "${NXF_HOME}" ]]; then
     envHome="${paramOutput}/.nxf.home"
@@ -123,6 +123,7 @@ execute_workflow() {
   else
     envTemp="${NXF_TEMP}"
   fi
+  mkdir -p "${envTemp}"
   local envWork
   if [[ -z "${NXF_WORK}" ]]; then
     envWork="${paramOutput}/.nxf.work"
@@ -153,7 +154,7 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="24.10.3" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" VIP_VERSION="${VIP_VERSION}" "${VIP_DIR}/nextflow" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="24.10.3" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" NXF_OFFLINE="true" NXF_DISABLE_CHECK_LATEST="true" VIP_DIR="${VIP_DIR}" VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_VERSION="${VIP_VERSION}" bash "${VIP_DIR_DATA}/nextflow-24.10.3-dist" "${args[@]}")
 }
 
 main() {
