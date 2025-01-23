@@ -32,8 +32,7 @@ workflow cram {
 
 		// coverage
 		ch_cram_multi.coverage
-      | filter { meta -> meta.project.regions != null }
-		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.project.regions] }
+		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.project.regions ? meta.project.regions : meta.project.sequencing_method == "WES" ? params.cram.coverage[meta.project.assembly].default_bed_exon : params.cram.coverage[meta.project.assembly].default_bed_gene ] }
       | coverage
 
     // snv
