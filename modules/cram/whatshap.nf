@@ -3,8 +3,6 @@ include { createPedigree } from '../utils'
 process whatshap {
   label 'whatshap'
 
-  publishDir "$params.output/intermediates", mode: 'link'
-
   input:
     tuple val(meta), path(vcf), path(crams), path(cramCrais)
   output:
