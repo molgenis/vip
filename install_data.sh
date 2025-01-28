@@ -106,7 +106,8 @@ postprocess_nextflow() {
 #   $1  file
 postprocess_annotsv_hg19() {
   local -r file="${1}"
-  local -r dir="$(dirname "${file}")/Annotations_Exomiser/2202"
+  local -r file_basename="$(basename "${file}")"
+  local -r dir="$(dirname "${file}")/Annotations_Exomiser/${file_basename%%_*}"
   mkdir -p "${dir}"
   tar --extract --gzip --file "${file}" --directory "${dir}"
   rm "${file}"
@@ -116,7 +117,8 @@ postprocess_annotsv_hg19() {
 #   $1  file
 postprocess_annotsv_phenotype() {
   local -r file="${1}"
-  local -r dir="$(dirname "${file}")/Annotations_Exomiser/2202"
+  local -r file_basename="$(basename "${file}")"
+  local -r dir="$(dirname "${file}")/Annotations_Exomiser/${file_basename%%_*}"
   mkdir -p "${dir}"
   unzip -qq "${file}" -d "${dir}"
   rm "${file}"
