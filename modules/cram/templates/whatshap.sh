@@ -41,17 +41,17 @@ phase_variants () {
         args+=("--ignore-read-groups")
       fi
       args+=("--algorithm" "!{algorithm}")
-      args+=("--internal-downsampling" !{internalDownsampling})
-      args+=("--mapping-quality" !{mappingQuality})
-      args+=("--error-rate" !{errorRate})
-      args+=("--maximum-error-rate" !{maximumErrorRate})
-      args+=("--threshold" !{threshold})
-      args+=("--negative-threshold" !{negativeThreshold})
-      args+=("--default-gq" !{defaultGq})
-      args+=("--recombrate" !{recombrate})
-      #args+=("--supplementary-distance" !{supplementaryDistance}) #disabled because of https://github.com/whatshap/whatshap/issues/579
+      args+=("--internal-downsampling" "!{internalDownsampling}")
+      args+=("--mapping-quality" "!{mappingQuality}")
+      args+=("--error-rate" "!{errorRate}")
+      args+=("--maximum-error-rate" "!{maximumErrorRate}")
+      args+=("--threshold" "!{threshold}")
+      args+=("--negative-threshold" "!{negativeThreshold}")
+      args+=("--default-gq" "!{defaultGq}")
+      args+=("--recombrate" "!{recombrate}")
+      #args+=("--supplementary-distance" "!{supplementaryDistance}") #disabled because of https://github.com/whatshap/whatshap/issues/579
       if [ -n "!{glRegularizer}" ]; then
-        args+=("--gl-regularizer" !{glRegularizer})
+        args+=("--gl-regularizer" "!{glRegularizer}")
       fi
       if [ -n "!{changedGenotypeList}" ]; then
         args+=("--changed-genotype-list" "!{changedGenotypeList}")
