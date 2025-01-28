@@ -28,7 +28,7 @@ process whatshap {
     maximumErrorRate = params.snv.whatshap.maximum_error_rate
     threshold = params.snv.whatshap.threshold
     negativeThreshold = params.snv.whatshap.negative_threshold
-    distrustGenotypes = params.snv.whatshap.distrust_genotype
+    distrustGenotypes = params.snv.whatshap.distrust_genotypes
     includeHomozygous = params.snv.whatshap.include_homozygous
     defaultGq = params.snv.whatshap.default_gq
     glRegularizer = params.snv.whatshap.gl_regularizer
