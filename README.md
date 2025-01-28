@@ -33,7 +33,7 @@ VIP documentation is available at this link https://molgenis.github.io/vip/.
 ### Installation
 
 ```bash
-curl -sSL https://download.molgeniscloud.org/vip/install.sh | bash
+curl -sSL https://download.molgeniscloud.org/downloads/vip/install.sh | bash
 ```
 
 ### Usage
