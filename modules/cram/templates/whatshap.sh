@@ -6,10 +6,11 @@ create_ped () {
 }
 
 filter_bams () {
-  # filter all reads without readgroups
   count=$(${CMD_BCFTOOLS} query -l "!{vcf}" | wc -l)
+  # filter reads in case of more than on sample
   if [ "${count}" -gt 1 ]; then
     for cram in !{crams}; do
+        # filter all reads without readgroups
         ${CMD_SAMTOOLS} view -h ${cram} | awk 'substr($0, 1, 1) == "@" || $0 ~ /RG:Z:/' | ${CMD_SAMTOOLS} view -b > "${cram}_filtered.bam"
         ${CMD_SAMTOOLS} index "${cram}_filtered.bam"
     done
@@ -86,15 +87,15 @@ phase_variants () {
 
       if [ "${cramAdded}" == "true" ]; then
         ${CMD_WHATSHAP} "${args[@]}"
+
+        ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+        ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
       else
         #skip phasing if there are no suitable crams
-        cp "!{vcf}" "!{vcfOut}"
+        cp --link "!{vcf}" "!{vcfOut}"
+        cp --link "!{vcfIndex}" "!{vcfOutIndex}"
+        cp --link "!{vcfStats}" "!{vcfOutStats}"
       fi
-}
-
-index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
-  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 cleanup () {
@@ -110,7 +111,6 @@ main() {
     create_ped
     filter_bams
     phase_variants
-    index
     cleanup
 }
 

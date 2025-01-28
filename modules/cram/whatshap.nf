@@ -4,7 +4,7 @@ process whatshap {
   label 'whatshap'
 
   input:
-    tuple val(meta), path(vcf), path(crams), path(cramCrais)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats), path(crams), path(cramCrais)
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   shell:
