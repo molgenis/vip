@@ -10,7 +10,7 @@ args+=("--resume")
 vip.sh "${args[@]}" 1> /dev/null
 
 # compare expected to actual output and store result
-if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 613 ]; then
+if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 616 ]; then
   result="0"
 else
   result="1"
