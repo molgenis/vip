@@ -47,7 +47,7 @@ handle_exit() {
 
 check_requirements_bash() {
   # check bash exists
-  if [ -z ${BASH_VERSION+x} ]; then
+  if [[ -z ${BASH_VERSION+x} ]]; then
     >&2 echo -e "error: 'bash' is required but could not be found"
     exit 1
   fi

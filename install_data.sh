@@ -18,12 +18,12 @@ if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
 fi
 
 check_requirements_environment() {
-  if [ -z ${VIP_DIR_DATA+x} ]; then
+  if [[ -z ${VIP_DIR_DATA+x} ]]; then
     >&2 echo -e "error: environment variable 'VIP_DIR_DATA' is required but could not be found"
     exit 1
   fi
 
-  if [ -z ${VIP_URL_DATA+x} ]; then
+  if [[ -z ${VIP_URL_DATA+x} ]]; then
     >&2 echo -e "error: environment variable 'VIP_URL_DATA' is required but could not be found"
     exit 1
   fi
