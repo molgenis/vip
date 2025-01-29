@@ -20,7 +20,7 @@ The `cram` workflow consists of the following steps:
 
 1. Parallelize sample sheet per sample and for each sample
 2. Create validated, indexed `.bam` file from `bam/cram/sam` input
-4. If a bed file was provide via the sample sheet: generate coverage metrics using [MosDepth](https://github.com/brentp/mosdepth)
+4. Generate coverage metrics using [MosDepth](https://github.com/brentp/mosdepth), using the the `regions` file provided in the sample sheet if present. If no regions file is provided a default `.bed` file will be used containing all exons in case of WES data, and all genes in case of WGS data.
 5. Discover short tandem repeats and publish as intermediate result.
     1. Using [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) for Illumina short read data.
     2. Using this [fork of Straglr](https://github.com/molgenis/straglr) for PacBio and Nanopore long read data, this is a fork of this fork(https://github.com/philres/straglr) and is chosen over the original [Straglr](https://github.com/bcgsc/straglr) because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.

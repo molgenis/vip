@@ -100,6 +100,8 @@ download_files() {
   fi
   urls+=("55d49c8d95ffc9aee2ec584359c197d2" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz")
   urls+=("c6178d80393254789ebf9c43df6f2d6f" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi")
+  urls+=("475443a10a2672295574ed4a23fd4c62" "resources/GRCh38/default_exon_20250122.bed")
+  urls+=("9ed22dfd2fdddfcaf0c4696e2dcab6eb" "resources/GRCh38/default_gene_20250122.bed")
   urls+=("8e842bfe9c1eeb0943a588ff5662b9aa" "resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict")
   urls+=("5fddbc109c82980f9436aa5c21a57c61" "resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai")
   urls+=("aab53048116f541b7aeef2da1c3e4ae7" "resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz")
@@ -148,7 +150,7 @@ download_files() {
   # update utils/install.sh when updating inheritance.tsv
   urls+=("519185b8b3b7688b9e99339d4045e3f0" "resources/inheritance_20241211.tsv")
   urls+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz")
-  urls+=("807a26ce4a3c44c59847081980506f35" "resources/vip-report-template-v7.1.0.html")
+  urls+=("4023abed0bccb31bf18bde3ddd1f2ed6" "resources/vip-report-template-v7.1.1.html")
   # when modifying urls array, please keep list in 'ls -l' order
   for ((i = 0; i < ${#urls[@]}; i += 2)); do
     download_file "${base_url}" "${urls[i+1]}" "${urls[i+0]}" "${output_dir}" "${validate}"
