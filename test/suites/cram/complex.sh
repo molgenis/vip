@@ -26,7 +26,7 @@ args+=("--config" "${TEST_RESOURCES_DIR}/complex.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip "${args[@]}" 1> /dev/null
+vip.sh "${args[@]}" 1> /dev/null
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
