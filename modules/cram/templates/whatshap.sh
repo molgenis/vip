@@ -50,7 +50,7 @@ phase_variants () {
       args+=("--negative-threshold" "!{negativeThreshold}")
       args+=("--default-gq" "!{defaultGq}")
       args+=("--recombrate" "!{recombrate}")
-      #args+=("--supplementary-distance" "!{supplementaryDistance}") #disabled because of https://github.com/whatshap/whatshap/issues/579
+      args+=("--supplementary-distance" "!{supplementaryDistance}")
       if [ -n "!{glRegularizer}" ]; then
         args+=("--gl-regularizer" "!{glRegularizer}")
       fi
