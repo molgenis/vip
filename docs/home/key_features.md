@@ -14,6 +14,7 @@ Features include:
 - Structural variant detection
 - Short tandem repeat detection
 - Copy number variant detection (Oxford Nanopore, PacBio HiFi)
+- Phasing of hetrozygous short variants
 - [Consequence](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html) aware
 - Rich set of variant annotations
 - Pathogenic variant prioritization [(CAPICE)](https://github.com/molgenis/capice)

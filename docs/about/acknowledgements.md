@@ -26,3 +26,4 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [Straglr](https://github.com/philres/straglr)
 - [Stranger](https://github.com/Clinical-Genomics/stranger)
 - [fastp](https://github.com/OpenGene/fastp)
+- [Whatshap](https://github.com/whatshap/whatshap/)
