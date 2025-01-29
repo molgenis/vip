@@ -75,7 +75,7 @@ main() {
   args+=("-f")
 
   echo -e "creating ${outputPath} ..."
-  apptainer exec vcf-inheritance-3.2.1.sif java "${args[@]}"
+  apptainer exec --no-mount home vcf-inheritance-3.2.1.sif java "${args[@]}"
   echo -e "creating ${outputPath} done"
 }
 
