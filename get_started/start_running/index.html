@@ -130,12 +130,12 @@
 <h1 id="start-running">Start running<a class="headerlink" href="#start-running" title="Permanent link">¶</a></h1>
 <p>After installation, it is time for a quick test to verify that VIP works using some test data.</p>
 <h2 id="input">Input<a class="headerlink" href="#input" title="Permanent link">¶</a></h2>
-<p>To run VIP you need to provide at least <code>workflow</code>, <code>input</code> and <code>output</code> arguments (described in detail <a href="../../usage/command-line-options/">here</a>). The following example processes a collection of .vcf files. </p>
-<pre><code class="language-bash">cd vip
-vip --workflow vcf --input test/resources/multiproject.tsv --output output_multiproject 
+<p>To run VIP you need to provide at least <code>workflow</code>, <code>input</code> and <code>output</code> arguments (described in
+detail <a href="../../usage/command-line-options/">here</a>). The following example processes a collection of .vcf files.</p>
+<pre><code class="language-bash">vip.sh --workflow vcf --input test/resources/multiproject.tsv --output output_multiproject 
 </code></pre>
 <h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">¶</a></h2>
-<p>Executing the above command displays progress until the pipeline completes. </p>
+<p>Executing the above command displays progress until the pipeline completes.</p>
 <pre><code>N E X T F L O W  ~  version 22.10.6
 Launching `vip_vcf.nf` [disturbed_khorana] DSL2 - revision: 8f8c80809c
 executor &gt;  local (27)
@@ -163,7 +163,8 @@ Succeeded   : 27
 <h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">¶</a></h2>
 <pre><code class="language-bash">ls -1 output_multiproject/
 </code></pre>
-<p>The output folder contains one report for each project described in <a href="https://github.com/molgenis/vip/blob/main/test/resources/multiproject.tsv">test/resources/multiproject.tsv</a>. </p>
+<p>The output folder contains one report for each project described
+in <a href="https://github.com/molgenis/vip/blob/main/test/resources/multiproject.tsv">test/resources/multiproject.tsv</a>.</p>
 <pre><code>intermediates
 nxf_report.html
 nxf_timeline.html
@@ -177,7 +178,8 @@ vip2.html
 vip2.vcf.gz
 vip2.vcf.gz.csi
 </code></pre>
-<p>The files <code>vip0.html</code>, <code>vip1.html</code> and <code>vip2.html</code> can be opened in your browser and display an interactive report based on the corresponding <code>.vcf.gz</code> output files.
+<p>The files <code>vip0.html</code>, <code>vip1.html</code> and <code>vip2.html</code> can be opened in your browser and display an interactive report based
+on the corresponding <code>.vcf.gz</code> output files.
 The outputs are described in more detail <a href="../../usage/command-line-options/">here</a>.</p>
 </div>
 </div><footer>

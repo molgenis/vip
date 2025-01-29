@@ -128,10 +128,11 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="command-line-options">Command-line options<a class="headerlink" href="#command-line-options" title="Permanent link">¶</a></h1>
-<p>The <code>vip</code> command takes input vcf/cram/fastq data and produces a filtered annotated <code>.vcf.gz</code> containing candidate variants of interest.</p>
-<p>In addition to the <code>.vcf.gz</code> an interactive <code>.html</code> report is produced that can be displayed in any modern web browser. </p>
-<p><code>vip --help</code> prints the available command-line options: </p>
-<pre><code>usage: vip -w &lt;arg&gt; -i &lt;arg&gt; -o &lt;arg&gt;
+<p>The <code>vip</code> command takes input vcf/cram/fastq data and produces a filtered annotated <code>.vcf.gz</code> containing candidate
+variants of interest.</p>
+<p>In addition to the <code>.vcf.gz</code> an interactive <code>.html</code> report is produced that can be displayed in any modern web browser.</p>
+<p><code>vip.sh --help</code> prints the available command-line options:</p>
+<pre><code>usage: vip.sh -w &lt;arg&gt; -i &lt;arg&gt; -o &lt;arg&gt;
   -w, --workflow &lt;arg&gt;  workflow to execute. allowed values: cram, fastq, gvcf, vcf
   -i, --input    &lt;arg&gt;  path to sample sheet .tsv
   -o, --output   &lt;arg&gt;  output folder
@@ -149,7 +150,7 @@
 <h2 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">¶</a></h2>
 <ul>
 <li><code>config</code> as described <a href="../config/">here</a></li>
-<li><code>profile</code> the configuration profile to use. allowed values are <code>local</code>, <code>slurm</code> plus any profiles added in <code>--config</code> </li>
+<li><code>profile</code> the configuration profile to use. allowed values are <code>local</code>, <code>slurm</code> plus any profiles added in <code>--config</code></li>
 <li><code>resume</code> useful to continue executions that was stopped by an error using cached results</li>
 </ul>
 <h2 id="defaults">Defaults<a class="headerlink" href="#defaults" title="Permanent link">¶</a></h2>
@@ -157,8 +158,10 @@
 <ul>
 <li>Assumes an Illumina sequencing platform was used to generate the input data</li>
 <li>Assumes whole-genome sequencing (WGS) method was used to generate the input data</li>
-<li>Uses a GRCh38 reference genome (<a href="https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.26/">GCA_000001405.15 / GCF_000001405.26</a>)</li>
-<li>Provides classification trees for default variant filtration. For details, see <a href="../../advanced/classification_trees/">here</a></li>
+<li>Uses a GRCh38 reference
+  genome (<a href="https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.26/">GCA_000001405.15 / GCF_000001405.26</a>)</li>
+<li>Provides classification trees for default variant filtration. For details,
+  see <a href="../../advanced/classification_trees/">here</a></li>
 <li>Creates reports using a default report template. For details, see <a href="../../advanced/report_templates/">here</a></li>
 </ul>
 </div>
