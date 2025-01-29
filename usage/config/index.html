@@ -351,6 +351,126 @@ Both the zipped and unzipped fasta should have an index.</p>
 <td>for details, see <a href="https://github.com/dnanexus-rnd/GLnexus/">here</a>. allowed values: [DeepVariant, DeepVariantWGS, DeepVariant_unfiltered]</td>
 </tr>
 <tr>
+<td>snv.whatshap.output_read_list</td>
+<td></td>
+<td>Write reads that have been used for phasing to FILE.</td>
+</tr>
+<tr>
+<td>snv.whatshap.algorithm</td>
+<td>whatshap</td>
+<td>Phasing algorithm to use allowed values: [whatshap,hapchat,heuristic]</td>
+</tr>
+<tr>
+<td>snv.whatshap.merge_reads</td>
+<td>Merge reads which are likely to come from the same haplotype</td>
+<td></td>
+</tr>
+<tr>
+<td>snv.whatshap.row_limit</td>
+<td>256</td>
+<td>For the heuristic: Specifies the maximum number of memorized intermediate solutions. Larger values increase runtime and memory consumption, but can improve phasing quality.</td>
+</tr>
+<tr>
+<td>snv.whatshap.internal_downsampling</td>
+<td>15</td>
+<td>Coverage reduction parameter in the internal core phasing algorithm. Higher values increase runtime <em>exponentially</em> while possibly improving phasing quality marginally. Avoid using this in the normal case!</td>
+</tr>
+<tr>
+<td>snv.whatshap.mapping_quality</td>
+<td>20</td>
+<td>Minimum mapping quality</td>
+</tr>
+<tr>
+<td>snv.whatshap.only_snvs</td>
+<td></td>
+<td>Phase only SNVs</td>
+</tr>
+<tr>
+<td>snv.whatshap.ignore_read_groups</td>
+<td></td>
+<td>Ignore read groups in BAM/CRAM header and assume all reads come from the same sample.</td>
+</tr>
+<tr>
+<td>snv.whatshap.error_rate</td>
+<td>0.15</td>
+<td>The probability that a nucleotide is wrong in read merging model.</td>
+</tr>
+<tr>
+<td>snv.whatshap.maximum_error_rate</td>
+<td>0.25</td>
+<td>The maximum error rate of any edge of the read merging graph before discarding it.</td>
+</tr>
+<tr>
+<td>snv.whatshap.threshold</td>
+<td>1000000</td>
+<td>The threshold of the ratio between the probabilities that a pair of reads come from the same haplotype and different haplotypes in the read merging model.</td>
+</tr>
+<tr>
+<td>snv.whatshap.negative_threshold</td>
+<td>1000</td>
+<td>The threshold of the ratio between the probabilities that a pair of reads come from different haplotypes and the same haplotype in the read merging model.</td>
+</tr>
+<tr>
+<td>snv.whatshap.distrust_genotypes</td>
+<td></td>
+<td>Allow switching variants from hetero- to homozygous in an optimal solution (see documentation).</td>
+</tr>
+<tr>
+<td>snv.whatshap.include_homozygous</td>
+<td></td>
+<td>Also work on homozygous variants, which might be turned to heterozygous</td>
+</tr>
+<tr>
+<td>snv.whatshap.default_gq</td>
+<td>30</td>
+<td>Default genotype quality used as cost of changing a genotype when no genotype likelihoods are available</td>
+</tr>
+<tr>
+<td>snv.whatshap.gl_regularizer</td>
+<td>None</td>
+<td>Constant (float) to be used to regularize genotype likelihoods read from input VCF.</td>
+</tr>
+<tr>
+<td>snv.whatshap.changed_genotype_list</td>
+<td></td>
+<td>Write list of changed genotypes to FILE.</td>
+</tr>
+<tr>
+<td>snv.whatshap.recombination_list</td>
+<td></td>
+<td>Write putative recombination events to FILE.</td>
+</tr>
+<tr>
+<td>snv.whatshap.recombrate</td>
+<td>1.26</td>
+<td>Recombination rate in cM/Mb (used with --ped). If given, a constant recombination rate is assumed.</td>
+</tr>
+<tr>
+<td>snv.whatshap.genmap</td>
+<td></td>
+<td>File with genetic map (used with --ped) to be used instead of constant recombination rate, i.e. overrides option --recombrate.</td>
+</tr>
+<tr>
+<td>snv.whatshap.no_genetic_haplotyping</td>
+<td></td>
+<td>Do not merge blocks that are not connected by reads (i.e. solely based on genotype status). Default: when in --ped mode, merge all blocks that contain at least one homozygous genotype in at least one individual into one block.</td>
+</tr>
+<tr>
+<td>snv.whatshap.use_ped_samples</td>
+<td></td>
+<td>Only work on samples mentioned in the provided PED file.</td>
+</tr>
+<tr>
+<td>snv.whatshap.use_supplementary</td>
+<td></td>
+<td>Use also supplementary alignments (default: ignore supplementary_ alignments)</td>
+</tr>
+<tr>
+<td>snv.whatshap.supplementary_distance</td>
+<td>100000</td>
+<td>Skip supplementary alignments further than DIST bp away from the primary alignment</td>
+</tr>
+<tr>
 <td>str.expansionhunter.aligner</td>
 <td>dag-aligner</td>
 <td>for details, see <a href="https://github.com/Illumina/ExpansionHunter/blob/v5.0.0/docs/03_Usage.md">here</a>. allowed values: [dag-aligner, path-aligner]</td>
