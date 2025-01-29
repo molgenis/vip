@@ -1,14 +1,20 @@
 # Start running
+
 After installation, it is time for a quick test to verify that VIP works using some test data.
 
 ## Input
-To run VIP you need to provide at least `workflow`, `input` and `output` arguments (described in detail [here](../usage/command-line-options.md)). The following example processes a collection of .vcf files. 
+
+To run VIP you need to provide at least `workflow`, `input` and `output` arguments (described in
+detail [here](../usage/command-line-options.md)). The following example processes a collection of .vcf files.
+
 ```bash
-cd vip
-vip --workflow vcf --input test/resources/multiproject.tsv --output output_multiproject 
+vip.sh --workflow vcf --input test/resources/multiproject.tsv --output output_multiproject 
 ```
+
 ## Output
-Executing the above command displays progress until the pipeline completes. 
+
+Executing the above command displays progress until the pipeline completes.
+
 ```
 N E X T F L O W  ~  version 22.10.6
 Launching `vip_vcf.nf` [disturbed_khorana] DSL2 - revision: 8f8c80809c
@@ -34,11 +40,16 @@ Duration    : 1m 00s
 CPU hours   : 0.2
 Succeeded   : 27
 ```
+
 ## Results
+
 ```bash
 ls -1 output_multiproject/
 ```
-The output folder contains one report for each project described in [test/resources/multiproject.tsv](https://github.com/molgenis/vip/blob/main/test/resources/multiproject.tsv). 
+
+The output folder contains one report for each project described
+in [test/resources/multiproject.tsv](https://github.com/molgenis/vip/blob/main/test/resources/multiproject.tsv).
+
 ```
 intermediates
 nxf_report.html
@@ -54,5 +65,6 @@ vip2.vcf.gz
 vip2.vcf.gz.csi
 ```
 
-The files `vip0.html`, `vip1.html` and `vip2.html` can be opened in your browser and display an interactive report based on the corresponding `.vcf.gz` output files.
+The files `vip0.html`, `vip1.html` and `vip2.html` can be opened in your browser and display an interactive report based
+on the corresponding `.vcf.gz` output files.
 The outputs are described in more detail [here](../usage/command-line-options.md).

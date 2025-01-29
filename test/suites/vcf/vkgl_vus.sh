@@ -8,7 +8,7 @@ args+=("--config" "${TEST_RESOURCES_DIR}/vkgl_vus.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip "${args[@]}" 1> /dev/null
+vip.sh "${args[@]}" 1> /dev/null
 
 result="0"
 echo -n "${result}" > "${OUTPUT_DIR}/.exitcode"

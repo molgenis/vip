@@ -14,9 +14,10 @@ vip2	fam2	individual5					male	true	true	illumina				/vip5_1.fastq.gz	/vip5_2.fa
 ```
 
 ## Run the pipeline
+
 ```bash
-cd vip
-vip --workflow fastq --input path/to/samplesheet.tsv --output path/to/output/folder
+vip.sh --workflow fastq --input path/to/samplesheet.tsv --output path/to/output/folder
 ```
 
-For a working example on how to generate output for multiple projects see [here](https://github.com/molgenis/vip/blob/main/test/test_vcf.sh#L82).
+For a working example on how to generate output for multiple projects
+see [here](https://github.com/molgenis/vip/blob/main/test/test_vcf.sh#L82).

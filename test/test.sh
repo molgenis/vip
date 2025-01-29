@@ -82,6 +82,7 @@ run() {
   echo "running tests ..."
   
   local -r vip_dir="$(realpath "${SCRIPT_DIR}/..")"
+  local -r vip_dir_data="${VIP_DIR_DATA:-"${vip_dir}/../data"}"
   local -r tests_output_dir="${SCRIPT_DIR}/output"
   local -r nextflow_home_dir="${tests_output_dir}/.nextflow"
 
@@ -122,7 +123,7 @@ run() {
     sbatch_args+=("--mem=1gb")
     sbatch_args+=("--nodes=1")
     sbatch_args+=("--open-mode=append")
-    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
+    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},VIP_DIR_DATA=${vip_dir_data},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
     sbatch_args+=("--get-user-env=L")
     sbatch_args+=("--output=${test_output_dir}/job.out")
     sbatch_args+=("--error=${test_output_dir}/job.err")
