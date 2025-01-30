@@ -100,7 +100,8 @@ check_requirements() {
 }
 
 download_vip() {
-  if [[ ! -d "${VIP_DIR}" ]]; then
+  # download if directory does not exist or is empty
+  if [[ ! -d "${VIP_DIR}" ]] || [[ -z "$( ls -A "${VIP_DIR}")" ]]; then
     local url="https://github.com/molgenis/vip/archive/refs"
     if [[ "${VIP_VER}" =~ ^v${REGEX_SEM_VER}$ ]];then
       url="${url}/tags/${VIP_VER}.tar.gz"
