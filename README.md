@@ -32,9 +32,16 @@ VIP documentation is available at this link https://molgenis.github.io/vip/.
 
 ### Installation
 
+#### Default
+
 ```bash
 curl -sSL https://download.molgeniscloud.org/downloads/vip/install.sh | bash
 ```
+
+#### EasyBuild
+
+HPC systems running [EasyBuild](https://easybuild.io/) can install VIP by adapting the `/apps` paths in
+the [easyconfig files](https://github.com/molgenis/take-it-easyconfigs/tree/main/v/vip) to your local environment.
 
 ### Usage
 
