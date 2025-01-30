@@ -10,7 +10,7 @@ Before installing VIP please check whether your system meets the following requi
 - [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages) (setuid
   installation)
 - 8GB RAM <sup>1</sup>
-- 365GB disk space
+- 280GB disk space
 
 1) The memory requirements differ per workflow and depend, on the size of your input data, the scheduler that you use,
    the amount of parallelization. For example, executing VIP using a job scheduler will reduce the memory requirements

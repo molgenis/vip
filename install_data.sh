@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_NAME="$(basename "${0}")"
 
-VIP_DISK_SPACE_REQUIRED_GIGABYTES="365"
+VIP_DISK_SPACE_REQUIRED_GIGABYTES="280"
 
 if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
   echo -e "usage: bash ${SCRIPT_NAME}.sh
