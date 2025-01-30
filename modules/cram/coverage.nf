@@ -1,7 +1,7 @@
 process coverage {
   label 'coverage'
   
-  publishDir "$params.output/intermediates", mode: 'link'
+  publishDir "$params.output/coverage", mode: 'link'
 
   input:
     tuple val(meta), path(cram), path(cramCrai), path(regions)
