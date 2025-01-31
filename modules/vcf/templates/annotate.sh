@@ -35,7 +35,8 @@ annot_sv() {
 }
 
 capice() {
-  capice_vep
+  local -r vcf="${1}"
+  capice_vep "${vcf}"
   capice_bcftools
   #only run capice if there a variants with annotations, e.g. <STR> only VCF files do not yield any annotated lines
   if [ "$(wc -l < "${capiceInputPath}")" -gt 1 ]; then
@@ -44,8 +45,10 @@ capice() {
 }
 
 capice_vep() {
+  local -r vcf="${1}"
+
   local args=()
-  args+=("--input_file" "!{vcf}")
+  args+=("--input_file" "${vcf}")
   args+=("--format" "vcf")
   args+=("--output_file" "${vcfCapiceAnnotatedPath}")
   args+=("--vcf")
@@ -142,12 +145,9 @@ vep_preprocess() {
 
 vep() {
   local -r vcf="${1}"
-  local -r vcfPreprocessed="preprocessed_${vcf}"
-
-  vep_preprocess "${vcf}" "${vcfPreprocessed}"
 
   local args=()
-  args+=("--input_file" "${vcfPreprocessed}")
+  args+=("--input_file" "${vcf}")
   args+=("--format" "vcf")
   args+=("--output_file" "vep_!{vcfOut}")
   args+=("--vcf")
@@ -287,7 +287,7 @@ main () {
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     annot_sv
   fi
-  capice
+
 
   local vepInputPath=""
   if [ -n "!{strangerCatalog}" ]; then
@@ -297,7 +297,11 @@ main () {
     vepInputPath="!{vcf}"
   fi
 
-  vep "${vepInputPath}"
+  local -r vcfPreprocessed="preprocessed_${vepInputPath}"
+  vep_preprocess "${vepInputPath}" "${vcfPreprocessed}"
+  capice "${vcfPreprocessed}"
+  vep "${vcfPreprocessed}"
+  
   viab "vep_!{vcfOut}"
   index
 }
