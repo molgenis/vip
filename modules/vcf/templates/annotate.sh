@@ -297,7 +297,7 @@ main () {
     vepInputPath="!{vcf}"
   fi
 
-  local -r vcfPreprocessed="preprocessed_${vcf}"
+  local -r vcfPreprocessed="preprocessed_${vepInputPath}"
   vep_preprocess "${vepInputPath}" "${vcfPreprocessed}"
   capice "${vcfPreprocessed}"
   vep "${vcfPreprocessed}"
