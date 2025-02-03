@@ -3,12 +3,12 @@ set -euo pipefail
 
 SCRIPT_NAME="$(basename "${0}")"
 
+VIP_URL_DATA="${VIP_URL_DATA:-"https://download.molgeniscloud.org/downloads/vip"}"
 VIP_DISK_SPACE_REQUIRED_GIGABYTES="280"
 
 if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
   echo -e "usage: bash ${SCRIPT_NAME}.sh
   requirements:
-    VIP_DIR_DATA environment variable exists
     VIP_URL_DATA environment variable exists disk space
     ${VIP_DISK_SPACE_REQUIRED_GIGABYTES}G for initial install
   environment variables with default values:
@@ -193,6 +193,7 @@ install_files() {
   data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
   data+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.4/2309_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.4/Annotations_Human_3.4.4.tar.gz" "postprocess_annotsv_annotations")
+  data+=("25d79667ba41aef0a418f75468e4b457" "resources/annotsv/v3.4.4/jar/exomiser-rest-prioritiser-12.1.0.jar" "")
   data+=("94bac97fe4dbc4ad1a74bde3afb55603" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.cols.txt.gz" "")
   data+=("4461c232ae1be508e7aa1fb44ade2292" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.datg" "")
   data+=("6d50fbb9b2f74221265dede2aae13e71" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.rows.txt.gz" "")
