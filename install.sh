@@ -148,7 +148,7 @@ main() {
   check_requirements
   download_vip
 
-  VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_URL_DATA="${VIP_URL_DATA}" bash "${VIP_DIR}/install_data.sh"
+  VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh"
 }
 
 main "${@}"
