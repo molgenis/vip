@@ -187,7 +187,7 @@ install_files() {
   data+=("b3251b3329e92d5c67b383353d3d3f5d" "images/vcf-decision-tree-5.1.3.sif" "")
   data+=("5cc8e497f1ed2da8d284357aa97db7d6" "images/vcf-inheritance-matcher-3.3.6.sif" "")
   data+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif" "")
-  data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
+  data+=("98884a98968f0b2fd9fefa3e4d6f9f5a" "images/vep-113.3.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("4db012dfaa1ed91371b73e3ab338aaad" "nextflow-24.10.3-dist" "postprocess_nextflow")
   data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
