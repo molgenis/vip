@@ -239,7 +239,7 @@ install_files() {
   data+=("d94140e762dfc6da23011718cccf2609" "resources/hpo_20240813.tsv" "")
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("519185b8b3b7688b9e99339d4045e3f0" "resources/inheritance_20241211.tsv" "")
-  data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
+  data+=("2841d4f475b861234a3197baa70d738c" "resources/vep/cache/homo_sapiens_refseq_vep_113_GRCh38.tar.gz" "postprocess_vep")
   data+=("4023abed0bccb31bf18bde3ddd1f2ed6" "resources/vip-report-template-v7.1.1.html" "")
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do
