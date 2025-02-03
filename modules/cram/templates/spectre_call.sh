@@ -55,6 +55,7 @@ fixref () {
     (IFS=$'\t'; echo "${fields[*]}") >> "fixed_ref_output.vcf"
   done
   ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" fixed_ref_output.vcf
+  rm "fixed_ref_output.vcf"
 }
 
 index () {
