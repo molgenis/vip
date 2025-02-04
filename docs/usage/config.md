@@ -5,8 +5,7 @@ An additional configuration file can be supplied on the command-line to overwrit
 profiles, configure processes and update environment variables.
 
 !!! tip
-VIP enables the Slurm executor if available, configuration options are
-listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
+    VIP enables the Slurm executor if available, configuration options are listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
 
 ## Parameters
 
