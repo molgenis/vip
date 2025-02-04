@@ -4,6 +4,10 @@ The VIP configuration is stored in [Nextflow configuration](https://www.nextflow
 An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update
 profiles, configure processes and update environment variables.
 
+!!! tip
+VIP enables the Slurm executor if available, configuration options are
+listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
+
 ## Parameters
 
 | key                           | default     | description                                                                                                                       |
