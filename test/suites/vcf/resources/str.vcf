@@ -17,6 +17,7 @@
 ##INFO=<ID=RL,Number=1,Type=Integer,Description="Reference length in bp">
 ##INFO=<ID=RU,Number=1,Type=String,Description="Repeat unit in the reference orientation">
 ##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=RUMATCH,Number=0,Type=Flag,Description="Flag indicating if the called repeat unit matched the repeat unit in the loci bed file.">
 ##contig=<ID=chr22,length=50818468>
 ##ALT=<ID=STR13,Description="Allele comprised of 13 repeat units">
 ##ALT=<ID=STR23,Description="Allele comprised of 23 repeat units">
