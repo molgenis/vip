@@ -9,8 +9,8 @@ VIP_DISK_SPACE_REQUIRED_GIGABYTES="280"
 if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
   echo -e "usage: bash ${SCRIPT_NAME}.sh
   requirements:
-    VIP_URL_DATA environment variable exists disk space
-    ${VIP_DISK_SPACE_REQUIRED_GIGABYTES}G for initial install
+    VIP_DIR_DATA environment variable exists
+    disk space ${VIP_DISK_SPACE_REQUIRED_GIGABYTES}G for initial install
   environment variables with default values:
     VIP_DIR_DATA ${VIP_DIR_DATA}
     VIP_URL_DATA ${VIP_URL_DATA}"
