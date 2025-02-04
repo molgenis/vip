@@ -34,7 +34,7 @@ call_copy_number_variation () {
 }
 
 fixref () {
-  # Workaround for TODO
+  # Workaround for https://github.com/fritzsedlazeck/Spectre/issues/42
   zcat "./spectre/!{sampleId}.vcf.gz" | \
   while IFS=$'\t' read -r -a fields
   do
