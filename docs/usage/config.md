@@ -201,22 +201,25 @@ The following sections list all processes and their non-default configuration.
 
 ### CRAM
 
-| process label           | configuration                                |
-|-------------------------|----------------------------------------------|
-| concat_vcf              | *default*                                    |
-| cram_validate           | *default*                                    |
-| cutesv_call             | cpus=4 memory='8GB' time='5h'                |
-| deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h' |
-| deepvariant_call_duo    | cpus=*default* memory='4GB * cpus' time='5h' |
-| deepvariant_call_trio   | cpus=*default* memory='4GB * cpus' time='5h' |
-| deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'       |
-| deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'       |
-| deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'       |
-| expansionhunter_call    | cpus=4 memory='16GB' time='5h'               |
-| manta_joint_call        | cpus=4 memory='8GB' time='5h'                |
-| straglr_call            | *default*                                    |
-| vcf_merge_str           | *default*                                    |
-| vcf_merge_sv            | *default*                                    |
+| process label           | configuration                                 |
+|-------------------------|-----------------------------------------------|
+| concat_vcf              | *default*                                     |
+| coverage                | cpus=1 memory='16GB' time=*default*           |
+| cram_validate           | *default*                                     |
+| cutesv_call             | cpus=4 memory='8GB' time='5h'                 |
+| deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h'  |
+| deepvariant_call_duo    | cpus=*default* memory='4GB * cpus' time='23h' |
+| deepvariant_call_trio   | cpus=*default* memory='4GB * cpus' time='23h' |
+| deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'        |
+| deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'        |
+| deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'        |
+| expansionhunter_call    | cpus=4 memory='16GB' time='5h'                |
+| manta_joint_call        | cpus=4 memory='8GB' time='5h'                 |
+| spectre_call            | cpus=*default* memory='4GB' time=*default*    |
+| straglr_call            | *default*                                     |
+| vcf_merge_str           | *default*                                     |
+| vcf_merge_sv            | *default*                                     |
+| whatshap                | cpus=*default* memory=*default* time='23h'    |
 
 ### gVCF
 
