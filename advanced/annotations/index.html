@@ -79,6 +79,18 @@
 <li class="toctree-l1 current"><a class="reference internal current" href="./">Annotations</a>
 <ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#filter">Filter</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#format">Format</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#info">INFO</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#infocsq">INFO/CSQ</a>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#details">Details</a>
 <ul>
@@ -166,6 +178,50 @@ in <a href="../report_templates/">reports</a>.</p>
 additional annotations might be available,
 check the output file headers for the complete overview. Similarly, some annotations listed below might be missing from
 your output file depending on the sample sheet content and configuration.</p>
+<h3 id="filter">Filter<a class="headerlink" href="#filter" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>annotation</th>
+<th>value</th>
+<th>source</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FILTER</td>
+<td>LowDepth</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>The overall locus depth is below 10x or number of reads spanning one or both breakends is below 5</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>MONOALLELIC</td>
+<td><a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a></td>
+<td>Site represents one ALT allele in a region with multiple variants that could not be unified into non-overlapping multi-allelic sites</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>PASS</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>All filters passed</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>q5</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Quality below 5</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>UNRESOLVED</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>An insertion that is longer than the read and thus we cannot predict the full size</td>
+</tr>
+</tbody>
+</table>
+<h3 id="format">Format<a class="headerlink" href="#format" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -177,10 +233,130 @@ your output file depending on the sample sheet content and configuration.</p>
 </thead>
 <tbody>
 <tr>
+<td>FORMAT/AD</td>
+<td>integer list</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Allelic depths for the ref and alt alleles in the order listed</td>
+</tr>
+<tr>
+<td>FORMAT/ADFL</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Number of flanking reads consistent with the allele</td>
+</tr>
+<tr>
+<td>FORMAT/ADIR</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Number of in-repeat reads consistent with the allele</td>
+</tr>
+<tr>
+<td>FORMAT/ADSP</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Number of spanning reads consistent with the allele</td>
+</tr>
+<tr>
+<td>FORMAT/CD</td>
+<td>float list</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Coverage read depth</td>
+</tr>
+<tr>
+<td>FORMAT/DP</td>
+<td>integer</td>
+<td></td>
+<td>Approximate read depth (reads with MQ=255 or with bad mates are filtered)</td>
+</tr>
+<tr>
+<td>FORMAT/DR</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td># High-quality reference reads</td>
+</tr>
+<tr>
+<td>FORMAT/DV</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td># High-quality variant reads</td>
+</tr>
+<tr>
+<td>FORMAT/GQ</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Genotype Quality</td>
+</tr>
+<tr>
+<td>FORMAT/GT</td>
+<td>string</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Genotype</td>
+</tr>
+<tr>
+<td>FORMAT/HO</td>
+<td>float list</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Homozygosity proportion</td>
+</tr>
+<tr>
+<td>FORMAT/ID</td>
+<td>string</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Population ID of supporting CNV calls</td>
+</tr>
+<tr>
+<td>FORMAT/LC</td>
+<td>float</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Locus coverage</td>
+</tr>
+<tr>
+<td>FORMAT/PL</td>
+<td>integer list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td># Phred-scaled genotype likelihoods rounded to the closest integer</td>
+</tr>
+<tr>
+<td>FORMAT/PS</td>
+<td>integer</td>
+<td>Whatshap</td>
+<td>Phase set identifier</td>
+</tr>
+<tr>
+<td>FORMAT/REPCI</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Confidence interval for REPCN</td>
+</tr>
+<tr>
+<td>FORMAT/REPCN</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Number of repeat units spanned by the allele</td>
+</tr>
+<tr>
+<td>FORMAT/RNC</td>
+<td>character list</td>
+<td></td>
+<td>Reason for No Call in GT: . = n/a, M = Missing data, P = Partial data, I = gVCF input site is non-called, D = insufficient Depth of coverage, - = unrepresentable overlapping deletion, L = Lost/unrepresentable allele (other than deletion), U = multiple Unphased variants present, O = multiple Overlapping variants present, 1 = site is Monoallelic, no assertion about presence of REF or ALT allele</td>
+</tr>
+<tr>
+<td>FORMAT/SO</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Type of reads that support the allele; can be SPANNING, FLANKING, or INREPEAT meaning that the reads span, flank, or are fully contained in the repeat</td>
+</tr>
+<tr>
 <td>FORMAT/VI</td>
 <td>string list</td>
 <td><a href="https://github.com/molgenis/vip-inheritance-matcher/">vip-inheritance-matcher</a></td>
 <td>An enumeration of possible inheritance modes (Possible values: AR, AR_C, AD, AD_IP, XLR, XLD)</td>
+</tr>
+<tr>
+<td>FORMAT/VIAB</td>
+<td>float</td>
+<td>annotate process</td>
+<td>VIP calculated allele balance</td>
 </tr>
 <tr>
 <td>FORMAT/VIC</td>
@@ -218,6 +394,260 @@ your output file depending on the sample sheet content and configuration.</p>
 <td><a href="https://github.com/molgenis/vip-decision-tree/">vip-decision-tree</a></td>
 <td>VIP decision tree path for sample</td>
 </tr>
+</tbody>
+</table>
+<h3 id="info">INFO<a class="headerlink" href="#info" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>annotation</th>
+<th>type</th>
+<th>source</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INFO/AC</td>
+<td>integer list</td>
+<td></td>
+<td>Allele count in genotypes</td>
+</tr>
+<tr>
+<td>INFO/AF</td>
+<td>float list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Allele Frequency</td>
+</tr>
+<tr>
+<td>INFO/AN</td>
+<td>integer</td>
+<td></td>
+<td>Total number of alleles in called genotypes</td>
+</tr>
+<tr>
+<td>INFO/AQ</td>
+<td>integer list</td>
+<td></td>
+<td>Allele Quality score reflecting evidence for each alternate allele (Phred scale)</td>
+</tr>
+<tr>
+<td>INFO/CHR2</td>
+<td>string</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Chromosome for END coordinate in case of a translocation</td>
+</tr>
+<tr>
+<td>INFO/CILEN</td>
+<td>integer list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Confidence interval around inserted/deleted material between breakends</td>
+</tr>
+<tr>
+<td>INFO/CIPOS</td>
+<td>integer list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Confidence interval around POS for imprecise variants</td>
+</tr>
+<tr>
+<td>INFO/CN</td>
+<td>integer</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Estimated copy number status</td>
+</tr>
+<tr>
+<td>INFO/Disease</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Associated disorder</td>
+</tr>
+<tr>
+<td>INFO/DisplayRU</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Display repeat unit familiar to clinician</td>
+</tr>
+<tr>
+<td>INFO/END</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>End position of the structural variant</td>
+</tr>
+<tr>
+<td>INFO/HGNCId</td>
+<td>integer</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>HGNC gene id for associated disease gene</td>
+</tr>
+<tr>
+<td>INFO/IMPRECISE</td>
+<td>boolean</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Imprecise structural variant</td>
+</tr>
+<tr>
+<td>INFO/InheritanceMode</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Main mode of inheritance for disorder</td>
+</tr>
+<tr>
+<td>INFO/OLD_REC</td>
+<td>string</td>
+<td></td>
+<td>Original variant. Format: CHR|POS|REF|ALT|USED_ALT_IDX</td>
+</tr>
+<tr>
+<td>INFO/PRECISE</td>
+<td>boolean</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Precise structural variant</td>
+</tr>
+<tr>
+<td>INFO/RankScore</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>RankScore for variant in this family as family(str):score(int)</td>
+</tr>
+<tr>
+<td>INFO/RE</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Number of read support this record</td>
+</tr>
+<tr>
+<td>INFO/REF</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Reference copy number</td>
+</tr>
+<tr>
+<td>INFO/REPID</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Repeat identifier as specified in the variant catalog</td>
+</tr>
+<tr>
+<td>INFO/RL</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Reference length in bp</td>
+</tr>
+<tr>
+<td>INFO/RNAMES</td>
+<td>string list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Supporting read names of SVs (comma separated)</td>
+</tr>
+<tr>
+<td>INFO/RU</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Repeat unit in the reference orientation</td>
+</tr>
+<tr>
+<td>INFO/RUMATCH</td>
+<td>boolean</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Flag indicating if the called repeat unit matched the repeat unit in the loci bed file</td>
+</tr>
+<tr>
+<td>INFO/Source</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Source collection for variant definition</td>
+</tr>
+<tr>
+<td>INFO/SourceDisplay</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Source for variant definition, display</td>
+</tr>
+<tr>
+<td>INFO/SourceId</td>
+<td>string</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Source id for variant definition</td>
+</tr>
+<tr>
+<td>INFO/STR_NORMAL_MAX</td>
+<td>integer</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Max number of repeats allowed to call as normal</td>
+</tr>
+<tr>
+<td>INFO/STR_PATHOLOGIC_MIN</td>
+<td>integer</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Min number of repeats required to call as pathologic</td>
+</tr>
+<tr>
+<td>INFO/STR_STATUS</td>
+<td>string list</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Repeat expansion status. Alternatives in [normal, pre_mutation, full_mutation]</td>
+</tr>
+<tr>
+<td>INFO/STRAND</td>
+<td>string list</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
+<td>Strand orientation of the adjacency in BEDPE format (DEL:+-, DUP:-+, INV:++/--)</td>
+</tr>
+<tr>
+<td>INFO/SVLEN</td>
+<td>integer</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Length of the SV</td>
+</tr>
+<tr>
+<td>INFO/SVSUPPORT</td>
+<td>string</td>
+<td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td>Indicator if a SV support was found in a provided SNFJ file</td>
+</tr>
+<tr>
+<td>INFO/SVTYPE</td>
+<td>string</td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Type of copy number variant</td>
+</tr>
+<tr>
+<td>INFO/SweGenMean</td>
+<td>float</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Average number of repeat unit copies in population</td>
+</tr>
+<tr>
+<td>INFO/SweGenStd</td>
+<td>float</td>
+<td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
+<td>Standard deviation of number of repeat unit copies in population</td>
+</tr>
+<tr>
+<td>INFO/VARID</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>Variant identifier as specified in the variant catalog</td>
+</tr>
+<tr>
+<td>INFO/VIPC_S</td>
+<td>string list</td>
+<td></td>
+<td>VIP decision tree classification (samples)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="infocsq">INFO/CSQ<a class="headerlink" href="#infocsq" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>annotation</th>
+<th>type</th>
+<th>source</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td>INFO/CSQ/Allele</td>
 <td>string</td>
