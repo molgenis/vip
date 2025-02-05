@@ -153,6 +153,10 @@
 <p>The VIP configuration is stored in <a href="https://www.nextflow.io/docs/latest/config.html">Nextflow configuration</a> files.
 An additional configuration file can be supplied on the command-line to overwrite default parameter values, add/update
 profiles, configure processes and update environment variables.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>VIP enables the Slurm executor if available, configuration options are listed <a href="https://www.nextflow.io/docs/latest/executor.html#slurm">here</a>.</p>
+</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -970,6 +974,10 @@ The following sections list all processes and their non-default configuration.</
 <td><em>default</em></td>
 </tr>
 <tr>
+<td>coverage</td>
+<td>cpus=1 memory='16GB' time=<em>default</em></td>
+</tr>
+<tr>
 <td>cram_validate</td>
 <td><em>default</em></td>
 </tr>
@@ -983,11 +991,11 @@ The following sections list all processes and their non-default configuration.</
 </tr>
 <tr>
 <td>deepvariant_call_duo</td>
-<td>cpus=<em>default</em> memory='4GB * cpus' time='5h'</td>
+<td>cpus=<em>default</em> memory='4GB * cpus' time='23h'</td>
 </tr>
 <tr>
 <td>deepvariant_call_trio</td>
-<td>cpus=<em>default</em> memory='4GB * cpus' time='5h'</td>
+<td>cpus=<em>default</em> memory='4GB * cpus' time='23h'</td>
 </tr>
 <tr>
 <td>deepvariant_concat_gvcf</td>
@@ -1010,6 +1018,10 @@ The following sections list all processes and their non-default configuration.</
 <td>cpus=4 memory='8GB' time='5h'</td>
 </tr>
 <tr>
+<td>spectre_call</td>
+<td>cpus=<em>default</em> memory='4GB' time=<em>default</em></td>
+</tr>
+<tr>
 <td>straglr_call</td>
 <td><em>default</em></td>
 </tr>
@@ -1020,6 +1032,10 @@ The following sections list all processes and their non-default configuration.</
 <tr>
 <td>vcf_merge_sv</td>
 <td><em>default</em></td>
+</tr>
+<tr>
+<td>whatshap</td>
+<td>cpus=<em>default</em> memory=<em>default</em> time='23h'</td>
 </tr>
 </tbody>
 </table>
