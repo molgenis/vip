@@ -1,42 +1,56 @@
 #!/bin/bash
 set -euo pipefail
 
-base_url="https://download.molgeniscloud.org/downloads/vip/test/resources/"
+VIP_URL_DATA="${VIP_URL_DATA:-"https://download.molgeniscloud.org/downloads/vip"}"
+test_dir="/test/resources/"
+base_url="${VIP_URL_DATA}${test_dir}"
 
 # arguments:
-#   $1  url
+#   $1  path relative to file
 #   $2  md5 checksum
-#   $3  output directory
 download() {
-  local -r url="${1}"
+  local -r file_url="${1}"
   local -r md5="${2}"
-  local -r output_dir="${3}"
+    local -r file_basename="$(basename "${file_url}")"
+  local -r file="${VIP_DIR_DATA}${test_dir}${file_basename}"
 
-  local -r filename="${url##*/}"
-  local -r output="${output_dir}/${filename}"
+  mkdir -p ${VIP_DIR_DATA}${test_dir}
+  local -r vip_install_test_db_file="${VIP_DIR_DATA}/test/install.db"
+  declare -A vip_install_db
+  if [[ ! -f "${vip_install_test_db_file}" ]]; then
+    # create new database
+    touch "${vip_install_test_db_file}"
+  fi
 
-  if [ ! -f "${output}" ]; then
-    mkdir -p "${output_dir}"
-    if ! wget --quiet --continue "${url}" --output-document "${output}"; then
-      echo -e "an error occurred downloading ${url}"
-        # wget always writes an (empty) output file regardless of errors
-        rm -f "${output}"
-        exit 1
+  if ! grep -Fxq "${file_basename}" "${vip_install_test_db_file}"; then
+    local -r file_dir="$(dirname "${file}")"
+    if [[ ! -d "${file_dir}" ]]; then
+      mkdir -p "${file_dir}"
     fi
-    touch "${output_dir}/${filename}.finished"
-  fi
 
-  #due to the tests running in parallel the second test using the same file can fire the md5 check too soon.
-  if [ ! -f "${output_dir}/${filename}.finished" ]; then
-    for (( i=0; i<12; ++i)); do
-      echo -e "Waiting for '${output_dir}/${filename}' to finish downloading ($i)"
-      [ -f "${output_dir}/${filename}.finished" ] && break
-      sleep 5
-    done
+    # download file and validate checksum on the fly
+    if ! curl --fail --silent --location "${file_url}" | tee "${file}" | md5sum --check --quiet --status --strict <(echo "${md5}  -"); then
+      local -r exit_codes=("${PIPESTATUS[@]}")
+      if [[ "${exit_codes[0]}" -ne 0 ]]; then
+        >&2 echo -e "error: download '${file_url}' failed"
+      exit 1
+      fi
+      if [[ "${exit_codes[2]}" -ne 0 ]]; then
+        >&2 echo -e "error: checksum check failed for '${file}'"
+      exit 1
+      fi
+      exit 1
+    fi
+    echo -e "${file}" >> "${vip_install_test_db_file}"
   fi
-  
-  if ! echo "${md5}"  "${output_dir}/${filename}" | md5sum --check --quiet --status --strict; then
-    echo -e "checksum check failed for '${output_dir}/${filename}'"
-    exit 1
-  fi
+}
+
+runVip() {
+  #replace environment variables with actual values
+  local -r processed_input=${OUTPUT_DIR}/samplesheet.tsv
+  args=$1
+  envsubst < $2 > "${processed_input}"
+  args+=("--input" "${processed_input}")
+
+  vip.sh "${args[@]}" 1> /dev/null
 }

@@ -12,17 +12,16 @@ files["${base_url}/AshkenazimTrio/HG003_NA24149_father/PacBio_CCS_15kb_20kb_chem
 files["${base_url}/AshkenazimTrio/HG004_NA24143_mother/PacBio_CCS_15kb_20kb_chemistry2/GRCh38/HG004.SequelII.merged_15kb_20kb.pbmm2.GRCh38.haplotag.10x.bam"]="fd6d3806997c74eb539f2b7f47dab2ab"
 
 for i in "${!files[@]}"; do
-  download "${i}" "${files[$i]}" "${TEST_RESOURCES_DIR}/downloads"
+  download "${i}" "${files[$i]}"
 done
 
 args=()
 args+=("--workflow" "cram")
-args+=("--input" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.tsv")
 args+=("--config" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/AshkenazimTrio_pacbio_ccs.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then

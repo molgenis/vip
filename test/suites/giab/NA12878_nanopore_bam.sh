@@ -11,17 +11,16 @@ files["${base_url}/NA12878/Ultralong_OxfordNanopore/NA12878-minion-ul_GRCh38.bam
 files["${base_url}/NA12878/Ultralong_OxfordNanopore/NA12878-minion-ul_GRCh38.bam.bai"]="0654a1ebef25da1753c830b007854a58"
 
 for i in "${!files[@]}"; do
-  download "${i}" "${files[$i]}" "${TEST_RESOURCES_DIR}/downloads"
+  download "${i}" "${files[$i]}"
 done
 
 args=()
 args+=("--workflow" "cram")
-args+=("--input" "${TEST_RESOURCES_DIR}/NA12878_nanopore_bam.tsv")
 args+=("--config" "${TEST_RESOURCES_DIR}/NA12878_nanopore_bam.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/NA12878_nanopore_bam.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then

@@ -1,2 +1,2 @@
 individual_id	vcf
-SAMPLE0	corner_cases.vcf
+SAMPLE0	${TEST_RESOURCES_DIR}/corner_cases.vcf

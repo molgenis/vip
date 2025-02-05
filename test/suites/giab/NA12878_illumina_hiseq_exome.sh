@@ -17,16 +17,15 @@ files["${base_url}/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L0
 files["${base_url}/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R2_001_trimmed.fastq.gz"]="efb711af9498c2d11c406f9bd06b0c0a"
 
 for i in "${!files[@]}"; do
-  download "${i}" "${files[$i]}" "${TEST_RESOURCES_DIR}/downloads"
+  download "${i}" "${files[$i]}"
 done
 
 args=()
 args+=("--workflow" "fastq")
-args+=("--input" "${TEST_RESOURCES_DIR}/NA12878_illumina_hiseq_exome.tsv")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/NA12878_illumina_hiseq_exome.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then

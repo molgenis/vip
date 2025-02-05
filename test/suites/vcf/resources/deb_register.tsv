@@ -1,2 +1,2 @@
 individual_id	sex	proband	affected	vcf
-SAMPLE0	male	true	true	deb_register.vcf
+SAMPLE0	male	true	true	${TEST_RESOURCES_DIR}/deb_register.vcf
