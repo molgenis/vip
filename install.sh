@@ -6,7 +6,6 @@ SCRIPT_NAME="$(basename "${0}")"
 VIP_VER="${VIP_VER:-"v8.2.0"}"
 VIP_DIR="${VIP_DIR:-"${PWD}/vip/${VIP_VER//\//_}"}" # replace every forward slash with underscore
 VIP_DIR_DATA="${VIP_DIR_DATA:-"${PWD}/vip/data"}"
-VIP_URL_DATA="${VIP_URL_DATA:-"https://download.molgeniscloud.org/downloads/vip"}"
 
 # based on https://github.com/har7an/bash-semver-regex?tab=readme-ov-file#the-regex but without start ^ end $
 REGEX_SEM_VER="(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?"
@@ -149,7 +148,7 @@ main() {
   check_requirements
   download_vip
 
-  VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_URL_DATA="${VIP_URL_DATA}" bash "${VIP_DIR}/install_data.sh"
+  VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh"
 }
 
 main "${@}"

@@ -34,7 +34,7 @@ call_copy_number_variation () {
 }
 
 fixref () {
-  # https://github.com/fritzsedlazeck/Spectre/issues/42
+  # Workaround for https://github.com/fritzsedlazeck/Spectre/issues/42
   zcat "./spectre/!{sampleId}.vcf.gz" | \
   while IFS=$'\t' read -r -a fields
   do
@@ -55,6 +55,7 @@ fixref () {
     (IFS=$'\t'; echo "${fields[*]}") >> "fixed_ref_output.vcf"
   done
   ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" fixed_ref_output.vcf
+  rm "fixed_ref_output.vcf"
 }
 
 index () {
