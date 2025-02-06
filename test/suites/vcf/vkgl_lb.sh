@@ -1,14 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "${TEST_UTILS_DIR}/utils.sh"
+
 args=()
 args+=("--workflow" "vcf")
-args+=("--input" "${TEST_RESOURCES_DIR}/vkgl_lb.tsv")
 args+=("--config" "${TEST_RESOURCES_DIR}/vkgl_lb.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/vkgl_lb.tsv"
 
 # compare expected to actual output and store result
 # +50 because of non-deterministic behavior, see https://github.com/molgenis/vip/issues/604

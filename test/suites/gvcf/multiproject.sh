@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "${TEST_UTILS_DIR}/utils.sh"
+
 args=()
 args+=("--workflow" "gvcf")
 args+=("--config" "${TEST_RESOURCES_DIR}/multiproject.cfg")
