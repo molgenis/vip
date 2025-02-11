@@ -33,17 +33,25 @@ The default decision tree to classify variant-consequences in the context of sam
 
 *Above: default variant sample classification tree*
 
-## Customization
-The default variant filtration strategy can be customized using the following parameters (see [here](../usage/config.md#parameters)):
+## Customization and filtering
 
+Please note that the classification tree only classifies variants, and filtering based on those classes is handled in the next step of the pipeline.
+The behaviour of the filtering is based on the classes specified in the configuration of the pipeline.
+
+### Configuration
+Detailed documentation on how to modify or create your own decision tree can be found [here](https://github.com/molgenis/vip-decision-tree).
+
+To use your modified or own decision tree the following parameter(s) should be updated (see [here](../usage/config.md#parameters)).
+For the difference between the two configuration items see the sections above and the decision tree module [documentation](https://github.com/molgenis/vip-decision-tree).
 - `vcf.classify.GRCh38.decision_tree`
-- `vcf.filter.classes`
 - `vcf.classify_samples.GRCh38.decision_tree`
+
+To customize the filtering of the variants based on the classification the following parameters can be updated (see [here](../usage/config.md#parameters)).
+These parameters should contain a comma separated list of classes (values of the LEAF nodes) of your decision tree you would like to keep.
+- `vcf.filter.classes`
 - `vcf.filter_samples.classes`
 
 The following repositories might be of interest when creating a new decision tree:
 
 - [vip](https://github.com/molgenis/vip/tree/main/resources)
 - [vip-decision-tree](https://github.com/molgenis/vip-decision-tree)
-
-You are free to use your own set of classes in your decision tree. Keep in mind to update the filter classes parameters accordingly.  
