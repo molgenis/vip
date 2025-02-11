@@ -1,2 +1,2 @@
 individual_id	sequencing_platform	fastq	adaptive_sampling
-HG002	nanopore	downloads/m54238_180628_014238_s0_10000.Q20.part_001.fastq.gz,downloads/m54238_180628_014238_s0_10000.Q20.part_002.fastq.gz	downloads/m54238_180628_014238_s0_10000.Q20.adaptive_sampling.csv
+HG002	nanopore	${VIP_DIR_DATA}/test/resources/m54238_180628_014238_s0_10000.Q20.part_001.fastq.gz,${VIP_DIR_DATA}/test/resources/m54238_180628_014238_s0_10000.Q20.part_002.fastq.gz	${VIP_DIR_DATA}/test/resources/m54238_180628_014238_s0_10000.Q20.adaptive_sampling.csv

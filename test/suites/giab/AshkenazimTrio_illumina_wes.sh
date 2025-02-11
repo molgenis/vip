@@ -15,17 +15,16 @@ files["${base_url}/HG004.illumina.wes.R1.fastq.gz"]="ad3f8561e7c8c5b730510c35f55
 files["${base_url}/HG004.illumina.wes.R2.fastq.gz"]="6060c7cfe25a25209e4a3513ab7da60f"
 
 for i in "${!files[@]}"; do
-  download "${i}" "${files[$i]}" "${TEST_RESOURCES_DIR}/downloads"
+  download "${i}" "${files[$i]}"
 done
 
 args=()
 args+=("--workflow" "fastq")
-args+=("--input" "${TEST_RESOURCES_DIR}/AshkenazimTrio_illumina_wes.tsv")
 args+=("--config" "${TEST_RESOURCES_DIR}/AshkenazimTrio_illumina_wes.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/AshkenazimTrio_illumina_wes.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then

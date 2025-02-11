@@ -1,13 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "${TEST_UTILS_DIR}/utils.sh"
+
 args=()
 args+=("--workflow" "vcf")
-args+=("--input" "${TEST_RESOURCES_DIR}/aip.tsv")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-vip.sh "${args[@]}" 1> /dev/null
+runVip "${args}" "${TEST_RESOURCES_DIR}/aip.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -ge 12 ]; then

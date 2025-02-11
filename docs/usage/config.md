@@ -12,10 +12,10 @@ profiles, configure processes and update environment variables.
 | key                           | default     | description                                                                                                                       |
 |-------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | assembly                      | GRCh38      | output assembly, allowed values: [GRCh38]                                                                                         |
-| GRCh37.reference.chain.GRCh38 | *installed* | chain file to convert GRCh37 to GRCh38 data                                                                                       |
-| GRCh37.reference.fasta        | *installed* |                                                                                                                                   |
-| GRCh37.reference.fastaFai     | *installed* |                                                                                                                                   |
-| GRCh37.reference.fastaGzi     | *installed* |                                                                                                                                   |
+| GRCh37.reference.chain.GRCh38 |             | chain file to convert GRCh37 to GRCh38 data                                                                                       |
+| GRCh37.reference.fasta        |             |                                                                                                                                   |
+| GRCh37.reference.fastaFai     |             |                                                                                                                                   |
+| GRCh37.reference.fastaGzi     |             |                                                                                                                                   |
 | GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set                                                                                       |
 | GRCh38.reference.fastaFai     | *installed* |                                                                                                                                   |
 | GRCh38.reference.fastaGzi     | *installed* |                                                                                                                                   |
