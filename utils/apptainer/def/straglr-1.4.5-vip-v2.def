@@ -11,8 +11,8 @@ From: sif/build/ubuntu-22.04.sif
     curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
     chmod +x /opt/trf/trf
 
-    #dd93a55101786454f7d205848ed3aec658c277bf == 1.4.5-vip-v1
-    pip install git+https://github.com/molgenis/straglr.git@dd93a55101786454f7d205848ed3aec658c277bf#egg=straglr
+    #1c754105bc64ad27327fa541e1fc1c96cbe4122e == 1.4.5-vip-v2
+    pip install git+https://github.com/molgenis/straglr.git@1c754105bc64ad27327fa541e1fc1c96cbe4122e#egg=straglr
 
     # cleanup
     pip cache purge
