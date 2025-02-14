@@ -1,2 +1,2 @@
 individual_id	sex	proband	affected	vcf
-SAMPLE0	male	true	true	chd7.vcf
+SAMPLE0	male	true	true	${TEST_RESOURCES_DIR}/chd7.vcf
