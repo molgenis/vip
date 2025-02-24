@@ -88,7 +88,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#customization">Customization</a>
+<li class="toctree-l2"><a class="reference internal" href="#customization-and-filtering">Customization and filtering</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a>
+</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -160,20 +164,24 @@
 </ol>
 <p><img alt="Default variant-sample classification tree" src="../../img/sample_decision_tree.png"/></p>
 <p><em>Above: default variant sample classification tree</em></p>
-<h2 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">¶</a></h2>
-<p>The default variant filtration strategy can be customized using the following parameters (see <a href="../../usage/config/#parameters">here</a>):</p>
-<ul>
-<li><code>vcf.classify.GRCh38.decision_tree</code></li>
-<li><code>vcf.filter.classes</code></li>
-<li><code>vcf.classify_samples.GRCh38.decision_tree</code></li>
-<li><code>vcf.filter_samples.classes</code></li>
-</ul>
+<h2 id="customization-and-filtering">Customization and filtering<a class="headerlink" href="#customization-and-filtering" title="Permanent link">¶</a></h2>
+<p>Please note that the classification tree only classifies variants, and filtering based on those classes is handled in the next step of the pipeline.
+The behaviour of the filtering is based on the classes specified in the configuration of the pipeline.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
+<p>Detailed documentation on how to modify or create your own decision tree can be found <a href="https://github.com/molgenis/vip-decision-tree">here</a>.</p>
+<p>To use your modified or own decision tree the following parameter(s) should be updated (see <a href="../../usage/config/#parameters">here</a>).
+For the difference between the two configuration items see the sections above and the decision tree module <a href="https://github.com/molgenis/vip-decision-tree">documentation</a>.
+- <code>vcf.classify.GRCh38.decision_tree</code>
+- <code>vcf.classify_samples.GRCh38.decision_tree</code></p>
+<p>To customize the filtering of the variants based on the classification the following parameters can be updated (see <a href="../../usage/config/#parameters">here</a>).
+These parameters should contain a comma separated list of classes (values of the LEAF nodes) of your decision tree you would like to keep.
+- <code>vcf.filter.classes</code>
+- <code>vcf.filter_samples.classes</code></p>
 <p>The following repositories might be of interest when creating a new decision tree:</p>
 <ul>
 <li><a href="https://github.com/molgenis/vip/tree/main/resources">vip</a></li>
 <li><a href="https://github.com/molgenis/vip-decision-tree">vip-decision-tree</a></li>
 </ul>
-<p>You are free to use your own set of classes in your decision tree. Keep in mind to update the filter classes parameters accordingly.  </p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
