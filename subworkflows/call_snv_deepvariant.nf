@@ -1,5 +1,6 @@
 include { nrMappedReadsInChunk; getPaternalCram; getMaternalCram } from '../modules/cram/utils'
 include { call; call_duo; call_trio; concat_gvcfs; concat_vcfs; joint_call;} from '../modules/cram/deepvariant'
+include { publish_vcf } from '../modules/cram/publish_vcf'
 include { hasChild; validateGroup } from '../modules/utils'
 include { whatshap } from '../modules/cram/whatshap'
 /*
@@ -160,6 +161,12 @@ workflow deepvariant {
         }
       | set { ch_vcf_per_chunk_by_project }
     
+    ch_vcf_per_chunk_by_project.single
+      | map { meta, vcf -> [meta, vcf.data, vcf.index, vcf.stats] }
+      | publish_vcf
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_vcf_by_project }
+    
     // concatenate chunked vcfs by project
     ch_vcf_per_chunk_by_project.multiple
       | map { meta, vcfs -> [meta, vcfs.collect { it.data }, vcfs.collect { it.index }] }
@@ -167,7 +174,7 @@ workflow deepvariant {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_vcf_concat_by_project }
 
-    Channel.empty().mix(ch_vcf_concat_by_project, ch_vcf_per_chunk_by_project.single, ch_vcf_per_chunk_by_project.zero)
+    Channel.empty().mix(ch_vcf_concat_by_project, ch_vcf_by_project, ch_vcf_per_chunk_by_project.zero)
       | set { ch_vcf_per_project }
   emit:
     ch_vcf_per_project
