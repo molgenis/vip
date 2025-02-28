@@ -38,6 +38,9 @@ convert() {
   local -r contig="${1}"
   local -r version="${2}"
 
+  local -r intermediates_dir="${SCRIPT_DIR}/intermediates"
+  mkdir -p "${intermediates_dir}"
+
   local args_query=()
   args_query+=("query")
   args_query+=("--print-header")
@@ -82,8 +85,8 @@ convert() {
 
 concat() {
   local -r version="${1}"
+
   local -r intermediates_dir="${SCRIPT_DIR}/intermediates"
-  mkdir -p "${intermediates_dir}"
 
   local args=()
   for contig in "${contigs[@]}"; do
