@@ -218,6 +218,7 @@ The following sections list all processes and their non-default configuration.
 | deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'        |
 | expansionhunter_call    | cpus=4 memory='16GB' time='5h'                |
 | manta_joint_call        | cpus=4 memory='8GB' time='5h'                 |
+| publish_vcf             | memory='100MB' time='30m'                     |
 | spectre_call            | cpus=*default* memory='4GB' time=*default*    |
 | straglr_call            | *default*                                     |
 | vcf_merge_str           | *default*                                     |
