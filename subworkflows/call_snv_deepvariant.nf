@@ -165,7 +165,7 @@ workflow deepvariant {
       | map { meta, vcf -> [meta, vcf.data, vcf.index, vcf.stats] }
       | publish_vcf
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set { ch_vcf_by_project }
+      | set { ch_vcf_by_project_single }
     
     // concatenate chunked vcfs by project
     ch_vcf_per_chunk_by_project.multiple
@@ -174,7 +174,7 @@ workflow deepvariant {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_vcf_concat_by_project }
 
-    Channel.empty().mix(ch_vcf_concat_by_project, ch_vcf_by_project, ch_vcf_per_chunk_by_project.zero)
+    Channel.empty().mix(ch_vcf_concat_by_project, ch_vcf_by_project_single, ch_vcf_per_chunk_by_project.zero)
       | set { ch_vcf_per_project }
   emit:
     ch_vcf_per_project
