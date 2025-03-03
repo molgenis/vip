@@ -5,7 +5,7 @@ SCRIPT_NAME="$(basename "$0")"
 
 #Commands:
 #bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic_mapped.gff.gz -s BestRefSeq -t gene -o ./default_gene_<DATE>.bed
-#bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic_mapped.gff.gz -s BestRefSeq -t exon -o ./default_exon_<DATE>.bed
+#bash create_default_bed.sh -i ../resources/GCF_000001405.26_GRCh38_genomic_mapped.gff.gz -s BestRefSeq -t exon -o ./default_exon_<DATE>.bed
 #
 
 usage() {
