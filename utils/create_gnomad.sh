@@ -94,7 +94,7 @@ concat() {
   done
 
   local -r output="${SCRIPT_DIR}/gnomad.total.v${version}.sites.stripped.tsv.gz"
-  cat "${args[@]}" | ${CMD_BGZIP} --compress-level 9 --threads "${THREADS}" > "${output}"
+  awk 'FNR>1 || NR==1' "${args[@]}" | ${CMD_BGZIP} --compress-level 9 --threads "${THREADS}" > "${output}"
   ${CMD_TABIX} "${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
 }
 
