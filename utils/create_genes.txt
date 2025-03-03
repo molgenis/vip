@@ -1,5 +1,5 @@
 Files for the genes file are donwloaded here:
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.26_GRCh38
 
 These versions are bases on the refseq version of VEP.
 
@@ -7,4 +7,3 @@ Step by step:
 1) download the GFF files and "assembly_report.txt"
 2) map the contig identifiers to the versions used in our data:
 python ./utils/mapContigIdentifiers.py path/to/input/gff.gz path/to/assembly_report path/to/output/gff.gz
-3) download https://downloads.molgeniscloud.org/downloads/vip_dev/images/crossmap-0.6.5.sif

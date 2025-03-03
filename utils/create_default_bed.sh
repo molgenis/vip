@@ -4,15 +4,14 @@ set -euo pipefail
 SCRIPT_NAME="$(basename "$0")"
 
 #Commands:
-#bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic.gff.gz -m ../resources/GCF_000001405.40_GRCh38.p14_assembly_report.txt -s BestRefSeq -t gene -o ./default_gene_<DATE>.bed
-#bash create_default_bed.sh -i ../resources/GCF_000001405.40_GRCh38.p14_genomic.gff.gz -m ../resources/GCF_000001405.40_GRCh38.p14_assembly_report.txt -s BestRefSeq -t exon -o ./default_exon_<DATE>.bed
+#bash create_default_bed.sh -i ../resources/GCF_000001405.26_GRCh38_genomic_mapped.gff.gz -s BestRefSeq -t gene -o ./default_gene_<DATE>.bed
+#bash create_default_bed.sh -i ../resources/GCF_000001405.26_GRCh38_genomic_mapped.gff.gz -s BestRefSeq -t exon -o ./default_exon_<DATE>.bed
 #
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} -v <arg>
 create default bed file
-  -i, --input    <arg>    input gff file (e.g. https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.40_GRCh38.p14/GCF_000001405.40_GRCh38.p14_genomic.gff.gz)
-  -m, --mapping    <arg>    assembly report to map GFF contig identifiers to VCF contig identifiers(e.g https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.40_GRCh38.p14/GCF_000001405.40_GRCh38.p14_assembly_report.txt)
+  -i, --input    <arg>    input gff file, our own mapped gff version from "create_genes.txt"
   -t, --types    <arg>    comma separated list of types from the gff that should be included
   -s, --sources    <arg>    which sources to include, possible values: BestRefSeq,RefSeq,RefSeqFE,Gnomon,cmsearch,Curated Genomic,tRNAscan-SE
   -o, --output    <arg>    output bed file file/location
@@ -21,23 +20,13 @@ create default bed file
 
 create() {
 	local -r input="${1}"
-	local -r mapping="${2}"
-	local -r types="${3}"
-	local -r sources="${4}"
-	local -r output="${5}"
+	local -r types="${2}"
+	local -r sources="${3}"
+	local -r output="${4}"
 
-	zcat "${input}" | awk -v mapfile="${mapping}" -v types_input="${types}" -v sources_input="${sources}" '
+	zcat "${input}" | awk -v types_input="${types}" -v sources_input="${sources}" '
 	BEGIN {
 		FS = OFS = "\t";
-		# Load mapping file
-		while ((getline line < mapfile) > 0) {
-			if (line ~ /^#/) continue;
-			split(line, fields, "\t");
-      contig = fields[10]
-      gsub(/[\r\n]+/, "", contig)
-			contig_map[fields[7]] = contig;
-		}
-		close(mapfile);
 	
     #input types and sources to map for easier use
 		n = split(types_input, included_types, ",");
@@ -78,23 +67,17 @@ create() {
 					break;
 				}
 			}
-			if ($1 in contig_map) {
-				new_contig = contig_map[$1];
-				print new_contig, $4, $5, id;
-			} else {
-				print "Error: Unknown Contig " $1 " encountered." > "/dev/stderr";
-				exit 1;
-			}
+			print $1, $4, $5, id;
+			
 		}
 	}' > "${output}"
 }
 
 validate() {
   local -r input="${1}"
-  local -r classification="${2}"
-	local -r types="${3}"
-	local -r sources="${4}"
-	local -r output="${5}"
+	local -r types="${2}"
+	local -r sources="${3}"
+	local -r output="${4}"
 
   # input
   if [[ -z "${input}" ]]; then
@@ -119,16 +102,6 @@ validate() {
     echo -e "-o, --output '${output}' already exists"
     exit 1
   fi
-  
-  #mapping
-   if [[ -z "${mapping}" ]]; then
-    echo -e "missing required -m, --mapping"
-    exit 1
-  fi
-  if [[ "${mapping}" != *.txt ]]; then
-    echo -e "-m, --mapping '${mapping}' is not a '.txt' file"
-    exit 1
-  fi
 
   #sources
   if [[ -z "${sources}" ]]; then
@@ -143,7 +116,7 @@ validate() {
 }
 
 main() {
-  local -r args=$(getopt -a -n pipeline -o i:o:m:t:s:h --long input:,mapping:,types:,sources:,output:,help -- "$@")
+  local -r args=$(getopt -a -n pipeline -o i:o:t:s:h --long input:,types:,sources:,output:,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -161,10 +134,6 @@ main() {
       ;;
     -i | --input)
       input="$2"
-      shift 2
-      ;;
-	-m | --mapping)
-      mapping="$2"
       shift 2
       ;;
 	-t | --types)
@@ -190,8 +159,8 @@ main() {
     esac
   done
 
-  validate "${input}" "${mapping}" "${types}" "${sources}" "${output}"
-  create "${input}" "${mapping}" "${types}" "${sources}" "${output}"
+  validate "${input}" "${types}" "${sources}" "${output}"
+  create "${input}" "${types}" "${sources}" "${output}"
 }
 
 main "${@}"
