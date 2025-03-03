@@ -1,5 +1,5 @@
 Files for the genes file are donwloaded here:
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.40_GRCh38.p14
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.26_GRCh38
 
 These versions are bases on the refseq version of VEP.
 
