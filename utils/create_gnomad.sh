@@ -38,6 +38,9 @@ convert() {
   local -r contig="${1}"
   local -r version="${2}"
 
+  local -r intermediates_dir="${SCRIPT_DIR}/intermediates"
+  mkdir -p "${intermediates_dir}"
+
   local args_query=()
   args_query+=("query")
   args_query+=("--print-header")
@@ -75,15 +78,15 @@ convert() {
         $20!="." ? $20 : "",
         $21!="." ? $21/(730947*2) : "",
         $22!="." ? $22/(76215*2) : "",
-        $23!="." ? ($19!="." ? ($20!="." ? $23/((730947+76215)*2) : $23/(730947*2)) : $23/(76215*2)) : ""
+        $23!="." ? ($19!="" ? ($20!="" ? $23/((730947+76215)*2) : $23/(730947*2)) : $23/(76215*2)) : ""
     }
   ' > "${SCRIPT_DIR}/intermediates/gnomad.total.v${version}.sites.${contig}.annotated.tsv"
 }
 
 concat() {
   local -r version="${1}"
+
   local -r intermediates_dir="${SCRIPT_DIR}/intermediates"
-  mkdir -p "${intermediates_dir}"
 
   local args=()
   for contig in "${contigs[@]}"; do
@@ -91,7 +94,7 @@ concat() {
   done
 
   local -r output="${SCRIPT_DIR}/gnomad.total.v${version}.sites.stripped.tsv.gz"
-  cat "${args[@]}" | ${CMD_BGZIP} --compress-level 9 --threads "${THREADS}" > "${output}"
+  awk 'FNR>1 || NR==1' "${args[@]}" | ${CMD_BGZIP} --compress-level 9 --threads "${THREADS}" > "${output}"
   ${CMD_TABIX} "${output}" --begin 2 --end 2 --sequence 1 --skip-lines 1
 }
 
