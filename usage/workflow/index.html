@@ -157,7 +157,7 @@ The following sections provide an overview of the steps of each of these workflo
 </li>
 <li>Discover copy number variants for for PacBio and Nanopore long read data using <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a> data and publish as intermediate result.</li>
 <li>Parallelize cram in chunks consisting of one or more contigs and for each chunk<ol>
-<li>Perform short variant calling with <a href="https://github.com/google/deepvariant">DeepVariant</a> producing a <code>gvcf</code> file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a> and phased using <a href="https://github.com/whatshap/whatshap/ &lt;sup&gt;1&lt;/sup&gt;">Whatshap</a>.</li>
+<li>Perform short variant calling with <a href="https://github.com/google/deepvariant">DeepVariant</a> producing a <code>gvcf</code> file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a> and phased using <a href="https://github.com/whatshap/whatshap">Whatshap</a>.</li>
 <li>Perform structural variant calling with <a href="https://github.com/Illumina/manta">Manta</a> or <a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a> producing a <code>vcf</code> file per chunk per project.</li>
 </ol>
 </li>
