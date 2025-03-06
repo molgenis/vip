@@ -184,6 +184,7 @@ vep() {
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--safe")
+  args+=("--plugin" "REVEL,!{vepPluginREVEL}")
 
   if [ -n "!{hpoIds}" ]; then
     args+=("--plugin" "Hpo,!{params.vcf.annotate.vep_plugin_hpo},!{hpoIds.replace(',', ';')}")

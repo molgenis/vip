@@ -143,6 +143,13 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "REVEL": {
+          "label": "REVEL",
+          "description": "REVEL pathogenicity score",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "cDNA_position": {
           "label": "cDNA pos",
           "description": "Position within the cDNA.",
