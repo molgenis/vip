@@ -38,7 +38,7 @@ specific columns.
 | ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
 | ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
 | ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples                                                                               |
-| ``regions``           | ``file``        |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file<sup>2</sup>                                                            |
+| ``regions``           | ``file``        |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
@@ -47,12 +47,12 @@ specific columns.
 | column                  | type          | required        | default      | description                                                                                                               |
 |-------------------------|---------------|-----------------|--------------|---------------------------------------------------------------------------------------------------------------------------|
 | ``adaptive_sampling``   | ``file``      |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving` reads | 
-| ``fastq``               | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                               |
-| ``fastq_r1``            | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                        |
-| ``fastq_r2``            | ``file list`` | yes<sup>3</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                        |
+| ``fastq``               | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                               |
+| ``fastq_r1``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                        |
+| ``fastq_r2``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                        |
 | ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples               |
 
-<sup>3</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
+<sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 
 ## Columns: CRAM
 
