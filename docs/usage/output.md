@@ -39,8 +39,8 @@ All data and code to interact with and display this data is contained in one fil
 This ensures that no internet connection is required to view the report and enables easy sharing with other people.
 
 - [Live example #0](../vip0.html)
-- [Live example #0](../vip1.html)
-- [Live example #0](../vip2.html)
+- [Live example #1](../vip1.html)
+- [Live example #2](../vip2.html)
 
 ![Example report](../img/report_example.png)
 
