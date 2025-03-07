@@ -403,17 +403,17 @@
         "nextNode": "exit_vus"
       },
       "outcomeFalse": {
-        "nextNode": "capice"
+        "nextNode": "revel"
       }
     },
-    "capice": {
-      "label": "CAPICE",
-      "description": "CAPICE prediction > 0.5",
+    "revel": {
+      "label": "REVEL",
+      "description": "REVEL prediction > 0.75",
       "type": "BOOL",
       "query": {
-        "field": "INFO/CSQ/CAPICE_SC",
+        "field": "INFO/CSQ/REVEL",
         "operator": ">",
-        "value": 0.5
+        "value": 0.75
       },
       "outcomeTrue": {
         "nextNode": "exit_lp"
