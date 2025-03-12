@@ -278,6 +278,82 @@ viab(){
 
 }
 
+#workaround for: https://github.com/Ensembl/ensembl-vep/issues/1848
+fix_vep_str () {
+  #read the vcf round1: file to get the index of ALLELE_NUM in the CSQ annotation
+  while IFS= read -r line; do
+      # || echo "" to prevent exit upon non matching lines
+      csqDesc=$(expr match "${line}" '##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: \(.*\)">') || echo ""
+      if [[ -n "${csqDesc}" ]]; then
+        IFS='|' read -ra arr <<< "${csqDesc}"
+        for index in "${!arr[@]}"; do
+          if [[ "${arr[index]}" == "ALLELE_NUM" ]]; then
+            alleleNumIdx="${index}"
+          fi
+        done 
+        #exit the loop if CSQ was found
+        break
+      fi
+  done < <(zcat "vep_!{vcfOut}")
+
+  if [ -z "${alleleNumIdx}" ]; then
+    >&2 echo -e "error: VCF is missing CSQ/ALLELE_NUM"
+    exit 1
+  fi
+
+  #read the vcf round2: fix annotations for lines containing multiple <CNV:TR>
+  while IFS= read -r line; do
+    #Skip headers
+    if [[ "${line}" != \#* ]]; then
+      IFS=$'\t' read -r -a lineArray <<< "${line}"; unset IFS
+      alts="${lineArray[4]}"
+      IFS=',' read -r -a altArray <<< "${alts}"; unset IFS
+      #check if line contains CNV:TR ALT and multiple ALT values, else skip it
+      if [ "${altArray[0]}" = "<CNV:TR>" ] && [ "${#altArray[@]}" -gt 1 ]; then
+        #combined <CNV:TR> and none <CNV:TR> lines should not exist, exit if encountered anyway.
+        for alt in "${altArray[@]}"; 
+        do
+          if [[ "$alt" != "<CNV:TR>" ]]; then 
+          >&2 echo -e "error: VCF line contains mixed STR/nonSTR ALT alleles. This valid VCF but unexpected and not accounted for."
+          exit 1
+          fi 
+        done
+        #extract CSQ value from vcf line
+        csq=$(echo -e "${line}" | sed -n 's/.*CSQ=\([^;\t]*\).*/\1/p')
+        if [[ -n "${csq}" ]]; then
+          newCsqArray=()
+          #split CSQ in separate values
+          IFS=',' read -r -a csqArray <<< "${csq}"
+          for singleCsq in "${csqArray[@]}"
+          do
+            #ALLELE_NUM is 1 based
+            alleleIdx=1
+            #for every alt print the CSQ value and fix the ALLELE_NUM subfield
+            for alt in "${altArray[@]}"
+            do
+              updatedCsq=$(echo "${singleCsq}" | awk -v idx="$((alleleNumIdx))" -v val="${alleleIdx}" -F'|' '{
+                OFS="|";
+                for (i = 1; i <= NF; i++) {
+                  #alleleNumIdx (stored in idx) is 0-based, awk is 1 based
+                  if (i == idx+1) $i = val;
+                }print
+              }')
+              newCsqArray+=("${updatedCsq}")
+              alleleIdx="$((alleleIdx + 1))"
+            done
+          done
+          #format CSQ array as comma-separated string and replace the CSQ value with the updated one
+          IFS=','; newCSQ="${newCsqArray[*]}"; unset IFS
+          #escape special characters in new CSQ
+          line=$(echo -e "${line}" | awk -v csq="$(echo "${newCSQ}" | sed 's/&/\\\\&/g')" 'BEGIN{OFS=FS="\t"} {gsub(/CSQ=[^;\t]*/, "CSQ=" csq, $8); print}')
+        fi
+      fi
+    fi
+    #print all VCF lines to new file
+    echo -e "${line}"
+    done < <(zcat "vep_!{vcfOut}") | ${CMD_BGZIP} -c > "vep_fixed_!{vcfOut}"
+}
+
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
@@ -301,8 +377,8 @@ main () {
   vep_preprocess "${vepInputPath}" "${vcfPreprocessed}"
   capice "${vcfPreprocessed}"
   vep "${vcfPreprocessed}"
-  
-  viab "vep_!{vcfOut}"
+  fix_vep_str
+  viab "vep_fixed_!{vcfOut}"
   index
 }
 
