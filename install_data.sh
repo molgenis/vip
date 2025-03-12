@@ -6,16 +6,25 @@ SCRIPT_NAME="$(basename "${0}")"
 VIP_URL_DATA="${VIP_URL_DATA:-"https://download.molgeniscloud.org/downloads/vip"}"
 VIP_DISK_SPACE_REQUIRED_GIGABYTES="280"
 
-if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
-  echo -e "usage: bash ${SCRIPT_NAME}.sh
+usage() {
+  echo -e "usage: bash ${SCRIPT_NAME}.sh [-v <vip_version>] [-d <data_dir>] [-u <url>] [-p]
+  -p, --prune     remove resources from previous VIP installs that are not required for this version.
+  -u, --url       base url to download VIP resources from
+  -d, --data_dir  directory where VIP resources should be installed
+  -v, --version   VIP version to be installed
+  -h, --help
+
   requirements:
     VIP_DIR_DATA environment variable exists
     disk space ${VIP_DISK_SPACE_REQUIRED_GIGABYTES}G for initial install
   environment variables with default values:
+    VIP_VER      ${VIP_VER}
     VIP_DIR_DATA ${VIP_DIR_DATA}
-    VIP_URL_DATA ${VIP_URL_DATA}"
+    VIP_URL_DATA ${VIP_URL_DATA}
+  if --data and/or --url are not provided."
   exit 0
-fi
+}
+
 
 check_requirements_environment() {
   if [[ -z ${VIP_DIR_DATA+x} ]]; then
@@ -151,12 +160,16 @@ postprocess_vep() {
 }
 
 install_files() {
+  VIP_VER=$1;
+  is_prune_enabled=$2;
+
   # parse database to determine files to install
   local -r vip_install_db_file="${VIP_DIR_DATA}/install.db"
   declare -A vip_install_db
   if [[ -f "${vip_install_db_file}" ]]; then
-    while IFS= read -r; do
-      vip_install_db["${REPLY}"]="INSTALLED"
+    # shellcheck disable=SC2034
+    while read -r resource version; do
+      vip_install_db["${resource}"]="INSTALLED"
     done <"${vip_install_db_file}"
   else
     # create new database
@@ -243,25 +256,79 @@ install_files() {
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
   data+=("4023abed0bccb31bf18bde3ddd1f2ed6" "resources/vip-report-template-v7.1.1.html" "")
 
+
   for ((i = 0; i < ${#data[@]}; i += 3)); do
     if [[ ! "${vip_install_db["${data[i+1]}"]+_}" ]]; then
       install_file "${data[i+0]}" "${data[i+1]}" "${data[i+2]}"
 
        # update database
-       echo -e "${data[i+1]}" >> "${vip_install_db_file}"
+       echo -e "${data[i+1]}\t${VIP_VER}" >> "${vip_install_db_file}"
     fi
   done
+
+  # remove old resources if prune is enabled
+  if [ "${is_prune_enabled}" = "true" ]; then
+      declare -A resources_map
+
+      for ((i=0; i<${#data[@]}; i+=3)); do
+          resources_map["${data[i+1]}"]="true"
+      done
+
+      mapfile -t files < <(find "${VIP_DIR_DATA}" -type f -printf "%P\n")
+      for file in "${files[@]}"; do
+          if [ "${file}" != "install.db" ]; then
+              if [[ "${resources_map["${file}"]:-}" != "true" ]]; then
+                  echo "File '${file}' is not a resource for the current VIP installation and will be removed."
+                  rm "${VIP_DIR_DATA}/${file}"
+                  escaped_file=$(echo "$file" | sed 's/\//\\\//g')
+                  sed -i "/${escaped_file}/d" "${vip_install_db_file}"
+              fi
+          fi
+      done
+  fi
 }
 
 main() {
-  #validate arguments
-  if [[ "${#}" -ne 0 ]]; then
-    >&2 echo "error: invalid arguments '${*}', see 'bash ${SCRIPT_NAME} --help' for more information"
-    exit 1
-  fi
+ local -r args=$(getopt -a -n install -o d:u:pv:h --long data_dir:,url:,prune,version:,help -- "$@")
+  
+  VIP_VER="${VIP_VER:-"dev"}"
+  is_prune_enabled="false"
+  
+  eval set -- "${args}"
+  while :; do
+    case "$1" in
+    -h | --help)
+      usage
+      ;;
+    -u | --url)
+      VIP_URL_DATA="$2"
+      shift 2
+      ;;
+    -d | --data_dir)
+      VIP_DIR_DATA="$2"
+      shift 2
+      ;;
+    -v | --version)
+      VIP_VER="$2"
+      shift 2
+      ;;
+    -p | --prune)
+      is_prune_enabled="true"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      ;;
+    esac
+  done
 
   check_requirements
-  install_files
+  install_files "${VIP_VER}" "${is_prune_enabled}"
+  
 }
 
 main "${@}"
