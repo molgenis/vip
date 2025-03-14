@@ -10,8 +10,15 @@ VIP_DIR_DATA="${VIP_DIR_DATA:-"${PWD}/vip/data"}"
 # based on https://github.com/har7an/bash-semver-regex?tab=readme-ov-file#the-regex but without start ^ end $
 REGEX_SEM_VER="(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?"
 
-if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
-  echo -e "usage: bash ${SCRIPT_NAME}.sh
+usage() {
+  echo -e "usage: bash ${SCRIPT_NAME}.sh [-v <vip_version>] [-i <vip_install_dir>] [-d <data_dir>] [-u <url>] [-p]
+  -p, --prune     remove resources from previous VIP installs that are not required for this version.
+  -u, --url       base url to download VIP resources from
+  -d, --data_dir  directory where VIP resources should be installed
+  -i, --vip_dir   directory where the VIP software should be installed
+  -v, --version   VIP version to be installed
+  -h, --help
+
   requirements:
     apptainer    see https://apptainer.org/
     bash         >= 3.2
@@ -20,9 +27,10 @@ if [[ "${#}" -eq "1" ]] && [[ "${*}" == "--help" ]]; then
     VIP_VER      ${VIP_VER}
     VIP_DIR      ${VIP_DIR}
     VIP_DIR_DATA ${VIP_DIR_DATA}
-    VIP_URL_DATA ${VIP_URL_DATA}"
+    VIP_URL_DATA ${VIP_URL_DATA}
+    if --data_dir, --version, --vip_dir and/or --url are not provided."
   exit 0
-fi
+}
 
 # set trap only after print usage check
 trap "handle_exit" EXIT
@@ -133,22 +141,61 @@ download_vip() {
 }
 
 main() {
-  #validate arguments
-  if [[ "${#}" -ne 0 ]]; then
-    >&2 echo "error: invalid arguments '${*}', see 'bash ${SCRIPT_NAME} --help' for more information"
-    exit 1
-  fi
+  local -r args=$(getopt -a -n install -o i:d:u:v:ph --long vip_dir:,data_dir:,url:,version:,prune,help -- "$@")
+  is_prune_enabled="false"
+
+  eval set -- "${args}"
+  while :; do
+    case "$1" in
+    -h | --help)
+      usage
+      ;;
+    -p | --prune)
+      is_prune_enabled="true"
+      shift
+      ;;
+    -u | --url)
+      VIP_URL_DATA="$2"
+      shift 2
+      ;;
+    -d | --data_dir)
+      VIP_DIR_DATA="$2"
+      shift 2
+      ;;
+    -i | --vip_dir)
+      VIP_DIR="$2"
+      shift 2
+      ;;
+    -v | --version)
+      VIP_VER="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      ;;
+    esac
+  done
 
   if [[ -d "${VIP_DIR_DATA}" ]]; then
     echo -e "VIP ${VIP_VER} installation running..."
   else
     echo -e "VIP ${VIP_VER} installation running, this might take a long time depending on download speed..."
   fi
-
   check_requirements
   download_vip
+  local data_args=()
+  data_args+=("--version" "${VIP_VER}")
+  if [ "${is_prune_enabled}" = true  ]; then
+    data_args+=("--prune")
+  fi
+  data_args+=("--data_dir" "${VIP_DIR_DATA}")
+  data_args+=("--url" "${VIP_URL_DATA}")
 
-  VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh"
+  VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
 }
 
 main "${@}"
