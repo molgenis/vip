@@ -328,7 +328,6 @@ main() {
 
   check_requirements
   install_files "${VIP_VER}" "${is_prune_enabled}"
-  
 }
 
 main "${@}"
