@@ -329,6 +329,13 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "GDB_CONTR_GENES": {
+          "label": "GDB_CONTR_GENES",
+          "description": "Genes controlled by the GREEN-DB region with the highest constraint score",
+          "numberType": "OTHER",
+          "separator": "&",
+          "type": "STRING"
+        },
         "Feature_type": {
           "label": "Feature Type.",
           "description": "The VEP feature type",
