@@ -205,7 +205,7 @@ install_files() {
   data+=("fbfbaa3e90c2888823f0e17ce631396e" "resources/GRCh38/capice_model_v5.1.2-v4.ubj" "")
   data+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed" "")
   data+=("36237930759e2e5a720a19c3cc9b57f7" "resources/GRCh38/clinvar_20250312_stripped.tsv.gz" "")
-  data+=("6b1ed6d55e870e37d2bed360abc26fe2" "resources/GRCh38/clinvar_20250312_stripped.tsv.gz.tbi" "")
+  data+=("24ab3ed7372e74764295928530cede94" "resources/GRCh38/clinvar_20250312_stripped.tsv.gz.tbi" "")
   data+=("c3197ab5a9e6a6e3429d611149b4dedd" "resources/GRCh38/default_exon_20250303.bed" "")
   data+=("f94e8888dd109d12512132a17793b4b9" "resources/GRCh38/default_gene_20250303.bed" "")
   data+=("72f12f9ee918878030022c46ec850038" "resources/GRCh38/expansionhunter_variant_catalog.json" "")
