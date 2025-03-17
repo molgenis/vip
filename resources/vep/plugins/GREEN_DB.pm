@@ -49,7 +49,8 @@ sub get_header_info {
       GDB_ENH => "GREEN_DB Enhancer maximum constraint score.",
       GDB_BIV => "GREEN_DB Bivalent maximum constraint score.",
       GDB_SIL => "GREEN_DB Silencer maximum constraint score.",
-      GDB_INS => "GREEN_DB Insulator maximum constraint score."
+      GDB_INS => "GREEN_DB Insulator maximum constraint score.",
+      GDB_CONTR_GENES => "GREEN_DB Regulatory region controlled genes."
     }
 }
 
@@ -87,6 +88,7 @@ sub get_scores {
       if(!$values->{$line[4]} || $line[8] > $values->{$line[4]}){
         if($line[8] ne "NA"){
           $values->{$line[4]} = $line[8];
+          $values->{"controlled_genes"} = $line[18];
         }
       }
     }
@@ -113,6 +115,7 @@ sub run {
   $result->{GDB_BIV} = $scores->{"bivalent"};
   $result->{GDB_SIL} = $scores->{"silencer"};
   $result->{GDB_INS} = $scores->{"insulator"};
+  $result->{GDB_CONTR_GENES} = $scores->{"controlled_genes"};
   
   return $result;
   };
