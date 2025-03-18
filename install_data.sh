@@ -202,7 +202,7 @@ install_files() {
   data+=("74b9abc9a94c81fc27393e2f77ad498b" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_info.txt.gz" "")
   data+=("55d49c8d95ffc9aee2ec584359c197d2" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz" "")
   data+=("c6178d80393254789ebf9c43df6f2d6f" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi" "")
-  data+=("fbfbaa3e90c2888823f0e17ce631396e" "resources/GRCh38/capice_model_v5.1.2-v4.ubj" "")
+  data+=("dd8dd40c6dd850c31faa9554fa3a1771" "resources/GRCh38/capice_model_v5.1.2-v5.ubj" "")
   data+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed" "")
   data+=("36237930759e2e5a720a19c3cc9b57f7" "resources/GRCh38/clinvar_20250312_stripped.tsv.gz" "")
   data+=("24ab3ed7372e74764295928530cede94" "resources/GRCh38/clinvar_20250312_stripped.tsv.gz.tbi" "")
