@@ -11,9 +11,9 @@ create_vcf () {
   args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
-  args+=("!{vcf}")
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  # workaround for https://github.com/samtools/bcftools/issues/2385
+  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" "!{vcf}" | ${CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {
