@@ -198,7 +198,7 @@ main() {
     data_args+=("--url" "${url}")
   fi
 
-  VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
+  bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
 }
 
 main "${@}"
