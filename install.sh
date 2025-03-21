@@ -27,8 +27,7 @@ usage() {
     VIP_VER      ${VIP_VER}
     VIP_DIR      ${VIP_DIR}
     VIP_DIR_DATA ${VIP_DIR_DATA}
-    VIP_URL_DATA ${VIP_URL_DATA}
-    if --data_dir, --version, --vip_dir and/or --url are not provided."
+    if --version, --vip_dir and/or --data_dir are not provided."
   exit 0
 }
 
@@ -142,7 +141,9 @@ download_vip() {
 
 main() {
   local -r args=$(getopt -a -n install -o i:d:u:v:ph --long vip_dir:,data_dir:,url:,version:,prune,help -- "$@")
-  is_prune_enabled="false"
+
+  local is_prune_enabled="false"
+  local url=""
 
   eval set -- "${args}"
   while :; do
@@ -155,7 +156,7 @@ main() {
       shift
       ;;
     -u | --url)
-      VIP_URL_DATA="$2"
+      url="$2"
       shift 2
       ;;
     -d | --data_dir)
@@ -193,7 +194,9 @@ main() {
     data_args+=("--prune")
   fi
   data_args+=("--data_dir" "${VIP_DIR_DATA}")
-  data_args+=("--url" "${VIP_URL_DATA}")
+  if [[ -n "${url}" ]]; then
+    data_args+=("--url" "${url}")
+  fi
 
   VIP_DIR_DATA="${VIP_DIR_DATA}" bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
 }
