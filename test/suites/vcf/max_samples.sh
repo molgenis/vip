@@ -13,7 +13,7 @@ args+=("--resume")
 runVip "${args}" "${TEST_RESOURCES_DIR}/max_samples.tsv"
 
 # compare expected to actual number of samples
-if [ "$(zgrep "^#CHROM" ${OUTPUT_DIR}/vip.vcf.gz | awk '{print NF-9}')" -eq 10 ]; then
+if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -eq 1 ]; then
   result="0"
 else
   result="1"
