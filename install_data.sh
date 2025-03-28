@@ -197,7 +197,7 @@ install_files() {
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
   data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
-  data+=("b3251b3329e92d5c67b383353d3d3f5d" "images/vcf-decision-tree-5.1.3.sif" "")
+  data+=("b3251b3329e92d5c67b383353d3d3f5d" "images/vcf-decision-tree-5.1.4.sif" "") #FIXME update checksum
   data+=("8fce60e511a00261d072beeeac44a44f" "images/vcf-inheritance-matcher-3.4.0.sif" "")
   data+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
