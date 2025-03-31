@@ -132,13 +132,14 @@
 <pre><code class="language-bash">curl -sSL https://download.molgeniscloud.org/downloads/vip/install.sh | bash
 </code></pre>
 <pre><code>VIP feat/installer_improvements installation running...
-VIP feat/installer_improvements installation completed, execute vip/v8.2.0/vip.sh to get started
+VIP feat/installer_improvements installation completed, execute vip/v8.3.0/vip.sh to get started
 </code></pre>
 <h2 id="easybuild">EasyBuild<a class="headerlink" href="#easybuild" title="Permanent link">¶</a></h2>
 <p>HPC systems running <a href="https://easybuild.io/">EasyBuild</a> can install VIP by adapting the <code>/apps</code> paths in
 these <a href="https://github.com/molgenis/take-it-easyconfigs/tree/main/v/vip">easyconfig files</a> to your local environment.</p>
 <h2 id="customized">Customized<a class="headerlink" href="#customized" title="Permanent link">¶</a></h2>
-<p>Alternatively the VIP installer can be called providing command line parameters to change the behaviour of the installer:</p>
+<p>Alternatively the VIP installer can be called providing command line parameters to change the behaviour of the
+installer:</p>
 <pre><code>bash install.sh [-v &lt;vip_version&gt;] [-i &lt;vip_install_dir&gt;] [-d &lt;data_dir&gt;] [-u &lt;url&gt;] [-p]
 -u, --url       base url to download VIP resources from
 -d, --data_dir  directory where VIP resources should be installed
@@ -147,7 +148,8 @@ these <a href="https://github.com/molgenis/take-it-easyconfigs/tree/main/v/vip">
 -p, --prune     remove resources from previous VIP installs that are not required for this version.
 -h, --help
 </code></pre>
-<p>*: Please note that the installer might change between releases and not every install.sh will be suitable for every release.
+<p>*: Please note that the installer might change between releases and not every install.sh will be suitable for every
+release.
 This option is intended for development purposes, e.g. to install feature branches.</p>
 </div>
 </div><footer>
