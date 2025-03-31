@@ -197,9 +197,9 @@ install_files() {
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
   data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
-  data+=("b3251b3329e92d5c67b383353d3d3f5d" "images/vcf-decision-tree-5.1.3.sif" "")
+  data+=("880aa6fcb5dbfbaf0dd88f6cc99cf6f7" "images/vcf-decision-tree-5.1.4.sif" "")
   data+=("8fce60e511a00261d072beeeac44a44f" "images/vcf-inheritance-matcher-3.4.0.sif" "")
-  data+=("9357590531fd4f1af1ab610ddafbdd3b" "images/vcf-report-7.2.0.sif" "")
+  data+=("9dba35e91c27050a200f40b3238fcfad" "images/vcf-report-7.2.2.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("4db012dfaa1ed91371b73e3ab338aaad" "nextflow-24.10.3-dist" "postprocess_nextflow")
@@ -254,7 +254,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("ff9677b7756d4d6901441aad6a6e0f49" "resources/inheritance_20250131.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("4023abed0bccb31bf18bde3ddd1f2ed6" "resources/vip-report-template-v7.1.1.html" "")
+  data+=("b95c24c89babebce52f103e4f55a1e7e" "resources/vip-report-template-v7.1.3.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do
