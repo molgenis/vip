@@ -16,8 +16,7 @@ From: sif/build/openjdk-21.sif
 
     mkdir -p /opt/vcf-report/lib
     curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
-    echo "06d49d172d01c102f483fe5a00b9f7b6e5186b84f7d173597c34f1a6b7034443  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
-    # FIXME update checksum
+    echo "72f5ef0ce71fc1677cba00dd7cb4d4020a9fc430d8a13d028cd4da45cf5f7493  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
