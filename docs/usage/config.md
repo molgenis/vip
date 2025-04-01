@@ -5,7 +5,8 @@ An additional configuration file can be supplied on the command-line to overwrit
 profiles, configure processes and update environment variables.
 
 !!! tip
-    VIP enables the Slurm executor if available, configuration options are listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
+VIP enables the Slurm executor if available, configuration options are
+listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
 
 ## Parameters
 
@@ -162,7 +163,7 @@ Both the zipped and unzipped fasta should have an index.
 | vcf.filter.classes                              | VUS,LP,P    | for details, see [here](../advanced/classification_trees.md)                                                                                                                                                                                                |
 | vcf.filter.consequences                         | true        | allowed values: [true, false]. true: filter individual consequences, false: keep all consequences for a variant if one consequence filter passes.                                                                                                           |
 | vcf.filter_samples.classes                      | U1,U2       | for details, see [here](../advanced/classification_trees.md)                                                                                                                                                                                                |
-| vcf.normalize.allow_invalid_ref                 | false       | throw error or warn when incorrect or missing REF allele is encountered.                                                                                                                                                                                    |
+| vcf.normalize.allow_invalid_ref                 | true        | throw error or warn when incorrect or missing REF allele is encountered.                                                                                                                                                                                    |
 | vcf.report.gado_genes                           | *installed* |                                                                                                                                                                                                                                                             |
 | vcf.report.gado_hpo                             | *installed* |                                                                                                                                                                                                                                                             |
 | vcf.report.gado_predict_info                    | *installed* |                                                                                                                                                                                                                                                             |
