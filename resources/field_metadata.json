@@ -675,6 +675,14 @@
           "type": "STRING",
           "required": true
         },
+        "VIPL": {
+          "label": "VIP labels",
+          "description": "VIP decision tree labels",
+          "numberType": "OTHER",
+          "separator": "&",
+          "type": "STRING",
+          "required": false
+        },
         "VKGL_CL": {
           "label": "VKGL",
           "description": "Variant consensus classification from the Vereniging Klinisch Genetische Laboratoriumdiagnostiek (VKGL) datashare database, see https://vkgl.nl/nl/diagnostiek/vkgl-datashare-database",

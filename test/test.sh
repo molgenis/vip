@@ -260,7 +260,7 @@ validate() {
   local -r test="${1}"
   local -r clean="${2}"
 
-  if ! command -v sbatch &> /dev/null; then
+  if ! command -v sbatch; then
     >&2 echo -e "error: tests require 'sbatch' in order to run"
     exit 1
   fi

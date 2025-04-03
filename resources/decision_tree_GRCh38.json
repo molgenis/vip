@@ -1,5 +1,10 @@
 {
-  "rootNode": "filter",
+  "files": {
+    "outlier" : {
+      "path" : "REPLACE_ME_WITH_OUTLIERS"
+    }
+  },
+  "rootNode": "outliers",
   "nodes": {
     "filter": {
       "label": "Filter",
@@ -184,6 +189,26 @@
       },
       "outcomeFalse": {
         "nextNode": "exit_rm"
+      }
+    },
+    "outliers": {
+      "label": "Is outlier",
+      "description": "Is gene an outlier?",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/Gene",
+        "operator": "in",
+        "value": "file:outlier"
+      },
+      "outcomeTrue": {
+        "label": "OUTLIER",
+        "nextNode": "filter"
+      },
+      "outcomeFalse": {
+        "nextNode": "filter"
+      },
+      "outcomeMissing": {
+        "nextNode": "filter"
       }
     },
     "sv": {
@@ -460,6 +485,11 @@
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
+    }
+  },
+  "labels": {
+    "OUTLIER": {
+      "description": "OUTLIER"
     }
   }
 }
