@@ -1,7 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-classify () {
+classify () { 
+  touch empty.txt
+  sed "s|REPLACE_ME_WITH_OUTLIERS|$(realpath !{outliers})|g" "!{decisionTree}" > "replaced.json"
+
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
@@ -9,9 +12,12 @@ classify () {
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcf}_replaced.vcf.gz")
   args+=("--metadata" "!{metadata}")
-  args+=("--config" "!{decisionTree}")
+  args+=("--config" "replaced.json")
   if [ !{annotatePath} -eq 1 ]; then
     args+=("--path")
+  fi
+  if [ !{annotateLabels} -eq 1 ]; then
+    args+=("--labels")
   fi
 
   args+=("--output" "!{vcfOut}_replaced.vcf.gz")

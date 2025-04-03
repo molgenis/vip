@@ -1,2 +1,2 @@
-individual_id	sex	proband	affected	vcf
-SAMPLE0	male	true	true	${TEST_RESOURCES_DIR}/mvid.vcf
+individual_id	sex	proband	affected	vcf	outliers
+SAMPLE0	male	true	true	${TEST_RESOURCES_DIR}/mvid.vcf	${TEST_RESOURCES_DIR}/outliers.txt

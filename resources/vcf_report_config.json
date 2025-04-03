@@ -235,7 +235,11 @@
             },
             {
               "type": "info",
-              "name": "CSQ/IncompletePenetrance"
+              "name": "gene"
+            },
+            {
+              "type": "info",
+              "name": "CSQ/VIPL"
             },
             {
               "type": "composed",
@@ -364,6 +368,10 @@
         {
           "type": "info",
           "name": "CSQ/SYMBOL"
+        },
+        {
+          "type": "info",
+          "name": "CSQ/VIPL"
         },
         {
           "type": "composed",

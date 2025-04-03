@@ -238,6 +238,7 @@ workflow {
 
   // preprocess vcfs and crams in parallel
   Channel.from(projects)
+    | view
     | map { project -> [project: project] }
     | multiMap { it -> vcf: cram: it }
     | set { ch_project }
@@ -405,6 +406,10 @@ def parseSampleSheet(params) {
       type: "file",
       required: true,
       regex: getVcfRegex(),
+      scope: "project"
+    ],
+    outliers: [
+      type: "file",
       scope: "project"
     ],
     cram: [

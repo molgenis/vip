@@ -18,6 +18,9 @@ process classify {
     metadata = params.vcf.classify.metadata
     decisionTree = params.vcf.classify[meta.project.assembly].decision_tree
     annotatePath = params.vcf.classify.annotate_path
+    annotateLabels = params.vcf.classify.annotate_labels
+
+    outliers = meta.project.outliers ? meta.project.outliers : "empty.txt";
     
     template 'classify.sh'
   
