@@ -53,45 +53,55 @@ exit_lp_("LP")
 style exit_lp_ fill:#00ff00
 exit_p_("P")
 style exit_p_ fill:#00ff00
-capice_ -->|"true"| exit_lp_
-gnomAD_ -->|"true"| sv_
-clinVar_ -->|"default\nConflict\nVUS\nmissing"| chrom_
-str_status_ -->|"full_mutation"| exit_lp_
-capice_ -->|"false"| exit_lb_
-annotSV_ -->|"1"| exit_b_
-str_status_ -->|"default\npre_mutation"| exit_vus_
-vkgl_ -->|"default\nVUS"| clinVar_
-annotSV_ -->|"3"| exit_vus_
-chrom_ -->|"false"| exit_rm_
-str_ -->|"false\nmissing"| annotSV_
-capice_ -->|"missing"| exit_vus_
-gnomAD_ -->|"false"| gnomAD_AF_
-vkgl_ -->|"LB"| exit_lb_
-sv_ -->|"false"| spliceAI_
-utr5_ -->|"true"| exit_vus_
-annotSV_ -->|"5"| exit_p_
-gene_ -->|"true"| gnomAD_
-spliceAI_ -->|"default\nmissing"| utr5_
-vkgl_ -->|"LP"| exit_lp_
-vkgl_ -->|"P"| exit_p_
-str_ -->|"true"| str_status_
-chrom_ -->|"true\nmissing"| gene_
-str_status_ -->|"normal"| exit_lb_
-filter_ -->|"true\nmissing"| vkgl_
-clinVar_ -->|"B/LB"| exit_lb_
-annotSV_ -->|"4"| exit_lp_
-clinVar_ -->|"LP/P"| exit_lp_
-gene_ -->|"false"| exit_rm_
-annotSV_ -->|"2"| exit_lb_
-gnomAD_AF_ -->|"default\nmissing"| sv_
-spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.42"| exit_lp_
-utr5_ -->|"false"| capice_
-gnomAD_AF_ -->|"Filtering allele Frequency (99% confidence) >= 0.02 or Number of Homozygotes > 5"| exit_lb_
-annotSV_ -->|"default"| spliceAI_
-vkgl_ -->|"B"| exit_b_
-sv_ -->|"true"| str_
-spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.13"| exit_vus_
+filter_ -->|"true"| vkgl_
 filter_ -->|"false"| exit_rm_
+filter_ -->|"missing"| vkgl_
+vkgl_ -->|"P"| exit_p_
+vkgl_ -->|"default"| clinVar_
+vkgl_ -->|"B"| exit_b_
+vkgl_ -->|"LP"| exit_lp_
+vkgl_ -->|"VUS"| clinVar_
+vkgl_ -->|"LB"| exit_lb_
+clinVar_ -->|"default"| chrom_
+clinVar_ -->|"Conflict"| chrom_
+clinVar_ -->|"VUS"| chrom_
+clinVar_ -->|"LP/P"| exit_lp_
+clinVar_ -->|"missing"| chrom_
+clinVar_ -->|"B/LB"| exit_lb_
+chrom_ -->|"true"| gene_
+chrom_ -->|"false"| exit_rm_
+chrom_ -->|"missing"| gene_
+gene_ -->|"true"| gnomAD_
+gene_ -->|"false"| exit_rm_
+sv_ -->|"true"| str_
+sv_ -->|"false"| spliceAI_
+str_ -->|"true"| str_status_
+str_ -->|"false"| annotSV_
+str_ -->|"missing"| annotSV_
+str_status_ -->|"normal"| exit_lb_
+str_status_ -->|"default"| exit_vus_
+str_status_ -->|"pre_mutation"| exit_vus_
+str_status_ -->|"full_mutation"| exit_lp_
+gnomAD_ -->|"true"| sv_
+gnomAD_ -->|"false"| gnomAD_AF_
+gnomAD_AF_ -->|"default"| sv_
+gnomAD_AF_ -->|"missing"| sv_
+gnomAD_AF_ -->|"Filtering allele Frequency (99% confidence) >= 0.02 or Number of Homozygotes > 5"| exit_lb_
+annotSV_ -->|"1"| exit_b_
+annotSV_ -->|"default"| spliceAI_
+annotSV_ -->|"2"| exit_lb_
+annotSV_ -->|"3"| exit_vus_
+annotSV_ -->|"4"| exit_lp_
+annotSV_ -->|"5"| exit_p_
+spliceAI_ -->|"default"| utr5_
+spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.13"| exit_vus_
+spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.42"| exit_lp_
+spliceAI_ -->|"missing"| utr5_
+utr5_ -->|"true"| exit_vus_
+utr5_ -->|"false"| capice_
+capice_ -->|"true"| exit_lp_
+capice_ -->|"false"| exit_lb_
+capice_ -->|"missing"| exit_vus_
 ```
 
 *Above: default GRCh38 variant classification tree*
@@ -121,24 +131,31 @@ exit_u3_("Usable: probably not")
 style exit_u3_ fill:#00ff00
 exit_u4_("Usable: if IP")
 style exit_u4_ fill:#00ff00
-gq_ -->|"true\nmissing"| only_IP_
-vid_ -->|"true"| exit_u1_
+gt_ -->|"default"| gq_
+gt_ -->|"HOM_REF"| exit_u3_
+gt_ -->|"NO_CALL"| exit_u3_
+gt_ -->|"MIXED"| gq_
+gt_ -->|"HET"| gq_
+gt_ -->|"HOM_VAR"| gq_
+gt_ -->|"UNAVAILABLE"| exit_u3_
+gq_ -->|"true"| only_IP_
 gq_ -->|"false"| exit_u3_
-vid_IP_ -->|"missing"| exit_u2_
-vid_IP_ -->|"true"| exit_u1_
-vim_ -->|"missing"| exit_u2_
-vim_ -->|"true"| exit_u1_
-only_IP_ -->|"false\nmissing"| vim_
-vim_ -->|"false"| vid_
-vid_IP_ -->|"false"| vim_IP_
-gt_ -->|"HOM_REF\nNO_CALL\nUNAVAILABLE"| exit_u3_
-vim_IP_ -->|"false"| exit_u3_
-vim_IP_ -->|"true\nmissing"| exit_u4_
+gq_ -->|"missing"| only_IP_
 only_IP_ -->|"true"| vid_IP_
+only_IP_ -->|"false"| vim_
+only_IP_ -->|"missing"| vim_
+vim_ -->|"true"| exit_u1_
+vim_ -->|"false"| vid_
+vim_ -->|"missing"| exit_u2_
+vim_IP_ -->|"true"| exit_u4_
+vim_IP_ -->|"false"| exit_u3_
+vim_IP_ -->|"missing"| exit_u4_
+vid_ -->|"true"| exit_u1_
 vid_ -->|"false"| exit_u3_
-gt_ -->|"default\nMIXED\nHET\nHOM_VAR"| gq_
 vid_ -->|"missing"| exit_u2_
-
+vid_IP_ -->|"true"| exit_u1_
+vid_IP_ -->|"false"| vim_IP_
+vid_IP_ -->|"missing"| exit_u2_
 ```
 
 *Above: default variant sample classification tree*
