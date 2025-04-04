@@ -204,10 +204,6 @@
           "name": "ref"
         },
         {
-          "type": "info",
-          "name": "SVTYPE"
-        },
-        {
           "type": "composed",
           "name": "genotype",
           "label": "Proband"
