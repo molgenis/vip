@@ -12,14 +12,12 @@ normalize () {
     args+=("--check-ref" "e")
   fi
   args+=("--fasta-ref" "!{refSeqPath}")
-  args+=("--output-type" "z")
-  args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--old-rec-tag" "OLD_REC") # if variant is normalized, keep the original location in this field
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcf}")
-
-  ${CMD_BCFTOOLS} "${args[@]}"
+  # pipe to sort since order can change due to normalization
+  ${CMD_BCFTOOLS} "${args[@]}" | ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}"
 }
 
 index () {
