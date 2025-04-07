@@ -329,8 +329,8 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
-        "GDB_CONTR_GENES": {
-          "label": "GDB_CONTR_GENES",
+        "GDB_CGN": {
+          "label": "GDB_GENES",
           "description": "Genes controlled by the GREEN-DB region with the highest constraint score",
           "numberType": "OTHER",
           "separator": "&",

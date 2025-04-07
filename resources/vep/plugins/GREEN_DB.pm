@@ -50,7 +50,7 @@ sub get_header_info {
       GDB_BIV => "GREEN_DB Bivalent maximum constraint score.",
       GDB_SIL => "GREEN_DB Silencer maximum constraint score.",
       GDB_INS => "GREEN_DB Insulator maximum constraint score.",
-      GDB_CONTR_GENES => "GREEN_DB Regulatory region controlled genes."
+      GDB_CGN => "GREEN_DB Regulatory region controlled genes."
     }
 }
 
@@ -115,7 +115,7 @@ sub run {
   $result->{GDB_BIV} = $scores->{"bivalent"};
   $result->{GDB_SIL} = $scores->{"silencer"};
   $result->{GDB_INS} = $scores->{"insulator"};
-  $result->{GDB_CONTR_GENES} = $scores->{"controlled_genes"};
+  $result->{GDB_CGN} = $scores->{"controlled_genes"};
   
   return $result;
   };
