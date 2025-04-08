@@ -227,7 +227,7 @@ def parseValueFile(token, col, rootDir) {
   def fileValue
   if(value != null) {
     def relative = value.startsWith('/')
-    value = value.replaceAll(/\[/, '\\\\[').replaceAll(/\]/, '\\\\]')
+    value = value.replaceAll(/\[/, '\\\\[').replaceAll(/\]/, '\\\\]').replaceAll(/\]/, '\\\\]').replaceAll(/\}/, '\\\\}').replaceAll(/\{/, '\\\\{')
 
     fileValue = relative ? file(value) : file(new File(value, rootDir).getPath())
     if(!fileValue.exists()) throw new IllegalArgumentException(relative ? "file '${token}' in directory '${rootDir}' does not exist" : "file '${token}' does not exist")
