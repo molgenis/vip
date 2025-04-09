@@ -1,2 +1,2 @@
 family_id	individual_id	proband	vcf
-FAM0	PROBAND0	true	${TEST_RESOURCES_DIR}/empty_output_filter_samples.vcf
+FAM0	PROBAND0	true	${TEST_RESOURCES_DIR}/empty_output_filter_{samples}.vcf
