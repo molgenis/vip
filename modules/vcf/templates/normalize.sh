@@ -13,11 +13,18 @@ normalize () {
   fi
   args+=("--fasta-ref" "!{refSeqPath}")
   args+=("--no-version")
+  args+=("--output-type" "z")
+  args+=("--output" "unsorted_!{vcfOut}")
   args+=("--old-rec-tag" "OLD_REC") # if variant is normalized, keep the original location in this field
   args+=("--threads" "!{task.cpus}")
   args+=("!{vcf}")
-  # pipe to sort since order can change due to normalization
-  ${CMD_BCFTOOLS} "${args[@]}" | ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}"
+  
+  ${CMD_BCFTOOLS} "${args[@]}"
+}
+
+sort () {
+  # sort since order can change due to normalization, cant pipe due to concurrent modification cause by 'norm' multithreading
+  ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}" "unsorted_!{vcfOut}"
 }
 
 index () {
@@ -27,6 +34,7 @@ index () {
 
 main() {
   normalize
+  sort
   index
 }
 
