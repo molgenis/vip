@@ -76,9 +76,7 @@ capice_vep() {
   args+=("--buffer_size" "!{params.vcf.annotate.vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
-  if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
-    args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
-  fi
+  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
@@ -183,8 +181,8 @@ vep() {
   args+=("--plugin" "Grantham")
   if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
     args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+    args+=("--plugin" "Capice,${capiceOutputPath}")
   fi
-  args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--safe")
@@ -379,7 +377,9 @@ main () {
 
   local -r vcfPreprocessed="preprocessed_${vepInputPath}"
   vep_preprocess "${vepInputPath}" "${vcfPreprocessed}"
-  capice "${vcfPreprocessed}"
+  if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
+    capice "${vcfPreprocessed}"
+  fi
   vep "${vcfPreprocessed}"
   fix_vep_str
   viab "vep_fixed_!{vcfOut}"
