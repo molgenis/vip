@@ -76,7 +76,9 @@ capice_vep() {
   args+=("--buffer_size" "!{params.vcf.annotate.vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
-  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
+    args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  fi
   args+=("--plugin" "Grantham")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
@@ -179,7 +181,9 @@ vep() {
   args+=("--pubmed")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
-  args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
+    args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
+  fi
   args+=("--plugin" "Capice,${capiceOutputPath}")
   args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
