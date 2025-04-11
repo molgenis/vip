@@ -31,9 +31,6 @@ usage() {
   exit 0
 }
 
-# set trap only after print usage check
-trap "handle_exit" EXIT
-
 detect_slurm() {
   # shellcheck disable=SC2317
   if command -v sbatch &> /dev/null; then
@@ -199,6 +196,8 @@ main() {
   fi
 
   bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
+
+  trap "handle_exit" EXIT
 }
 
 main "${@}"
