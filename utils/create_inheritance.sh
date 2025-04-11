@@ -23,7 +23,7 @@ EOT
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o i:h --long input_omim:,help -- "$@")
+  local args=$(getopt -a -n pipeline -o i:v:h --long input_omim:,hpo_version:,help -- "$@")
 
   local geneMapFilePath
   eval set -- "${args}"
@@ -35,6 +35,10 @@ main() {
       ;;
     -i | --input_omim)
       geneMapFilePath="${2}"
+      shift 2
+      ;;
+    -v | --hpo_version)
+      hpo_version="$2"
       shift 2
       ;;
     --)
@@ -50,11 +54,14 @@ main() {
 
   echo -e "downloading ..."
   wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/images/utils/vcf-inheritance-3.2.1.sif
-  wget --quiet --continue https://download.molgeniscloud.org/downloads/vip/_dev/utils/incomplete_penetrantie_genes_entrez_20210125.tsv
-  wget --quiet --continue https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-08-13/phenotype.hpoa
+  wget --quiet --continue https://github.com/obophenotype/human-phenotype-ontology/releases/download/${hpo_version}/phenotype_to_genes.txt
+  wget --quiet --continue https://github.com/obophenotype/human-phenotype-ontology/releases/download/v${hpo_version}/phenotype.hpoa
   wget --quiet --continue https://research.nhgri.nih.gov/CGD/download/txt/CGD.txt.gz
   echo -e "downloading done"
 
+  #get incomplete penetrance genes from hpo file and convert to suitable format for inheritance tool
+  (echo -e "gene_id\tid_source"; grep -P '^HP:0003829\t' phenotype_to_genes.txt | cut -f3 | sort -u | awk '{print $1 "\tEntrezGene"}') > incomplete_penetrance.txt
+  
   # create dummy genemap2.txt if not provided
   if [ -z "${geneMapFilePath}" ]; then
     geneMapFilePath="genemap2.txt"
@@ -69,7 +76,7 @@ main() {
   args+=("-jar" "/opt/vcf-inheritance/lib/genemap-mapper.jar")
   args+=("-i" "${geneMapFilePath}")
   args+=("-h" "phenotype.hpoa")
-  args+=("--incomplete_penetrance" "incomplete_penetrantie_genes_entrez_20210125.tsv")
+  args+=("--incomplete_penetrance" "incomplete_penetrance.txt")
   args+=("-c" "CGD.txt.gz")
   args+=("-o" "${outputPath}")
   args+=("-f")
