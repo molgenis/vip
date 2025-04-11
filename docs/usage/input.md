@@ -39,7 +39,7 @@ specific columns.
 | ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
 | ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples                                                                               |
 | ``regions``           | ``file``        |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
-| pcr_performed         | ``boolean``     | false    | false    | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data. |
+| ``pcr_performed``     | ``boolean``     | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                               |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
