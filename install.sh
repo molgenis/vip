@@ -11,12 +11,11 @@ VIP_DIR_DATA="${VIP_DIR_DATA:-"${PWD}/vip/data"}"
 REGEX_SEM_VER="(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?"
 
 usage() {
-  echo -e "usage: bash ${SCRIPT_NAME} [-v <vip_version>] [-i <vip_install_dir>] [-d <data_dir>] [-u <url>] [-p]
+  echo -e "usage: bash ${SCRIPT_NAME} [-i <vip_install_dir>] [-d <data_dir>] [-u <url>] [-p]
   -p, --prune     remove resources from previous VIP installs that are not required for this version.
   -u, --url       base url to download VIP resources from
   -d, --data_dir  directory where VIP resources should be installed
   -i, --vip_dir   directory where the VIP software should be installed
-  -v, --version   VIP version to be installed
   -h, --help
 
   requirements:
@@ -27,7 +26,7 @@ usage() {
     VIP_VER      ${VIP_VER}
     VIP_DIR      ${VIP_DIR}
     VIP_DIR_DATA ${VIP_DIR_DATA}
-    if --version, --vip_dir and/or --data_dir are not provided."
+    if --vip_dir and/or --data_dir are not provided."
   exit 0
 }
 
