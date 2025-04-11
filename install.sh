@@ -34,7 +34,7 @@ usage() {
 detect_slurm() {
   # shellcheck disable=SC2317
   if command -v sbatch &> /dev/null; then
-    echo -e "Slurm job scheduling system detected and will be used automatically"
+    echo -e "Slurm job sch_duling system detected and will be used automatically"
   fi
 }
 
