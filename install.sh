@@ -31,16 +31,6 @@ usage() {
   exit 0
 }
 
-# set trap only after print usage check
-trap "handle_exit" EXIT
-
-detect_slurm() {
-  # shellcheck disable=SC2317
-  if command -v sbatch &> /dev/null; then
-    echo -e "Slurm job scheduling system detected and will be used automatically"
-  fi
-}
-
 handle_exit() {
   local -r exit_code=$?
   if [[ ${exit_code} -eq 0 ]]; then
@@ -94,6 +84,7 @@ check_requirements_java() {
 }
 
 detect_slurm() {
+  # shellcheck disable=SC2317
   if command -v sbatch &> /dev/null; then
     echo -e "Slurm job scheduling system detected and will be used automatically"
   fi
@@ -199,6 +190,8 @@ main() {
   fi
 
   bash "${VIP_DIR}/install_data.sh" "${data_args[@]}"
+
+  trap "handle_exit" EXIT
 }
 
 main "${@}"
