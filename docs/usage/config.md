@@ -24,7 +24,6 @@ listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
 | T2T.reference.fasta           |             |                                                                                                                                   |
 | T2T.reference.fastaFai        |             |                                                                                                                                   |
 | T2T.reference.fastaGzi        |             |                                                                                                                                   |
-| pcr_performed                 | false       | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data. |
 
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the unzipped referenfasta file is also required.
