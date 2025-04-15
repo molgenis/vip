@@ -1,7 +1,7 @@
 process fastp {
   label 'fastp'
 
-  publishDir "$params.output/intermediates/fastp", mode: 'link'
+  publishDir "$params.output/intermediates/fastp", mode: 'link', pattern: "*_report.*"
 
   input:
     tuple val(meta), path(fastqs, arity: '1..*')
