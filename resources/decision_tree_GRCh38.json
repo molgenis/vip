@@ -398,7 +398,7 @@
       "label": "5' UTR",
       "description": "5' UTR",
       "type": "EXISTS",
-      "field": "INFO/CSQ/five_prime_UTR_variant_consequence",
+      "field": "INFO/CSQ/5UTR_consequence",
       "outcomeTrue": {
         "nextNode": "exit_vus"
       },
