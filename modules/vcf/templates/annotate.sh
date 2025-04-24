@@ -183,7 +183,7 @@ vep() {
     args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
     args+=("--plugin" "Capice,${capiceOutputPath}")
   fi
-  args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
+  args+=("--plugin" "UTRAnnotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--safe")
 
