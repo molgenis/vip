@@ -202,7 +202,7 @@ install_files() {
   data+=("9dba35e91c27050a200f40b3238fcfad" "images/vcf-report-7.2.2.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
-  data+=("4db012dfaa1ed91371b73e3ab338aaad" "nextflow-24.10.3-dist" "postprocess_nextflow")
+  data+=("1e9b9dbd138967e808a60b59e10b3020" "nextflow-24.10.6-dist" "postprocess_nextflow")
   data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
   data+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.4/2309_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.4/Annotations_Human_3.4.4.tar.gz" "postprocess_annotsv_annotations")
