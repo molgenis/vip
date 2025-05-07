@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_NAME="$(basename "${0}")"
 
-VIP_VER="${VIP_VER:-"v8.3.1"}"
+VIP_VER="${VIP_VER:-"v8.4.0"}"
 VIP_DIR="${VIP_DIR:-"${PWD}/vip/${VIP_VER//\//_}"}" # replace every forward slash with underscore
 VIP_DIR_DATA="${VIP_DIR_DATA:-"${PWD}/vip/data"}"
 
