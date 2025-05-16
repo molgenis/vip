@@ -222,6 +222,8 @@ vep() {
   if [ -n "!{vepPluginGreenDbPath}" ] && [ "!{vepPluginGreenDbEnabled}" = true  ]; then
     args+=("--plugin" "GREEN_DB,!{vepPluginGreenDbPath}")
   fi
+  args+=("--plugin" "RNA,!{vepPluginExpressionPath},zScore,RNA_,!{params.vcf.annotate.ensembl_gene_mapping}")
+  args+=("--plugin" "RNA_fraser,!{vepPluginSplicePath},pValue,RNA_FR_")
   
   ${CMD_VEP} "${args[@]}"
 }

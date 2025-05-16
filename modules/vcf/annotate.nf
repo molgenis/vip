@@ -30,6 +30,8 @@ process annotate {
     vepPluginGreenDbPath = params.vcf.annotate[assembly].vep_plugin_green_db
     vepPluginGreenDbEnabled = params.vcf.annotate.vep_plugin_green_db_enabled
     vepPluginSpliceAiEnabled = params.vcf.annotate.vep_plugin_spliceai_enabled
+    vepPluginExpressionPath = params.vcf.annotate[assembly].vepPluginExpressionPath // FIXME should be sample sheet input
+    vepPluginSplicePath = params.vcf.annotate[assembly].vepPluginSplicePath  // FIXME should be sample sheet input
     fathmmMKLScoresPath = params.vcf.annotate[assembly].vep_plugin_fathmm_MKL_scores
     reMMScoresPath = params.vcf.annotate[assembly].vep_plugin_ReMM_scores
     capiceModelPath = params.vcf.annotate[assembly].capice_model
