@@ -65,10 +65,29 @@
         "nextNode": "vid_IP"
       },
       "outcomeFalse": {
-        "nextNode": "vim"
+        "nextNode": "vig"
       },
       "outcomeMissing": {
+        "nextNode": "vig"
+      }
+    },
+    "vig": {
+      "type": "BOOL",
+      "label": "Inheritance match gene",
+      "description": "Inheritance match gene",
+      "query": {
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
         "nextNode": "vim"
+      },
+      "outcomeFalse": {
+        "nextNode": "vid"
+      },
+      "outcomeMissing": {
+        "nextNode": "vid"
       }
     },
     "vim": {
@@ -76,28 +95,47 @@
       "label": "Inheritance match",
       "description": "Inheritance match",
       "query": {
-        "field": "FORMAT/VIG",
-        "operator": "contains",
-        "value": "field:INFO/CSQ/Gene"
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
       },
       "outcomeTrue": {
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "vid"
+        "nextNode": "exit_u3"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
       }
     },
-    "vim_IP": {
+    "vig_IP": {
       "type": "BOOL",
-      "label": "Inheritance match (IP)",
-      "description": "Inheritance match",
+      "label": "Inheritance match gene (IP)",
+      "description": "Inheritance match gene, incomplete penetrance",
       "query": {
         "field": "FORMAT/VIG",
         "operator": "contains",
         "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
+        "nextNode": "vim_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u3"
+      }
+    },
+    "vim_IP": {
+      "type": "BOOL",
+      "label": "Inheritance match (IP)",
+      "description": "Inheritance match, incomplete penetrance",
+      "query": {
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
       },
       "outcomeTrue": {
         "nextNode": "exit_u4"
