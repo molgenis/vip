@@ -179,7 +179,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "vim_IP"
+        "nextNode": "vig_IP"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
