@@ -3,6 +3,7 @@ include { call; call_duo; call_trio; concat_gvcfs; concat_vcfs; joint_call;} fro
 include { publish_vcf } from '../modules/cram/publish_vcf'
 include { hasChild; validateGroup } from '../modules/utils'
 include { whatshap } from '../modules/cram/whatshap'
+include { publish_gvcf } from '../modules/cram/publish_gvcf'
 /*
  * Variant calling using DeepVariant
  *
@@ -124,9 +125,12 @@ workflow deepvariant {
       | multiMap { it -> done: publish: it }
       | set{ch_gvcfs_per_chunk_per_sample_mixed}
 
-    ch_gvcfs_per_chunk_per_sample_mixed.published
-      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'chunk' }, meta.chunk.total), [index: meta.chunk.index, gvcf: gvcf]] }
-      | publish_gvcfs
+    ch_gvcfs_per_chunk_per_sample_mixed.publish
+      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'chunk' }, meta.chunk.total), gvcf] }
+      | groupTuple
+      | map { key, group -> validateGroup(key, group) }
+      | map { meta, gvcfs -> [meta, gvcfs.findAll { it != null }.data] }
+      | publish_gvcf
 
     ch_gvcfs_per_chunk_per_sample_mixed.done
       | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [meta: meta,sample: meta.sample, gvcf: gvcf]] }

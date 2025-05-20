@@ -1,16 +1,16 @@
-process publish_vcf {
-  label 'publish_vcf'
+process publish_gvcf {
+  label 'publish_gvcf'
 
   publishDir "$params.output/intermediates", mode: 'link'
   
   input:
-    tuple val(meta), path(vcfs), path(vcfIndices), path(vcfStats)
+    tuple val(meta), path(vcfs)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 
   shell:
-    vcfOut = "${meta.project.id}_snv.g.vcf.gz"
+    vcfOut = "${meta.sample.individual_id}_snv.g.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     
