@@ -119,7 +119,9 @@ flowchart TD
 gt_("Genotype")
 gq_("Genotype quality")
 only_IP_("Only if AD IP")
+vig_("Inheritance match gene")
 vim_("Inheritance match")
+vig_IP_("Inheritance match gene (IP)")
 vim_IP_("Inheritance match (IP)")
 vid_("Inheritance denovo")
 vid_IP_("Inheritance denovo (IP)")
@@ -142,11 +144,17 @@ gq_ -->|"true"| only_IP_
 gq_ -->|"false"| exit_u3_
 gq_ -->|"missing"| only_IP_
 only_IP_ -->|"true"| vid_IP_
-only_IP_ -->|"false"| vim_
-only_IP_ -->|"missing"| vim_
+only_IP_ -->|"false"| vig_
+only_IP_ -->|"missing"| vig_
+vig_ -->|"true"| vim_
+vig_ -->|"false"| vid_
+vig_ -->|"missing"| vid_
 vim_ -->|"true"| exit_u1_
-vim_ -->|"false"| vid_
+vim_ -->|"false"| exit_u3_
 vim_ -->|"missing"| exit_u2_
+vig_IP_ -->|"true"| vim_IP_
+vig_IP_ -->|"false"| exit_u3_
+vig_IP_ -->|"missing"| exit_u3_
 vim_IP_ -->|"true"| exit_u4_
 vim_IP_ -->|"false"| exit_u3_
 vim_IP_ -->|"missing"| exit_u4_
@@ -154,7 +162,7 @@ vid_ -->|"true"| exit_u1_
 vid_ -->|"false"| exit_u3_
 vid_ -->|"missing"| exit_u2_
 vid_IP_ -->|"true"| exit_u1_
-vid_IP_ -->|"false"| vim_IP_
+vid_IP_ -->|"false"| vig_IP_
 vid_IP_ -->|"missing"| exit_u2_
 ```
 
