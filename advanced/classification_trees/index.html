@@ -246,7 +246,9 @@ capice_ --&gt;|"missing"| exit_vus_
 gt_("Genotype")
 gq_("Genotype quality")
 only_IP_("Only if AD IP")
+vig_("Inheritance match gene")
 vim_("Inheritance match")
+vig_IP_("Inheritance match gene (IP)")
 vim_IP_("Inheritance match (IP)")
 vid_("Inheritance denovo")
 vid_IP_("Inheritance denovo (IP)")
@@ -269,11 +271,17 @@ gq_ --&gt;|"true"| only_IP_
 gq_ --&gt;|"false"| exit_u3_
 gq_ --&gt;|"missing"| only_IP_
 only_IP_ --&gt;|"true"| vid_IP_
-only_IP_ --&gt;|"false"| vim_
-only_IP_ --&gt;|"missing"| vim_
+only_IP_ --&gt;|"false"| vig_
+only_IP_ --&gt;|"missing"| vig_
+vig_ --&gt;|"true"| vim_
+vig_ --&gt;|"false"| vid_
+vig_ --&gt;|"missing"| vid_
 vim_ --&gt;|"true"| exit_u1_
-vim_ --&gt;|"false"| vid_
+vim_ --&gt;|"false"| exit_u3_
 vim_ --&gt;|"missing"| exit_u2_
+vig_IP_ --&gt;|"true"| vim_IP_
+vig_IP_ --&gt;|"false"| exit_u3_
+vig_IP_ --&gt;|"missing"| exit_u3_
 vim_IP_ --&gt;|"true"| exit_u4_
 vim_IP_ --&gt;|"false"| exit_u3_
 vim_IP_ --&gt;|"missing"| exit_u4_
@@ -281,7 +289,7 @@ vid_ --&gt;|"true"| exit_u1_
 vid_ --&gt;|"false"| exit_u3_
 vid_ --&gt;|"missing"| exit_u2_
 vid_IP_ --&gt;|"true"| exit_u1_
-vid_IP_ --&gt;|"false"| vim_IP_
+vid_IP_ --&gt;|"false"| vig_IP_
 vid_IP_ --&gt;|"missing"| exit_u2_
 </div>
 <p><em>Above: default variant sample classification tree</em></p>
