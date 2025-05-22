@@ -205,7 +205,7 @@ vep() {
   fi
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     # when you change the field also update the empty file header in this file
-    args+=("--plugin" "AnnotSV,!{vcf}.tsv,AnnotSV_ranking_score;AnnotSV_ranking_criteria;ACMG_class")
+    args+=("--plugin" "AnnotSV,!{vcf}.tsv,!{params.vcf.annotate.vep_plugin_annotsv_columns}")
   fi
   if [ -n "!{alphScorePath}" ]; then
     args+=("--plugin" "AlphScore,!{alphScorePath}")
