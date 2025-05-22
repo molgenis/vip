@@ -80,7 +80,7 @@ main() {
   images+=("build/openjdk-21")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.20")
-  images+=("annotsv-3.4.4")
+  images+=("annotsv-3.4.6")
   images+=("capice-5.1.2")
   images+=("cutesv-2.1.1_v2")
   images+=("expansionhunter-5.0.0_v2")
