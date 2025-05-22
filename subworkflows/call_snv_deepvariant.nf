@@ -3,6 +3,7 @@ include { call; call_duo; call_trio; concat_gvcfs; concat_vcfs; joint_call;} fro
 include { publish_vcf } from '../modules/cram/publish_vcf'
 include { hasChild; validateGroup } from '../modules/utils'
 include { whatshap } from '../modules/cram/whatshap'
+include { publish_gvcf } from '../modules/cram/publish_gvcf'
 /*
  * Variant calling using DeepVariant
  *
@@ -121,6 +122,18 @@ workflow deepvariant {
 
     // group gvcf chunks by project
     Channel.empty().mix(ch_gvcfs_per_chunk_per_sample_merged, ch_gvcfs_per_chunk_per_sample.single, ch_gvcfs_per_chunk_per_sample.zero)
+      | multiMap { it -> done: publish: it }
+      | set{ch_gvcfs_per_chunk_per_sample_mixed}
+
+    ch_gvcfs_per_chunk_per_sample_mixed.publish
+      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'chunk' }, meta.chunk.total), gvcf] }
+      | groupTuple
+      | map { key, group -> validateGroup(key, group) }
+      | map { meta, gvcfs -> [meta, gvcfs.findAll { it != null }.data] }
+      | filter { meta, gvcfs -> !gvcfs.isEmpty() }
+      | publish_gvcf
+
+    ch_gvcfs_per_chunk_per_sample_mixed.done
       | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [meta: meta,sample: meta.sample, gvcf: gvcf]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
