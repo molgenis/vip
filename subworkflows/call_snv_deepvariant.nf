@@ -130,6 +130,7 @@ workflow deepvariant {
       | groupTuple
       | map { key, group -> validateGroup(key, group) }
       | map { meta, gvcfs -> [meta, gvcfs.findAll { it != null }.data] }
+      | filter { meta, gvcfs -> !gvcfs.isEmpty() }
       | publish_gvcf
 
     ch_gvcfs_per_chunk_per_sample_mixed.done
