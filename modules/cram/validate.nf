@@ -28,3 +28,34 @@ process validate {
     echo -e "chr1\t248956422\t16617476\t118422" > "${cramOutStats}"
     """
 }
+
+process rna_validate {
+  label 'rna_cram_validate'
+
+  input:
+    tuple val(meta), val(assembly), path(cram)
+
+  output:
+    tuple val(meta), path(cramOut), path(cramOutIndex), path(cramOutStats)
+
+  shell:
+    sampleId = meta.sample.individual_id
+    reference = params[assembly].reference.fasta
+
+    cramOut = "rna_${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.bam"
+    cramOutIndex = "${cramOut}.bai"
+    cramOutStats = "${cramOut}.stats"
+
+    template 'validate.sh'
+  
+  stub:
+    cramOut = "rna_${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_validated.bam"
+    cramOutIndex = "${cramOut}.bai"
+    cramOutStats = "${cramOut}.stats"
+
+    """
+    touch "${cramOut}"
+    touch "${cramOutIndex}"
+    echo -e "chr1\t248956422\t16617476\t118422" > "${cramOutStats}"
+    """
+}

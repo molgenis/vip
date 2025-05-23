@@ -2,12 +2,13 @@ nextflow.enable.dsl=2
 
 include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; validateGroup } from './modules/utils'
-include { validate as validate_cram } from './modules/cram/validate'
+include { validate as validate_cram; rna_validate as rna_validate_cram } from './modules/cram/validate'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { snv; validateCallSnvParams } from './subworkflows/call_snv'
 include { str; validateCallStrParams } from './subworkflows/call_str'
 include { sv; validateCallSvParams } from './subworkflows/call_sv'
 include { cnv; validateCallCnvParams } from './subworkflows/call_cnv'
+include { rna } from './subworkflows/rna'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { coverage } from './modules/cram/coverage'
 include { bed_filter } from './modules/vcf/bed_filter'
@@ -27,13 +28,19 @@ workflow cram {
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
     meta    
-      | multiMap { it -> coverage: snv: str: sv: cnv: it }
+      | multiMap { it -> coverage: snv: str: sv: cnv: rna: it }
       | set { ch_cram_multi }
 
 		// coverage
 		ch_cram_multi.coverage
 		  | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index, meta.project.regions ? meta.project.regions : meta.project.sequencing_method == "WES" ? params.cram.coverage[meta.project.assembly].default_bed_exon : params.cram.coverage[meta.project.assembly].default_bed_gene ] }
       | coverage
+
+    // rna
+    ch_cram_multi.rna
+      | filter { meta -> meta.sample.rna_cram != null }
+      | rna
+      //| set { ch_cram_rna }
 
     // snv
     ch_cram_multi.snv
@@ -109,23 +116,41 @@ workflow {
   // run workflow for each sample in each project
   Channel.from(projects)
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
+    | multiMap { it -> dna: rna: it }
     | set { ch_sample }
 
   // validate cram
-  ch_sample
+  ch_sample.dna
     | map { meta -> [meta, meta.project.assembly, meta.sample.cram] }
     | validate_cram
-    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
-    | set { ch_sample_validated }
+    | map { meta, cram, cramIndex, cramStats -> [meta, [cram: [data: cram, index: cramIndex, stats: cramStats], rna_cram: null]] }
+    | set { ch_sample_validated_dna }
+
+  ch_sample.rna
+    | map { meta -> [meta, meta.project.assembly, meta.sample.rna_cram] }
+    | rna_validate_cram
+    | map { meta, cram, cramIndex, cramStats -> [meta, [cram: null, rna_cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+    | set { ch_sample_validated_rna }
 
   // update project samples
-  ch_sample_validated
+  ch_sample_validated_dna.mix(ch_sample_validated_rna)
+    | map { meta, crams ->
+          def size = meta.sample.rna_cram != null ? 2 : 1
+          return [groupKey(meta, size), crams]
+        }
+    | groupTuple(remainder: true)
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, group -> 
+        def rna_cram = group.findAll(it -> it.rna_cram != null).first().rna_cram
+        def cram = group.findAll(it -> it.cram != null).first().cram
+        return [*:meta, sample: [*:meta.sample, cram: cram, rna_cram: rna_cram]] 
+    }
     | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
     | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
     | map { key, group -> validateGroup(key, group) }
     | map { meta, samples -> [*:meta, project: [*:meta.project, samples: samples]] }
     | set { ch_project_validated }
-
+  
   // decide whether realignment is required
   ch_project_validated
     | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
@@ -168,7 +193,27 @@ def parseSampleSheet(params) {
       default: { 'illumina' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
-    ]
+    ],
+    rna_cram: [
+      type: "file",
+      required: true,
+      regex: getCramRegex()
+    ],
+    rna_paired_ended: [
+      type: "boolean",
+      default: true,
+      scope: "project"
+    ],
+    rna_sequencing_platform: [
+      type: "string",
+      default: { 'illumina' },
+      enum: ['illumina', 'nanopore', 'pacbio_hifi'],
+      scope: "project"
+    ],
+    rna_counts_dir: [
+      type: "string",//FIXME: type should be "directory"
+      scope: "project"
+    ],
   ]
 
 	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
