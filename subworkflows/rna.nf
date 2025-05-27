@@ -2,7 +2,7 @@ nextflow.enable.dsl=2
 
 include { validateGroup } from '../modules/utils'
 include { nrMappedReads } from '../modules/cram/utils'
-include { outrider_counts } from '../modules/rna/outrider'
+include { outrider_counts; merge_sample_counts } from '../modules/rna/outrider'
 
 
 workflow rna {
@@ -21,10 +21,10 @@ workflow rna {
     ch_rna.with_reads
     | map { meta -> [meta, meta.sample.rna_cram.data, meta.sample.rna_cram.index] }
     | outrider_counts
-    | map { meta, counts -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, outrider_counts: counts]] }
+    | map { meta, counts -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), counts] }
     | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
-    | map { key, group -> validateGroup(key, group) }
-    | view { meta, samples -> samples.outrider_counts }
+    | map { meta, counts -> validateGroup(meta, counts) }
+    | merge_sample_counts
     //| TODO: next outrider step
     //| map
     //| set {ch_rna_processed}

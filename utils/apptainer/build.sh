@@ -88,6 +88,7 @@ main() {
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("gado-1.0.3_v2")
+  images+=("hg19hg38")
   images+=("manta-1.6.0")
   images+=("minimap2-2.27_v2")
   images+=("picard-3.1.1_v2")
@@ -112,6 +113,9 @@ main() {
   uris["docker://google/deepvariant:1.8.0"]="deepvariant-1.8.0"
   uris["docker://google/deepvariant:deeptrio-1.8.0"]="deepvariant_deeptrio-1.8.0"
   uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
+  uris["docker://maplesond/portcullis:test"]="portcullis-test"
+  uris["docker://bgruening/galaxy-deeptools:latest"]="galaxy-deeptools-latest"
+
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"
