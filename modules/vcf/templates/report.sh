@@ -45,7 +45,7 @@ process_rna () {
       if [[ -n "$rna_param" ]]; then
           rna_param+=","
       fi
-      rna_param+="${filename}.bw;${filename}.bed"
+      rna_param+="$(realpath "${filename}.bw");$(realpath "${filename}.bed")"
     done
   fi
 }
