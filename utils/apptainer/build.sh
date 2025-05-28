@@ -114,7 +114,7 @@ main() {
   uris["docker://google/deepvariant:deeptrio-1.8.0"]="deepvariant_deeptrio-1.8.0"
   uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
   uris["docker://maplesond/portcullis:test"]="portcullis-test"
-  uris["docker://bgruening/galaxy-deeptools:latest"]="galaxy-deeptools-latest"
+  uris["docker://cabimerbioinfo/deeptools:v1"]="deeptools-v1"
 
   
   for i in "${!uris[@]}"; do

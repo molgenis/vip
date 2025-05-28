@@ -8,7 +8,7 @@ process report {
   publishDir "$params.output", mode: 'link'
 
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(crams)
+    tuple val(meta), path(vcf), path(vcfIndex), path(crams), path(rna_crams)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(reportPath)
@@ -22,6 +22,7 @@ process report {
     reportPath = "${basename}.html"
 
     refSeqPath = params[meta.project.assembly].reference.fasta
+    reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     metadata = params.vcf.classify_samples.metadata
     decisionTree = params.vcf.classify[meta.project.assembly].decision_tree
     sampleTree = params.vcf.classify_samples[meta.project.assembly].decision_tree
@@ -38,7 +39,6 @@ process report {
     hpoIds = meta.project.samples.findAll{ sample -> !sample.hpo_ids.isEmpty() }.collect{ sample -> [sample.individual_id, sample.hpo_ids.join(";")].join("/") }.join(",") 
     pedigree = "${meta.project.id}.ped"
     pedigreeContent = createPedigree(meta.project.samples)
-
 
     template 'report.sh'
 

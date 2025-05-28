@@ -5,7 +5,7 @@ include { parseCommonSampleSheet; getAssemblies } from './modules/sample_sheet'
 include { getCramRegex; getVcfRegex; validateGroup } from './modules/utils'
 include { validate as validate_vcf } from './modules/vcf/validate'
 include { liftover as liftover_vcf } from './modules/vcf/liftover'
-include { validate as validate_cram } from './modules/cram/validate'
+include { validate as validate_cram; validate as validate_cram_rna } from './modules/cram/validate'
 include { split } from './modules/vcf/split'
 include { normalize } from './modules/vcf/normalize'
 include { annotate; annotate_publish } from './modules/vcf/annotate'
@@ -16,6 +16,7 @@ include { classify_samples; classify_samples_publish } from './modules/vcf/class
 include { filter_samples } from './modules/vcf/filter_samples'
 include { concat } from './modules/vcf/concat'
 include { slice } from './modules/vcf/slice'
+include { slice_rna } from './modules/vcf/slice_rna'
 include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
 include { gado } from './modules/vcf/gado'
@@ -227,7 +228,28 @@ workflow vcf {
             | set { ch_sliced }
 
         ch_sliced.mix(ch_output.ready)
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : []] }
+            | branch { meta ->
+                slice: meta.project.samples.any{ sample -> sample.cram_rna != null }
+                ready: true
+              }
+            | set { ch_slice_rna }
+
+        ch_slice_rna.slice
+            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram_rna != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram_rna.data] }
+            | slice_rna
+            | map { meta, cram_rna -> [*:meta, cram_rna: cram_rna] }
+            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram_rna != null }), meta] }
+            | groupTuple(remainder: true)
+            | map { key, metaList -> 
+                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram_rna' }
+                [*:meta, crams_rna: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram_rna: it.cram_rna] } ]
+              }
+            | set { ch_sliced_rna }
+
+        ch_sliced_rna.mix(ch_slice_rna.ready)
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], meta.crams_rna ? meta.crams_rna.collect { it.cram_rna } : []] }
+            | view
             | report
 }
 
@@ -279,7 +301,7 @@ workflow {
     | map { meta, vcf -> [meta, [vcf: vcf]] }
     | set { ch_project_vcf_processed }
 
-  // liftover and validate cram per sample
+  // validate cram per sample
 	ch_project.cram
 	  | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
 	  | branch { meta ->
@@ -298,10 +320,29 @@ workflow {
 
   // merge cram channels per project
   Channel.empty().mix(ch_sample_cram_validated, ch_sample_cram.ready)
-    | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram]] }
+	  | branch { meta, cram ->
+				process: meta.sample.cram_rna != null
+				ready:   true
+                 return [meta, cram, null]
+			}
+    | set { ch_sample_cram_rna }
+
+  // validate rna cram
+	ch_sample_cram_rna.process
+	  | map { meta, cram -> [[*:meta, cram:cram], meta.project.assembly, meta.sample.cram_rna] }
+	  | validate_cram_rna
+	  | map { meta, cramRna, cramRnaIndex, cramRnaStats -> [meta, meta.cram, [data: cramRna, index: cramRnaIndex, stats: cramRnaStats]] }
+    | map { meta, cram, cram_rna -> 
+        meta.remove('cram')
+        [meta, cram, cram_rna]
+      }
+    | set { ch_sample_cram_rna_validated }
+
+  Channel.empty().mix(ch_sample_cram_rna_validated, ch_sample_cram_rna.ready)
+    | map { meta, cram, cram_rna -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram, cram_rna: cram_rna]] }
     | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram] }]] }
+    | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram, cram_rna: it.cram_rna] }]] }
     | set { ch_project_cram_processed }
 
   // merge vcf and cram channels and update project
@@ -408,6 +449,10 @@ def parseSampleSheet(params) {
       scope: "project"
     ],
     cram: [
+      type: "file",
+      regex: getCramRegex()
+    ],
+    cram_rna: [
       type: "file",
       regex: getCramRegex()
     ]

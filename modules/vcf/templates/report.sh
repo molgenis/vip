@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+rna_param="";
+
 create_vcf () {
   printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "!{workflow.commandLine}" > "!{basename}.header"
 
@@ -19,6 +21,33 @@ create_vcf () {
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+process_rna () {
+  if [ -n "!{rna_crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
+    for cram in !{rna_crams}; do
+      filename=$(basename "${cram}" .cram)
+      ${CMD_SAMTOOLS} view -b -T "!{refSeqPath}" -o "${filename}.bam" "${cram}"
+      ${CMD_SAMTOOLS} index "${filename}.bam"
+      #TODO: produce bed
+      ${CMD_PORTCULLIS} portcullis prep "!{reference}" "${filename}.bam"
+      ${CMD_PORTCULLIS} portcullis junc portcullis_prep/
+      ${CMD_PORTCULLIS} junctools convert -if portcullis -of STAR portcullis_junc/portcullis.junctions.tab
+      mv portcullis_junc/portcullis.junctions.bed $filename.bed
+
+      #produce bigwig
+      local args_deep=()
+      args_deep+=("-b" "${filename}.bam")
+      args_deep+=("-o" "${filename}.bw")
+      ${CMD_DEEPTOOLS} "${args_deep[@]}"
+      
+      #create file pair for merged igv track
+      if [[ -n "$rna_param" ]]; then
+          rna_param+=","
+      fi
+      rna_param+="${filename}.bw;${filename}.bed"
+    done
+  fi
 }
 
 report() {
@@ -60,6 +89,9 @@ report() {
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi
+  if [[ -n "$rna_param" ]]; then
+    args+=("--rnaTrack" "$rna_param")
+  fi
   cat << EOF > "vip_report_config.json"
 !{configJsonStr}
 EOF
@@ -68,10 +100,13 @@ EOF
     args+=("--cram" "!{crams}")
   fi
 
+  echo -e "${args[@]}" > report_params.log
+exit 1
   ${CMD_VCFREPORT} java "${args[@]}"
 }
 
 main() {
+  process_rna
   create_vcf
   index
   report

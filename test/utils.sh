@@ -52,5 +52,5 @@ runVip() {
   envsubst < $2 > "${processed_input}"
   args+=("--input" "${processed_input}")
 
-  vip.sh "${args[@]}" 1> /dev/null
+  vip.sh "${args[@]}"
 }
