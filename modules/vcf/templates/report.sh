@@ -26,8 +26,9 @@ index () {
 process_rna () {
   if [ -n "!{rna_crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
     for cram in !{rna_crams}; do
-      filename=$(basename "${cram}" .cram)
-      ${CMD_SAMTOOLS} view -b -T "!{refSeqPath}" -o "${filename}.bam" "${cram}"
+      IFS='=' read -r sampleId cram_value <<< "${cram}"
+      filename=$(basename "${cram_value}" .cram)
+      ${CMD_SAMTOOLS} view -b -T "!{refSeqPath}" -o "${filename}.bam" "${cram_value}"
       ${CMD_SAMTOOLS} index "${filename}.bam"
       #TODO: produce bed
       ${CMD_PORTCULLIS} portcullis prep "!{reference}" "${filename}.bam"
@@ -45,7 +46,7 @@ process_rna () {
       if [[ -n "$rna_param" ]]; then
           rna_param+=","
       fi
-      rna_param+="$(realpath "${filename}.bw");$(realpath "${filename}.bed")"
+      rna_param+="${sampleId}=$(realpath "${filename}.bw");$(realpath "${filename}.bed")"
     done
   fi
 }
@@ -90,7 +91,7 @@ report() {
     args+=("--template" "!{template}")
   fi
   if [[ -n "$rna_param" ]]; then
-    args+=("--rnaTrack" "$rna_param")
+    args+=("--rna" "$rna_param")
   fi
   cat << EOF > "vip_report_config.json"
 !{configJsonStr}

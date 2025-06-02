@@ -243,7 +243,7 @@ workflow vcf {
             | groupTuple(remainder: true)
             | map { key, metaList -> 
                 def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram_rna' }
-                [*:meta, crams_rna: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram_rna: it.cram_rna] } ]
+                [*:meta, crams_rna: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram_rna: it.cram_rna, cram: it.sample.cram] } ]
               }
             | set { ch_sliced_rna }
 
