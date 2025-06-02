@@ -16,7 +16,7 @@ From: sif/build/openjdk-21.sif
 
     mkdir -p /opt/vcf-report/lib
     curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://download.molgeniscloud.org/downloads/vip/_dev/resources/vip-report-7.2.1-RNA.jar"
-    echo "72f5ef0ce71fc1677cba00dd7cb4d4020a9fc430d8a13d028cd4da45cf5f7493  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+    echo "9716607cf59e2b3939410ff0dd9fe672e1c76f8e87853a06cce5becd278c296c  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
