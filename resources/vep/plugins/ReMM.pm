@@ -86,7 +86,7 @@ sub run {
   }
   else{
     my $scoreStart = getScore($chr, $start);
-    my $scoreEnd = getScore($chr, $start);
+    my $scoreEnd = getScore($chr, $end);
     if(length $scoreStart && length $scoreEnd){
         $score = $scoreStart > $scoreEnd ? $scoreStart : $scoreEnd;
     }elsif(length $scoreStart){
