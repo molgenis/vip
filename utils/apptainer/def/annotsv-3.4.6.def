@@ -1,0 +1,52 @@
+Bootstrap: localimage
+From: sif/bcftools-1.20.sif
+Stage: build
+
+Bootstrap: localimage
+From: sif/build/openjdk-21.sif
+
+%help
+    AnnotSV: Annotation and Ranking of Human Structural Variations
+    Usage: apptainer run annotSv.sif -annotationsDir [path_to_annotations_dir] -SVinputFile [your_vcf]
+
+%files from build
+    /usr/local/bin/bcftools
+
+# When updating AnnotSV check if resources and exomizer jar should be updated (data/resources/annotsv/)
+# check if new jars were added to: https://github.com/lgmgeo/AnnotSV/blob/d20fd35999902f41b9d60d32ea26d0e4599cde49/Makefile#L200
+
+%post
+    version_major=3
+    version_minor=4
+    version_patch=6
+
+    apk update
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
+    apk add --virtual=.build-dependencies build-base curl
+
+    # bedtools
+    curl -Ls -o /usr/local/bin/bedtools https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
+    echo "e85d74b6c11b664c05176b1dbf7d2891ad0383ae93805db2d29034db5c2d80ce  /usr/local/bin/bedtools" | sha256sum -c
+    chmod +x /usr/local/bin/bedtools
+
+    # AnnotSv
+    curl -Ls -o annot-sv.tar.gz "https://github.com/lgmgeo/AnnotSV/archive/refs/tags/v${version_major}.${version_minor}.${version_patch}.tar.gz"
+    echo "ad523cd4fbf8c65b0e7be935a417b75bbf755422bd8f4a0ec3b55a2b4c576d4d  annot-sv.tar.gz" | sha256sum -c
+    tar xf annot-sv.tar.gz -C /usr/share
+
+    (
+      cd "/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}"
+      sed -i 's|/usr/bin/bash|/bin/bash|' Makefile
+      make PREFIX=. install
+    )
+
+    # Set Environment
+    echo "export PATH=\"$PATH:/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/bin\"" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export ANNOTSV=\"/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/\"" >> "${APPTAINER_ENVIRONMENT}"
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/* annot-sv.tar.gz
+
+%runscript
+    AnnotSV "$@"
