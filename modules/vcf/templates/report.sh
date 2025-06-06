@@ -101,8 +101,6 @@ EOF
     args+=("--cram" "!{crams}")
   fi
 
-  echo -e "${args[@]}" > report_params.log
-exit 1
   ${CMD_VCFREPORT} java "${args[@]}"
 }
 

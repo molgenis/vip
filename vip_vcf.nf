@@ -249,7 +249,6 @@ workflow vcf {
 
         ch_sliced_rna.mix(ch_slice_rna.ready)
             | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], meta.crams_rna ? meta.crams_rna.collect { it.cram_rna } : []] }
-            | view
             | report
 }
 
