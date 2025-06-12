@@ -94,7 +94,8 @@ sub getFieldIndices{
     for (@fields) {
         my %params = map {$_ => 1} @headers;
         if (!exists($params{$_})) {
-            die "ERROR: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
+            # die "ERROR: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
+            print "WARNING: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
         }
     }
     my %indices;
@@ -187,7 +188,7 @@ sub run {
             my @entries = split(/;/, $re_gene);
             foreach my $entry (@entries) {
                 my @regenename = split(' ', $entry);
-                if ( ${@regenename} == 2 ) {
+                if ( @regenename == 2 ) {
                     push @genes, @regenename[0];
                 }
                 else{
