@@ -226,10 +226,10 @@ def parseValueFile(token, col, rootDir) {
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   def fileValue
   if(value != null) {
-    def relative = value.startsWith('/')
+    def relative = !value.startsWith('/')
     value = value.replaceAll(/\[/, '\\\\[').replaceAll(/\]/, '\\\\]').replaceAll(/\}/, '\\\\}').replaceAll(/\{/, '\\\\{')
     
-    fileValue = relative ? file(value) : file(new File(value, rootDir).getPath())
+    fileValue = relative ? file(new File(value, rootDir).getPath()) : file(value)
     if(!fileValue.exists()) throw new IllegalArgumentException(relative ? "file '${token}' in directory '${rootDir}' does not exist" : "file '${token}' does not exist")
     if(!fileValue.isFile()) throw new IllegalArgumentException("file '${token}' is not a file")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
