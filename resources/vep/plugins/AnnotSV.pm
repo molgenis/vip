@@ -94,7 +94,7 @@ sub getFieldIndices{
     for (@fields) {
         my %params = map {$_ => 1} @headers;
         if (!exists($params{$_})) {
-            die "ERROR: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
+            print "WARNING: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
         }
     }
     my %indices;
@@ -113,6 +113,9 @@ sub getFieldIndices{
         }
         if ($headers[$idx] eq "Gene_name") {
             $self->{gene_idx} = $idx;
+        }
+        if ($headers[$idx] eq "RE_gene") {
+            $self->{re_gene_idx} = $idx;
         }
         for my $field (@fields) {
             if ($field eq $headers[$idx]) {
@@ -178,6 +181,21 @@ sub run {
     if(defined $line){
         my @line = @{$line};
         my @genes = split(";", $line[$self->{gene_idx}]);
+        my $re_gene = $line[$self->{re_gene_idx}];
+
+        if ($re_gene ne "") {
+            my @entries = split(/;/, $re_gene);
+            foreach my $entry (@entries) {
+                my @regenename = split(' ', $entry);
+                if ( @regenename == 2 ) {
+                    push @genes, @regenename[0];
+                }
+                else{
+                    die "Unexpected array size for splitted RE_Gene.";
+                }
+            }
+        }
+
         if ($symbol eq "") {
             $annotations = mapAnnotations(\@line, \@vcf_line);
             if(defined $annotations){

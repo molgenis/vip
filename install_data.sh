@@ -178,7 +178,7 @@ install_files() {
 
   # when modifying data array, please keep list in 'ls -l' order
   local data=()
-  data+=("2c21479ee78b1b6eac25dc993511af0c" "images/annotsv-3.4.4.sif" "")
+  data+=("6acb17d75aba21aaa14be571edb82ab7" "images/annotsv-3.4.6.sif" "")
   data+=("40594154f81dec76779ffa5d5e3ad052" "images/bcftools-1.20.sif" "")
   data+=("0879586dfdb49f7cf94d4b9a4c65e2b8" "images/capice-5.1.2.sif" "")
   data+=("bc4be7f94aa38add1bf4cfe2a41a1f02" "images/cutesv-2.1.1_v2.sif" "")
@@ -203,10 +203,10 @@ install_files() {
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("1e9b9dbd138967e808a60b59e10b3020" "nextflow-24.10.6-dist" "postprocess_nextflow")
-  data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.4/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
-  data+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.4/2309_phenotype.zip" "postprocess_annotsv_phenotype")
-  data+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.4/Annotations_Human_3.4.4.tar.gz" "postprocess_annotsv_annotations")
-  data+=("25d79667ba41aef0a418f75468e4b457" "resources/annotsv/v3.4.4/jar/exomiser-rest-prioritiser-12.1.0.jar" "")
+  data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.6/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
+  data+=("ae755bea21ad8750ecd12a510104a889" "resources/annotsv/v3.4.6/2309_phenotype.zip" "postprocess_annotsv_phenotype")
+  data+=("a0a4df58d3ed719121d935d1a28f363c" "resources/annotsv/v3.4.6/Annotations_Human_3.4.6.tar.gz" "postprocess_annotsv_annotations")
+  data+=("25d79667ba41aef0a418f75468e4b457" "resources/annotsv/v3.4.6/jar/exomiser-rest-prioritiser-12.1.0.jar" "")
   data+=("94bac97fe4dbc4ad1a74bde3afb55603" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.cols.txt.gz" "")
   data+=("4461c232ae1be508e7aa1fb44ade2292" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.datg" "")
   data+=("6d50fbb9b2f74221265dede2aae13e71" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_matrix.rows.txt.gz" "")
