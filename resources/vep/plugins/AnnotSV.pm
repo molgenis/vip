@@ -94,7 +94,6 @@ sub getFieldIndices{
     for (@fields) {
         my %params = map {$_ => 1} @headers;
         if (!exists($params{$_})) {
-            # die "ERROR: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
             print "WARNING: requested field '$_' is not available in input file. (note: spaces should be replaced with underscores.)";
         }
     }
@@ -205,7 +204,6 @@ sub run {
         }
         else {
             for my $gene (@genes) {
-                print "$gene\n";
                 if ($gene eq $symbol) {
                     $annotations = mapAnnotations(\@line, \@vcf_line);
                     if(defined $annotations){
