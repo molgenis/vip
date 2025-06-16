@@ -2,7 +2,9 @@
 set -euo pipefail
 
 fraser () {
- ${CMD_OUTRIDER} bash -c 'Rscript !{fraser_script} !{sampleName} !{bam} !{params.rna.genes_gtf} !{pairedEnd} !{strandSpecific}'
+  echo -e "!{samplesheetContent}" > !{samplesheet}
+  sed -i '/^\s*$/d' !{samplesheet}
+  ${CMD_OUTRIDER} bash -c 'Rscript !{fraser_script} !{samplesheet} !{output} !{refSeqPath}'
 }
 
 main() {  

@@ -42,6 +42,7 @@ if (ext_amount > 0){
 
     annot <- fread(file.path(ext_dir,"sampleAnnotation.tsv"))
 
+#Only works if sample ID column is named "sampleID"
     if (random_ext){
         samples <- random_sampling(annot$sampleID, ext_amount)
     } else {

@@ -1,7 +1,5 @@
 process outrider_counts {
   label 'outrider_counts'
-
-  publishDir "$params.output/intermediates", mode: 'link'
   
   input:
     tuple val(meta), path(bam), path(bai)
@@ -25,8 +23,6 @@ process outrider_counts {
 
 process outrider_create_dataset {
   label 'outrider_create_dataset'
-
-  publishDir "$params.output/intermediates", mode: 'link'
   
   input:
     tuple val(meta), path(counts)
@@ -60,8 +56,6 @@ process outrider_create_dataset {
 
 process outrider_optimize {
   label 'outrider_optimize'
-
-  publishDir "$params.output/intermediates", mode: 'link'
   
   input:
     tuple val(meta), path(outriderDataset), path(qValuesFile), val(qValue)
@@ -100,7 +94,7 @@ process outrider {
     tuple val(meta), path(outrider_dataset), path(ndimFiles)
 
   output:
-    tuple val(meta), path(outputFiles)
+    tuple val(meta), path(fullOutputFile)
 
   shell:
     pairedEnd = "${meta.project.rna_paired_ended}" == "true" ? "TRUE" : "FALSE"
@@ -118,7 +112,9 @@ process outrider {
     }
     samplesheetContent = lines.join('\n')
 
+    outputRds = "final_outrider.rds"
     outputFile = "outrider_output.tsv"
+    fullOutputFile = "combined_samples_outrider_output.tsv"
 
     outrider_merge_q_files_script = params.rna.scripts.outrider.outrider_merge_q_files;
     outrider_script = params.rna.scripts.outrider.outrider;

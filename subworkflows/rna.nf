@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { validateGroup } from '../modules/utils'
 include { nrMappedReads } from '../modules/cram/utils'
 include { outrider_counts; outrider_create_dataset; outrider_optimize; outrider } from '../modules/rna/outrider'
-include { fraser; fraserCount } from '../modules/rna/fraser'
+include { fraser; fraser_counts } from '../modules/rna/fraser'
 
 
 workflow rna {
@@ -48,8 +48,8 @@ workflow rna {
     //| set {ch_rna_processed}
 
  ch_process_rna.fraser
- //   |fraserCount
-//    |fraser
+    |fraser_counts
+    |fraser
 
     //emit:
     //  ch_rna_processed
