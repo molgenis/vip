@@ -91,6 +91,7 @@ workflow vcf {
         | set { ch_annotate }
 
       ch_annotate.take
+          | map {meta, vcf, vcfIndex, vcfStats -> [meta, vcf, vcfIndex, vcfStats, meta.outrider, meta.fraser]}
           | annotate
           | multiMap { it -> done: publish: it }
           | set { ch_annotated }
@@ -229,26 +230,26 @@ workflow vcf {
 
         ch_sliced.mix(ch_output.ready)
             | branch { meta ->
-                slice: meta.project.samples.any{ sample -> sample.cram_rna != null }
+                slice: meta.project.samples.any{ sample -> sample.rna_cram != null }
                 ready: true
               }
             | set { ch_slice_rna }
 
         ch_slice_rna.slice
-            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram_rna != null }.collect{ sample -> [*:meta, sample: sample] } }
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram_rna.data] }
+            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.rna_cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.rna_cram.data] }
             | slice_rna
-            | map { meta, cram_rna -> [*:meta, cram_rna: cram_rna] }
-            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram_rna != null }), meta] }
+            | map { meta, rna_cram -> [*:meta, rna_cram: rna_cram] }
+            | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.rna_cram != null }), meta] }
             | groupTuple(remainder: true)
             | map { key, metaList -> 
-                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram_rna' }
-                [*:meta, crams_rna: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram_rna: it.cram_rna, cram: it.sample.cram] } ]
+                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'rna_cram' }
+                [*:meta, crams_rna: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, rna_cram: it.rna_cram, cram: it.sample.cram] } ]
               }
             | set { ch_sliced_rna }
 
         ch_sliced_rna.mix(ch_slice_rna.ready)
-            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], meta.crams_rna ? meta.crams_rna.collect { it.cram_rna } : []] }
+            | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.crams ? meta.crams.collect { it.cram } : [], meta.crams_rna ? meta.crams_rna.collect { it.rna_cram } : []] }
             | report
 }
 

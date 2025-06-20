@@ -21,6 +21,7 @@ workflow rna {
     
     ch_rna.with_reads
       | map { meta -> [meta, meta.sample.rna_cram.data, meta.sample.rna_cram.index] }
+      | view {meta, data, index -> data}
       | multiMap { it -> outrider: fraser: it }
       | set { ch_process_rna }
 
@@ -44,13 +45,29 @@ workflow rna {
     | groupTuple
     | map { key,datasets,endims -> [key, datasets[0], endims]}
     | outrider
-    //| map to meta, outrider_file
-    //| set {ch_rna_processed}
+    | map { meta, outrider -> [meta.project.id, meta, outrider]}
+    | set {ch_rna_outrider_processed}
 
  ch_process_rna.fraser
-    |fraser_counts
-    |fraser
+    | map { meta, bam, bai -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [bam: bam, bai: bai]] }
+    | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+    | map { key, group -> validateGroup(key, group) }
+    | map { meta, group ->
+        def bams = group.collect { it.bam }
+        def bais = group.collect { it.bai }
+        [meta, bams, bais]
+    }
+    | fraser_counts
+    | fraser
+    | map { meta, fraser -> [meta.project.id, meta, fraser]}
+    | set { ch_rna_fraser_processed }
 
-    //emit:
-    //  ch_rna_processed
+
+    ch_rna_outrider_processed
+    | join ( ch_rna_fraser_processed )
+    | map { key,meta1,outrider,meta2,fraser -> [meta1, outrider, fraser]}
+    | set { ch_rna_processed }
+
+    emit:
+      ch_rna_processed
 }

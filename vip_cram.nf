@@ -40,7 +40,8 @@ workflow cram {
     ch_cram_multi.rna
       | filter { meta -> meta.sample.rna_cram != null }
       | rna
-      //| set { ch_cram_rna }
+      | map {meta, outrider, fraser -> [meta.project.id, meta, outrider, fraser]}
+      | set { ch_cram_rna }
 
     // snv
     ch_cram_multi.snv
@@ -104,7 +105,9 @@ workflow cram {
 
     // continue with vcf workflow
     Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_called.ready)
-      | map { meta, vcf -> [*:meta, vcf: vcf] }
+      | map {meta, vcf -> [meta.project.id, meta, vcf]}
+      | join ( ch_cram_rna )
+      | map { porject_id, meta, vcf, meta2, outrider, fraser -> [*:meta, vcf: vcf, outrider: outrider, fraser:fraser] }
       | vcf
 }
 

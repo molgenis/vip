@@ -16,7 +16,7 @@ From: sif/build/openjdk-21.sif
 
     mkdir -p /opt/vcf-format-annotator/lib
     curl -Ls -o /opt/vcf-format-annotator/lib/vcf-format-annotator.jar "https://download.molgeniscloud.org/downloads/vip/_dev/github/rna_poc/vcf-format-annotator.jar"
-    echo "e2be683b2592a71b0b7f9e6c2c2fb851abf6a0736f5214179647af38e105552f  /opt/vcf-format-annotator/lib/vcf-format-annotator.jar" | sha256sum -c
+    echo "ca70cae87dae3ea705e9bc8725ee4837ef7c4f19d7946175fe8e5b32bf8b0bfd  /opt/vcf-format-annotator/lib/vcf-format-annotator.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

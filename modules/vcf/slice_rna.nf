@@ -12,7 +12,7 @@ process slice_rna {
     
     refSeqPath = params[meta.project.assembly].reference.fasta
 
-    template 'slice.sh'
+    template 'slice_rna.sh'
 
   stub:
     cramOut="${cram.simpleName}_rna_sliced.cram"

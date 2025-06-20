@@ -33,8 +33,34 @@ process_rna () {
       #TODO: produce bed
       ${CMD_PORTCULLIS} portcullis prep "!{reference}" "${filename}.bam"
       ${CMD_PORTCULLIS} portcullis junc portcullis_prep/
-      ${CMD_PORTCULLIS} junctools convert -if portcullis -of STAR portcullis_junc/portcullis.junctions.tab
-      mv portcullis_junc/portcullis.junctions.bed $filename.bed
+   awk -F'\t' '
+   BEGIN {
+       OFS = "\t"
+   }
+   NR == 1 {
+       for (i = 1; i <= NF; i++) {
+           col[$i] = i
+       }
+       next
+   }
+   {
+       chrom = $(col["refname"])
+       start = $(col["start"])
+       end = $(col["end"])
+       motif = $(col["ss1"]) "/" $(col["ss2"])
+       uniquely_mapped = $(col["nb_us_aln"])
+       multi_mapped = $(col["nb_ms_aln"])
+       max_overhang = $(col["max_min_anc"])
+       strand = $(col["consensus-strand"])
+       score = uniquely_mapped  # Or choose another column like score or nb_rel_aln
+       annotated = "false"  # Placeholder; set to true via external logic
+       info = "motif=" motif ";uniquely_mapped=" uniquely_mapped \
+              ";multi_mapped=" multi_mapped \
+              ";maximum_spliced_alignment_overhang=" max_overhang \
+              ";annotated_junction=" annotated
+       print chrom, start, end, info, score, strand
+   }
+   ' portcullis_junc/portcullis.junctions.tab > ${filename}.bed
 
       #produce bigwig
       local args_deep=()
@@ -100,7 +126,7 @@ EOF
   if [ -n "!{crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
     args+=("--cram" "!{crams}")
   fi
-
+echo "${args[@]}" > test.args
   ${CMD_VCFREPORT} java "${args[@]}"
 }
 

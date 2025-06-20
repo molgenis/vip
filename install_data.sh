@@ -198,7 +198,7 @@ install_files() {
   data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("88f0c3d425f18ecaebb2d857d349ad50" "_dev/images/vcf-decision-tree-rna.sif" "")
-  data+=("3ad1a1485295751f1f07c6103df731f8" "_dev/images/vcf-format-annotator.sif" "")
+  data+=("7580653a1ed1de03bc2568636a952ba2" "_dev/images/vcf-format-annotator.sif" "")
   data+=("8fce60e511a00261d072beeeac44a44f" "images/vcf-inheritance-matcher-3.4.0.sif" "")
   data+=("55f98499a9cf56e0da8d9de2558741eb" "_dev/images/vcf-report-7.2.1-RNA.sif" "")
   data+=("76cda9b92fdafa21cc92c41d44ca1a6f" "_dev/images/portcullis-test.sif" "")
@@ -257,7 +257,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("c709cea48445bc9af5bfad41e8ecee15" "_dev/resources/index.html" "")
+  data+=("ca5442f90bebd2eecd304a323407ee40" "_dev/resources/index.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do

@@ -88,6 +88,13 @@
       "numberType": "OTHER",
       "type": "STRING",
       "separator": ","
+    },
+    "zScore": {
+      "label": "OUTRIDER",
+      "description": "Annotated OUTRIDER zScore.",
+      "numberType": "OTHER",
+      "separator": ",",
+      "type": "FLOAT"
     }
   },
   "info": {

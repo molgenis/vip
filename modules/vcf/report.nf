@@ -30,7 +30,7 @@ process report {
     maxSamples = params.vcf.report.max_samples
     genesPath = params.vcf.report[meta.project.assembly].genes
     template = params.vcf.report.template
-    rna_crams = meta.crams_rna ? meta.crams_rna.collect { "${it.individual_id}=${it.cram_rna}" }.join(",") : ""
+    rna_crams = meta.crams_rna ? meta.crams_rna.collect { "${it.individual_id}=${it.rna_cram}" }.join(",") : ""
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
     includeCrams = params.vcf.report.include_crams
 

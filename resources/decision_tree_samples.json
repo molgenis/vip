@@ -1,6 +1,25 @@
 {
   "rootNode": "gt",
   "nodes": {
+    "zScore": {
+      "type": "BOOL",
+      "label": "ZScore",
+      "description": "zScore",
+      "query": {
+        "field": "FORMAT/zScore",
+        "operator": "any_greater",
+        "value": 0.2
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u2"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u3"
+      }
+    },
     "gt": {
       "label": "Genotype",
       "description": "Genotype",
@@ -46,7 +65,7 @@
         "nextNode": "only_IP"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "zScore"
       },
       "outcomeMissing": {
         "nextNode": "only_IP"
@@ -103,7 +122,7 @@
         "nextNode": "exit_u4"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "zScore"
       },
       "outcomeMissing": {
         "nextNode": "exit_u4"
@@ -122,7 +141,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "zScore"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"

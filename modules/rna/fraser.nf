@@ -2,13 +2,12 @@ process fraser_counts {
   label 'fraser_counts'
   
   input:
-    tuple val(meta), path(bam), path(bai)
+    tuple val(meta), path(bams), path(bais)
 
   output:
     tuple val(meta), path(fraser_output)
 
   shell:
-    sampleName = "${meta.sample.individual_id}"
     pairedEnd = "${meta.project.rna_paired_ended}" == "true" ? "TRUE" : "FALSE"
     strandSpecific = 2 //FIXME hardcoded
     externalCounts = "/groups/umcg-gcc/tmp02/projects/vipt/umcg-bcharbon/rna/counts/exported_counts/Cells_-_Cultured_fibroblasts--GRCh38--gencode29/"
@@ -25,7 +24,7 @@ process fraser_counts {
 
     assembly=meta.project.assembly
     refSeqPath = params[assembly].reference.fasta
-    fraser_output = "${sampleName}_fraser"
+    fraser_output = "${meta.project.id}_fraser"
     fraser_counts_script = params.rna.scripts.fraser.fraser_counts
     fraser_merge_counts_script = params.rna.scripts.fraser.fraser_merge_counts
 
@@ -45,7 +44,6 @@ process fraser {
     tuple val(meta), path(output)
 
   shell:
-      sampleName = "${meta.sample.individual_id}"
     pairedEnd = "${meta.project.rna_paired_ended}" == "true" ? "TRUE" : "FALSE"
     strandSpecific = 2 //FIXME hardcoded
     externalCounts = "/groups/umcg-gcc/tmp02/projects/vipt/umcg-bcharbon/rna/counts/exported_counts/Cells_-_Cultured_fibroblasts--GRCh38--gencode29/"
@@ -63,7 +61,8 @@ process fraser {
     assembly=meta.project.assembly
     refSeqPath = params[assembly].reference.fasta
 
-    output = "${sampleName}_fraser"
+    output = "${meta.project.id}_fraser"
+    outputFile = "${meta.project.id}_fraser.tsv"
 
     template 'fraser.sh'
 }
