@@ -90,8 +90,15 @@
       "separator": ","
     },
     "zScore": {
-      "label": "OUTRIDER",
+      "label": "OR zScore",
       "description": "Annotated OUTRIDER zScore.",
+      "numberType": "OTHER",
+      "separator": ",",
+      "type": "FLOAT"
+    },
+    "pValue": {
+      "label": "OR pValue",
+      "description": "Annotated OUTRIDER pValue.",
       "numberType": "OTHER",
       "separator": ",",
       "type": "FLOAT"

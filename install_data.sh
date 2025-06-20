@@ -198,7 +198,7 @@ install_files() {
   data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("88f0c3d425f18ecaebb2d857d349ad50" "_dev/images/vcf-decision-tree-rna.sif" "")
-  data+=("7580653a1ed1de03bc2568636a952ba2" "_dev/images/vcf-format-annotator.sif" "")
+  data+=("d278cd8b8d16063c34bad2e6cfad0514" "_dev/images/vcf-format-annotator.sif" "")
   data+=("8fce60e511a00261d072beeeac44a44f" "images/vcf-inheritance-matcher-3.4.0.sif" "")
   data+=("55f98499a9cf56e0da8d9de2558741eb" "_dev/images/vcf-report-7.2.1-RNA.sif" "")
   data+=("76cda9b92fdafa21cc92c41d44ca1a6f" "_dev/images/portcullis-test.sif" "")

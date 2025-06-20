@@ -1,12 +1,12 @@
 {
   "rootNode": "gt",
   "nodes": {
-    "zScore": {
+    "pValue": {
       "type": "BOOL",
-      "label": "ZScore",
-      "description": "zScore",
+      "label": "OUTRIDER pValue",
+      "description": "pValue",
       "query": {
-        "field": "FORMAT/zScore",
+        "field": "FORMAT/pValue",
         "operator": "any_greater",
         "value": 0.2
       },
@@ -65,7 +65,7 @@
         "nextNode": "only_IP"
       },
       "outcomeFalse": {
-        "nextNode": "zScore"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "only_IP"
@@ -122,7 +122,7 @@
         "nextNode": "exit_u4"
       },
       "outcomeFalse": {
-        "nextNode": "zScore"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "exit_u4"
@@ -141,7 +141,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "zScore"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"
