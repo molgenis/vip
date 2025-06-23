@@ -4,7 +4,7 @@ process annotate {
   label 'vcf_annotate'
 
   input:
-    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats), path(outrider), path(fraser)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
@@ -30,11 +30,14 @@ process annotate {
     vepPluginGreenDbPath = params.vcf.annotate[assembly].vep_plugin_green_db
     vepPluginGreenDbEnabled = params.vcf.annotate.vep_plugin_green_db_enabled
     vepPluginSpliceAiEnabled = params.vcf.annotate.vep_plugin_spliceai_enabled
+    vepPluginExpressionPath = params.vcf.annotate[assembly].vepPluginExpressionPath // FIXME should be sample sheet input
+    vepPluginSplicePath = params.vcf.annotate[assembly].vepPluginSplicePath  // FIXME should be sample sheet input
     fathmmMKLScoresPath = params.vcf.annotate[assembly].vep_plugin_fathmm_MKL_scores
     reMMScoresPath = params.vcf.annotate[assembly].vep_plugin_ReMM_scores
     capiceModelPath = params.vcf.annotate[assembly].capice_model
     alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
+    mapping = params.vcf.annotate[assembly].mapping
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)
     gadoScores = meta.gado != null ? meta.gado : ""

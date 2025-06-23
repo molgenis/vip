@@ -1,0 +1,2 @@
+"chr"	"start"	"end"	"width"	"strand"	"sampleID"	"hgncSymbol"	"type"	"pValue"	"padjust"	"psiValue"	"deltaPsi"	"counts"	"totalCounts"	"meanCounts"	"meanTotalCounts"	"nonsplitCounts"	"nonsplitProportion"	"nonsplitProportion_99quantile"	"pValueGene"	"padjustGene"
+"chr2"	9951493	9952493	1000	"*"	"SAMPLE0"	"GRHL1"	"jaccard"	1.2534e-21	2.4787e-15	0.66	-0.32	294	444	4319.78	4504.63	0	0	NA	6.0162e-20	7.7778e-15
