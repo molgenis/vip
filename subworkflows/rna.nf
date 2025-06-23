@@ -2,9 +2,8 @@ nextflow.enable.dsl=2
 
 include { validateGroup } from '../modules/utils'
 include { nrMappedReads } from '../modules/cram/utils'
-include { outrider_counts; outrider_create_dataset; outrider_optimize; outrider } from '../modules/rna/outrider'
+include { outrider_counts; outrider_create_dataset; outrider_optimize; outrider_merge_q_files; outrider } from '../modules/rna/outrider'
 include { fraser; fraser_counts } from '../modules/rna/fraser'
-
 
 workflow rna {
   take: meta
@@ -21,7 +20,6 @@ workflow rna {
     
     ch_rna.with_reads
       | map { meta -> [meta, meta.sample.rna_cram.data, meta.sample.rna_cram.index] }
-      | view {meta, data, index -> data}
       | multiMap { it -> outrider: fraser: it }
       | set { ch_process_rna }
 
@@ -43,7 +41,8 @@ workflow rna {
       }
     }
     | groupTuple
-    | map { key,datasets,endims -> [key, datasets[0], endims]}
+    | map { key,datasets,endims -> [key, datasets.sort()[0], endims.sort()]}
+    | outrider_merge_q_files
     | outrider
     | map { meta, outrider -> [meta.project.id, meta, outrider]}
     | set {ch_rna_outrider_processed}

@@ -85,13 +85,30 @@ process outrider_optimize {
     template 'optimize.sh'
 }
 
+process outrider_merge_q_files {
+  label 'outrider_merge_q_files'
+  
+  input:
+    tuple val(meta), path(outrider_dataset), path(ndimFiles)
+
+  output:
+    tuple val(meta), path(outrider_dataset), path(outputFile)
+
+  shell:
+    outputFile = "merged_q_files.tsv"
+
+    outrider_merge_q_files_script = params.rna.scripts.outrider.outrider_merge_q_files;
+    
+    template 'outrider_optimize_output.sh'
+}
+
 process outrider {
   label 'outrider'
 
   publishDir "$params.output/intermediates", mode: 'link'
   
   input:
-    tuple val(meta), path(outrider_dataset), path(ndimFiles)
+    tuple val(meta), path(outrider_dataset), path(merged_q_files)
 
   output:
     tuple val(meta), path(fullOutputFile)
@@ -116,7 +133,7 @@ process outrider {
     outputFile = "outrider_output.tsv"
     fullOutputFile = "combined_samples_outrider_output.tsv"
 
-    outrider_merge_q_files_script = params.rna.scripts.outrider.outrider_merge_q_files;
     outrider_script = params.rna.scripts.outrider.outrider;
+    
     template 'outrider.sh'
 }
