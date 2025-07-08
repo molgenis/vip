@@ -14,7 +14,8 @@ VIP documentation is available at this link https://molgenis.github.io/vip/.
 > Visit <a href="https://vip.molgeniscloud.org/">https://vip.molgeniscloud.org/</a> to analyse your own variants
 
 > [!TIP]
-> Preprint now available at <a href="https://doi.org/10.1101/2024.04.11.24305656">medRxiv</a>
+> Article published in <a href="https://doi.org/10.1093/nargab/lqaf087">NAR Genomics and Bioinformatics</a>. Please cite
+> this paper when using VIP in a publication.
 
 ## Quick Reference
 
