@@ -1,7 +1,7 @@
 =head1 LICENSE
 
 Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
-Copyright [2016-2021] EMBL-European Bioinformatics Institute
+Copyright [2016-2024] EMBL-European Bioinformatics Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,15 +34,15 @@ limitations under the License.
 =head1 DESCRIPTION
 
  A VEP plugin that retrieves pre-calculated annotations from SpliceAI.
- SpliceAI is a deep neural network, developed by Illumina, Inc
+ SpliceAI is a deep neural network, developed by Illumina, Inc 
  that predicts splice junctions from an arbitrary pre-mRNA transcript sequence.
 
- Delta score of a variant, defined as the maximum of (DS_AG, DS_AL, DS_DG, DS_DL),
- ranges from 0 to 1 and can be interpreted as the probability of the variant being
+ Delta score of a variant, defined as the maximum of (DS_AG, DS_AL, DS_DG, DS_DL), 
+ ranges from 0 to 1 and can be interpreted as the probability of the variant being 
  splice-altering. The author-suggested cutoffs are:
-   0.2 (high recall)
-   0.5 (recommended)
-   0.8 (high precision)
+   * 0.2 (high recall)
+   * 0.5 (recommended)
+   * 0.8 (high precision)
 
  This plugin is available for both GRCh37 and GRCh38.
 
@@ -53,37 +53,37 @@ limitations under the License.
  https://www.ncbi.nlm.nih.gov/pubmed/30661751
 
  Running options:
- (Option 1) By default, this plugin appends all scores from SpliceAI files.
- (Option 2) Besides the pre-calculated scores, it can also be specified a score
+ (1) By default, this plugin appends all scores from SpliceAI files.
+ (2) Besides the pre-calculated scores, it can also be specified a score
  cutoff between 0 and 1.
 
- Output:
+ Output: 
   The output includes the gene symbol, delta scores (DS) and delta positions (DP)
   for acceptor gain (AG), acceptor loss (AL), donor gain (DG), and donor loss (DL).
 
-  For tab the output contains one header 'SpliceAI_pred' with all
-  the delta scores and positions. The format is:
-   SYMBOL|DS_AG|DS_AL|DS_DG|DS_DL|DP_AG|DP_AL|DP_DG|DP_DL
+  - For tab the output contains one header 'SpliceAI_pred' with all
+    the delta scores and positions. The format is:
+      'SYMBOL|DS_AG|DS_AL|DS_DG|DS_DL|DP_AG|DP_AL|DP_DG|DP_DL'
 
-  For JSON the output is a hash with the following format:
-  "spliceai":
-    {"DP_DL":0,"DS_AL":0,"DP_AG":0,"DS_DL":0,"SYMBOL":"X","DS_AG":0,"DP_AL":0,"DP_DG":0,"DS_DG":0}
+  - For JSON the output is a hash with the following format:
+    "spliceai":
+      {"DP_DL":0,"DS_AL":0,"DP_AG":0,"DS_DL":0,"SYMBOL":"X","DS_AG":0,"DP_AL":0,"DP_DG":0,"DS_DG":0}
 
-  For VCF output the delta scores and positions are stored in different headers.
-  The values are 'SpliceAI_pred_xx' being 'xx' the score/position.
-   Example: 'SpliceAI_pred_DS_AG' is the delta score for acceptor gain.
+  - For VCF output the delta scores and positions are stored in different headers.
+    The values are 'SpliceAI_pred_xx' being 'xx' the score/position.
+      Example: 'SpliceAI_pred_DS_AG' is the delta score for acceptor gain.
 
   Gene matching:
-  If SpliceAI contains scores for multiple genes that overlap the same genomic location,
-  the plugin compares the gene from the SpliceAI file with the gene symbol from the input variant.
-  If none of the gene symbols match, the plugin does not return any scores.
+  SpliceAI can contain scores for multiple genes that overlap a variant,
+  and VEP can also predict consequences on multiple genes for a given variant.
+  The plugin only returns SpliceAI scores for the gene symbols that match (if any).
 
  If plugin is run with option 2, the output also contains a flag: 'PASS' if delta score
- passes the cutoff, 'FAIL' otherwise.
+ passes the cutoff, 'FAIL' otherwise. 
 
  The following steps are necessary before running this plugin:
 
- The files with the annotations for all possible substitutions (snv), 1 base insertions
+ The files with the annotations for all possible substitutions (snv), 1 base insertions 
  and 1-4 base deletions (indel) within genes are available here:
  https://basespace.illumina.com/s/otSPW8hnhaZR
 
@@ -96,10 +96,8 @@ limitations under the License.
  tabix -p vcf spliceai_scores.raw.indel.hg38.vcf.gz
 
  The plugin can then be run:
- ./vep -i variations.vcf --plugin SpliceAI,snv=/path/to/spliceai_scores.raw.snv.hg38.vcf.gz,
- indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz
- ./vep -i variations.vcf --plugin SpliceAI,snv=/path/to/spliceai_scores.raw.snv.hg38.vcf.gz,
- indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz,cutoff=0.5
+ ./vep -i variations.vcf --plugin SpliceAI,snv=/path/to/spliceai_scores.raw.snv.hg38.vcf.gz,indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz
+ ./vep -i variations.vcf --plugin SpliceAI,snv=/path/to/spliceai_scores.raw.snv.hg38.vcf.gz,indel=/path/to/spliceai_scores.raw.indel.hg38.vcf.gz,cutoff=0.5
 
 =cut
 
@@ -109,7 +107,6 @@ use strict;
 use warnings;
 use List::Util qw(max);
 
-use Bio::EnsEMBL::Utils::Sequence qw(reverse_comp);
 use Bio::EnsEMBL::Variation::Utils::Sequence qw(get_matched_variant_alleles);
 
 use Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin;
@@ -123,32 +120,33 @@ my $self;
 
 sub new {
   if (!(defined $self)) {
-    my $class = shift;
+  my $class = shift;
 
     $self = $class->SUPER::new(@_);
 
-    $self->expand_left(0);
-    $self->expand_right(0);
+  $self->expand_left(0);
+  $self->expand_right(0);
 
-    my $param_hash = $self->params_to_hash();
+  my $param_hash = $self->params_to_hash();
 
     die("ERROR: SpliceAI files not provided or not found!\n") unless defined($param_hash->{snv}) && defined($param_hash->{indel}) && -e $param_hash->{snv} && -e $param_hash->{indel};
 
-    $self->add_file($param_hash->{snv});
-    $self->add_file($param_hash->{indel});
+  $self->add_file($param_hash->{snv});
+  $self->add_file($param_hash->{indel});
 
-    if (defined($param_hash->{cutoff})) {
-      my $cutoff = $param_hash->{cutoff};
-      if ($cutoff < 0 || $cutoff > 1) {
-        die("ERROR: Cutoff score must be between 0 and 1!\n");
-      }
-      $self->{cutoff} = $cutoff;
+  if(defined($param_hash->{cutoff})) {
+    my $cutoff = $param_hash->{cutoff};
+    if($cutoff < 0 || $cutoff > 1) {
+      die("ERROR: Cutoff score must be between 0 and 1!\n");
     }
+    $self->{cutoff} = $cutoff;
+  }
 
-    if ($self->{config}->{output_format} eq "vcf") {
-      $output_vcf = 1;
+  if($self->{config}->{output_format} eq "vcf") {
+    $output_vcf = 1;
     }
   }
+
   return $self;
 }
 
@@ -208,41 +206,37 @@ sub run {
     my $ref_allele;
     my $alt_allele;
 
-    # get alt allele
-    my $allele = $tva->variation_feature_seq;
-    reverse_comp(\$allele) if $vf->{strand} < 0;
-    my $new_allele_string = $vf->ref_allele_string.'/'.$allele;
+    my $new_allele_string = $vf->ref_allele_string.'/'.$tva->variation_feature_seq;
 
     if($vf->ref_allele_string =~ /-/) {
-
       # convert to vcf format to compare the alt alleles
       my $vf_2 = Bio::EnsEMBL::Variation::VariationFeature->new
-          (-start => $start,
-              -end => $end,
-              -strand => $vf->{strand},
-              -allele_string => $new_allele_string
-          );
+        (-start => $start,
+         -end => $end,
+         -strand => $vf->{strand},
+         -allele_string => $new_allele_string
+        );
       my $convert_to_vcf = $vf_2->to_VCF_record;
       $ref_allele = ${$convert_to_vcf}[3];
       $alt_allele = ${$convert_to_vcf}[4];
     }
     else {
       $ref_allele = $vf->ref_allele_string;
-      $alt_allele = $allele;
+      $alt_allele = $tva->variation_feature_seq;
     }
 
     my $matches = get_matched_variant_alleles(
-        {
-            ref    => $ref_allele,
-            alts   => [$alt_allele],
-            pos    => $start,
-            strand => $vf->strand
-        },
-        {
-            ref  => $data_value->{ref},
-            alts => [$data_value->{alt}],
-            pos  => $data_value->{start},
-        }
+      {
+        ref    => $ref_allele,
+        alts   => [$alt_allele],
+        pos    => $start,
+        strand => $vf->strand
+      },
+      {
+       ref  => $data_value->{ref},
+       alts => [$data_value->{alt}],
+       pos  => $data_value->{start},
+      }
     );
     if (@$matches) {
 
@@ -286,18 +280,10 @@ sub run {
 
   my $result = {};
 
-  my $n_genes = scalar keys %hash_aux;
-  if($n_genes == 1) {
-    # Get the only gene from the hash of results
-    my $key_gene = (keys %hash_aux)[0];
-    $result = ($self->{config}->{output_format} eq "json" || $self->{config}->{rest}) ?  {SpliceAI => $hash_aux{$key_gene}} : $hash_aux{$key_gene};
-  }
-  elsif($n_genes > 1) {
-    # Compare genes from SpliceAI with the variant gene symbol
-    my $gene_symbol = $tva->transcript->{_gene_symbol} || $tva->transcript->{_gene_hgnc};
-    if($hash_aux{$gene_symbol}) {
+  # find the SpliceAI gene matching the variant gene symbol, if there is a match
+  my $gene_symbol = $tva->transcript->{_gene_symbol} || $tva->transcript->{_gene_hgnc};
+  if(($gene_symbol) && ($hash_aux{$gene_symbol})) {
       $result = ($self->{config}->{output_format} eq "json" || $self->{config}->{rest}) ?  {SpliceAI => $hash_aux{$gene_symbol}} : $hash_aux{$gene_symbol};
-    }
   }
 
   return $result;
@@ -323,15 +309,14 @@ sub parse_data {
   }
 
   return {
-      chr    => $chr,
-      start  => $start,
-      ref    => $ref,
-      alt    => $alt,
-      info   => $max_score,
-      result => $data,
-      gene   => $gene,
+    chr    => $chr,
+    start  => $start,
+    ref    => $ref,
+    alt    => $alt,
+    info   => $max_score,
+    result => $data,
+    gene   => $gene,
   };
 }
 
 1;
-
