@@ -12,7 +12,7 @@ args+=("--resume")
 runVip "${args}" "${TEST_RESOURCES_DIR}/deb_register.tsv"
 
 # compare expected to actual output and store result
-if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -ge 614 ]; then
+if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -ge 622 ]; then
   result="0"
 else
   result="1"
