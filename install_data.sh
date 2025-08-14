@@ -249,7 +249,7 @@ install_files() {
   data+=("a0f63b592b7b32fe36a9631793f341aa" "resources/GRCh38/spliceai_scores.masked.snv.hg38.vcf.gz.tbi" "")
   data+=("644aa23c29f4a9507bae23ef65b936d7" "resources/GRCh38/uORF_5UTR_PUBLIC.txt" "")
   data+=("d39fa9cca9fb870b99e6c67b57ef1ad3" "resources/GRCh38/variant_catalog_grch38_fixed.json" "")
-  data+=("e675702e561908574ec4312ebe6220a0" "resources/GRCh38/vkgl_public_consensus_hg38_202504.tsv" "")
+  data+=("e675702e561908574ec4312ebe6220a0" "resources/GRCh38/vkgl_consensus_20250401.tsv" "")
   data+=("d94140e762dfc6da23011718cccf2609" "resources/hpo_20240813.tsv" "")
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
