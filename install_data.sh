@@ -215,7 +215,7 @@ install_files() {
   data+=("74b9abc9a94c81fc27393e2f77ad498b" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_info.txt.gz" "")
   data+=("55d49c8d95ffc9aee2ec584359c197d2" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz" "")
   data+=("c6178d80393254789ebf9c43df6f2d6f" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi" "")
-  data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2-v6.ubj" "")
+  data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2_v6.ubj" "")
   data+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed" "")
   data+=("ce01e3f72f9695e411d0e1ace96432e1" "resources/GRCh38/clinvar_20250810_stripped.tsv.gz" "")
   data+=("c3c31e70fff88b571d8d13bdc9e76e39" "resources/GRCh38/clinvar_20250810_stripped.tsv.gz.tbi" "")
