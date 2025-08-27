@@ -4,8 +4,8 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-download "$base_url/nanopore.cram" "e66e9d364766e0d45f03bdc25d42cf24"
-ln -sf "${VIP_DIR_DATA}/test/resources/nanopore.cram" "${VIP_DIR_DATA}/test/resources/nanopore_copy.cram"
+download "$base_url/HG003_chr10_20.cram" "7fcbf7ff6cf42a7f7d529c8c582cb525"
+download "$base_url/HG002_chr10_20.cram" "53eae7c6c791b66c258c5fc062082293"
 
 args=()
 args+=("--workflow" "cram")
