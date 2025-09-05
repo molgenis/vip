@@ -197,9 +197,12 @@ install_files() {
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
   data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
-  data+=("880aa6fcb5dbfbaf0dd88f6cc99cf6f7" "images/vcf-decision-tree-5.1.4.sif" "")
+  data+=("88f0c3d425f18ecaebb2d857d349ad50" "_dev/images/vcf-decision-tree-rna.sif" "")
+  data+=("d278cd8b8d16063c34bad2e6cfad0514" "_dev/images/vcf-format-annotator.sif" "")
   data+=("8fce60e511a00261d072beeeac44a44f" "images/vcf-inheritance-matcher-3.4.0.sif" "")
-  data+=("9dba35e91c27050a200f40b3238fcfad" "images/vcf-report-7.2.2.sif" "")
+  data+=("55f98499a9cf56e0da8d9de2558741eb" "_dev/images/vcf-report-7.2.1-RNA.sif" "")
+  data+=("76cda9b92fdafa21cc92c41d44ca1a6f" "_dev/images/portcullis-test.sif" "")
+  data+=("5c80e42727bae4bec376994c7a05b618" "_dev/images/deeptools-v1.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("1e9b9dbd138967e808a60b59e10b3020" "nextflow-24.10.6-dist" "postprocess_nextflow")
@@ -254,7 +257,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("b95c24c89babebce52f103e4f55a1e7e" "resources/vip-report-template-v7.1.3.html" "")
+  data+=("ca5442f90bebd2eecd304a323407ee40" "_dev/resources/index.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do

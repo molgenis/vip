@@ -1,0 +1,86 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+	export TZ='Europe/Amsterdam'
+	export DEBIAN_FRONTEND=noninteractive
+	apt-get -y update
+	apt-get -y upgrade
+	# Installing dependencies
+	apt-get -y install tzdata autoconf automake make gcc perl zlib1g-dev libbz2-dev\
+	 libcurl4-gnutls-dev liblzma-dev libxml2-dev libssl-dev libperl-dev\
+	 libgsl0-dev openjdk-8-jdk tabix bedtools build-essential wget cmake unzip\
+	 libncurses-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev\
+	 libpng-dev libtiff5-dev libjpeg-dev curl liblapack-dev libblas-dev gfortran git
+	# Installing R 4.3
+	sed -i.bak "/^#.*deb-src.*universe$/s/^# //g" /etc/apt/sources.list
+	apt -y update
+	apt -y build-dep r-base
+	export R_VERSION=4.3.1
+	curl -O https://cran.rstudio.com/src/base/R-4/R-${R_VERSION}.tar.gz
+	tar -xzvf R-${R_VERSION}.tar.gz
+	cd R-${R_VERSION}
+	./configure \
+	    --prefix=/opt/R/${R_VERSION} \
+	    --enable-R-shlib \
+	    --enable-memory-profiling \
+	    --with-blas \
+	    --with-lapack
+	make
+	make install
+	ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+	ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+	cd ..
+	# Installing GATK4
+	wget https://github.com/broadinstitute/gatk/releases/download/4.2.3.0/gatk-4.2.3.0.zip
+	unzip gatk-4.2.3.0.zip
+	cd  gatk-4.2.3.0
+	pwd
+	java -jar gatk-package-4.2.3.0-local.jar
+	cd ..	
+	# Install required R packages with devtools
+	R --slave -e 'install.packages("BiocManager", repos="https://mirrors.evoluso.com/CRAN/")'
+	R --slave -e 'BiocManager::install(version="3.18")'
+	R --slave -e 'BiocManager::install("GenomicScores")'
+	R --slave -e 'install.packages("devtools", repos="https://mirrors.evoluso.com/CRAN/")'
+	R --slave -e 'devtools::install_github(c("gagneurlab/FRASER","gagneurlab/OUTRIDER", "mumichae/tMAE@1.0.0"))'
+	# Install packages without devtools
+	R --slave -e 'install.packages("dplyr", repos="https://mirrors.evoluso.com/CRAN/")'
+	R --slave -e 'install.packages("tidyr", repos="https://mirrors.evoluso.com/CRAN/")'
+	R --slave -e 'install.packages("data.table", repos="https://mirrors.evoluso.com/CRAN/")'
+	R --slave -e 'BiocManager::install("AnnotationDbi")'
+	R --slave -e 'BiocManager::install("org.Hs.eg.db")' 
+	R --slave -e 'BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")'
+	R --slave -e 'BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene")'
+	R --slave -e 'BiocManager::install("Rsubread")'
+	# FRASER dependency bugfix downgrade matrixStats
+	R --slave -e 'devtools::install_version("matrixStats", version="1.1.0", repos="https://mirrors.evoluso.com/CRAN/")' 
+	apt-get -y install python-is-python3
+	# Installing bcf and samtools
+	wget https://github.com/samtools/bcftools/releases/download/1.19/bcftools-1.19.tar.bz2
+	wget https://github.com/samtools/samtools/releases/download/1.19.2/samtools-1.19.2.tar.bz2
+	tar xvjf bcftools-1.19.tar.bz2
+	tar xvjf samtools-1.19.2.tar.bz2
+	cd bcftools-1.19/
+	./configure
+	make
+	make install
+	cd ..
+	cd samtools-1.19.2/
+	make
+	make install
+
+	mkdir -p /opt/
+	cd /opt
+	git clone https://github.com/molgenis/RNA_outlier_pipeline.git
+
+	apt-get clean
+
+%environment
+	export PATH=/bcftools-1.19:$PATH
+	export PATH=/samtools-1.19.2:$PATH
+	export PATH=/gatk-4.2.3.0:$PATH	
+	export RNA=/opt/RNA_outlier_pipeline
+
+%runscript
+    exec "$@"
