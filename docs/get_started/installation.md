@@ -8,7 +8,7 @@ curl -sSL https://download.molgeniscloud.org/downloads/vip/install.sh | bash
 
 ```
 VIP feat/installer_improvements installation running...
-VIP feat/installer_improvements installation completed, execute vip/v8.4.2/vip.sh to get started
+VIP feat/installer_improvements installation completed, execute vip/v8.4.3/vip.sh to get started
 ```
 
 ## EasyBuild
