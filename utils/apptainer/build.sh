@@ -76,13 +76,14 @@ main() {
   mkdir -p "${outputDir}/build"
 
   local images=()
-  images+=("build/alpine-3.20.3")
+  images+=("build/alpine-3.20.3") # deprecated
+  images+=("build/alpine-3.22.1")
   images+=("build/openjdk-21")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.20")
   images+=("annotsv-3.4.6")
   images+=("capice-5.1.2")
-  images+=("cutesv-2.1.1_v2")
+  images+=("cutesv-2.1.3")
   images+=("expansionhunter-5.0.0_v2")
   images+=("fastp-0.23.4_v2")
   #see ./def/glnexus_v1.4.5-patched.txt
