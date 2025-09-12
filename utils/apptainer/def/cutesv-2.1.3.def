@@ -1,10 +1,10 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.22.1.sif
 
 %post
     version_major=2
     version_minor=1
-    version_patch=1
+    version_patch=3
 
     # install
     apk update
@@ -14,7 +14,7 @@ From: sif/build/alpine-3.20.3.sif
     # --root-user-action=ignore: https://stackoverflow.com/a/72551258, suppresses build warning
     # -no-deps                 : fixes pyvcf install and pins dependency versions
     # --break-system-packages  : prevents "error: externally-managed-environment" exception
-    pip install --root-user-action=ignore scipy==1.13.0 pysam==0.22.0 biopython==1.83 cigar==0.1.3 PyVCF3==1.0.3 --break-system-packages
+    pip install --root-user-action=ignore scipy==1.16.1 pysam==0.23.3 biopython==1.85 cigar==0.1.3 PyVCF3==1.0.4 --break-system-packages
     pip install --root-user-action=ignore --no-deps cuteSV==${version_major}.${version_minor}.${version_patch} --break-system-packages
 
     # cleanup
