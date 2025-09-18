@@ -176,7 +176,6 @@ vep() {
   args+=("--buffer_size" "!{params.vcf.annotate.vep_buffer_size}")
   args+=("--fork" "!{task.cpus}")
   args+=("--hgvs")
-  args+=("--pubmed")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
   if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
