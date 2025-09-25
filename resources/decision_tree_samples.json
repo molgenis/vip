@@ -1,6 +1,25 @@
 {
   "rootNode": "gt",
   "nodes": {
+    "pValue": {
+      "type": "BOOL",
+      "label": "OUTRIDER pValue",
+      "description": "pValue",
+      "query": {
+        "field": "FORMAT/pValue",
+        "operator": "any_greater",
+        "value": 0.2
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u2"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u3"
+      }
+    },
     "gt": {
       "label": "Genotype",
       "description": "Genotype",
@@ -46,7 +65,7 @@
         "nextNode": "only_IP"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "only_IP"
@@ -141,7 +160,7 @@
         "nextNode": "exit_u4"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "exit_u4"
@@ -160,7 +179,7 @@
         "nextNode": "exit_u1"
       },
       "outcomeFalse": {
-        "nextNode": "exit_u3"
+        "nextNode": "pValue"
       },
       "outcomeMissing": {
         "nextNode": "exit_u2"

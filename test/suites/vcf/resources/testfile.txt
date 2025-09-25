@@ -1,0 +1,2 @@
+"EnsemblID"	"sampleID"	"pValue"	"padjust"	"zScore"	"l2fc"	"rawcounts"	"meanRawcounts"	"normcounts"	"meanCorrected"	"theta"	"aberrant"	"AberrantBySample"	"AberrantByGene"	"padj_rank"	"hgncSymbol"	"entrezid"	"chr"	"start"	"end"
+"ENSG00000134317.18"	"SAMPLE0"	"6.13721765386303e-32"	"3.38141224278389e-26"	"-13.19"	"-14.87"	"0"	"29507.54"	"0"	"23349.09"	"8.94"	"TRUE"	"15"	"1"	"1"	"LAMB2"	"3913"	"3"	"49121114"	"49121976"

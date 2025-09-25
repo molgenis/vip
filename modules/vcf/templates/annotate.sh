@@ -221,6 +221,8 @@ vep() {
   if [ -n "!{vepPluginGreenDbPath}" ] && [ "!{vepPluginGreenDbEnabled}" = true  ]; then
     args+=("--plugin" "GREEN_DB,!{vepPluginGreenDbPath}")
   fi
+  args+=("--plugin" "RNA,!{vepPluginExpressionPath},zScore,RNA_,!{params.vcf.annotate.ensembl_gene_mapping}")
+  args+=("--plugin" "RNA_fraser,!{vepPluginSplicePath},pValue,RNA_FR_")
   
   ${CMD_VEP} "${args[@]}"
 }
@@ -275,7 +277,7 @@ viab(){
         }
       }
       print
-    }' | ${CMD_BGZIP} -c > "!{vcfOut}"
+    }' | ${CMD_BGZIP} -c > "viab_!{vcfOut}"
 
 }
 
@@ -360,6 +362,27 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+#Workaround for https://github.com/samtools/htsjdk/issues/1718
+replace_cnv_tr(){
+  zcat "viab_!{vcfOut}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "!{vcf}_replaced.vcf.gz"
+}
+
+restore_cnv_tr(){
+  zcat "!{vcfOut}_replaced.vcf.gz" | awk 'BEGIN{FS=OFS="\t"} {gsub(/<CNV:TR[0-9]+>/,"<CNV:TR>",$5);}1' | ${CMD_BGZIP} -c > "!{vcfOut}"
+}
+annotate_samples(){
+  replace_cnv_tr
+  args+=("-jar" "/opt/vcf-format-annotator/lib/vcf-format-annotator.jar")
+  args+=("-i" "!{vcf}_replaced.vcf.gz");
+  args+=("-m" "!{mapping}");
+  args+=("-a" "!{outrider}");
+  args+=("-o" "!{vcfOut}_replaced.vcf.gz");
+  args+=("-c" "pValue,zScore");
+  args+=("-k" "EnsemblID");
+  args+=("-f");
+  ${CMD_VCFFORMATANNOTATOR} java "${args[@]}"
+  restore_cnv_tr
+}
 main () {
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     annot_sv
@@ -382,6 +405,7 @@ main () {
   vep "${vcfPreprocessed}"
   fix_vep_str
   viab "vep_fixed_!{vcfOut}"
+  annotate_samples
   index
 }
 
