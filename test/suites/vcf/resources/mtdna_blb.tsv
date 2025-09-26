@@ -1,0 +1,2 @@
+family_id	individual_id	vcf
+FAM0	SAMPLE0	${TEST_RESOURCES_DIR}/mtdna_blb.vcf
