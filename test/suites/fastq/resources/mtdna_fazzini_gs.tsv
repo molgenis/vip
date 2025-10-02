@@ -1,0 +1,5 @@
+individual_id	sequencing_platform	fastq_r1	fastq_r2	regions
+H1	illumina	${VIP_DIR_DATA}/test/resources/H1-Herk_S171_R1_001.fastq.gz	${VIP_DIR_DATA}/test/resources/H1-Herk_S171_R2_001.fastq.gz	${TEST_RESOURCES_DIR}/mtdna_fazzini_gs.bed
+M1	illumina	${VIP_DIR_DATA}/test/resources/M1-PCR-Herk_S111_R1_001.fastq.gz	${VIP_DIR_DATA}/test/resources/M1-PCR-Herk_S111_R2_001.fastq.gz	${TEST_RESOURCES_DIR}/mtdna_fazzini_gs.bed
+M2	illumina	${VIP_DIR_DATA}/test/resources/M2-PCR-Herk_S121_R1_001.fastq.gz	${VIP_DIR_DATA}/test/resources/M2-PCR-Herk_S121_R2_001.fastq.gz	${TEST_RESOURCES_DIR}/mtdna_fazzini_gs.bed
+U5	illumina	${VIP_DIR_DATA}/test/resources/U5-Herk_S161_R1_001.fastq.gz	${VIP_DIR_DATA}/test/resources/U5-Herk_S161_R2_001.fastq.gz	${TEST_RESOURCES_DIR}/mtdna_fazzini_gs.bed
