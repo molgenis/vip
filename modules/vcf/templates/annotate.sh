@@ -215,6 +215,9 @@ vep() {
   if [ -n "!{fathmmMKLScoresPath}" ]; then
     args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
   fi
+  if [ -n "!{vepPluginBrainMagnetPath}" ]; then
+    args+=("--plugin" "BrainMagnet,!{vepPluginBrainMagnetPath}")
+  fi
   if [ -n "!{reMMScoresPath}" ]; then
     args+=("--plugin" "ReMM,!{reMMScoresPath}")
   fi

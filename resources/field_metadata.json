@@ -568,6 +568,13 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "BRAIN_MAGNET_CB_EACH": {
+          "label": "BRAIN_MAGNET_CB_EACH",
+          "description": "BRAIN-MAGNET CB each percentile scores (0-100)",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "PHENO": {
           "label": "Pheno",
           "description": "Phenotype match.",
