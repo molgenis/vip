@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-download "$base_url/m54238_180628_014238_s0_10000.Q20.fastq.gz" "749786503c0ae5c9e325f025067ed4f2"
+download "${base_url}/m54238_180628_014238_s0_10000.Q20.fastq.gz" "749786503c0ae5c9e325f025067ed4f2"
 
 args=()
 args+=("--workflow" "fastq")
