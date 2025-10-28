@@ -13,7 +13,7 @@ args+=("--resume")
 runVip "${args}" "${TEST_RESOURCES_DIR}/mtdna_plp.tsv"
 
 # compare expected to actual output and store result
-if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -ge 72 ]; then
+if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -ge 121 ]; then
   result="0"
 else
   result="1"
