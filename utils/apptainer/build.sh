@@ -89,6 +89,7 @@ main() {
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("gado-1.0.3_v2")
+  images+=("hg19hg38")
   images+=("manta-1.6.0")
   images+=("minimap2-2.27_v2")
   images+=("picard-3.1.1_v2")
@@ -97,9 +98,10 @@ main() {
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.9.3")
   images+=("straglr-1.4.5-vip-v2")
-  images+=("vcf-decision-tree-5.1.4")
+  images+=("vcf-decision-tree-rna")
+  images+=("vcf-format-annotator")
   images+=("vcf-inheritance-matcher-3.4.0")
-  images+=("vcf-report-7.2.2")
+  images+=("vcf-report-7.2.1-RNA")
   images+=("whatshap-2.4")
 
   for i in "${!images[@]}"; do
@@ -113,6 +115,9 @@ main() {
   uris["docker://google/deepvariant:1.9.0"]="deepvariant-1.9.0"
   uris["docker://google/deepvariant:deeptrio-1.9.0"]="deepvariant_deeptrio-1.9.0"
   uris["docker://quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0"]="mosdepth-0.3.8"
+  uris["docker://maplesond/portcullis:test"]="portcullis-test"
+  uris["docker://cabimerbioinfo/deeptools:v1"]="deeptools-v1"
+
   
   for i in "${!uris[@]}"; do
     echo "---Building from URI ${i}---"

@@ -1,0 +1,59 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+	# Setup
+	export TZ='Europe/Amsterdam'
+	export DEBIAN_FRONTEND=noninteractive
+	apt-get -y update
+	apt-get -y upgrade
+	
+	
+	# Installing dependencies
+	apt-get -y install tzdata autoconf automake make gcc perl zlib1g-dev libbz2-dev\
+	 libcurl4-gnutls-dev liblzma-dev libxml2-dev libssl-dev libperl-dev\
+	 libgsl0-dev build-essential wget cmake unzip libmariadb-dev libmagick++-dev\
+	 libncurses-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev\
+	 libpng-dev libtiff5-dev libjpeg-dev curl gfortran liblapack-dev libopenblas-dev\
+	 libmysqld-dev libpq-dev
+	 
+	# Installing R 4.3
+	sed -i.bak "/^#.*deb-src.*universe$/s/^# //g" /etc/apt/sources.list
+	apt -y update
+	apt -y build-dep r-base
+	export R_VERSION=4.3.1
+	curl -O https://cran.rstudio.com/src/base/R-4/R-${R_VERSION}.tar.gz
+	tar -xzvf R-${R_VERSION}.tar.gz
+	cd R-${R_VERSION}
+	./configure \
+	    --prefix=/opt/R/${R_VERSION} \
+	    --enable-R-shlib \
+	    --enable-memory-profiling \
+	    --with-blas\
+	    --with-lapack
+	make
+	make install
+	ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+	ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+	cd ..
+	 
+	
+	# Install additional R packages
+	#R --slave -e 'install.packages("BiocManager", repos="https://mirrors.evoluso.com/CRAN/")'
+	#R --slave -e 'BiocManager::install(version="3.18")'
+	#R --slave -e 'BiocManager::install(c("AnnotationDbi","org.Hs.eg.db","TxDb.Hsapiens.UCSC.hg19.knownGene","TxDb.Hsapiens.UCSC.hg38.knownGene","Rsubread"), ask=FALSE, dependencies=TRUE, force=TRUE)'
+	#R --slave -e 'install.packages("dplyr", repos="https://mirrors.evoluso.com/CRAN/", dependencies=TRUE)'
+	#R --slave -e 'install.packages("tidyr", repos="https://mirrors.evoluso.com/CRAN/", dependencies=TRUE)'
+	#R --slave -e 'install.packages("data.table", repos="https://mirrors.evoluso.com/CRAN/", dependencies=TRUE)'
+	
+	# Install OUTRIDER and FRASER
+	#R --slave -e 'install.packages("devtools", repos="https://mirrors.evoluso.com/CRAN/")'
+	#R --slave -e 'devtools::install_github("gagneurlab/OUTRIDER", ref="1.20.1", dependencies=TRUE)'
+	#R --slave -e 'devtools::install_github("gagneurlab/FRASER",ref="1.99.4", dependencies=TRUE)'
+	
+	
+	apt-get clean
+	
+	
+%runscript
+    exec "$@"

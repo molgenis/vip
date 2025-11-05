@@ -88,6 +88,20 @@
       "numberType": "OTHER",
       "type": "STRING",
       "separator": ","
+    },
+    "zScore": {
+      "label": "OR zScore",
+      "description": "Annotated OUTRIDER zScore.",
+      "numberType": "OTHER",
+      "separator": ",",
+      "type": "FLOAT"
+    },
+    "pValue": {
+      "label": "OR pValue",
+      "description": "Annotated OUTRIDER pValue.",
+      "numberType": "OTHER",
+      "separator": ",",
+      "type": "FLOAT"
     }
   },
   "info": {

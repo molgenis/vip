@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+rna_param="";
+
 create_vcf () {
   printf "##VIP_Version=%s\n##VIP_Command=%s" "${VIP_VERSION}" "!{workflow.commandLine}" > "!{basename}.header"
 
@@ -19,6 +21,60 @@ create_vcf () {
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+process_rna () {
+  if [ -n "!{rna_crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
+    for cram in !{rna_crams}; do
+      IFS='=' read -r sampleId cram_value <<< "${cram}"
+      filename=$(basename "${cram_value}" .cram)
+      ${CMD_SAMTOOLS} view -b -T "!{refSeqPath}" -o "${filename}.bam" "${cram_value}"
+      ${CMD_SAMTOOLS} index "${filename}.bam"
+      #TODO: produce bed
+      ${CMD_PORTCULLIS} portcullis prep "!{reference}" "${filename}.bam"
+      ${CMD_PORTCULLIS} portcullis junc portcullis_prep/
+   awk -F'\t' '
+   BEGIN {
+       OFS = "\t"
+   }
+   NR == 1 {
+       for (i = 1; i <= NF; i++) {
+           col[$i] = i
+       }
+       next
+   }
+   {
+       chrom = $(col["refname"])
+       start = $(col["start"])
+       end = $(col["end"])
+       motif = $(col["ss1"]) "/" $(col["ss2"])
+       uniquely_mapped = $(col["nb_us_aln"])
+       multi_mapped = $(col["nb_ms_aln"])
+       max_overhang = $(col["max_min_anc"])
+       strand = $(col["consensus-strand"])
+       score = uniquely_mapped  # Or choose another column like score or nb_rel_aln
+       annotated = "false"  # Placeholder; set to true via external logic
+       info = "motif=" motif ";uniquely_mapped=" uniquely_mapped \
+              ";multi_mapped=" multi_mapped \
+              ";maximum_spliced_alignment_overhang=" max_overhang \
+              ";annotated_junction=" annotated
+       print chrom, start, end, info, score, strand
+   }
+   ' portcullis_junc/portcullis.junctions.tab > ${filename}.bed
+
+      #produce bigwig
+      local args_deep=()
+      args_deep+=("-b" "${filename}.bam")
+      args_deep+=("-o" "${filename}.bw")
+      ${CMD_DEEPTOOLS} "${args_deep[@]}"
+      
+      #create file pair for merged igv track
+      if [[ -n "$rna_param" ]]; then
+          rna_param+=","
+      fi
+      rna_param+="${sampleId}=$(realpath "${filename}.bw");$(realpath "${filename}.bed")"
+    done
+  fi
 }
 
 report() {
@@ -60,6 +116,9 @@ report() {
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi
+  if [[ -n "$rna_param" ]]; then
+    args+=("--rna" "$rna_param")
+  fi
   cat << EOF > "vip_report_config.json"
 !{configJsonStr}
 EOF
@@ -67,11 +126,12 @@ EOF
   if [ -n "!{crams}" ] && [[ "!{includeCrams}" == "true" ]]; then
     args+=("--cram" "!{crams}")
   fi
-
+echo "${args[@]}" > test.args
   ${CMD_VCFREPORT} java "${args[@]}"
 }
 
 main() {
+  process_rna
   create_vcf
   index
   report
