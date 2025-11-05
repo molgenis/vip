@@ -1,0 +1,2 @@
+family_id	individual_id	vcf
+FAMO0	SAMPLE0	${TEST_RESOURCES_DIR}/jvar_plp.vcf
