@@ -354,6 +354,11 @@
     "filters": {
       "all": [
         {
+          "type": "info",
+          "name": "CSQ/PICK",
+          "defaultValue": "true"
+        },
+        {
           "type": "composed",
           "name": "locus"
         },
@@ -415,6 +420,11 @@
         }
       ],
       "str": [
+        {
+          "type": "info",
+          "name": "CSQ/PICK",
+          "defaultValue": "true"
+        },
         {
           "type": "composed",
           "name": "locus"

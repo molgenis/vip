@@ -7,13 +7,13 @@ create_vcf () {
   local args=()
   args+=("annotate")
   args+=("--header-lines" "!{basename}.header")
-  args+=("--output-type" "z9")
-  args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
   # workaround for https://github.com/samtools/bcftools/issues/2385
-  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" "!{vcf}" | ${CMD_BCFTOOLS} "${args[@]}"
+  # and
+  # https://github.com/samtools/htsjdk/issues/1718
+  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" "!{vcf}" | ${CMD_BCFTOOLS} "${args[@]}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "!{vcfOut}.vcf.gz"
 }
 
 index () {
@@ -29,7 +29,7 @@ report() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
-  args+=("--input" "!{vcfOut}")
+  args+=("--input" "!{vcfOut}.vcf.gz")
   args+=("--metadata" "!{metadata}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
@@ -70,6 +70,7 @@ EOF
 
   ${CMD_VCFREPORT} java "${args[@]}"
 }
+
 
 main() {
   create_vcf
