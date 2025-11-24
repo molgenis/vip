@@ -25,7 +25,7 @@ report() {
   echo -e "!{pedigreeContent}" > "!{pedigree}"
   
   local args=()
-  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-Djava.io.tmpdir=${TMPDIR}")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")

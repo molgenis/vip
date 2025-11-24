@@ -20,7 +20,7 @@ process report {
     vcfOutStats = "${vcfOut}.stats"
 
     reportPath = "${basename}.html"
-    reportDb = "${basename}.db"
+    reportDbPath = "${basename}.db"
 
     refSeqPath = params[meta.project.assembly].reference.fasta
     metadata = params.vcf.classify_samples.metadata
