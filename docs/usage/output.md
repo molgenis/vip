@@ -37,6 +37,7 @@ vip.vcf.gz.csi
 By default, the report is a self-contained .html file that does not depend on external websites.
 All data and code to interact with and display this data is contained in one file.
 This ensures that no internet connection is required to view the report and enables easy sharing with other people.
+The internal database of the vip report is also available as .db database file in the intermediates folder.
 
 - [Live example #0](../vip0.html)
 - [Live example #1](../vip1.html)
