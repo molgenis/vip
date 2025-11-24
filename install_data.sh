@@ -199,7 +199,7 @@ install_files() {
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("43d9b86aa155bd74a1339dd1fd2f6994" "images/vcf-decision-tree-6.0.0.sif" "")
   data+=("0d355489bd5528b878580154cc7d972a" "images/vcf-inheritance-matcher-4.0.0.sif" "")
-  data+=("8d497c40f67bd88bfd565f205dd09cd8" "images/vcf-report-8.0.0.sif" "")
+  data+=("FIXME" "images/vcf-report-8.0.1.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("1e9b9dbd138967e808a60b59e10b3020" "nextflow-24.10.6-dist" "postprocess_nextflow")
