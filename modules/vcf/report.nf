@@ -11,7 +11,7 @@ process report {
     tuple val(meta), path(vcf), path(vcfIndex), path(crams)
 
   output:
-    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(reportPath)
+    tuple val(meta), path(vcfOut), path(vcfOutIndex), path(reportPath), path(reportDbPath)
 
   shell:
     basename = basename(meta)
@@ -20,6 +20,7 @@ process report {
     vcfOutStats = "${vcfOut}.stats"
 
     reportPath = "${basename}.html"
+    reportDbPath = "${basename}.db"
 
     refSeqPath = params[meta.project.assembly].reference.fasta
     metadata = params.vcf.classify_samples.metadata

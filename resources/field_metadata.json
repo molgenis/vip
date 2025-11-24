@@ -92,6 +92,10 @@
   },
   "info": {
     "CSQ": {
+      "nestedAttributes": {
+        "prefix": "Consequence annotations from Ensembl VEP. Format: ",
+        "separator": "|"
+      },
       "nestedFields": {
         "ALLELE_NUM": {
           "label": "Allele Nr.",
