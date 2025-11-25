@@ -107,6 +107,20 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "apogee_Score": {
+          "label": "Apogee score",
+          "description": "Apogee score for protein coding mtDNA variants",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
+        "apogee_Uscore": {
+          "label": "Apogee unbiased score",
+          "description": "Apogee unbiased score for protein coding mtDNA variants",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "CAPICE_CL": {
           "label": "CAPICE",
           "description": "CAPICE classification",
@@ -560,6 +574,20 @@
               "description": "Mitochondrial"
             }
           }
+        },
+        "mitoTip_Quartile": {
+          "label": "MitoTIP Quartile",
+          "description": "MitoTIP score quartile",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "STRING"
+        },
+        "mitoTip_Score": {
+          "label": "MitoTip Score",
+          "description": "MitoTIP score of mtDNA tRNA variants",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
         },
         "ncER": {
           "label": "ncER",
