@@ -584,7 +584,7 @@
         },
         "mitoTip_Score": {
           "label": "MitoTip Score",
-          "description": "MitoTIP score of mtDNA tRNA variants",
+          "description": "MitoTIP score for mtDNA tRNA variants",
           "numberType": "NUMBER",
           "numberCount": 1,
           "type": "FLOAT"
