@@ -343,10 +343,28 @@ fix_vep_str () {
               alleleIdx="$((alleleIdx + 1))"
             done
           done
-          #format CSQ array as comma-separated string and replace the CSQ value with the updated one
-          IFS=','; newCSQ="${newCsqArray[*]}"; unset IFS
-          #escape special characters in new CSQ
-          line=$(echo -e "${line}" | awk -v csq="$(echo "${newCSQ}" | sed 's/&/\\\\&/g')" 'BEGIN{OFS=FS="\t"} {gsub(/CSQ=[^;\t]*/, "CSQ=" csq, $8); print}')
+          # Format CSQ array as comma-separated string
+          IFS=',' read -r -a newCsqArray <<< "${newCsqArray[*]}"
+          newCSQ="${newCsqArray[*]}"
+          unset IFS
+
+          escaped_newCSQ=$(echo "${newCSQ}" | sed 's/&/\\&/g')
+          escaped_newCSQ="${escaped_newCSQ// /,}"
+
+          # newCSQ to a temporary file to avoid "Argument list too long"
+          echo "${escaped_newCSQ}" > csqFile.txt
+          line=$(echo -e "${line}" | awk -v csqfile=csqFile.txt 'BEGIN {
+            OFS=FS="\t"
+            while ((getline line < csqfile) > 0) csq=line
+            close(csqfile)
+          }
+          {
+            gsub(/CSQ=[^;\t]*/, "CSQ=" csq, $8)
+            print
+          }')
+
+          # cleanup
+          rm csqFile.txt
         fi
       fi
     fi
