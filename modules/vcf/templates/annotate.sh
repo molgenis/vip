@@ -221,6 +221,12 @@ vep() {
   if [ -n "!{vepPluginGreenDbPath}" ] && [ "!{vepPluginGreenDbEnabled}" = true  ]; then
     args+=("--plugin" "GREEN_DB,!{vepPluginGreenDbPath}")
   fi
+  if [ -n "!{vepPluginApogeePath}" ]; then
+    args+=("--plugin" "Apogee,!{vepPluginApogeePath}")
+  fi
+  if [ -n "!{vepPluginMitoTipPath}" ]; then
+    args+=("--plugin", "MitoTip,!{vepPluginMitoTipPath}")
+  fi
   
   ${CMD_VEP} "${args[@]}"
 }

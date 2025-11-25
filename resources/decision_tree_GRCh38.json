@@ -284,7 +284,7 @@
       "description": "MitoTIP score",
       "type": "BOOL",
       "query": {
-          "field": "INFO/MITOTIP",
+          "field": "INFO/CSQ/mitoTip_Score",
           "operator": ">=",
           "value": 12.66
       },
@@ -303,7 +303,7 @@
       "description": "APOGEE score",
       "type": "BOOL",
       "query": {
-          "field": "INFO/APOGEE",
+          "field": "INFO/CSQ/apogee_Uscore",
           "operator": ">=",
           "value": 0.5
       },
