@@ -225,7 +225,7 @@ vep() {
     args+=("--plugin" "Apogee,!{vepPluginApogeePath}")
   fi
   if [ -n "!{vepPluginMitoTipPath}" ]; then
-    args+=("--plugin", "MitoTip,!{vepPluginMitoTipPath}")
+    args+=("--plugin" "MitoTip,!{vepPluginMitoTipPath}")
   fi
   
   ${CMD_VEP} "${args[@]}"
