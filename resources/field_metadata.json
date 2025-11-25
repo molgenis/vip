@@ -584,7 +584,7 @@
           "description": "Boolean indicating if this is the VEP picked transcript.",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "INTEGER"
+          "type": "FLAG"
         },
         "PolyPhen": {
           "label": "PolyPhen",
