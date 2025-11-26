@@ -83,7 +83,7 @@ main() {
   images+=("bcftools-1.20")
   images+=("annotsv-3.4.6")
   images+=("capice-5.1.2")
-  images+=("cutesv-2.1.3")
+  images+=("cutesv-2.1.3-patch1")
   images+=("expansionhunter-5.0.0_v2")
   images+=("fastp-0.23.4_v2")
   #see ./def/glnexus_v1.4.5-patched.txt
