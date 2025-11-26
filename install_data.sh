@@ -181,7 +181,7 @@ install_files() {
   data+=("6acb17d75aba21aaa14be571edb82ab7" "images/annotsv-3.4.6.sif" "")
   data+=("40594154f81dec76779ffa5d5e3ad052" "images/bcftools-1.20.sif" "")
   data+=("0879586dfdb49f7cf94d4b9a4c65e2b8" "images/capice-5.1.2.sif" "")
-  data+=("b6842a6991b2139e1c526ccf10f97d48" "images/cutesv-2.1.3.sif" "")
+  data+=("add2dd60fcbe98025bbe11fde12d577d" "images/cutesv-2.1.3-patch1.sif" "")
   data+=("426cc67bde27880984810b4c453a0b1b" "images/deepvariant-1.9.0.sif" "")
   data+=("e926e5f7364710811768d82720093f45" "images/deepvariant_deeptrio-1.9.0.sif" "")
   data+=("47396916f1940bff61ad092cbfda3bd2" "images/expansionhunter-5.0.0_v2.sif" "")
