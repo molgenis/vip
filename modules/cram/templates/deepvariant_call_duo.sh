@@ -22,6 +22,8 @@ call_small_variants () {
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutParent}")
     args+=("--make_examples_extra_args=include_med_dp=true")
+    args+=("--haploid_contigs=!{haploidContigs}")
+    args+=("--par_regions_bed=!{parRegionsBed}")
 
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"

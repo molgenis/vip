@@ -237,6 +237,7 @@ install_files() {
   data+=("7837b9e42da9674e78d9874218f07f00" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz.tbi" "")
   data+=("16b2f104b5131c643efffbf3a1501ee8" "resources/GRCh38/GRCh38_ncER_perc.bed.gz" "")
   data+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi" "")
+  data+=("a538173d85ea32638e05d36b602c8c32" "resources/GRCh38/GRCh38_PAR_20251126.bed" "")
   data+=("d6bf19522fdcf67b7ef871e1cde1970e" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz" "")
   data+=("9a0930823b0739a50816664fe9cfce0c" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz.tbi" "")
   data+=("43858006bdf98145b6fd239490bd0478" "resources/GRCh38/hg38.phyloP100way.bw" "")
