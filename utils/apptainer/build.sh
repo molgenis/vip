@@ -99,7 +99,7 @@ main() {
   images+=("straglr-1.4.5-vip-v2")
   images+=("vcf-decision-tree-6.0.0")
   images+=("vcf-inheritance-matcher-4.0.0")
-  images+=("vcf-report-8.0.1")
+  images+=("vcf-report-8.0.2")
   images+=("whatshap-2.4")
 
   for i in "${!images[@]}"; do
