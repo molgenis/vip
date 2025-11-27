@@ -22,10 +22,16 @@ call_small_variants () {
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutParent}")
     args+=("--make_examples_extra_args=include_med_dp=true")
-    # replace by :postprocess_variants_child_extra_args, postprocess_variants_parent1_extra_args, postprocess_variants_parent2_extra_args
-    # FIXME: should be dependent on sex of parent and patient
-    args+=("--haploid_contigs=!{haploidContigs}")
-    args+=("--par_regions_bed=!{parRegionsBed}")
+    if [ "!{sampleSex}" eq "MALE"  ]; then
+      #FIXME
+      args+=("--haploid_contigs=!{haploidContigs}")
+      args+=("--par_regions_bed=!{parRegionsBed}")
+    fi
+    if [ "!{sampleSexParent}" eq "MALE"  ]; then
+      #FIXME
+      args+=("--haploid_contigs=!{haploidContigs}")
+      args+=("--par_regions_bed=!{parRegionsBed}")
+    fi
 
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"
