@@ -122,6 +122,10 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#green-db-constraint-scores">GREEN-DB constraint scores</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#apogee-2">APOGEE 2</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#mitotip">MitoTIP</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -673,6 +677,18 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Reference and variant amino acids</td>
 </tr>
 <tr>
+<td>INFO/CSQ/apogee_Score</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>APOGEE-2 pathogenicity score for mtDNA variants (used for protein coding genes)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/apogee_Uscore</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>APOGEE-2 unbiased pathogenicity score mtDNA variants (used for protein coding genes)</td>
+</tr>
+<tr>
 <td>INFO/CSQ/ASV_ACMG_class</td>
 <td>string</td>
 <td>VEP plugin</td>
@@ -967,6 +983,18 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>The intron number (out of total number)</td>
 </tr>
 <tr>
+<td>INFO/CSQ/mitoTip_Score</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>MitoTIP pathogenicity score for mtDNA variants (used for tRNA genes)</td>
+</tr>
+<tr>
+<td>INFO/CSQ/mitoTip_Quartile</td>
+<td>string</td>
+<td>VEP plugin</td>
+<td>MitoTIP pathogenicity score quartile</td>
+</tr>
+<tr>
 <td>INFO/CSQ/MOTIF_NAME</td>
 <td>string</td>
 <td>VEP</td>
@@ -1237,13 +1265,19 @@ Non-Coding Single Nucleotide Variants (SNVs)
 This plugin annotates non-coding scores only, and is build on top of the GREEN-DB dataset (GRCh38) for FATHMM-MKL non
 coding scores: https://zenodo.org/records/3981121</p>
 <h4 id="green-db-constraint-scores">GREEN-DB constraint scores<a class="headerlink" href="#green-db-constraint-scores" title="Permanent link">¶</a></h4>
-<p><a href="https://doi.org/10.1101/2020.09.17.301960">GREEN-DB</a> GREEN-DB is a comprehensive collection of 2.4 million regulatory
+<p><a href="https://doi.org/10.1101/2020.09.17.301960">GREEN-DB</a> is a comprehensive collection of 2.4 million regulatory
 elements in the human genome collected from previously published databases, high-throughput screenings and functional
 studies.
 This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (
 GRCh38): https://zenodo.org/records/5636209
 GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If
 multiple regions of the same type overlap, VIP annotates the highest constraint score.</p>
+<h4 id="apogee-2">APOGEE 2<a class="headerlink" href="#apogee-2" title="Permanent link">¶</a></h4>
+<p><a href="https://doi.org/10.1038/s41467-023-40797-7">APOGEE-2</a> predicts pathogenicity scores for missense mitochondrial variants.
+A custom APOGEE VEP plugin annotates mitochondrial variants with computed <a href="https://mitimpact.mcb2lab.org">APOGEE scores</a>.</p>
+<h4 id="mitotip">MitoTIP<a class="headerlink" href="#mitotip" title="Permanent link">¶</a></h4>
+<p><a href="https://doi.org/10.1371/journal.pcbi.1005867">MitoTIP</a> predicts pathogenicity scores for mtDNA tRNA variants.
+A custom MitoTIP VEP plugin annotates mitochondrial variants with computed <a href="https://www.mitomap.org/MITOMAP/MitoTipScores">mitoTip scores</a> and their corresponding quartiles (Q1-Q4).</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
