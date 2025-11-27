@@ -199,7 +199,7 @@ install_files() {
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("43d9b86aa155bd74a1339dd1fd2f6994" "images/vcf-decision-tree-6.0.0.sif" "")
   data+=("0d355489bd5528b878580154cc7d972a" "images/vcf-inheritance-matcher-4.0.0.sif" "")
-  data+=("eb562e154bfdfd0bc193d4d01262b2f6" "images/vcf-report-8.0.1.sif" "")
+  data+=("FIXME" "images/vcf-report-8.0.2.sif" "")
   data+=("7bffc236a7c65b2b2e2e5f7d64beaa87" "images/vep-111.0.sif" "")
   data+=("d036cf4af4538f5f14dd99aae46cfca5" "images/whatshap-2.4.sif" "")
   data+=("1e9b9dbd138967e808a60b59e10b3020" "nextflow-24.10.6-dist" "postprocess_nextflow")
@@ -254,7 +254,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("d89255eb1c69ab7db5e156f2ca969637" "resources/vip-report-template-v8.0.1.html" "")
+  data+=("FIXME" "resources/vip-report-template-v8.0.2.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do
