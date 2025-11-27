@@ -3,7 +3,8 @@ set -euo pipefail
 
 capiceOutputPath="!{basename}_capice_output.tsv.gz"
 vcfCapiceAnnotatedPath="!{basename}_capice_annotated.vcf.gz"
-capiceInputPath="!{basename}_capice_input.tsv"
+capicePreprocessInputPath="!{basename}_capice_input.tsv"
+capiceInputPath="!{basename}_capice_preprocessed_input.tsv.gz"
 capiceOutputPath="!{basename}_capice_output.tsv.gz"
 
 annot_sv() {
@@ -38,6 +39,7 @@ capice() {
   local -r vcf="${1}"
   capice_vep "${vcf}"
   capice_bcftools
+  capice_preprocess
   #only run capice if there a variants with annotations, e.g. <STR> only VCF files do not yield any annotated lines
   if [ "$(wc -l < "${capiceInputPath}")" -gt 1 ]; then
     capice_predict
@@ -78,8 +80,16 @@ capice_vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
+  args+=("--plugin" "NMD")
+  args+=("--plugin" "pLI_LOEUF")
+  args+=("--plugin" "Downstream")
+  args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
+  args+=("--plugin" "AlphaMissense,file=!{amScorePath}")
+  args+=("--plugin" "ncER,!{vepPluginNcerPath}")
+  args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
+  args+=("--plugin" "ReMM,!{reMMScoresPath}")
 
   ${CMD_VEP} "${args[@]}"
 }
@@ -87,7 +97,7 @@ capice_vep() {
 capice_bcftools() {
   local -r format="%CHROM\t%POS\t%REF\t%ALT\t%CSQ\n"
   local -r header="CHROM\tPOS\tREF\tALT\t"
-  local -r capiceInputPathHeaderless="${capiceInputPath}.headerless"
+  local -r capiceInputPathHeaderless="${capicePreprocessInputPath}.headerless"
 
   local args=()
   args+=("+split-vep")
@@ -99,15 +109,32 @@ capice_bcftools() {
 
   ${CMD_BCFTOOLS} "${args[@]}"
 
-  echo -e "${header}$(${CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" > "${capiceInputPath}"
+  echo -e "${header}$(${CMD_BCFTOOLS} +split-vep -l "${vcfCapiceAnnotatedPath}" | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" | cat - "${capiceInputPathHeaderless}" | awk 'NF || !p{print} {p=NF}' > "${capicePreprocessInputPath}"
+
+}
+capice_preprocess() {
+  local args=()
+  args+=("python3")
+  args+=("!{capicePreprocessScript}")
+  args+=("--input" "${capicePreprocessInputPath}")
+  args+=("--output" "${capiceInputPath}")
+  args+=("--metadata" "!{capiceMetadataPath}")
+
+  ${CMD_CAPICE} "${args[@]}"
+  if [ ! -f "${capiceInputPath}" ]; then
+    echo -e "CAPICE preprocess error: failed to produce output" 1>&2
+    exit 1
+  fi
 }
 
 capice_predict() {
   local args=()
-  args+=("predict")
+  args+=("python3")
+  args+=("!{capicePredictScript}")
   args+=("--input" "${capiceInputPath}")
   args+=("--output" "${capiceOutputPath}")
-  args+=("--model" "!{capiceModelPath}")
+  args+=("--classifier" "!{capiceModelPath}")
+  args+=("--metadata" "!{capiceMetadataPath}")
 
   ${CMD_CAPICE} "${args[@]}"
   if [ ! -f "${capiceOutputPath}" ]; then
@@ -206,8 +233,8 @@ vep() {
     # when you change the field also update the empty file header in this file
     args+=("--plugin" "AnnotSV,!{vcf}.tsv,!{params.vcf.annotate.vep_plugin_annotsv_columns}")
   fi
-  if [ -n "!{alphScorePath}" ]; then
-    args+=("--plugin" "AlphScore,!{alphScorePath}")
+  if [ -n "!{amScorePath}" ]; then
+    args+=("--plugin" "AlphaMissense,file=!{amScorePath}")
   fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")

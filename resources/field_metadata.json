@@ -104,41 +104,12 @@
           "numberCount": 1,
           "type": "INTEGER"
         },
-        "ALPHSCORE": {
-          "label": "AlphScore",
-          "description": "AlphScore pathogenicity score for missense variants",
+        "am_pathogenicity": {
+          "label": "AmScore",
+          "description": "AlphaMissense pathogenicity score for missense variants",
           "numberType": "NUMBER",
           "numberCount": 1,
           "type": "FLOAT"
-        },
-        "CAPICE_CL": {
-          "label": "CAPICE",
-          "description": "CAPICE classification",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "CATEGORICAL",
-          "categories": {
-            "B": {
-              "label": "B",
-              "description": "Benign"
-            },
-            "LB": {
-              "label": "LB",
-              "description": "Likely benign"
-            },
-            "VUS": {
-              "label": "VUS",
-              "description": "Variant of uncertain significance"
-            },
-            "LP": {
-              "label": "LP",
-              "description": "Likely pathogenic"
-            },
-            "P": {
-              "label": "P",
-              "description": "Pathogenic"
-            }
-          }
         },
         "CAPICE_SC": {
           "label": "CAPICE",
@@ -146,6 +117,12 @@
           "numberType": "NUMBER",
           "numberCount": 1,
           "type": "FLOAT"
+        },
+        "LOEUF_gene_value": {
+          "label": "LOEUF",
+          "description": "An Ensembl VEP plugin that adds the loss-of-function observed/expected upper bound fraction (LOEUF) score ",
+          "type": "FLOAT",
+          "numberCount":1
         },
         "cDNA_position": {
           "label": "cDNA pos",

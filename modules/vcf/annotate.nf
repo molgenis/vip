@@ -33,7 +33,10 @@ process annotate {
     fathmmMKLScoresPath = params.vcf.annotate[assembly].vep_plugin_fathmm_MKL_scores
     reMMScoresPath = params.vcf.annotate[assembly].vep_plugin_ReMM_scores
     capiceModelPath = params.vcf.annotate[assembly].capice_model
-    alphScorePath = params.vcf.annotate[assembly].vep_plugin_alphscore
+    capicePredictScript = params.vcf.annotate[assembly].capice_predict_script
+    capicePreprocessScript = params.vcf.annotate[assembly].capice_preprocess_script
+    capiceMetadataPath = params.vcf.annotate[assembly].capice_metadata 
+    amScorePath = params.vcf.annotate[assembly].vep_plugin_amscore
     strangerCatalog = params.vcf.annotate[assembly].stranger_catalog
 
     areProbandHpoIdsIndentical = areProbandHpoIdsIndentical(meta.project.samples)

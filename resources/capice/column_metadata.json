@@ -1,0 +1,600 @@
+{
+    "Consequence": {
+        "source": "VEP",
+        "description": "Variant consequence",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "TRUE",
+        "split": "TRUE",
+        "separator": "&",
+        "fields": "[transcript_ablation,splice_acceptor_variant,splice_donor_variant,stop_gained,frameshift_variant,stop_lost,start_lost,transcript_amplification,feature_elongation,feature_truncation,inframe_insertion,inframe_deletion,missense_variant,protein_altering_variant,splice_donor_5th_base_variant,splice_region_variant,splice_donor_region_variant,splice_polypyrimidine_tract_variant,incomplete_terminal_codon_variant,start_retained_variant,stop_retained_variant,synonymous_variant,coding_sequence_variant,mature_miRNA_variant,5_prime_UTR_variant,3_prime_UTR_variant,non_coding_transcript_exon_variant,intron_variant,NMD_transcript_variant,non_coding_transcript_variant,coding_transcript_variant,upstream_gene_variant,downstream_gene_variant,TFBS_ablation,TFBS_amplification,TF_binding_site_variant,regulatory_region_ablation,regulatory_region_amplification,regulatory_region_variant,intergenic_variant,sequence_variant]"
+    },
+    "IMPACT": {
+        "source": "VEP",
+        "description": "Consequence impact (LOW, MODERATE, HIGH, MODIFIER)",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "SYMBOL": {
+        "source": "VEP",
+        "description": "HGNC gene Symbol",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Gene": {
+        "source": "VEP",
+        "description": "Entrez gene Id",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Feature_type": {
+        "source": "VEP",
+        "description": "Type of feature - Transcript, RegulatoryFeature or MotifFeature",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Feature": {
+        "source": "VEP",
+        "description": "ID of the feature (e.g. NM_ NR_ ENSR)",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "BIOTYPE": {
+        "source": "VEP",
+        "description": "BIOTYPE (function)",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "EXON": {
+        "source": "VEP",
+        "description": "Exon number / total exons",
+        "type": "POSITIONAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "INTRON": {
+        "source": "VEP",
+        "description": "Intron number / total introns",
+        "type": "POSITIONAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "HGVSc": {
+        "source": "VEP",
+        "description": "HGVS cDNA nomenclature",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "HGVSp": {
+        "source": "VEP",
+        "description": "HGVS protein nomenclature",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "cDNA_position": {
+        "source": "VEP",
+        "description": "Relative position of base pair in cDNA sequence",
+        "type": "POSITIONAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "CDS_position": {
+        "source": "VEP",
+        "description": "Relative position of base pair in coding sequence",
+        "type": "POSITIONAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Protein_position": {
+        "source": "VEP",
+        "description": "Relative position of amino acid in protein",
+        "type": "POSITIONAL",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Amino_acids": {
+        "source": "VEP",
+        "description": "Amino acid change wt/mt",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Codons": {
+        "source": "VEP",
+        "description": "Codon change",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "Existing_variation": {
+        "source": "VEP",
+        "description": "Co-located variation",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "DISTANCE": {
+        "source": "VEP",
+        "description": "Shortest distance from variant to transcript",
+        "type": "POSITIONAL",
+        "dataType": "INT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "STRAND": {
+        "source": "VEP",
+        "description": "the DNA strand (1 or -1) on which the transcript/feature lies",
+        "type": "POSITIONAL",
+        "dataType": "INT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "FLAGS": {
+        "source": "VEP",
+        "description": "transcript quality flags: cds_start_NF: CDS 5' incomplete; cds_end_NF: CDS 3' incomplete",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "PICK": {
+        "source": "VEP",
+        "description": " Indicates if this block of consequence data was picked by --flag_pick or --flag_pick_allele",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "SYMBOL_SOURCE": {
+        "source": "VEP",
+        "description": " The source of the gene symbol",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "HGNC_ID": {
+        "source": "VEP",
+        "description": "The source of the gene symbol",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "REFSEQ_MATCH": {
+        "source": "VEP",
+        "description": "the RefSeq transcript match status; contains a number of flags indicating whether this RefSeq transcript matches the underlying reference sequence and/or an Ensembl transcript",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "REFSEQ_OFFSET": {
+        "source": "VEP",
+        "description": "HGVS adjustment length required due to mismatch between RefSeq transcript and the reference genome",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "SOURCE": {
+        "source": "VEP",
+        "description": "Source of transcript",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+        
+    },
+    "SIFT": {
+        "source": "VEP",
+        "description": "the SIFT prediction and/or score, with both given as prediction(score)",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+        
+    },
+    "PolyPhen": {
+        "source": "VEP",
+        "description": "the PolyPhen prediction and/or score",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "CHECK_REF": {
+        "source": "VEP",
+        "description": "Reports variants where the input reference does not match the expected reference",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "MOTIF_NAME": {
+        "source": "VEP",
+        "description": "The source and identifier of a transcription factor binding profile aligned at this position",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "MOTIF_POS": {
+        "source": "VEP",
+        "description": "The relative position of the variation in the aligned TFBP",
+        "type": "POSITIONAL",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "HIGH_INF_POS": {
+        "source": "VEP",
+        "description": "A flag indicating if the variant falls in a high information position of a transcription factor binding profile (TFBP)",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "MOTIF_SCORE_CHANGE": {
+        "source": "VEP",
+        "description": "The difference in motif score of the reference and variant sequences for the TFBP",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "TRANSCRIPTION_FACTORS": {
+        "source": "VEP",
+        "description": "TF name",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "Grantham": {
+        "source": "Grantham VEP Plugin",
+        "description": "Scoring AA change using the Grantham matrix; conservative (0-50), moderately conservative (51-100), moderately radical (101-150), or radical (≥151)",
+        "type": "VALUE",
+        "dataType": "INT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DP_AG": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta position for acceptor gain.",
+        "type": "POSITIONAL",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DP_AL": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta position for acceptor loss.",
+        "type": "POSITIONAL",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DP_DG": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta position for donor gain.",
+        "type": "POSITIONAL",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DP_DL": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta position for donor loss.",
+        "type": "POSITIONAL",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DS_AG": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta score for acceptor gain.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DS_AL": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta score for acceptor loss.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DS_DG": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta score for donor gain.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_DS_DL": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI predicted effect on splicing. Delta score for donor loss.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "SpliceAI_pred_SYMBOL": {
+        "source": "SpliceAI VEP Plugin",
+        "description": "SpliceAI gene Symbol",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_AF": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD allele frequency",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_COV": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD coverage",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_FAF95": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD Filtered Allele Frequency (CI95%)",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_FAF99": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD Filtered Allele Frequency (CI99%)",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_HN": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD Homozygotes number",
+        "type": "VALUE",
+        "dataType": "INT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_QC": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD QC",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "gnomAD_SRC": {
+        "source": "GnomAD VEP Plugin",
+        "description": "GnomAD source allele",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "phyloP": {
+        "source": "phyloP100 score",
+        "description": "GnomAD source allele",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "FATHMM_MKL_NC": {
+        "source": "FATHMM MKL NC VEP Plugin",
+        "description": "Predict the Functional Consequences of Non-Coding Single Nucleotide Variants (SNVs)",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+     "ncER": {
+        "source": "ncER VEP Plugin",
+        "description": "Non-coding essential regulation, from: 0(probably not essential for regulation) to 100 (probably essential for regulation).",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+    },
+    "ReMM": {
+        "source": "ReMM VEP Plugin",
+        "description": "The Regulatory Mendelian Mutation (ReMM) score was created for relevance prediction of non-coding variations (SNVs and small InDels) in the human genome (hg19) in terms of Mendelian diseases.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+
+        },
+    "GDB_PRO": {
+        "source": "GREEN-DB VEP Plugin",
+        "description": "Highest GREEN-DB constraint score for overlapping promotor regions.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+
+    },
+    "am_pathogenicity": {
+        "source": "Alphamissense",
+        "description": "Alphamissense pathogenicity score",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+    },
+    "NMD": {
+        "source": "NMD VEP plugin",
+        "description": " An Ensembl VEP plugin that predicts if a variant allows the transcript escape nonsense-mediated mRNA decay based on certain rules.",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "TRUE",
+        "split": "TRUE",
+        "separator": "&",
+        "fields": "[NMD_escaping_variant]"
+
+    },
+    "pLI_gene_value": {
+        "source": "pLI LOEUF VEP plugin",
+        "description": " An Ensembl VEP plugin that adds the probabililty of a gene being loss-of-function intolerant (pLI) to the output.",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "LOEUF_gene_value": {
+        "source": "pLI LOEUF VEP plugin",
+        "description": "An Ensembl VEP plugin that adds the loss-of-function observed/expected upper bound fraction (LOEUF) score ",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+    },
+    "five_prime_UTR_variant_consequence": {
+        "source": "UTRannotator VEP plugin",
+        "description": "Output the variant consequences of a given 5 prime UTR variant: uAUG_gained, uAUG_lost, uSTOP_lost or uFrameshift",
+        "type": "CATEGORICAL",
+        "dataType": "STRING",
+        "useParameter": "TRUE",
+        "split": "TRUE",
+        "separator": "&",
+        "fields": "[uAUG_gained,uAUG_lost,uSTOP_lost,uFrameshift]"
+    },
+    "existing_uORFs": {
+        "source": "UTRannotator VEP plugin",
+        "description": "The number of existing uORFs with a stop codon within the 5 prime UTR",
+        "type": "VALUE",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "existing_OutOfFrame_oORFs": {
+        "source": "UTRannotator VEP plugin",
+        "description": "The number of existing out-of-frame overlapping ORFs (OutOfFrame oORF) at the 5 prime UTR",
+        "type": "VALUE",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "existing_InFrame_oORFs": {
+        "source": "UTRannotator VEP plugin",
+        "description": "The number of existing inFrame overlapping ORFs (inFrame oORF) at the 5 prime UTR",
+        "type": "VALUE",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "Conservation" : {
+        "source": "Conservation VEP plugin",
+        "description": "VEP plugin for GERP conservation scores",
+        "type": "VALUE",
+        "dataType": "FLOAT",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "DownstreamProtein": {
+        "source": "Downstream VEP plugin",
+        "description": "VEP plugin for downstream protein effect of frameshift variants",
+        "type": "DESCRIPTION",
+        "dataType": "STRING",
+        "useParameter": "FALSE",
+        "split": "FALSE"
+    },
+    "ProteinLengthChange": {
+        "source": "Downstream VEP plugin",
+        "description": "VEP plugin for downstream protein effect of frameshift variants",
+        "type": "VALUE",
+        "dataType": "INT",
+        "useParameter": "TRUE",
+        "split": "FALSE"
+    }
+}

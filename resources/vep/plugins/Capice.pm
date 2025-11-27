@@ -26,8 +26,7 @@ sub feature_types {
 
 sub get_header_info {
     return {
-        CAPICE_SC => "CAPICE score",
-        CAPICE_CL => "CAPICE classification"
+        CAPICE_SC => "CAPICE score"
     };
 }
 
@@ -76,38 +75,35 @@ sub getFeatureType {
 
 sub parse_file_header {
     my @tokens = split /\t/, $_[0];
-
+    
     my $col_idx;
     for my $i (0 .. $#tokens) {
-        if ($tokens[$i] eq "chr") {
+        if ($tokens[$i] eq "CHROM") {
             $col_idx->{idx_chr} = $i;
         }
-        if ($tokens[$i] eq "pos") {
+        if ($tokens[$i] eq "POS") {
             $col_idx->{idx_pos} = $i;
         }
-        if ($tokens[$i] eq "ref") {
+        if ($tokens[$i] eq "REF") {
             $col_idx->{idx_ref} = $i;
         }
-        if ($tokens[$i] eq "alt") {
+        if ($tokens[$i] eq "ALT") {
             $col_idx->{idx_alt} = $i;
         }
-        if ($tokens[$i] eq "feature_type") {
+        if ($tokens[$i] eq "Feature_type") {
             $col_idx->{idx_feature_type} = $i;
         }
-        if ($tokens[$i] eq "feature") {
+        if ($tokens[$i] eq "Feature") {
             $col_idx->{idx_feature} = $i;
         }
-        if ($tokens[$i] eq "gene_id") {
+        if ($tokens[$i] eq "Gene") {
             $col_idx->{idx_gene} = $i;
         }
-        if ($tokens[$i] eq "id_source") {
+        if ($tokens[$i] eq "SOURCE") {
             $col_idx->{idx_source} = $i;
         }
         if ($tokens[$i] eq "score") {
             $col_idx->{idx_score} = "$i";
-        }
-        if ($tokens[$i] eq "suggested_class") {
-            $col_idx->{idx_class} = $i;
         }
     }
     return $col_idx;
@@ -168,12 +164,10 @@ sub run {
 
     my $result = {};
     $result->{CAPICE_SC} = undef;
-    $result->{CAPICE_CL} = undef;
     my $value = $self->{capice_map}{$key};
     if($value) {
         my %value_map = %{$value};
         $result->{CAPICE_SC} = $value_map{s};
-        $result->{CAPICE_CL} = $value_map{c};
     }
     return $result;
 }
