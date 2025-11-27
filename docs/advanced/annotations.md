@@ -298,7 +298,7 @@ coding scores: https://zenodo.org/records/3981121
 
 #### GREEN-DB constraint scores
 
-[GREEN-DB](https://doi.org/10.1101/2020.09.17.301960) GREEN-DB is a comprehensive collection of 2.4 million regulatory
+[GREEN-DB](https://doi.org/10.1101/2020.09.17.301960) is a comprehensive collection of 2.4 million regulatory
 elements in the human genome collected from previously published databases, high-throughput screenings and functional
 studies.
 This plugin annotates the constrain scores only, and is build on top of the GREEN-DB bed files (
