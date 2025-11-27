@@ -180,7 +180,7 @@
       "type": "EXISTS",
       "field": "INFO/CSQ/Gene",
       "outcomeTrue": {
-        "nextNode": "gnomAD"
+        "nextNode": "is_mtdna"
       },
       "outcomeFalse": {
         "nextNode": "exit_rm"
@@ -238,6 +238,83 @@
       },
       "outcomeDefault": {
         "nextNode": "exit_vus"
+      }
+    },
+    "is_mtdna": {
+      "label": "is mtDNA",
+      "description": "is variant on chrM",
+      "type": "BOOL",
+      "query": {
+          "field": "#CHROM",
+          "operator": "==",
+          "value": "chrM"
+      },
+      "outcomeTrue": {
+          "nextNode": "mtdna_transcript"
+      },
+      "outcomeFalse": {
+          "nextNode": "gnomAD"
+      },
+      "outcomeMissing": {
+          "nextNode": "gnomAD"
+      }
+    },
+    "mtdna_transcript": {
+      "label": "mtDNA transcript",
+      "description": "Which mtDNA transcript",
+      "type": "CATEGORICAL",
+      "field": "INFO/CSQ/BIOTYPE",
+      "outcomeMap": {
+          "protein_coding": {
+              "nextNode": "apogee"
+          },
+          "tRNA": {
+              "nextNode": "mitotip"
+          }
+      },
+      "outcomeMissing": {
+          "nextNode": "sv"
+      },
+      "outcomeDefault": {
+          "nextNode": "sv"
+      }
+    },
+    "mitotip": {
+      "label": "MitoTIP",
+      "description": "MitoTIP score",
+      "type": "BOOL",
+      "query": {
+          "field": "INFO/CSQ/mitoTip_Score",
+          "operator": ">=",
+          "value": 12.66
+      },
+      "outcomeTrue": {
+          "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+          "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+          "nextNode": "sv"
+      }
+    },
+    "apogee": {
+      "label": "APOGEE",
+      "description": "APOGEE score",
+      "type": "BOOL",
+      "query": {
+          "field": "INFO/CSQ/apogee_Uscore",
+          "operator": ">=",
+          "value": 0.5
+      },
+      "outcomeTrue":{
+          "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+          "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+          "nextNode": "sv"
       }
     },
     "gnomAD": {

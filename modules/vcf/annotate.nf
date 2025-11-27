@@ -20,8 +20,10 @@ process annotate {
     assembly=meta.project.assembly
     refSeqPath = params[assembly].reference.fasta
     vepCustomPhyloPPath = params.vcf.annotate[assembly].vep_custom_phylop
+    vepPluginApogeePath = params.vcf.annotate[assembly].vep_plugin_apogee
     vepPluginClinVarPath = params.vcf.annotate[assembly].vep_plugin_clinvar
     vepPluginGnomAdPath = params.vcf.annotate[assembly].vep_plugin_gnomad
+    vepPluginMitoTipPath = params.vcf.annotate[assembly].vep_plugin_mitotip
     vepPluginSpliceAiIndelPath = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
     vepPluginSpliceAiSnvPath = params.vcf.annotate[assembly].vep_plugin_spliceai_snv
     vepPluginVkglPath = params.vcf.annotate[assembly].vep_plugin_vkgl
