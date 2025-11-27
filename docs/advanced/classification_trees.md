@@ -35,6 +35,10 @@ gene_("Gene")
 sv_("Is SV")
 str_("Is STR")
 str_status_("STR Status")
+is_mtdna_("is mtDNA")
+mtdna_transcript_("mtDNA transcript")
+mitotip_("MitoTIP")
+apogee_("APOGEE")
 gnomAD_("GnomAD")
 gnomAD_AF_("GnomAD AF")
 annotSV_("AnnotSV")
@@ -71,7 +75,7 @@ clinVar_ -->|"B/LB"| exit_lb_
 chrom_ -->|"true"| gene_
 chrom_ -->|"false"| exit_rm_
 chrom_ -->|"missing"| gene_
-gene_ -->|"true"| gnomAD_
+gene_ -->|"true"| is_mtdna_
 gene_ -->|"false"| exit_rm_
 sv_ -->|"true"| str_
 sv_ -->|"false"| spliceAI_
@@ -82,6 +86,18 @@ str_status_ -->|"normal"| exit_lb_
 str_status_ -->|"default"| exit_vus_
 str_status_ -->|"pre_mutation"| exit_vus_
 str_status_ -->|"full_mutation"| exit_lp_
+is_mtdna_ -->|"true"| mtdna_transcript_
+is_mtdna_ -->|"false"| gnomAD_
+is_mtdna_ -->|"missing"| gnomAD_
+mtdna_transcript_ -->|"default"| sv_
+mtdna_transcript_ -->|"tRNA"| mitotip_
+mtdna_transcript_ -->|"protein_coding"| apogee_
+mitotip_ -->|"true"| exit_lp_
+mitotip_ -->|"false"| exit_lb_
+mitotip_ -->|"missing"| sv_
+apogee_ -->|"true"| exit_lp_
+apogee_ -->|"false"| exit_lb_
+apogee_ -->|"missing"| sv_
 gnomAD_ -->|"true"| sv_
 gnomAD_ -->|"false"| gnomAD_AF_
 gnomAD_AF_ -->|"default"| sv_
