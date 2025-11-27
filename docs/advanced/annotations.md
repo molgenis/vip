@@ -305,3 +305,13 @@ This plugin annotates the constrain scores only, and is build on top of the GREE
 GRCh38): https://zenodo.org/records/5636209
 GREEN-DB constrains scores are annotated per region type: enhancers, promotors, bivalent, insulators, silencers. If
 multiple regions of the same type overlap, VIP annotates the highest constraint score.
+
+#### APOGEE 2
+
+[APOGEE-2](https://doi.org/10.1038/s41467-023-40797-7) predicts pathogenicity scores for missense mitochondrial variants.
+A custom APOGEE VEP plugin annotates mitochondrial variants with computed [APOGEE scores](https://mitimpact.mcb2lab.org).
+
+#### MitoTIP
+
+[MitoTIP](https://doi.org/10.1371/journal.pcbi.1005867) predicts pathogenicity scores for mtDNA tRNA variants.
+A custom MitoTIP VEP plugin annotates mitochondrial variants with computed [mitoTip scores](https://www.mitomap.org/MITOMAP/MitoTipScores) and their corresponding quartiles (Q1-Q4).
