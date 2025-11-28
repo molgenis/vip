@@ -12,8 +12,8 @@ process call {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    haploidContigs = params[meta.project.assembly].reference.haploidContigs
-    parRegionsBed = params[meta.project.assembly].reference.parRegionsBed
+    haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
+    parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     sampleName = "${meta.sample.individual_id}"
@@ -55,8 +55,8 @@ process call_duo {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    haploidContigs = params[meta.project.assembly].reference.haploidContigs
-    parRegionsBed = params[meta.project.assembly].reference.parRegionsBed
+    haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
+    parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
     bed="regions_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 
@@ -134,8 +134,8 @@ process call_trio {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    haploidContigs = params[meta.project.assembly].reference.haploidContigs
-    parRegionsBed = params[meta.project.assembly].reference.parRegionsBed
+    haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
+    parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
     bed="regions_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 

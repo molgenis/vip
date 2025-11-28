@@ -6,6 +6,14 @@ create_bed () {
 }
 
 call_small_variants () {
+    postprocess_args=()
+    if [ -n "!{haploidContigs}" ]; then
+      postprocess_args+=("--haploid_contigs=\"!{haploidContigs}\"")
+    fi
+    if [ -n "!{parRegionsBed}" ]; then
+      postprocess_args+=("--par_regions_bed=\"!{parRegionsBed}\"")
+    fi
+
     local args=()
     args+=("--model_type" "!{modelType}")
     args+=("--ref" "!{reference}")
@@ -22,10 +30,10 @@ call_small_variants () {
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutParent}")
     args+=("--make_examples_extra_args=include_med_dp=true")
-    if [ "!{sampleSex}" = "male" ]; then
-      args+=("--postprocess_variants_child_extra_args=--haploid_contigs=\"!{haploidContigs}\",--par_regions_bed=\"!{parRegionsBed}\"")
+    if [ "!{sampleSex}" = "male" ] && [ "${#postprocess_args[@]}" -gt 0 ]; then
+      args+=("--postprocess_variants_child_extra_args=$(IFS=','; echo "${postprocess_args[*]}")")
     fi
-    if [ "!{sampleSexParent}" = "male"  ]; then
+    if [ "!{sampleSexParent}" = "male"  ] && [ "${#postprocess_args[@]}" -gt 0 ]; then
       args+=("--postprocess_variants_parent1_extra_args=--haploid_contigs=\"!{haploidContigs}\",--par_regions_bed=\"!{parRegionsBed}\"")
     fi
     mkdir tmp
