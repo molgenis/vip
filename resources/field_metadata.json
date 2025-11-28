@@ -42,6 +42,13 @@
       "numberCount": 1,
       "type": "STRING"
     },
+    "RNC": {
+      "label": "Reason No Call",
+      "description": "Reason for No Call in GT: . = n/a, M = Missing data, P = Partial data, I = gVCF input site is non-called, D = insufficient Depth of coverage, - = unrepresentable overlapping deletion, L = Lost/unrepresentable allele (other than deletion), U = multiple Unphased variants present, O = multiple Overlapping variants present, 1 = site is Monoallelic, no assertion about presence of REF or ALT allele",
+      "numberType": "NUMBER",
+      "numberCount": 1,
+      "type": "STRING"
+    },
     "VI": {
       "label": "Inheritance",
       "description": "An enumeration of possible inheritance modes based on the pedigree of the sample. Potential values: AD, AD_IP, AR, AR_C, XLR, XLD, YL, MT",
