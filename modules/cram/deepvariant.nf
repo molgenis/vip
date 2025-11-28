@@ -17,7 +17,7 @@ process call {
     bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     sampleName = "${meta.sample.individual_id}"
-    sampleSex = "${meta.sample.sampleSex}"
+    sampleSex = "${meta.sample.sex}"
 
     vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chunk_${meta.chunk.index}_snv.g.vcf.gz"
     vcfOutIndex="${vcfOut}.csi"
@@ -66,8 +66,8 @@ process call_duo {
     sampleNameChild=meta.sample.individual_id
     sampleNameParent=meta.sample.paternal_id != null ? meta.sample.paternal_id : meta.sample.maternal_id
     
-    sampleSex = "${meta.sample.sampleSex}"
-    sampleSexParent=meta.sample.paternal_id != null ? "MALE" : "FEMALE"
+    sampleSex = "${meta.sample.sex}"
+    sampleSexParent=meta.sample.paternal_id != null ? "male" : "female"
     
     gvcfOutPrefix="${meta.project.id}_${meta.sample.family_id}_${sampleNameChild}"
     gvcfOutPostfix="chunk_${meta.chunk.index}_snv"
@@ -90,7 +90,7 @@ process call_duo {
     sampleNameParent=meta.sample.paternal_id != null ? meta.sample.paternal_id : meta.sample.maternal_id
 
     sampleSex = "${meta.sample.sampleSex}"
-    sampleSexParent=meta.sample.paternal_id != null ? "MALE" : "FEMALE"
+    sampleSexParent=meta.sample.paternal_id != null ? "male" : "female"
 
     gvcfOutPrefix="${meta.project.id}_${meta.sample.family_id}_${sampleNameChild}"
     gvcfOutPostfix="chunk_${meta.chunk.index}_snv"
@@ -143,7 +143,7 @@ process call_trio {
 
     // include child sample name in paternal/maternal output filenames to prevent downstream filename collisions
     sampleNameChild=meta.sample.individual_id
-    sampleSex=meta.sample.sampleSex
+    sampleSex=meta.sample.sex
     sampleNamePaternal=meta.sample.paternal_id
     sampleNameMaternal=meta.sample.maternal_id
     
@@ -170,10 +170,11 @@ process call_trio {
   stub:
     // include child sample name in paternal/maternal output filenames to prevent downstream filename collisions
     sampleNameChild=meta.sample.individual_id
-    sampleSex=meta.sample.sampleSex
     sampleNamePaternal=meta.sample.paternal_id
     sampleNameMaternal=meta.sample.maternal_id
     
+    sampleSex="${meta.sample.sex}"
+
     gvcfOutPrefix="${meta.project.id}_${meta.sample.family_id}_${sampleNameChild}"
     gvcfOutPostfix="chunk_${meta.chunk.index}_snv"
 

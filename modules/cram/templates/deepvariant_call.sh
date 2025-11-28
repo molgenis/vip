@@ -16,7 +16,7 @@ call_small_variants () {
     args+=("--intermediate_results_dir" "intermediate_results")
     args+=("--sample_name" "!{sampleName}")
     args+=("--make_examples_extra_args=include_med_dp=true")
-    if [ "!{sampleSex}" eq "MALE"  ]; then
+    if [ "!{sampleSex}" = "male"  ]; then
       args+=("--haploid_contigs=!{haploidContigs}")
       args+=("--par_regions_bed=!{parRegionsBed}")
     fi

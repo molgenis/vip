@@ -26,15 +26,10 @@ call_small_variants () {
     args+=("--output_vcf_parent1" "!{vcfOutPaternal}")
     args+=("--output_vcf_parent2" "!{vcfOutMaternal}")
     args+=("--make_examples_extra_args=include_med_dp=true")
-    if [ "!{sampleSex}" eq "MALE"  ]; then
-      #FIXME
-      args+=("--haploid_contigs=!{haploidContigs}")
-      args+=("--par_regions_bed=!{parRegionsBed}")
+    if [ "!{sampleSex}" = "male" ]; then
+      args+=("--postprocess_variants_child_extra_args=--haploid_contigs=\"!{haploidContigs}\",--par_regions_bed=\"!{parRegionsBed}\"")
     fi
-    #FIXME: father postprocess
-      args+=("--haploid_contigs=!{haploidContigs}")
-      args+=("--par_regions_bed=!{parRegionsBed}")
-    
+    args+=("--postprocess_variants_parent1_extra_args=--haploid_contigs=\"!{haploidContigs}\",--par_regions_bed=\"!{parRegionsBed}\"")
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"
 }
