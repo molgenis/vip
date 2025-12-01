@@ -11,7 +11,7 @@ import json
 import sys
 
 ### constants ###
-STANDARD_HEADER = ["CHROM", "POS", "REF", "ALT","Feature_type","Feature","Gene", "SOURCE"]
+STANDARD_HEADER = ["CHROM", "POS", "REF", "ALT","Feature_type","Feature"]
 ### --------- ###
 
 def load_json_to_dict(path):

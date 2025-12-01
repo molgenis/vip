@@ -48,11 +48,9 @@ sub create_key {
     my $pos = $_[1];
     my $ref = $_[2];
     my $alt = $_[3];
-    my $gene = $_[4]?$_[4]:"";
-    my $source = $_[5]?$_[5]:"";
     my $feature_type = $_[6]?$_[6]:"";
     my $feature = $_[7]?$_[7]:"";
-    return "${chr}_${pos}_${ref}_${alt}_${gene}_${source}_${feature_type}_${feature}";
+    return "${chr}_${pos}_${ref}_${alt}_${feature_type}_${feature}";
 }
 
 sub getFeatureType {
@@ -96,12 +94,6 @@ sub parse_file_header {
         if ($tokens[$i] eq "Feature") {
             $col_idx->{idx_feature} = $i;
         }
-        if ($tokens[$i] eq "Gene") {
-            $col_idx->{idx_gene} = $i;
-        }
-        if ($tokens[$i] eq "SOURCE") {
-            $col_idx->{idx_source} = $i;
-        }
         if ($tokens[$i] eq "score") {
             $col_idx->{idx_score} = "$i";
         }
@@ -120,12 +112,10 @@ sub parse_file {
     while (my $line = <FH>) {
         $line =~ s/\s*\z//;
         my @tokens = split /\t/, $line;
-
-        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_gene}], $tokens[$col_idx->{idx_source}], $tokens[$col_idx->{idx_feature_type}], $tokens[$col_idx->{idx_feature}]);
-
+        my $key = create_key($tokens[$col_idx->{idx_chr}], $tokens[$col_idx->{idx_pos}], $tokens[$col_idx->{idx_ref}], $tokens[$col_idx->{idx_alt}], $tokens[$col_idx->{idx_feature_type}], $tokens[$col_idx->{idx_feature}]);
         my %values;
         $values{s} = $tokens[$col_idx->{idx_score}];
-        $values{c} = $tokens[$col_idx->{idx_class}];
+
         $capice_map{$key} = \%values;
     }
     close FH;
@@ -160,7 +150,7 @@ sub run {
 
     my $feature_type = getFeatureType($tva);
 
-    my $key = create_key($chr,$pos,$ref,$alt,$gene,$source,$feature_type,$transcript_id);
+    my $key = create_key($chr,$pos,$ref,$alt,$feature_type,$transcript_id);
 
     my $result = {};
     $result->{CAPICE_SC} = undef;

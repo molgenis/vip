@@ -246,7 +246,7 @@
       "type": "EXISTS",
       "field": "INFO/CSQ/gnomAD_QC",
       "outcomeTrue": {
-        "nextNode": "sv"
+        "nextNode": "gnomAD_AF"
       },
       "outcomeFalse": {
         "nextNode": "gnomAD_AF"
@@ -383,7 +383,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_vus"
+            "nextNode": "capice"
           }
         }
       ],
@@ -408,17 +408,40 @@
     },
     "capice": {
       "label": "CAPICE",
-      "description": "CAPICE prediction > 0.5",
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/CAPICE_SC",
-        "operator": ">",
-        "value": 0.5
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lp"
-      },
-      "outcomeFalse": {
+      "description": "CAPICE prediction",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/CAPICE_SC"
+      ],
+      "outcomes": [
+        {
+          "description": "CAPICE prediction > 0.9",
+          "queries":[
+            {
+              "field": "INFO/CSQ/CAPICE_SC",
+              "operator": ">",
+              "value": 0.9
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "CAPICE prediction > 0.5",
+          "queries":[
+            {
+              "field": "INFO/CSQ/CAPICE_SC",
+              "operator": ">",
+              "value": 0.5
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_vus"
+          }
+        }
+      ],
+      "outcomeDefault": {
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
