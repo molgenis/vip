@@ -289,7 +289,7 @@
           "value": 12.66
       },
       "outcomeTrue": {
-          "nextNode": "exit_lp"
+          "nextNode": "hmtvar"
       },
       "outcomeFalse": {
           "nextNode": "exit_lb"
@@ -315,6 +315,25 @@
       },
       "outcomeMissing": {
           "nextNode": "sv"
+      }
+    },
+    "hmtvar": {
+      "label": "HmtVar",
+      "description": "HmtVar Score",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/hmtvar_DeseaseScore",
+        "operator": ">=",
+        "value": 0.35
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "sv"
       }
     },
     "gnomAD": {

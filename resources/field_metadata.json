@@ -496,6 +496,13 @@
           "numberCount": 1,
           "type": "STRING"
         },
+        "hmtvar_DiseaseScore": {
+          "label": "HmtVar disease score",
+          "description": "HmtVar disease score for mtDNA tRNA variants",
+          "numberType": "NUMBER",
+          "numerCount": 1,
+          "type": "FLOAT"
+        },
         "HPO": {
           "label": "HPO",
           "description": "Human Phenotype Ontology (HPO) terms describing phenotypic abnormalities, see https://hpo.jax.org/ and https://doi.org/10.1093/nar/gkad1005",

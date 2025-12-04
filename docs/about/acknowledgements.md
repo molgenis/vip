@@ -29,3 +29,4 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [Whatshap](https://github.com/whatshap/whatshap/)
 - [MITOMAP](https://doi.org/10.1093/nar/24.1.177)
 - [APOGEE](https://doi.org/10.1038/s41467-023-40797-7)
+- [HmtVar](https://doi.org/10.1093/nar/gky1024)

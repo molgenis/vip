@@ -235,6 +235,8 @@ install_files() {
   data+=("53827286f5827d2c2f0e4e6f02179ec2" "resources/GRCh38/GRCh38_FATHMM-MKL_NC.tsv.gz.tbi" "")
   data+=("b773b1eb1ef6e03ccdea70dcf736a17f" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz" "")
   data+=("7837b9e42da9674e78d9874218f07f00" "resources/GRCh38/GRCh38_GREEN-DB.bed.gz.tbi" "")
+  data+=("1c427de2e7f81caf73afbd50dd81cdf3" "resources/GRCh38/hmtvar_trna_scores.tsv.gz" "")
+  data+=("7e64d9d639fd1501cbef8c24e1e866df" "resources/GRCh38/hmtvar_trna_scores.tsv.gz.tbi" "")
   data+=("16b2f104b5131c643efffbf3a1501ee8" "resources/GRCh38/GRCh38_ncER_perc.bed.gz" "")
   data+=("498c22d840476a757be5f5b0e382f8d6" "resources/GRCh38/GRCh38_ncER_perc.bed.gz.tbi" "")
   data+=("a538173d85ea32638e05d36b602c8c32" "resources/GRCh38/GRCh38_PAR_20251126.bed" "")
