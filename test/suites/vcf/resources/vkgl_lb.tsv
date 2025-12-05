@@ -1,2 +1,2 @@
 family_id	individual_id	vcf
-FAM0	SAMPLE0	${TEST_RESOURCES_DIR}/vkgl_lb_202504.bcf.gz
+FAM0	SAMPLE0	${TEST_RESOURCES_DIR}/vkgl_lb_202507.bcf.gz
