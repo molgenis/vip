@@ -43,7 +43,7 @@ sub feature_types {
 
 sub get_header_info {
 	return {
-		hmtvar_DiseaseScore => "Score assigned by HmtVar"
+		hmtvar_DiseaseScore => "Disease score assigned by HmtVar"
 	};
 }
 

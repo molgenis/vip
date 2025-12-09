@@ -269,7 +269,7 @@
               "nextNode": "apogee"
           },
           "tRNA": {
-              "nextNode": "mitotip"
+              "nextNode": "mitotip_hmtvar"
           }
       },
       "outcomeMissing": {
@@ -277,6 +277,99 @@
       },
       "outcomeDefault": {
           "nextNode": "sv"
+      }
+    },
+    "mitotip_hmtvar": {
+      "label": "MitoTIP and HmtVar",
+      "description": "MitoTIP and HmtVar scores",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/mitoTip_Score",
+        "INFO/CSQ/"
+      ],
+      "outcomes": [
+        {
+          "description": "PP3: MitoTIP >= 12.66 and HtmVar score >= 0.35",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "INFO/SCQ/mitoTip_Score",
+              "operator": ">=",
+              "value": 12.66
+            },
+            {
+              "field": "INFO/CSQ/hmtvar_DiseaseScore",
+              "operator": ">=",
+              "value": 0.35
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "BP4: MitoTIP score < 12.66 and HmtVar score < 0.35",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "INFO/CSQ/mitoTip_Score",
+              "operator": "<",
+              "value": 12.66
+            },
+            {
+              "field": "INFO/CSQ/hmtvar_DiseaseScore",
+              "operator": "<",
+              "value": 0.35
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        },
+        {
+          "description": "MitoTIP score >= 12.66 and HmtVar score < 0.35",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "INFO/CSQ/mitoTip_Score",
+              "operator": ">=",
+              "value": 12.66
+            },
+            {
+              "field": "INFO/CSQ/hmtvar_DiseaseScore",
+              "operator": "<",
+              "value": 0.35
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_vus"
+          }
+        },
+        {
+          "description": "MitoTIP score < 12.66 and HmtVar score >= 0.35",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "INFO/CSQ/mitoTip_Score",
+              "operator": "<",
+              "value": 12.66
+            },
+            {
+              "field": "INFO/CSQ/hmtvar_DiseaseScore",
+              "operator": ">=",
+              "value": 0.35
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_vus"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "sv"
+      },
+      "outcomeMissing": {
+        "nextNode": "sv"
       }
     },
     "mitotip": {
