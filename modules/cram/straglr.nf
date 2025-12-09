@@ -17,7 +17,7 @@ process straglr_call {
     sampleSex = meta.sample.sex != null ? meta.sample.sex : ""
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
-    tsvOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.tsv"
+    tsvOut = "straglr.tsv"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     

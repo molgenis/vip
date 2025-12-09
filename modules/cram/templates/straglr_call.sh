@@ -5,15 +5,15 @@ call_short_tandem_repeats () {
     local args=()
     args+=("--loci" "!{paramLoci}")
     args+=("--sample" "!{sampleId}")
-    args+=("--vcf" "straglr.vcf")
-    args+=("--tsv" "!{tsvOut}")
     if [ -n "!{sampleSex}" ]; then
         args+=("--sex" "!{sampleSex}")
     fi
     args+=("--min_support" "!{paramMinSupport}")
     args+=("--min_cluster_size" "!{paramMinClusterSize}")
+    args+=("--genotype_in_size")
     args+=("!{cram}")
     args+=("!{paramReference}")
+    args+=("straglr")
 
     ${CMD_STRAGLR} "${args[@]}"
 }

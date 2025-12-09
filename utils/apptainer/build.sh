@@ -96,7 +96,7 @@ main() {
   images+=("seqtk-1.4_v2")
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.9.3")
-  images+=("straglr-1.4.5-vip-v2")
+  images+=("straglr-1.5.6")
   images+=("vcf-decision-tree-6.0.0")
   images+=("vcf-inheritance-matcher-4.0.0")
   images+=("vcf-report-8.0.2")

@@ -3,9 +3,10 @@ From: sif/build/ubuntu-22.04.sif
 
 %post
     apt-get update
-    apt-get install -qq curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git python3-setuptools python3-pip
+    apt-get install -qq curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git python3-pip python3
+    pip install --upgrade pip setuptools wheel
 
-    apt install ncbi-blast+  --assume-yes
+    apt install ncbi-blast+ --assume-yes
 
     mkdir -p /opt/trf/
     curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
