@@ -80,7 +80,7 @@ sub parse_data {
 		locus => $locus,
 		result => {
 			hmtvar_DiseaseScore => $disease_score
-		}
+		},
 		tier_of_pathogenicity => $patho_tier,
 		all_freq_h => $allfreqh,
 		report_patho => $patho_report,

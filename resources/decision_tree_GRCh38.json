@@ -285,7 +285,7 @@
       "type": "BOOL_MULTI",
       "fields": [
         "INFO/CSQ/mitoTip_Score",
-        "INFO/CSQ/"
+        "INFO/CSQ/hmtvar_DiseaseScore"
       ],
       "outcomes": [
         {
@@ -293,7 +293,7 @@
           "operator": "AND",
           "queries": [
             {
-              "field": "INFO/SCQ/mitoTip_Score",
+              "field": "INFO/CSQ/mitoTip_Score",
               "operator": ">=",
               "value": 12.66
             },
@@ -327,7 +327,7 @@
           }
         },
         {
-          "description": "MitoTIP score >= 12.66 and HmtVar score < 0.35",
+          "description": "NA: MitoTIP score >= 12.66 and HmtVar score < 0.35",
           "operator": "AND",
           "queries": [
             {
@@ -346,7 +346,7 @@
           }
         },
         {
-          "description": "MitoTIP score < 12.66 and HmtVar score >= 0.35",
+          "description": "NA: MitoTIP score < 12.66 and HmtVar score >= 0.35",
           "operator": "AND",
           "queries": [
             {
@@ -372,25 +372,6 @@
         "nextNode": "sv"
       }
     },
-    "mitotip": {
-      "label": "MitoTIP",
-      "description": "MitoTIP score",
-      "type": "BOOL",
-      "query": {
-          "field": "INFO/CSQ/mitoTip_Score",
-          "operator": ">=",
-          "value": 12.66
-      },
-      "outcomeTrue": {
-          "nextNode": "hmtvar"
-      },
-      "outcomeFalse": {
-          "nextNode": "exit_lb"
-      },
-      "outcomeMissing": {
-          "nextNode": "sv"
-      }
-    },
     "apogee": {
       "label": "APOGEE",
       "description": "APOGEE score",
@@ -408,25 +389,6 @@
       },
       "outcomeMissing": {
           "nextNode": "sv"
-      }
-    },
-    "hmtvar": {
-      "label": "HmtVar",
-      "description": "HmtVar Score",
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/hmtvar_DeseaseScore",
-        "operator": ">=",
-        "value": 0.35
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lp"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_lb"
-      },
-      "outcomeMissing": {
-        "nextNode": "sv"
       }
     },
     "gnomAD": {

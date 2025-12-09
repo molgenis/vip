@@ -500,7 +500,7 @@
           "label": "HmtVar disease score",
           "description": "HmtVar disease score for mtDNA tRNA variants",
           "numberType": "NUMBER",
-          "numerCount": 1,
+          "numberCount": 1,
           "type": "FLOAT"
         },
         "HPO": {
