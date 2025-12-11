@@ -269,7 +269,7 @@
               "nextNode": "apogee"
           },
           "tRNA": {
-              "nextNode": "mitotip_hmtvar"
+              "nextNode": "mitotip"
           }
       },
       "outcomeMissing": {
@@ -279,97 +279,23 @@
           "nextNode": "sv"
       }
     },
-    "mitotip_hmtvar": {
-      "label": "MitoTIP and HmtVar",
-      "description": "MitoTIP and HmtVar scores",
-      "type": "BOOL_MULTI",
-      "fields": [
-        "INFO/CSQ/mitoTip_Score",
-        "INFO/CSQ/hmtvar_DiseaseScore"
-      ],
-      "outcomes": [
-        {
-          "description": "PP3: MitoTIP >= 12.66 and HtmVar score >= 0.35",
-          "operator": "AND",
-          "queries": [
-            {
-              "field": "INFO/CSQ/mitoTip_Score",
-              "operator": ">=",
-              "value": 12.66
-            },
-            {
-              "field": "INFO/CSQ/hmtvar_DiseaseScore",
-              "operator": ">=",
-              "value": 0.35
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_lp"
-          }
-        },
-        {
-          "description": "BP4: MitoTIP score < 12.66 and HmtVar score < 0.35",
-          "operator": "AND",
-          "queries": [
-            {
-              "field": "INFO/CSQ/mitoTip_Score",
-              "operator": "<",
-              "value": 12.66
-            },
-            {
-              "field": "INFO/CSQ/hmtvar_DiseaseScore",
-              "operator": "<",
-              "value": 0.35
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_lb"
-          }
-        },
-        {
-          "description": "NA: MitoTIP score >= 12.66 and HmtVar score < 0.35",
-          "operator": "AND",
-          "queries": [
-            {
-              "field": "INFO/CSQ/mitoTip_Score",
-              "operator": ">=",
-              "value": 12.66
-            },
-            {
-              "field": "INFO/CSQ/hmtvar_DiseaseScore",
-              "operator": "<",
-              "value": 0.35
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_vus"
-          }
-        },
-        {
-          "description": "NA: MitoTIP score < 12.66 and HmtVar score >= 0.35",
-          "operator": "AND",
-          "queries": [
-            {
-              "field": "INFO/CSQ/mitoTip_Score",
-              "operator": "<",
-              "value": 12.66
-            },
-            {
-              "field": "INFO/CSQ/hmtvar_DiseaseScore",
-              "operator": ">=",
-              "value": 0.35
-            }
-          ],
-          "outcomeTrue": {
-            "nextNode": "exit_vus"
-          }
-        }
-      ],
-      "outcomeDefault": {
-        "nextNode": "sv"
+    "mitotip": {
+      "label": "MitoTIP",
+      "description": "MitoTIP score",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/mitoTip_Score",
+        "operator": ">=",
+        "value": 12.66
+      },
+      "outcomeTrue": {
+        "nextNode": "hmtvar_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "hmtvar_lb"
       },
       "outcomeMissing": {
-        "nextNode": "sv"
+        "nextNode": "hmtvar"
       }
     },
     "apogee": {
@@ -381,14 +307,71 @@
           "operator": ">=",
           "value": 0.5
       },
-      "outcomeTrue":{
-          "nextNode": "exit_lp"
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-          "nextNode": "exit_lb"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-          "nextNode": "sv"
+        "nextNode": "sv"
+      }
+    },
+    "hmtvar_lb": {
+      "label": "HmtVar LB/VUS",
+      "description": "HmtVar to determine LB or VUS",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/hmtvar_DiseaseScore",
+        "operator": "<",
+        "value": 0.35
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_lb"
+      }
+    },
+    "hmtvar": {
+      "label": "HmtVar",
+      "description": "HmtVar to determine LB, or LP",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/hmtvar_DiseaseScore",
+        "operator": ">=",
+        "value": 0.35
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_lb"
+      },
+      "outcomeMissing": {
+        "nextNode": "sv"
+      }
+    },
+    "hmtvar_lp": {
+      "label": "HmtVar LP/VUS",
+      "description": "HmtVar to determine LP or VUS",
+      "type": "BOOL",
+      "query": {
+        "field": "INFO/CSQ/hmtvar_DiseaseScore",
+        "operator": ">=",
+        "value": 0.35
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_vus"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_lp"
       }
     },
     "gnomAD": {
