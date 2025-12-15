@@ -37,7 +37,7 @@ str_("Is STR")
 str_status_("STR Status")
 is_mtdna_("is mtDNA")
 mtdna_transcript_("mtDNA transcript")
-mitotip_hmtvar_("MitoTIP and HmtVar")
+mitotip_("MitoTIP")
 apogee_("APOGEE")
 gnomAD_("GnomAD")
 gnomAD_AF_("GnomAD AF")
@@ -90,14 +90,11 @@ is_mtdna_ -->|"true"| mtdna_transcript_
 is_mtdna_ -->|"false"| gnomAD_
 is_mtdna_ -->|"missing"| gnomAD_
 mtdna_transcript_ -->|"default"| sv_
-mtdna_transcript_ -->|"tRNA"| mitotip_hmtvar_
+mtdna_transcript_ -->|"tRNA"| mitotip_
 mtdna_transcript_ -->|"protein_coding"| apogee_
-mitotip_hmtvar_ -->|"default"| sv_
-mitotip_hmtvar_ -->|"BP4: MitoTIP score < 12.66 and HmtVar score < 0.35"| exit_lb_
-mitotip_hmtvar_ -->|"NA: MitoTIP score >= 12.66 and HmtVar score < 0.35"| exit_vus_
-mitotip_hmtvar_ -->|"missing"| sv_
-mitotip_hmtvar_ -->|"PP3: MitoTIP >= 12.66 and HtmVar score >= 0.35"| exit_lp_
-mitotip_hmtvar_ -->|"NA: MitoTIP score < 12.66 and HmtVar score >= 0.35"| exit_vus_
+mitotip_ -->|"true"| exit_lp_
+mitotip_ -->|"false"| exit_lb_
+mitotip_ -->|"missing"| sv_
 apogee_ -->|"true"| exit_lp_
 apogee_ -->|"false"| exit_lb_
 apogee_ -->|"missing"| sv_
