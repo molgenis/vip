@@ -126,6 +126,8 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#mitotip">MitoTIP</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#hmtvar">HmtVar</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -953,6 +955,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>A flag indicating if the variant falls in a high information position of a transcription factor binding profile (TFBP)</td>
 </tr>
 <tr>
+<td>INFO/CSQ/hmtvar_DiseaseScore</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>HmtVar disease score for mtDNA variants (used of tRNA genes)</td>
+</tr>
+<tr>
 <td>INFO/CSQ/HPO</td>
 <td>string list</td>
 <td>VEP plugin</td>
@@ -1278,6 +1286,9 @@ A custom APOGEE VEP plugin annotates mitochondrial variants with computed <a hre
 <h4 id="mitotip">MitoTIP<a class="headerlink" href="#mitotip" title="Permanent link">¶</a></h4>
 <p><a href="https://doi.org/10.1371/journal.pcbi.1005867">MitoTIP</a> predicts pathogenicity scores for mtDNA tRNA variants.
 A custom MitoTIP VEP plugin annotates mitochondrial variants with computed <a href="https://www.mitomap.org/MITOMAP/MitoTipScores">mitoTip scores</a> and their corresponding quartiles (Q1-Q4).</p>
+<h4 id="hmtvar">HmtVar<a class="headerlink" href="#hmtvar" title="Permanent link">¶</a></h4>
+<p><a href="https://doi.org/10.1093/nar/gky1024">HmtVar</a> contains disease scores for mtDNA SNVs.
+A custom HmtVar VEP plugin annotates mitochondrial tRNA variants with computed disease scores.</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
