@@ -290,8 +290,10 @@
       },
       "outcomeTrue": {
         "nextNode": "exit_lp"
+        "nextNode": "exit_lp"
       },
       "outcomeFalse": {
+        "nextNode": "exit_lb"
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {

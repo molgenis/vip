@@ -38,6 +38,7 @@ str_status_("STR Status")
 is_mtdna_("is mtDNA")
 mtdna_transcript_("mtDNA transcript")
 mitotip_("MitoTIP")
+mitotip_("MitoTIP")
 apogee_("APOGEE")
 gnomAD_("GnomAD")
 gnomAD_AF_("GnomAD AF")
@@ -90,6 +91,7 @@ is_mtdna_ -->|"true"| mtdna_transcript_
 is_mtdna_ -->|"false"| gnomAD_
 is_mtdna_ -->|"missing"| gnomAD_
 mtdna_transcript_ -->|"default"| sv_
+mtdna_transcript_ -->|"tRNA"| mitotip_
 mtdna_transcript_ -->|"tRNA"| mitotip_
 mtdna_transcript_ -->|"protein_coding"| apogee_
 mitotip_ -->|"true"| exit_lp_
