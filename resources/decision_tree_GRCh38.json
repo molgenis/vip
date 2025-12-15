@@ -289,13 +289,13 @@
         "value": 12.66
       },
       "outcomeTrue": {
-        "nextNode": "hmtvar_lp"
+        "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-        "nextNode": "hmtvar_lb"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "hmtvar"
+        "nextNode": "gnomAD"
       }
     },
     "apogee": {
@@ -315,63 +315,6 @@
       },
       "outcomeMissing": {
         "nextNode": "sv"
-      }
-    },
-    "hmtvar_lb": {
-      "label": "HmtVar LB/VUS",
-      "description": "HmtVar to determine LB or VUS",
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/hmtvar_DiseaseScore",
-        "operator": "<",
-        "value": 0.35
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lb"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_vus"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_lb"
-      }
-    },
-    "hmtvar": {
-      "label": "HmtVar",
-      "description": "HmtVar to determine LB, or LP",
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/hmtvar_DiseaseScore",
-        "operator": ">=",
-        "value": 0.35
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lp"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_lb"
-      },
-      "outcomeMissing": {
-        "nextNode": "sv"
-      }
-    },
-    "hmtvar_lp": {
-      "label": "HmtVar LP/VUS",
-      "description": "HmtVar to determine LP or VUS",
-      "type": "BOOL",
-      "query": {
-        "field": "INFO/CSQ/hmtvar_DiseaseScore",
-        "operator": ">=",
-        "value": 0.35
-      },
-      "outcomeTrue": {
-        "nextNode": "exit_lp"
-      },
-      "outcomeFalse": {
-        "nextNode": "exit_vus"
-      },
-      "outcomeMissing": {
-        "nextNode": "exit_lp"
       }
     },
     "gnomAD": {
