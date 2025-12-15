@@ -23,6 +23,7 @@ process annotate {
     vepPluginApogeePath = params.vcf.annotate[assembly].vep_plugin_apogee
     vepPluginClinVarPath = params.vcf.annotate[assembly].vep_plugin_clinvar
     vepPluginGnomAdPath = params.vcf.annotate[assembly].vep_plugin_gnomad
+    vepPluginHmtVarPath = params.vcf.annotate[assembly].vep_plugin_hmtvar
     vepPluginMitoTipPath = params.vcf.annotate[assembly].vep_plugin_mitotip
     vepPluginSpliceAiIndelPath = params.vcf.annotate[assembly].vep_plugin_spliceai_indel
     vepPluginSpliceAiSnvPath = params.vcf.annotate[assembly].vep_plugin_spliceai_snv

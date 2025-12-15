@@ -241,6 +241,8 @@ install_files() {
   data+=("d6bf19522fdcf67b7ef871e1cde1970e" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz" "")
   data+=("9a0930823b0739a50816664fe9cfce0c" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz.tbi" "")
   data+=("43858006bdf98145b6fd239490bd0478" "resources/GRCh38/hg38.phyloP100way.bw" "")
+  data+=("1c427de2e7f81caf73afbd50dd81cdf3" "resources/GRCh38/hmtvar_trna_scores.tsv.gz" "")
+  data+=("7e64d9d639fd1501cbef8c24e1e866df" "resources/GRCh38/hmtvar_trna_scores.tsv.gz.tbi" "")
   data+=("86d75a85add01f940c4d5abc4bd596b9" "resources/GRCh38/human_GRCh38_no_alt_analysis_set.trf.bed" "")
   data+=("0b414afe1a7a75e3d2b8cd423a7bae88" "resources/GRCh38/mitotip_scores_20251118.tsv.gz" "")
   data+=("fa5c660d13b028ccdb896d1e51f47d7c" "resources/GRCh38/mitotip_scores_20251118.tsv.gz.tbi" "")
