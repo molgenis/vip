@@ -56,7 +56,7 @@ sub run {
 	my $ref = $line[3];
 	my $alt = $line[4];
 	
-	# Get all the apogee records from apogee annotation file with matching chr and pos
+	# Get all the hmtvar records from hmtvar annotation file with matching chr and pos
 	my @data = @{$self->get_data($chr, $pos, $pos)};
 	
 	# return the first record with matching ref and alt
@@ -80,23 +80,7 @@ sub parse_data {
 		locus => $locus,
 		result => {
 			hmtvar_DiseaseScore => $disease_score
-		},
-		tier_of_pathogenicity => $patho_tier,
-		all_freq_h => $allfreqh,
-		report_patho => $patho_report,
-		conservation => $conservation,
-		heteroplasmy => $hl,
-		segreg_disease => $disease_seg,
-		histochem => $histochem,
-		biochem => $biochem,
-		cybrids => $cybrids,
-		single_fiber => $sfiber,
-		disease_phenotype => $disease_pheno,
-		notes => $notes,
-		pubmed_ids => $pubmedids,
-		mitomap_reported => $mitomap,
-		clinvar_reported => $clinvar,
-		omim_reported => $omim
+		}
 	};
 }
 
