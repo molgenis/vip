@@ -56,6 +56,10 @@ validate() {
     >&2 echo -e "error: input '${input}' does not exist"
     exit 2
   fi
+  if [[ ! -s "${input}" ]]; then
+    >&2 echo -e "error: input '${input}' is empty"
+    exit 2
+  fi
 
   if [[ -z "${output}" ]]; then
     >&2 echo -e "error: missing required -o / --output"
