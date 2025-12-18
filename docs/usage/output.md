@@ -1,5 +1,5 @@
 # Output
-[Click here for a live example](../vip_giab_hg001.html)
+[Click here for a live example](../vip_giab_hg002.html)
 
 After VIP completes successfully the path specified by `--output` contains content similar to:
 ```bash
