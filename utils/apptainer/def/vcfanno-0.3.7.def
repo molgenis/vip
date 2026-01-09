@@ -1,0 +1,19 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.22.1.sif
+
+%post
+    version_major=0
+    version_minor=3
+    version_patch=7
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
+
+    curl -L -o /usr/local/bin/vcfanno https://github.com/brentp/vcfanno/releases/download/v0.3.7/vcfanno_linux64
+    chmod +x /usr/local/bin/vcfanno
+
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
+%help
+    VCF anno.
