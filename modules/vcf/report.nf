@@ -32,8 +32,8 @@ process report {
     template = params.vcf.report.template
     crams = meta.crams ? meta.crams.collect { "${it.individual_id}=${it.cram}" }.join(",") : ""
     includeCrams = params.vcf.report.include_crams
-    hpoPath = params.vcf.annotate.vep_plugin_hpo
-    
+    hpoPath = params.hpo_phenotypic_abnormality
+
     configJsonStr = new File(params.vcf.report.config).getText('UTF-8').replaceFirst("\\{", "{\"vip\": {\"filter_field\": {\"type\": \"genotype\",\"name\": \"VIPC_S\"},\"params\":" + JsonOutput.toJson(params) + "},")
     
     probands = meta.probands.collect{ proband -> proband.individual_id }.join(",")
