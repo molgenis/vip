@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.sif
 
 %help
 	Apptainer container running Oracle OpenJDK 25 (JRE headless) on Alpine Linux

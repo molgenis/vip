@@ -1,0 +1,16 @@
+Bootstrap: scratch
+
+%help
+    Apptainer container running Alpine Linux
+ 
+%setup
+    version_major=3
+    version_minor=23
+    
+    alpine_minirootfs="alpine-minirootfs-${version_major}.${version_minor}-x86_64.tar.gz"
+    alpine_minirootfs_url="http://dl-cdn.alpinelinux.org/alpine/v${version_major}/releases/x86_64/${alpine_minirootfs}"
+    alpine_minirootfs_path="${APPTAINER_TMPDIR}/${alpine_minirootfs}"
+
+    curl -s -o "${alpine_minirootfs_path}" "${alpine_minirootfs_url}"
+    echo "0e5cc5702ad72a4e151f219976ba946d50161c3acce210ef3b122a529aba1270  ${alpine_minirootfs_path}" | sha256sum -c
+    tar xzf "${alpine_minirootfs_path}" -C "${APPTAINER_ROOTFS}" --exclude=./dev --exclude=./etc/hosts
