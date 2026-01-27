@@ -16,20 +16,30 @@ call_short_tandem_repeats () {
     args+=("straglr")
 
     ${CMD_STRAGLR} "${args[@]}"
+    rm straglr.vcf
 }
 
 index () {
-  # workaround for https://github.com/molgenis/vip/issues/471
-  ${CMD_BCFTOOLS} reheader --fai "!{paramReferenceFai}" --temp-prefix . --threads "!{task.cpus}" "straglr.vcf" | ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}"
-
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
 
-  rm straglr.vcf
+tsv2vcf() {
+  local args=()
+  args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
+  args+=("-XX:ParallelGCThreads=2")
+  args+=("-Xmx!{task.memory.toMega() - 512}m")
+  args+=("-jar" "/opt/straglr-tsv2vcf/lib/straglr-tsv2vcf.jar")
+  args+=("--input" "FIXME")
+
+  args+=("--output" "!{vcfOut}")
+
+  ${CMD_STRAGLR_TSV2VCF} java "${args[@]}"
 }
 
 main() {
     call_short_tandem_repeats
+    tsv2vcf
     index
 }
 
