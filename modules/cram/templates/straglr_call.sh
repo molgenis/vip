@@ -29,7 +29,7 @@ tsv2vcf() {
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
-  args+=("-jar" "/opt/straglr-tsv2vcf/lib/straglr-tsv2vcf.jar")
+  args+=("-jar" "/opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar")
   args+=("--input" "FIXME")
 
   args+=("--output" "!{vcfOut}")
