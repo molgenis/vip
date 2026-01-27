@@ -30,8 +30,15 @@ tsv2vcf() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar")
-  args+=("--input" "FIXME")
-
+  args+=("--input" straglr.tsv)
+  args+=("--loci" "!{paramLoci}")
+  args+=("--reference" "!{paramReference}")
+  if [ "!{sampleSex}" == "male" ]; then
+    args+=("--ploidy-chr" "chrX,chrY")
+  else
+    args+=("--ploidy-chr" "chrY") #female or unknown, set chrY to haploid anyway
+  fi
+  args+=("--sample" "!{sampleId}")
   args+=("--output" "!{vcfOut}")
 
   ${CMD_STRAGLR_TSV2VCF} java "${args[@]}"
