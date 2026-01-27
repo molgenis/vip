@@ -196,7 +196,7 @@ install_files() {
   data+=("ccbb1e1887f11d9e3cda1ae8bf2d67da" "images/seqtk-1.4_v2.sif" "")
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
   data+=("65d4985eba2f1ef6754d82a436c7f088" "images/straglr-1.5.6.sif" "")
-  data+=("65d4985eba2f1ef6754d82a436c7f088" "images/straglr-tsv2vcf-1.0.0" "")
+  data+=("35a60d7572ec983f2f7f86aeb581223f" "images/straglr-tsv2vcf-1.0.0.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("43d9b86aa155bd74a1339dd1fd2f6994" "images/vcf-decision-tree-6.0.0.sif" "")
   data+=("0d355489bd5528b878580154cc7d972a" "images/vcf-inheritance-matcher-4.0.0.sif" "")
