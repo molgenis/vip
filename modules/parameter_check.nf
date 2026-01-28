@@ -52,31 +52,3 @@ def assertAllKeysExist(
             }
         }
     }
-
-
-def mergeMaps(
-        Map<String, Object> target,
-        Map<String, Object> source) {
-
-    source.forEach((key, value) -> {
-        if (!target.containsKey(key)) {
-            target.put(key, value);
-            return;
-        }
-
-        Object existing = target.get(key);
-
-        // Both values are maps → recurse
-        if (existing instanceof Map && value instanceof Map) {
-            mergeMaps(
-                (Map<String, Object>) existing,
-                (Map<String, Object>) value
-            );
-        } else {
-            // Conflict resolution strategy
-            target.put(key, value); // overwrite
-        }
-    });
-
-    return target;
-}
