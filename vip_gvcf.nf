@@ -9,6 +9,7 @@ include { scatter; validateGroup } from './modules/utils'
 include { merge } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { bed_filter } from './modules/vcf/bed_filter'
+include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
 
 /**
  * input:  [project, sample, ...]
@@ -38,6 +39,7 @@ workflow {
   def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateGenomeVcfParams(assemblies)
+  validateParameters(params)
 
   // run workflow for each sample in each project
   Channel.from(projects)
@@ -134,4 +136,10 @@ def validate(projects) {
       }
     }
   }
+}
+
+def validateParameters(params) {
+  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_gvcf.config");
+  acceptedParameters = addCliParameters(acceptedParameters);
+  assertAllKeysExist(params, acceptedParameters, "");
 }

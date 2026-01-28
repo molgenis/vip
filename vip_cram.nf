@@ -11,6 +11,7 @@ include { cnv; validateCallCnvParams } from './subworkflows/call_cnv'
 include { concat_vcf } from './modules/cram/concat_vcf'
 include { coverage } from './modules/cram/coverage'
 include { bed_filter } from './modules/vcf/bed_filter'
+include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
 
 /**
  * input:  [project, sample, ...]
@@ -105,6 +106,7 @@ workflow {
   def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateCramParams(assemblies)
+  validateParameters(params)
 
   // run workflow for each sample in each project
   Channel.from(projects)
@@ -173,4 +175,10 @@ def parseSampleSheet(params) {
 
 	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
   return projects.collect { project -> [*:project, assembly: params.assembly] }
+}
+
+def validateParameters(params) {
+  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_cram.config");
+  acceptedParameters = addCliParameters(acceptedParameters);
+  assertAllKeysExist(params, acceptedParameters, "");
 }

@@ -5,6 +5,7 @@ include { fastp; fastp_paired_end } from './modules/fastq/fastp'
 include { filter_reads } from './modules/fastq/adaptive_sampling'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
+include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
 
 /**
  * input:  [project, sample [...      ], ...]
@@ -62,6 +63,7 @@ workflow fastq {
 workflow {
   def projects = parseSampleSheet(params)
   validateFastqParams([params.assembly])
+  validateParameters(params)
 
   // run fastq workflow for each sample in each project
   Channel.from(projects)
@@ -132,4 +134,10 @@ def validate(projects) {
       if (sample.adaptive_sampling != null && (!sample.fastq_r1.isEmpty() || !sample.fastq_r2.isEmpty())) exit 1, "'adaptive_sampling' column cannot be combined with 'fastq_r1' and/or 'fastq_r2'."
     }
   }
+}
+
+def validateParameters(params) {
+  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_fastq.config");
+  acceptedParameters = addCliParameters(acceptedParameters);
+  assertAllKeysExist(params, acceptedParameters, "");
 }
