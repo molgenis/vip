@@ -7,8 +7,8 @@ From: sif/build/openjdk-25.sif
 
 %post
     version_major=1
-    version_minor=0
-    version_patch=1
+    version_minor=1
+    version_patch=0
 
     # install
     apk update
@@ -16,7 +16,7 @@ From: sif/build/openjdk-25.sif
 
     mkdir -p /opt/straglr-tsv2vcf/lib
     curl -Ls -o /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar "https://github.com/molgenis/straglr-tsv2vcf/releases/download/v${version_major}.${version_minor}.${version_patch}/straglrTsv2Vcf.jar"
-    echo "825c3353e7ab3d3d9f48577ebd00b40c15512a4b693a6cd45419416bad01989b  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
+    echo "sha256:8fabfc3c8ade8e0313516836580dea439cb92f99a1d75d5caf413d6e7e149851  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

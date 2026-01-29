@@ -10,7 +10,6 @@ call_short_tandem_repeats () {
     fi
     args+=("--min_support" "!{paramMinSupport}")
     args+=("--min_cluster_size" "!{paramMinClusterSize}")
-    args+=("--genotype_in_size")
     args+=("!{cram}")
     args+=("!{paramReference}")
     args+=("straglr")
