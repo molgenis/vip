@@ -6,14 +6,10 @@ def readConfigParams(String filePath) {
 }
 
 
-//Adds the VIP CLI options as these are also some (such as input and output) in the default params object.
+//Adds some CLI options (input and output) as these also end up in the default params object.
 def addCliParameters(Map<String, Object> paramsMap) {
-    //paramsMap.put("workflow", "workflowToRun");
     paramsMap.put("input", "path/to/samplesheet");
     paramsMap.put("output", "path/to/outputdir");
-    //paramsMap.put("config", "path/to/config");
-    //paramsMap.put("profile", "profileToRunWith");
-    //paramsMap.put("resume", "toResumePreviousWorkflow");
     return paramsMap;
 }
 
