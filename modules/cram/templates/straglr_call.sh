@@ -31,7 +31,7 @@ tsv2vcf() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar")
-  args+=("--input" ""!{tsvOut}")
+  args+=("--input" "!{tsvOut}")
   args+=("--loci" "!{paramLoci}")
   args+=("--reference" "!{paramReference}")
   if [ "!{sampleSex}" == "male" ]; then
