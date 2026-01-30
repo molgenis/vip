@@ -23,7 +23,7 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [cuteSV](https://github.com/tjiangHIT/cuteSV)
 - [Mosdepth](https://github.com/brentp/mosdepth)
 - [Spectre](https://github.com/fritzsedlazeck/Spectre)
-- [Straglr](https://github.com/philres/straglr)
+- [Straglr](https://github.com/bcgsc/straglr)
 - [Stranger](https://github.com/Clinical-Genomics/stranger)
 - [fastp](https://github.com/OpenGene/fastp)
 - [Whatshap](https://github.com/whatshap/whatshap/)

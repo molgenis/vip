@@ -1,25 +1,10 @@
 {
   "format": {
-    "ADFL": {
-      "label": "Flanking reads",
-      "description": "Number of flanking reads consistent with the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
-    },
-    "ADIR": {
-      "label": "In-repeat reads",
-      "description": "Number of in-repeat reads consistent with the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
-    },
-    "ADSP": {
+    "RU_SPAN": {
       "label": "Spanning reads",
       "description": "Number of spanning reads consistent with the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
+      "numberType": "PER_ALT",
+      "type": "INTEGER"
     },
     "LC": {
       "label": "Coverage",
@@ -27,20 +12,6 @@
       "numberType": "NUMBER",
       "numberCount": 1,
       "type": "FLOAT"
-    },
-    "REPCI": {
-      "label": "Repeat CI",
-      "description": "Confidence interval for the number of repeat units spanned by the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
-    },
-    "REPCN": {
-      "label": "Repeats",
-      "description": "Number of repeat units spanned by the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
     },
     "RNC": {
       "label": "Reason No Call",
@@ -89,6 +60,12 @@
           "description": "Mitochondrial"
         }
       }
+    },
+    "RU_CI": {
+      "label": "Repeat CI",
+      "description": "Confidence interval for the number of repeat units spanned by the allele",
+      "numberType": "PER_ALT",
+      "type": "STRING"
     },
     "VIPC_S": {
       "label": "VIP sample classification",

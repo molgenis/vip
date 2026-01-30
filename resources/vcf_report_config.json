@@ -305,16 +305,16 @@
           "label": "Father"
         },
         {
-          "type": "genotype",
-          "name": "REPCI"
+          "type": "composed",
+          "name": "confidenceInterval"
         },
         {
           "type": "genotype",
           "name": "LC"
         },
         {
-          "type": "genotype",
-          "name": "ADSP"
+          "type": "composed",
+          "name": "spanningReads"
         },
         {
           "type": "info",

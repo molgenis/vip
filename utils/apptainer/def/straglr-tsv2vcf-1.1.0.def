@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: sif/build/openjdk-25.sif
+
+%help
+    Command-line application to convert straglr tsv output to vcf.
+    Usage: java -jar /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar
+
+%post
+    version_major=1
+    version_minor=1
+    version_patch=0
+
+    # install
+    apk update
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/straglr-tsv2vcf/lib
+    curl -Ls -o /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar "https://github.com/molgenis/straglr-tsv2vcf/releases/download/v${version_major}.${version_minor}.${version_patch}/straglrTsv2Vcf.jar"
+    echo "8fabfc3c8ade8e0313516836580dea439cb92f99a1d75d5caf413d6e7e149851  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
