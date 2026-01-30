@@ -227,6 +227,9 @@ vep() {
   if [ -n "!{vepPluginMitoTipPath}" ]; then
     args+=("--plugin" "MitoTip,!{vepPluginMitoTipPath}")
   fi
+  if [ -n "!{vepPluginHmtVarPath}" ]; then
+    args+=("--plugin" "HmtVar,!{vepPluginHmtVarPath}")
+  fi
   
   ${CMD_VEP} "${args[@]}"
 }

@@ -57,6 +57,9 @@ report() {
   if [ -n "!{genesPath}" ]; then
     args+=("--genes" "!{genesPath}")
   fi
+  if [ -n "!{hpoPath}" ]; then
+    args+=("--hpo" "!{hpoPath}")
+  fi
   if [ -n "!{template}" ]; then
     args+=("--template" "!{template}")
   fi

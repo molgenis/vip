@@ -232,6 +232,7 @@ def parseValueFile(token, col, rootDir) {
     fileValue = relative ? file(new File(value, rootDir).getPath()) : file(value)
     if(!fileValue.exists()) throw new IllegalArgumentException(relative ? "file '${token}' in directory '${rootDir}' does not exist" : "file '${token}' does not exist")
     if(!fileValue.isFile()) throw new IllegalArgumentException("file '${token}' is not a file")
+    if(fileValue.size() == 0) throw new IllegalArgumentException("file '${token}' is empty")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
   }
   return fileValue

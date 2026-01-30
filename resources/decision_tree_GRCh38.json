@@ -284,18 +284,18 @@
       "description": "MitoTIP score",
       "type": "BOOL",
       "query": {
-          "field": "INFO/CSQ/mitoTip_Score",
-          "operator": ">=",
-          "value": 12.66
+        "field": "INFO/CSQ/mitoTip_Score",
+        "operator": ">=",
+        "value": 12.66
       },
       "outcomeTrue": {
-          "nextNode": "exit_lp"
+        "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-          "nextNode": "exit_lb"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-          "nextNode": "sv"
+        "nextNode": "sv"
       }
     },
     "apogee": {
@@ -307,14 +307,14 @@
           "operator": ">=",
           "value": 0.5
       },
-      "outcomeTrue":{
-          "nextNode": "exit_lp"
+      "outcomeTrue": {
+        "nextNode": "exit_lp"
       },
       "outcomeFalse": {
-          "nextNode": "exit_lb"
+        "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-          "nextNode": "sv"
+        "nextNode": "sv"
       }
     },
     "gnomAD": {

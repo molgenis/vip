@@ -20,6 +20,7 @@ include { report } from './modules/vcf/report'
 include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postGroupTupleConcat; getProbandHpoIds; areProbandHpoIdsIndentical } from './modules/vcf/utils'
 include { gado } from './modules/vcf/gado'
 include { bed_filter } from './modules/vcf/bed_filter'
+include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
 
 /**
  * input: [project, vcf, chunk (optional), ...]
@@ -235,6 +236,7 @@ workflow {
   def projects = parseSampleSheet(params)
   def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
+  validateParameters(params);
 
   // preprocess vcfs and crams in parallel
   Channel.from(projects)
@@ -426,4 +428,10 @@ def validate(projects) {
       }
     }
   }
+}
+
+def validateParameters(params) {
+  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_vcf.config");
+  acceptedParameters = addCliParameters(acceptedParameters);
+  assertAllKeysExist(params, acceptedParameters, "");
 }

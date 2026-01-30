@@ -7,7 +7,7 @@ SCRIPT_NAME="$(basename "$0")"
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 VIP_DIR_DATA="${VIP_DIR_DATA:-"${VIP_DIR}/../data"}"
-VIP_VERSION="8.4.5"
+VIP_VERSION="9.0.0"
 
 display_version() {
   echo -e "${VIP_VERSION}"
@@ -54,6 +54,10 @@ validate() {
   fi
   if [[ ! -f "${input}" ]]; then
     >&2 echo -e "error: input '${input}' does not exist"
+    exit 2
+  fi
+  if [[ ! -s "${input}" ]]; then
+    >&2 echo -e "error: input '${input}' is empty"
     exit 2
   fi
 
@@ -137,7 +141,7 @@ execute_workflow() {
   fi
   local envStrict="true"
 
-  local -r nextflow_version="24.10.6"
+  local -r nextflow_version="25.10.2"
 
   local args=()
   args+=("-C" "${configs}")

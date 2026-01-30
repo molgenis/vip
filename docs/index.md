@@ -17,9 +17,9 @@ Visit <a href="https://vip.molgeniscloud.org/">https://vip.molgeniscloud.org/</a
 !!! tip
 Article published in <a href="https://doi.org/10.1093/nargab/lqaf087">NAR Genomics and Bioinformatics</a>
 
-[Click here for a live example](vip_giab_hg001.html)
+[Click here for a live example](vip_giab_hg002.html)
 
-![Example report](img/report_example.png)]
+![Example report](img/report_example.png)
 
 *Above: report example*
 
