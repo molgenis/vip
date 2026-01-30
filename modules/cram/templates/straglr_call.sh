@@ -33,9 +33,7 @@ tsv2vcf() {
   args+=("--loci" "!{paramLoci}")
   args+=("--reference" "!{paramReference}")
   if [ "!{sampleSex}" == "male" ]; then
-    args+=("--haploid_contigs" "chrX,chrY")
-  else
-    args+=("--haploid_contigs" "chrY") #female or unknown, set chrY to haploid anyway
+    args+=("--haploid_contigs" "!{haploidContigsMale}")
   fi
   args+=("--sample" "!{sampleId}")
   args+=("--output" "!{vcfOut}")

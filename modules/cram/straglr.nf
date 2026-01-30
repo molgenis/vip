@@ -15,6 +15,7 @@ process straglr_call {
     paramMinClusterSize = params.str.straglr.min_cluster_size
     sampleId = meta.sample.individual_id
     sampleSex = meta.sample.sex != null ? meta.sample.sex : ""
+    haploidContigsMale = params.str.straglr.tsv2vcf.haploid_contigs_male
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_str.vcf.gz"
     tsvOut = "straglr.tsv"

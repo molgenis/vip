@@ -196,7 +196,7 @@ install_files() {
   data+=("ccbb1e1887f11d9e3cda1ae8bf2d67da" "images/seqtk-1.4_v2.sif" "")
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
   data+=("65d4985eba2f1ef6754d82a436c7f088" "images/straglr-1.5.6.sif" "")
-  data+=("?" "images/straglr-tsv2vcf-1.1.0.sif" "")
+  data+=("43bff4fa77e0c464b85ca95b3a2dc45e" "images/straglr-tsv2vcf-1.1.0.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("43d9b86aa155bd74a1339dd1fd2f6994" "images/vcf-decision-tree-6.0.0.sif" "")
   data+=("0d355489bd5528b878580154cc7d972a" "images/vcf-inheritance-matcher-4.0.0.sif" "")
@@ -260,7 +260,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("cec7f2f720e0870ffead7e8fe0a5e258" "resources/vip-report-template-v8.0.2.html" "")
+  data+=("0172d43de6a0efbab577c3b550638a26" "resources/vip-report-template-v8.3.0.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do
