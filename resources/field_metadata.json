@@ -28,20 +28,6 @@
       "numberCount": 1,
       "type": "FLOAT"
     },
-    "REPCI": {
-      "label": "Repeat CI",
-      "description": "Confidence interval for the number of repeat units spanned by the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
-    },
-    "REPCN": {
-      "label": "Repeats",
-      "description": "Number of repeat units spanned by the allele",
-      "numberType": "NUMBER",
-      "numberCount": 1,
-      "type": "STRING"
-    },
     "RNC": {
       "label": "Reason No Call",
       "description": "Reason for No Call in GT: . = n/a, M = Missing data, P = Partial data, I = gVCF input site is non-called, D = insufficient Depth of coverage, - = unrepresentable overlapping deletion, L = Lost/unrepresentable allele (other than deletion), U = multiple Unphased variants present, O = multiple Overlapping variants present, 1 = site is Monoallelic, no assertion about presence of REF or ALT allele",
