@@ -20,7 +20,7 @@ listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
 | GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set                                                                                       |
 | GRCh38.reference.fastaFai     | *installed* |                                                                                                                                   |
 | GRCh38.reference.fastaGzi     | *installed* |                                                                                                                                   |
-| hpo_phenotypic_abnormality    | *installed* | hpo_20240813_phenotypic_abnormality                                                                                               |
+| hpo_phenotypic_abnormality    | *installed* | TSV file containing HPO terms that are children of HP:000018 "Phenotypic abnormality" with their label and description            |
 | T2T.chain.GRCh38              | *installed* | chain file to convert T2T to GRCh38 data                                                                                          |
 | T2T.reference.fasta           |             |                                                                                                                                   |
 | T2T.reference.fastaFai        |             |                                                                                                                                   |
