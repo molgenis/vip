@@ -3,9 +3,9 @@ set -euo pipefail
 
 get_stop_receiving_read_ids() {
   # For files produced by MinKnow < 26:
-  { grep stop_receiving "!{adaptiveSamplingCsv}" || true; } | cut -d , -f5 >> accepted_read_ids.txt
+  { grep stop_receiving "!{adaptiveSamplingCsv}" || true; } | cut -d , -f 5 >> accepted_read_ids.txt
   # For files produced by MinKnow > 26:
-  { grep sequence "!{adaptiveSamplingCsv}" || true; } | cut -d , -f5 >> accepted_read_ids.txt
+  { grep sequence "!{adaptiveSamplingCsv}" || true; } | cut -d , -f 1 >> accepted_read_ids.txt
 }
 
 concat() {
