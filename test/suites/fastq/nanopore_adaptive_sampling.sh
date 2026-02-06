@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "${TEST_UTILS_DIR}/utils.sh"
 
-# code to generate adaptive_sampling.csv
+# code to generate old style (MinKnow < 26) adaptive_sampling.csv
 # zgrep "^@m54238" m54238_180628_014238_s0_10000.Q20.part_001.fastq.gz | cut -c2- | awk 'BEGIN { FS=","; OFS="," } NR==1 { printf "batch_time,read_number,channel,num_samples,read_id,sequence_length,decision\n" } NR>1 { printf ",,,,%s,,%s\n", $1, (NR%2==0 ? "stop_receiving" : "unblock") }' > m54238_180628_014238_s0_10000.Q20.adaptive_sampling.csv
 # zgrep "^@m54238" m54238_180628_014238_s0_10000.Q20.part_002.fastq.gz | cut -c2- | awk 'BEGIN { FS=","; OFS="," } NR>1 { printf ",,,,%s,,%s\n", $1, (NR%2==0 ? "stop_receiving" : "unblock") }' >> m54238_180628_014238_s0_10000.Q20.adaptive_sampling.csv
 
