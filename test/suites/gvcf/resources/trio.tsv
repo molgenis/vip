@@ -1,4 +1,4 @@
-family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	gvcf
-FAM0	PROBAND0	FATHER0	MOTHER0	male	true	true	${TEST_RESOURCES_DIR}/trio_proband.g.vcf
-FAM0	FATHER0			male	false		${TEST_RESOURCES_DIR}/trio_father.g.vcf
-FAM0	MOTHER0			female	false		${TEST_RESOURCES_DIR}/trio_mother.g.vcf
+family_id	individual_id	paternal_id	maternal_id	sex	affected	proband	gvcf	cram
+FAM0	HG002	HG003	HG004	male	true	true	${VIP_DIR_DATA}/test/resources/trio_proband.g.vcf.gz	${VIP_DIR_DATA}/test/resources/trio_proband.cram
+FAM0	HG003			male	false		${VIP_DIR_DATA}/test/resources/trio_father.g.vcf.gz	${VIP_DIR_DATA}/test/resources/trio_father.cram
+FAM0	HG004			female	false		${VIP_DIR_DATA}/test/resources/trio_mother.g.vcf.gz	${VIP_DIR_DATA}/test/resources/trio_mother.cram
