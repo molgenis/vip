@@ -11,8 +11,14 @@ process straglr_call {
     paramReference = params[meta.project.assembly].reference.fasta
     paramReferenceFai = params[meta.project.assembly].reference.fastaFai
     paramLoci = params.str.straglr[meta.project.assembly].loci
+    paramExcludeRegionsFile = params.str.straglr[meta.project.assembly].exclude_regions_file
     paramMinSupport = params.str.straglr.min_support
     paramMinClusterSize = params.str.straglr.min_cluster_size
+    paramMode = params.str.straglr.mode
+    paramMinimalStrLength = params.str.straglr.min_str_length
+    paramMaximalStrLength = params.str.straglr.max_str_length
+    paramMinimalInsertSize = params.str.straglr.min_insert_size
+
     sampleId = meta.sample.individual_id
     sampleSex = meta.sample.sex != null ? meta.sample.sex : ""
     haploidContigsMale = params.str.straglr.tsv2vcf.haploid_contigs_male
