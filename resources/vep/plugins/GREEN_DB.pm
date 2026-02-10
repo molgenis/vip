@@ -69,8 +69,7 @@ sub get_scores {
   if($start <= $end){
     @data = @{$self->get_data($chr, $start, $end)};
   }else{
-    #structural variant on the reverse strand
-    @data = @{$self->get_data($chr, $end, $start)};
+    die "ERROR: Encountered an end position before the stop position";
   }
 
   my $size = @data;
@@ -83,7 +82,7 @@ sub get_scores {
   #if data is present
   if($size >= 1){
     for my $i (0 .. $#data) {
-      my @line = split("\t", $data[0]);
+      my @line = split("\t", $data[$i]);
       #if no value present for the type of region (line[4]), or the current line has a higher score (line[6]) for this type of region, add/overwrite it in the result.
       if(!$values->{$line[4]} || $line[8] > $values->{$line[4]}){
         if($line[8] ne "NA"){
