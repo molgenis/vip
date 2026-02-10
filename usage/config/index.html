@@ -523,17 +523,22 @@ Both the zipped and unzipped fasta should have an index.</p>
 <tr>
 <td>str.straglr.min_support</td>
 <td>2</td>
-<td>minimum number of support reads for an expansion to be captured in genome-scan, see <a href="https://github.com/philres/straglr">here</a></td>
+<td>minimum number of support reads for an expansion to be captured in genome-scan, see <a href="https://github.com/bcgsc/straglr">here</a></td>
 </tr>
 <tr>
 <td>str.straglr.min_cluster_size</td>
 <td>2</td>
-<td>minimum number of reads required to constitute a cluster (allele) in GMM clustering, see <a href="https://github.com/philres/straglr">here</a></td>
+<td>minimum number of reads required to constitute a cluster (allele) in GMM clustering, see <a href="https://github.com/bcgsc/straglr">here</a></td>
 </tr>
 <tr>
 <td>str.straglr.GRCh38.loci</td>
 <td><em>installed</em></td>
-<td>from <a href="https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed">here</a></td>
+<td>tsv adapted from <a href="https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed">here</a>, renames to tsv and with '-' repeat unit to call any repeat, added a column with the expected RU for matching against the called RU afterwards</td>
+</tr>
+<tr>
+<td>str.straglr.tsv2vcf.haploid_contigs_male</td>
+<td>chrX,chrY,chrY_KI270740v1_random</td>
+<td>List of contigs of the sex chromosome, this information is needed to correctly determine the genotype of the STR call.</td>
 </tr>
 <tr>
 <td>sv.cutesv.batches</td>

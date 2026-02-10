@@ -152,7 +152,7 @@ The following sections provide an overview of the steps of each of these workflo
 <li>Generate coverage metrics using <a href="https://github.com/brentp/mosdepth">MosDepth</a>, using the the <code>regions</code> file provided in the sample sheet if present. If no regions file is provided a default <code>.bed</code> file will be used containing all exons in case of WES data, and all genes in case of WGS data.</li>
 <li>Discover short tandem repeats and publish as intermediate result.<ol>
 <li>Using <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a> for Illumina short read data.</li>
-<li>Using this <a href="https://github.com/molgenis/straglr">fork of Straglr</a> for PacBio and Nanopore long read data, this is a fork of this fork(https://github.com/philres/straglr) and is chosen over the original <a href="https://github.com/bcgsc/straglr">Straglr</a> because of the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.</li>
+<li>Using <a href="https://github.com/bcgsc/straglr">Straglr</a> tsv output for PacBio and Nanopore long read data, which is converted to VCF using <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a>,the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.</li>
 </ol>
 </li>
 <li>Discover copy number variants for for PacBio and Nanopore long read data using <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a> data and publish as intermediate result.</li>

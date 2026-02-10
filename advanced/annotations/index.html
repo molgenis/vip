@@ -197,12 +197,6 @@ your output file depending on the sample sheet content and configuration.</p>
 <tbody>
 <tr>
 <td>FILTER</td>
-<td>LowDepth</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>The overall locus depth is below 10x or number of reads spanning one or both breakends is below 5</td>
-</tr>
-<tr>
-<td>FILTER</td>
 <td>MONOALLELIC</td>
 <td><a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a></td>
 <td>Site represents one ALT allele in a region with multiple variants that could not be unified into non-overlapping multi-allelic sites</td>
@@ -210,7 +204,7 @@ your output file depending on the sample sheet content and configuration.</p>
 <tr>
 <td>FILTER</td>
 <td>PASS</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">Straglr</a></td>
 <td>All filters passed</td>
 </tr>
 <tr>
@@ -238,30 +232,6 @@ your output file depending on the sample sheet content and configuration.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>FORMAT/AD</td>
-<td>integer list</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Allelic depths for the ref and alt alleles in the order listed</td>
-</tr>
-<tr>
-<td>FORMAT/ADFL</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Number of flanking reads consistent with the allele</td>
-</tr>
-<tr>
-<td>FORMAT/ADIR</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Number of in-repeat reads consistent with the allele</td>
-</tr>
-<tr>
-<td>FORMAT/ADSP</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Number of spanning reads consistent with the allele</td>
-</tr>
 <tr>
 <td>FORMAT/CD</td>
 <td>float list</td>
@@ -295,7 +265,7 @@ your output file depending on the sample sheet content and configuration.</p>
 <tr>
 <td>FORMAT/GT</td>
 <td>string</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Genotype</td>
 </tr>
 <tr>
@@ -312,8 +282,8 @@ your output file depending on the sample sheet content and configuration.</p>
 </tr>
 <tr>
 <td>FORMAT/LC</td>
-<td>float</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Locus coverage</td>
 </tr>
 <tr>
@@ -329,28 +299,46 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Phase set identifier</td>
 </tr>
 <tr>
-<td>FORMAT/REPCI</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Confidence interval for REPCN</td>
-</tr>
-<tr>
-<td>FORMAT/REPCN</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Number of repeat units spanned by the allele</td>
-</tr>
-<tr>
 <td>FORMAT/RNC</td>
 <td>character list</td>
 <td></td>
 <td>Reason for No Call in GT: . = n/a, M = Missing data, P = Partial data, I = gVCF input site is non-called, D = insufficient Depth of coverage, - = unrepresentable overlapping deletion, L = Lost/unrepresentable allele (other than deletion), U = multiple Unphased variants present, O = multiple Overlapping variants present, 1 = site is Monoallelic, no assertion about presence of REF or ALT allele</td>
 </tr>
 <tr>
-<td>FORMAT/SO</td>
+<td>FORMAT/RU_CALL</td>
 <td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Type of reads that support the allele; can be SPANNING, FLANKING, or INREPEAT meaning that the reads span, flank, or are fully contained in the repeat</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>Most frequent actual repeat motif</td>
+</tr>
+<tr>
+<td>FORMAT/RU_CI</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>95% confidence interval per allele. 'NA' if less than 2 reads were present.</td>
+</tr>
+<tr>
+<td>FORMAT/RU_MATCH</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>RU call matches catalog (allowing shift/IUPAC, 1= match, 0 = mismatch</td>
+</tr>
+<tr>
+<td>FORMAT/RU_NR</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>Number of repeat units per allele.</td>
+</tr>
+<tr>
+<td>FORMAT/RU_SEEN</td>
+<td>string</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>All RUs encountered with read counts</td>
+</tr>
+<tr>
+<td>FORMAT/RU_SPAN</td>
+<td>integer</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>Number of spanning reads per allele.</td>
 </tr>
 <tr>
 <td>FORMAT/VI</td>
@@ -476,7 +464,7 @@ your output file depending on the sample sheet content and configuration.</p>
 <tr>
 <td>INFO/END</td>
 <td>integer</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>End position of the structural variant</td>
 </tr>
 <tr>
@@ -522,40 +510,16 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Number of read support this record</td>
 </tr>
 <tr>
-<td>INFO/REF</td>
-<td>integer</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Reference copy number</td>
-</tr>
-<tr>
 <td>INFO/REPID</td>
 <td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Repeat identifier as specified in the variant catalog</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>Locus identifier.</td>
 </tr>
 <tr>
-<td>INFO/RL</td>
-<td>integer</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Reference length in bp</td>
-</tr>
-<tr>
-<td>INFO/RNAMES</td>
-<td>string list</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
-<td>Supporting read names of SVs (comma separated)</td>
-</tr>
-<tr>
-<td>INFO/RU</td>
+<td>INFO/RU_CAT</td>
 <td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Repeat unit in the reference orientation</td>
-</tr>
-<tr>
-<td>INFO/RUMATCH</td>
-<td>boolean</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Flag indicating if the called repeat unit matched the repeat unit in the loci bed file</td>
+<td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td>Catalog repeat motif</td>
 </tr>
 <tr>
 <td>INFO/Source</td>
@@ -614,7 +578,7 @@ your output file depending on the sample sheet content and configuration.</p>
 <tr>
 <td>INFO/SVTYPE</td>
 <td>string</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr">Straglr</a></td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Type of copy number variant</td>
 </tr>
 <tr>
@@ -628,12 +592,6 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>float</td>
 <td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
 <td>Standard deviation of number of repeat unit copies in population</td>
-</tr>
-<tr>
-<td>INFO/VARID</td>
-<td>string</td>
-<td><a href="https://github.com/molgenis/straglr">Straglr</a></td>
-<td>Variant identifier as specified in the variant catalog</td>
 </tr>
 <tr>
 <td>INFO/VIPC_S</td>
