@@ -195,7 +195,8 @@ install_files() {
   data+=("9a4b685b26744113d3ea0a3904c02706" "images/samtools-1.17-patch1.sif" "")
   data+=("ccbb1e1887f11d9e3cda1ae8bf2d67da" "images/seqtk-1.4_v2.sif" "")
   data+=("4d58cc7a4e3e497a245095a62562e27e" "images/spectre-0.2.1-patched_v2.sif" "")
-  data+=("f17512262ce33e50ca920163011e9ea3" "images/straglr-1.4.5-vip-v2.sif" "")
+  data+=("65d4985eba2f1ef6754d82a436c7f088" "images/straglr-1.5.6.sif" "")
+  data+=("954a8feb577132d19680515a70e5deae" "images/straglr-tsv2vcf-1.2.0.sif" "")
   data+=("8d55b74c7f27785824874bca5a88ffd2" "images/stranger-0.9.3.sif" "")
   data+=("43d9b86aa155bd74a1339dd1fd2f6994" "images/vcf-decision-tree-6.0.0.sif" "")
   data+=("0d355489bd5528b878580154cc7d972a" "images/vcf-inheritance-matcher-4.0.0.sif" "")
@@ -218,7 +219,7 @@ install_files() {
   data+=("7aae5033717425b26c454865a5fd30bc" "resources/GRCh38/apogee_scores_20251118.tsv.gz" "")
   data+=("2a2d3dfdc7d7d412d3d2203db154c289" "resources/GRCh38/apogee_scores_20251118.tsv.gz.tbi" "")
   data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2_v6.ubj" "")
-  data+=("03d4fb2f5fe500daa77c54455626f8f5" "resources/GRCh38/clinical_repeats.bed" "")
+  data+=("cd2ec9dfb12669f57d58aeb413d35966" "resources/GRCh38/clinical_repeats-20260127.tsv" "")
   data+=("d3ae8978ce5e593f7dac78b9a52cad05" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz" "")
   data+=("cc5e3a837a770aede91cfb7502e31769" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz.tbi" "")
   data+=("c3197ab5a9e6a6e3429d611149b4dedd" "resources/GRCh38/default_exon_20250303.bed" "")
@@ -261,7 +262,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("7138e76a38d6f67935699d06082ecacf" "resources/vep/cache/homo_sapiens_refseq_vep_111_GRCh38.tar.gz" "postprocess_vep")
-  data+=("369d18b7ebb0125d7e78e14b1e557a22" "resources/vip-report-template-v8.2.2.html" "")
+  data+=("3d34b42ac8f0a4d01192cf7867d9d19a" "resources/vip-report-template-v8.3.1.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do

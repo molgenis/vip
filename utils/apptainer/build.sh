@@ -77,8 +77,10 @@ main() {
 
   local images=()
   images+=("build/alpine-3.20.3") # deprecated
-  images+=("build/alpine-3.22.1")
-  images+=("build/openjdk-21")
+  images+=("build/alpine-3.22.1") # deprecated
+  images+=("build/alpine-3.23.2")
+  images+=("build/openjdk-21") # deprecated
+  images+=("build/openjdk-25")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.20")
   images+=("annotsv-3.4.6")
@@ -96,7 +98,8 @@ main() {
   images+=("seqtk-1.4_v2")
   images+=("spectre-0.2.1-patched_v2")
   images+=("stranger-0.9.3")
-  images+=("straglr-1.4.5-vip-v2")
+  images+=("straglr-1.5.6")
+  images+=("straglr-tsv2vcf-1.2.0")
   images+=("vcf-decision-tree-6.0.0")
   images+=("vcf-inheritance-matcher-4.0.0")
   images+=("vcf-report-8.2.0")
