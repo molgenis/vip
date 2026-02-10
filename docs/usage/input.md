@@ -54,7 +54,7 @@ specific columns.
 | ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples                                                     |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
-<sup>3</sup> `stop_receiving` when [MinKnow](https://nanoporetech.com/document/experiment-companion-minknow) software version 25 or lower was used, `sequence` for MinKnow 26 and above.
+<sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) software version 25 or lower was used, `sequence` for version 26 and above.
 
 ## Columns: CRAM
 
