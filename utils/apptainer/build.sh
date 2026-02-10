@@ -77,9 +77,9 @@ main() {
 
   local images=()
   images+=("build/alpine-3.20.3") # deprecated
-  images+=("build/alpine-3.22.1")
+  images+=("build/alpine-3.22.1") # deprecated
   images+=("build/alpine-3.23.2")
-  images+=("build/openjdk-21")
+  images+=("build/openjdk-21") # deprecated
   images+=("build/openjdk-25")
   images+=("build/ubuntu-22.04")
   images+=("bcftools-1.20")
