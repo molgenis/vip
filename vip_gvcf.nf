@@ -31,7 +31,7 @@ workflow gvcf {
       | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_vcf_per_chunk_called }
 
-    ch_vcf_per_chunk_called  
+    ch_vcf_per_chunk_called
       | vcf
 }
 
@@ -41,60 +41,99 @@ workflow {
   validateGenomeVcfParams(assemblies)
   validateParameters(params)
 
-  // run workflow for each sample in each project
+  // preprocess sample gvcfs and crams
   Channel.from(projects)
     | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
+    | multiMap { it -> gvcf: cram: it }
     | set { ch_sample }
 
-  // validate gvcf and decide whether liftover if required
-  ch_sample
+
+  // gvcf: validate and decide whether filter if required
+  ch_sample.gvcf
     | map { meta -> [meta, meta.sample.gvcf] }
     | validate_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
     | branch { meta, gVcf ->
-	      bed_filter: meta.project.regions != null
-	      ready: true
-	    }
-    | set { ch_sample_validated }
+              bed_filter: meta.project.regions != null
+              ready: true
+            }
+    | set { ch_sample_gvcf_validated }
 
-  //filter
-  ch_sample_validated.bed_filter
+
+  // gvcf: filter
+  ch_sample_gvcf_validated.bed_filter
     | map { meta, gVcf -> [meta, meta.project.regions, gVcf.data, gVcf.index, true] }
     | bed_filter
     | map { meta, gVcf, gVcfIndex, gVcfStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | set { ch_sample_filtered }
+    | set { ch_sample_gvcf_filtered }
 
-  Channel.empty().mix(ch_sample_filtered, ch_sample_validated.ready)
-  	| branch { meta, vcf ->
-	    liftover: meta.sample.assembly != params.assembly
-	    ready: true
-	  }
-    | set { ch_sample_liftover }
+  // gvcf: decide whether liftover is required
+  Channel.empty().mix(ch_sample_gvcf_filtered, ch_sample_gvcf_validated.ready)
+    | branch { meta, vcf ->
+        liftover: meta.sample.assembly != params.assembly
+        ready: true
+      }
+    | set { ch_sample_gvcf_liftover }
 
-  // liftover gvcf
-  ch_sample_liftover.liftover
+  // gvcf: liftover
+  ch_sample_gvcf_liftover.liftover
     | map { meta, gVcf -> [meta, gVcf.data] }
     | liftover_gvcf
     | map { meta, gVcf, gVcfIndex, gVcfStats, gVcfRejected, gVcfRejectedIndex, gVcfRejectedStats -> [meta, [data: gVcf, index: gVcfIndex, stats: gVcfStats]] }
-    | set { ch_sample_liftovered }
+    | set { ch_sample_gvcf_liftovered }
 
-  // merge vcf channels
-  Channel.empty().mix(ch_sample_liftovered, ch_sample_liftover.ready)
-    | map { meta, gVcf -> [*:meta, sample: [*:meta.sample, gvcf: gVcf]] }
-    | set { ch_sample_processed }
 
-  // update project assembly and samples
-  ch_sample_processed
-    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
-    | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+  // gvcf: merge
+  Channel.empty().mix(ch_sample_gvcf_liftovered, ch_sample_gvcf_liftover.ready)
+    | map { meta, gVcf -> [meta, [gvcf: gVcf]] }
+    | set { ch_sample_gvcf_preprocessed }
+
+
+  // cram: preprocess
+  ch_sample.cram
+    | branch { meta ->
+        process: meta.sample.cram != null
+        ready:   true
+                 return [meta, null]
+      }
+    | set { ch_sample_cram }
+
+  // cram: validate
+  ch_sample_cram.process
+    | map { meta -> [meta, meta.sample.assembly, meta.sample.cram] }
+    | validate_cram
+    | map { meta, cram, cramIndex, cramStats -> [meta, [data: cram, index: cramIndex, stats: cramStats]] }
+    | set { ch_sample_cram_validated }
+
+  // cram: merge
+  Channel.empty().mix(ch_sample_cram_validated, ch_sample_cram.ready)
+    | map { meta, cram -> [meta, [cram: cram]] }
+    | set { ch_sample_cram_preprocessed }
+
+  // update sample gvcf and cram
+  Channel.empty().mix(ch_sample_gvcf_preprocessed, ch_sample_cram_preprocessed)
+    | map { meta, container -> [groupKey(meta, 2), container] }
+    | groupTuple(remainder: true)
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, samples -> [*:meta, project: [*:meta.project, assembly: params.assembly, samples: samples]] }
-    | set { ch_project_processed }
+    | map { meta, containers ->
+        def gVcf = containers.find { it.gvcf != null }.gvcf
+        def cram = containers.find { it.cram != null }?.cram
+        [*:meta, sample: [*:meta.sample, gvcf: gVcf, cram: cram]]
+      }
+    | set { ch_sample_preprocessed }
+
+  // update project samples and assembly
+  ch_sample_preprocessed
+  | map { meta -> [groupKey(meta.project, meta.project.samples.size), meta.sample] }
+  | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
+  | map { key, group -> validateGroup(key, group) }
+  | map { project, samples -> [*:project, assembly: params.assembly, samples: samples] }
+  | set { ch_project_preprocessed }
 
   // map to updated samples
-  ch_project_processed
-    | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
-    | gvcf
+  ch_project_preprocessed
+  | flatMap { project -> project.samples.collect { sample -> [project: project, sample: sample] } }
+  | gvcf
 }
 
 def validateGenomeVcfParams(assemblies) {
