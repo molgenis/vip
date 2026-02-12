@@ -11,6 +11,7 @@
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
 <link href="../../custom.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
         var mkdocs_page_name = "Installation";
@@ -22,7 +23,8 @@
     <![endif]-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-</head>
+<meta name="panzoom-theme" content="readthedocs">
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -129,24 +131,24 @@
 <div class="section" itemprop="articleBody">
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h1>
 <h2 id="default">Default<a class="headerlink" href="#default" title="Permanent link">¶</a></h2>
-<pre><code class="language-bash">curl -sSL https://download.molgeniscloud.org/downloads/vip/install.sh | bash
-</code></pre>
-<pre><code>VIP feat/installer_improvements installation running...
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sSL<span class="w"> </span>https://download.molgeniscloud.org/downloads/vip/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>VIP feat/installer_improvements installation running...
 VIP feat/installer_improvements installation completed, execute vip/v9.0.0/vip.sh to get started
-</code></pre>
+</code></pre></div>
 <h2 id="easybuild">EasyBuild<a class="headerlink" href="#easybuild" title="Permanent link">¶</a></h2>
 <p>HPC systems running <a href="https://easybuild.io/">EasyBuild</a> can install VIP by adapting the <code>/apps</code> paths in
 these <a href="https://github.com/molgenis/take-it-easyconfigs/tree/main/v/vip">easyconfig files</a> to your local environment.</p>
 <h2 id="customized">Customized<a class="headerlink" href="#customized" title="Permanent link">¶</a></h2>
 <p>Alternatively the VIP installer can be called providing command line parameters to change the behaviour of the
 installer:</p>
-<pre><code>bash install.sh [-i &lt;vip_install_dir&gt;] [-d &lt;data_dir&gt;] [-u &lt;url&gt;] [-p]
+<div class="highlight"><pre><span></span><code>bash install.sh [-i &lt;vip_install_dir&gt;] [-d &lt;data_dir&gt;] [-u &lt;url&gt;] [-p]
 -u, --url       base url to download VIP resources from
 -d, --data_dir  directory where VIP resources should be installed
 -i, --vip_dir   directory where the VIP software should be installed
 -p, --prune     remove resources from previous VIP installs that are not required for this version.
 -h, --help
-</code></pre>
+</code></pre></div>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
@@ -156,7 +158,7 @@ installer:</p>
 <hr/>
 <div role="contentinfo">
 <!-- Copyright etc -->
-<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+<p>Copyright © 2026 University Medical Center Groningen All rights reserved</p>
 </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -180,6 +182,8 @@ installer:</p>
 <script src="../../js/theme.js"></script>
 <script src="../../js/mermaid.min.js"></script>
 <script src="../../search/main.js"></script>
+<script src="../../assets/javascripts/panzoom.min.js"></script>
+<script src="../../assets/javascripts/zoompan.js"></script>
 <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);

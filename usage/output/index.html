@@ -11,6 +11,7 @@
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
 <link href="../../custom.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
         var mkdocs_page_name = "Output";
@@ -22,7 +23,8 @@
     <![endif]-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-</head>
+<meta name="panzoom-theme" content="readthedocs">
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -129,8 +131,8 @@
 <div class="section" itemprop="articleBody">
 <h1 id="output">Output<a class="headerlink" href="#output" title="Permanent link">¶</a></h1>
 <p><a href="../../vip_giab_hg002.html">Click here for a live example</a></p>
-<p>After VIP completes successfully the path specified by <code>--output</code> contains content similar to:</p>
-<pre><code class="language-bash">.nextflow
+<p>After VIP completes successfully the path specified by <code>--output</code> contains content similar to:
+<div class="highlight"><pre><span></span><code>.nextflow
 .nxf.home
 .nxf.log
 .nxf.tmp
@@ -141,18 +143,18 @@ nxf_timeline.html
 my_project_id.html
 my_project_id.vcf.gz
 my_project_id.vcf.gz.csi
-</code></pre>
+</code></pre></div></p>
 <h2 id="report">Report<a class="headerlink" href="#report" title="Permanent link">¶</a></h2>
-<p>For each project defined in your <code>--input</code> sample-sheet a set of three files is created:</p>
-<pre><code class="language-bash">my_project.html
+<p>For each project defined in your <code>--input</code> sample-sheet a set of three files is created:
+<div class="highlight"><pre><span></span><code>my_project.html
 my_project.vcf.gz
 my_project.vcf.gz.csi
-</code></pre>
-<p>In case no project identifiers were supplied these files will be called:</p>
-<pre><code class="language-bash">vip.html
+</code></pre></div>
+In case no project identifiers were supplied these files will be called:
+<div class="highlight"><pre><span></span><code>vip.html
 vip.vcf.gz
 vip.vcf.gz.csi
-</code></pre>
+</code></pre></div></p>
 <ul>
 <li><code>vip.html</code> is an interactive report based on <code>vip.vcf.gz</code> that can be viewed in any modern browser</li>
 <li><code>vip.vcf.gz</code> contains annotated candidate variants for interpretation</li>
@@ -172,8 +174,8 @@ The internal database of the vip report is also available as .db database file i
 <h2 id="intermediates">Intermediates<a class="headerlink" href="#intermediates" title="Permanent link">¶</a></h2>
 <p>VIP publishes selected intermediate results to allow <a href="../../examples/reanalysis/">reanalysis</a> using the <code>vcf.start</code> <a href="../config/">parameter</a>.
 Additionaly these results can be used to understand why variant records did not make it into the report. </p>
-<p>The content of the intermediates directory depends on the used <code>--workflow</code> and looks similar to: </p>
-<pre><code class="language-bash">hlhs_famA_grch38_annotations.vcf.gz
+<p>The content of the intermediates directory depends on the used <code>--workflow</code> and looks similar to: 
+<div class="highlight"><pre><span></span><code>hlhs_famA_grch38_annotations.vcf.gz
 hlhs_famA_grch38_annotations.vcf.gz.csi
 hlhs_famA_grch38_classifications.vcf.gz
 hlhs_famA_grch38_classifications.vcf.gz.csi
@@ -189,18 +191,18 @@ hlhs_famA_grch38_famA_sample2_small_variants.vcf.gz
 hlhs_famA_grch38_famA_sample2_small_variants.vcf.gz.csi
 hlhs_famA_grch38_famA_sample2_sv.vcf.gz
 hlhs_famA_grch38_famA_sample2_sv.vcf.gz.csi
-</code></pre>
+</code></pre></div></p>
 <h2 id="other">Other<a class="headerlink" href="#other" title="Permanent link">¶</a></h2>
-<p>Besides the result files and intermediate files the following data is generated:</p>
-<pre><code class="language-bash">.nextflow
+<p>Besides the result files and intermediate files the following data is generated:
+<div class="highlight"><pre><span></span><code>.nextflow
 .nxf.home
 .nxf.log
 .nxf.tmp
 .nxf.work
 nxf_report.html
 nxf_timeline.html
-</code></pre>
-<p>For details, see the <a href="https://www.nextflow.io/docs/latest/">Nextflow documentation</a>.</p>
+</code></pre></div>
+For details, see the <a href="https://www.nextflow.io/docs/latest/">Nextflow documentation</a>.</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
@@ -210,7 +212,7 @@ nxf_timeline.html
 <hr/>
 <div role="contentinfo">
 <!-- Copyright etc -->
-<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+<p>Copyright © 2026 University Medical Center Groningen All rights reserved</p>
 </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -234,6 +236,8 @@ nxf_timeline.html
 <script src="../../js/theme.js"></script>
 <script src="../../js/mermaid.min.js"></script>
 <script src="../../search/main.js"></script>
+<script src="../../assets/javascripts/panzoom.min.js"></script>
+<script src="../../assets/javascripts/zoompan.js"></script>
 <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);

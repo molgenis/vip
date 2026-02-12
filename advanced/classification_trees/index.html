@@ -11,6 +11,7 @@
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
 <link href="../../custom.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
         var mkdocs_page_name = "Classification trees";
@@ -22,7 +23,8 @@
     <![endif]-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-</head>
+<meta name="panzoom-theme" content="readthedocs">
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -157,6 +159,17 @@ samples.</p>
    <code>Remove</code></li>
 <li>Variant-consequences classified as <code>Benign</code>, <code>Likely Benign</code> and <code>Remove</code> are removed by default.</li>
 </ol>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+<div class="panzoom-info-box panzoom-info-box-top">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+<nav class="panzoom-nav panzoom-top-nav panzoom-nav-infobox-top">
+<button class="panzoom-reset panzoom-button">
+<svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+</svg>
+</button>
+</nav>
 <div class="mermaid">flowchart TD
 filter_("Filter")
 vkgl_("VKGL")
@@ -250,6 +263,7 @@ capice_ --&gt;|"true"| exit_lp_
 capice_ --&gt;|"false"| exit_lb_
 capice_ --&gt;|"missing"| exit_vus_
 </div>
+</div>
 <p><em>Above: default GRCh38 variant classification tree</em></p>
 <h3 id="variant-consequences-samples">Variant-consequences (samples)<a class="headerlink" href="#variant-consequences-samples" title="Permanent link">¶</a></h3>
 <p>The default decision tree to classify variant-consequences in the context of samples works as follows:</p>
@@ -258,6 +272,17 @@ capice_ --&gt;|"missing"| exit_vus_
    probably not) and <code>U4</code> (usable: only in cases of suspected incomplete penetrance).</li>
 <li>Variant-consequences classified as <code>U3</code> and <code>U4</code> for all samples are removed by default.</li>
 </ol>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+<div class="panzoom-info-box panzoom-info-box-top">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+<nav class="panzoom-nav panzoom-top-nav panzoom-nav-infobox-top">
+<button class="panzoom-reset panzoom-button">
+<svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+</svg>
+</button>
+</nav>
 <div class="mermaid">flowchart TD
 gt_("Genotype")
 gq_("Genotype quality")
@@ -308,6 +333,7 @@ vid_IP_ --&gt;|"true"| exit_u1_
 vid_IP_ --&gt;|"false"| vig_IP_
 vid_IP_ --&gt;|"missing"| exit_u2_
 </div>
+</div>
 <p><em>Above: default variant sample classification tree</em></p>
 <h2 id="customization-and-filtering">Customization and filtering<a class="headerlink" href="#customization-and-filtering" title="Permanent link">¶</a></h2>
 <p>Please note that the classification tree only classifies variants, and filtering based on those classes is handled in
@@ -346,7 +372,7 @@ would like to keep.</p>
 <hr/>
 <div role="contentinfo">
 <!-- Copyright etc -->
-<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+<p>Copyright © 2026 University Medical Center Groningen All rights reserved</p>
 </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -370,6 +396,8 @@ would like to keep.</p>
 <script src="../../js/theme.js"></script>
 <script src="../../js/mermaid.min.js"></script>
 <script src="../../search/main.js"></script>
+<script src="../../assets/javascripts/panzoom.min.js"></script>
+<script src="../../assets/javascripts/zoompan.js"></script>
 <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);

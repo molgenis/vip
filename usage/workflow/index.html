@@ -11,6 +11,7 @@
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
 <link href="../../custom.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
         var mkdocs_page_name = "Workflow";
@@ -22,7 +23,8 @@
     <![endif]-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-</head>
+<meta name="panzoom-theme" content="readthedocs">
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -58,14 +60,6 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal current" href="#">Workflow</a>
 <ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="#fastq">FASTQ</a>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#cram">CRAM</a>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gvcf">gVCF</a>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#vcf">VCF</a>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../input/">Input</a>
@@ -130,71 +124,239 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">¶</a></h1>
-<p>VIP consists of four workflows depending on the type of input data: fastq, bam/cram, gvcf or vcf.
-The <code>fastq</code> workflow is an extension of the <code>cram</code> workflow. The <code>cram</code> and <code>gvcf</code> workflows are extensions of the <code>vcf</code> workflow.
-The <code>vcf</code> workflow produces the pipeline outputs as described <a href="../output/">here</a>.
-The following sections provide an overview of the steps of each of these workflows. </p>
-<h2 id="fastq">FASTQ<a class="headerlink" href="#fastq" title="Permanent link">¶</a></h2>
-<p>The <code>fastq</code> workflow consists of the following steps:</p>
-<ol>
-<li>Parallelize sample sheet per sample and for each sample</li>
-<li>Quality reporting and preprocessing using <a href="https://github.com/OpenGene/fastp">fastp</a></li>
-<li>Alignment using <a href="https://github.com/lh3/minimap2">minimap2</a> producing a <code>cram</code> file per sample</li>
-<li>In case of multiple fastq files per sample, concatenate the cram output files</li>
-<li>Continue with step 3. of the <code>cram</code> workflow</li>
-</ol>
-<p>For details, see <a href="https://github.com/molgenis/vip/blob/main/vip_fastq.nf">here</a>.</p>
-<h2 id="cram">CRAM<a class="headerlink" href="#cram" title="Permanent link">¶</a></h2>
-<p>The <code>cram</code> workflow consists of the following steps:</p>
-<ol>
-<li>Parallelize sample sheet per sample and for each sample</li>
-<li>Create validated, indexed <code>.bam</code> file from <code>bam/cram/sam</code> input</li>
-<li>Generate coverage metrics using <a href="https://github.com/brentp/mosdepth">MosDepth</a>, using the the <code>regions</code> file provided in the sample sheet if present. If no regions file is provided a default <code>.bed</code> file will be used containing all exons in case of WES data, and all genes in case of WGS data.</li>
-<li>Discover short tandem repeats and publish as intermediate result.<ol>
-<li>Using <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a> for Illumina short read data.</li>
-<li>Using <a href="https://github.com/bcgsc/straglr">Straglr</a> tsv output for PacBio and Nanopore long read data, which is converted to VCF using <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a>,the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.</li>
-</ol>
-</li>
-<li>Discover copy number variants for for PacBio and Nanopore long read data using <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a> data and publish as intermediate result.</li>
-<li>Parallelize cram in chunks consisting of one or more contigs and for each chunk<ol>
-<li>Perform short variant calling with <a href="https://github.com/google/deepvariant">DeepVariant</a> producing a <code>gvcf</code> file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a> and phased using <a href="https://github.com/whatshap/whatshap">Whatshap</a><sup>1</sup>.</li>
-<li>Perform structural variant calling with <a href="https://github.com/Illumina/manta">Manta</a> or <a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a> producing a <code>vcf</code> file per chunk per project.</li>
-</ol>
-</li>
-<li>Concatenate short variant calling and structural variant calling <code>vcf</code> files per chunk per sample</li>
-<li>Continue with step 3. of the <code>vcf</code> workflow</li>
-</ol>
-<p>For details, see <a href="https://github.com/molgenis/vip/blob/main/vip_cram.nf">here</a>.</p>
-<p><sup>1</sup>): In case of projects containing pedigree information the phasing requires the bam/cram/sam file to have readgroup information in order to be able to determine which reads belong to which family member. Phasing is skipped if this information is not present.</p>
-<h2 id="gvcf">gVCF<a class="headerlink" href="#gvcf" title="Permanent link">¶</a></h2>
-<p>The <code>gvcf</code> workflow consists of the following steps:</p>
-<ol>
-<li>For each project in the sample sheet</li>
-<li>Create validated, indexed <code>.g.vcf.gz</code> file from <code>bcf/bcf.gz/bcf.bgz/gvcf/gvcf.gz/gvcf.bgz/vcf/vcf.gz/vcf.bgz</code> inputs</li>
-<li>Merge <code>.g.vcf.gz</code> files using <a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a> resulting in one <code>vcf.gz</code> per project</li>
-<li>Continue with step 3. of the <code>vcf</code> workflow</li>
-</ol>
-<p>For details, see <a href="https://github.com/molgenis/vip/blob/main/vip_gvcf.nf">here</a>.</p>
-<h2 id="vcf">VCF<a class="headerlink" href="#vcf" title="Permanent link">¶</a></h2>
-<p>The <code>vcf</code> workflow consists of the following steps:</p>
-<ol>
-<li>For each project in the sample sheet</li>
-<li>Create validated, indexed <code>.vcf.gz</code> file from <code>bcf|bcf.gz|bcf.bgz|vcf|vcf.gz|vcf.bgz</code> input</li>
-<li>Chunk <code>vcf.gz</code> files and for each chunk<ol>
-<li>Normalize</li>
-<li>Annotate</li>
-<li>Classify</li>
-<li>Filter</li>
-<li>Perform inheritance matching</li>
-<li>Classify in the context of samples</li>
-<li>Filter in the context of samples</li>
-</ol>
-</li>
-<li>Concatenate chunks resulting in one <code>vcf.gz</code> file per project</li>
-<li>If <code>cram</code> data is available slice the <code>cram</code> files to only keep relevant reads</li>
-<li>Create report</li>
-</ol>
-<p>For details, see <a href="https://github.com/molgenis/vip/blob/main/vip_vcf.nf">here</a>.</p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+<div class="panzoom-info-box panzoom-info-box-top">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+<nav class="panzoom-nav panzoom-top-nav panzoom-nav-infobox-top">
+<button class="panzoom-reset panzoom-button">
+<svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+</svg>
+</button>
+</nav>
+<div class="mermaid">flowchart TB
+subgraph "Subworkflow: vcf"
+subgraph "annotate"
+va0[AnnotSV]
+va1[Stranger]
+va2{SpliceAI?}
+va3[CAPICE]
+va4[VEP]
+va4t[(<b>per project:</b><br/>project_annotations.vcf.gz)]
+va0--&gt;va1
+va1--&gt;va2
+va2--&gt;|"true"|va3
+va2--&gt;|"false"|va4
+va3--&gt;va4
+va4--&gt;va4t
+end
+v0{Phenotypes?}
+v1[GADO]
+v2[Normalize]
+v3[Classify]
+v3t[(<b>per project:</b><br/>project_classifications.vcf.gz)]
+v4[Filter]
+v5[Inheritance]
+v6[Classify samples]
+v6t[(<b>per project:</b><br/>project_sample_classifications.vcf.gz)]
+v7[Filter samples]
+v8{Cram?}
+v9[Slice]
+v10[Report]
+v10t0[(<b>per project:</b><br/>project.html)]
+v10t1[(<b>per project:</b><br/>project.vcf.gz)]
+v10t2[(<b>per project:</b><br/>project.db)]
+v0--&gt;|"true"|v1
+v0--&gt;|"false"|v2
+v1--&gt;v2
+v2--&gt;va0
+v3--&gt;v3t
+v3--&gt;v4
+v4--&gt;v5
+v5--&gt;v6
+v6--&gt;v6t
+v6--&gt;v7
+v7--&gt;v8
+v8--&gt;|"true"|v9
+v8--&gt;|"false"|v10
+v9--&gt;v10
+v10--&gt;v10t0
+v10--&gt;v10t1
+v10--&gt;v10t2
+va4--&gt;v3
+end
+subgraph "Workflow: vcf"
+wv([Start])
+wv0[Validate VCF]
+wv1{Regions?}
+wv2[Filter]
+wv3{Liftover?}
+wv4[Liftover]
+wv4t[(<b>per project:</b><br/>project_liftover_accepted.vcf.gz<br/>project_liftover_rejected.vcf.gz)]
+wv5{Cram?}
+wv6[Validate Cram]
+wv7@{ shape: f-circ, label: "Junction" }
+wv--&gt;wv0
+wv0--&gt;wv1
+wv1--&gt;|"true"|wv2
+wv1--&gt;|"false"|wv3
+wv2--&gt;wv3
+wv3--&gt;|"true"|wv4
+wv3--&gt;|"false"|wv5
+wv4--&gt;wv4t
+wv4--&gt;wv7
+wv5--&gt;wv6
+wv5--&gt;|"true"|wv7
+wv6--&gt;|"false"|wv7
+wv7--&gt;v0
+end
+subgraph "Subworkflow: gvcf"
+g0[GLnexus]
+g0t[(<b>per sample chunk:</b><br/>sample_chunk.vcf.gz)]
+g0--&gt;g0t
+g0--&gt;v0
+end
+subgraph "Workflow: gvcf"
+wg([Start])
+wg0[Validate gVCF]
+wg1{Regions?}
+wg2[Filter]
+wg3{Liftover?}
+wg4[Liftover]
+wg4t[(<b>per sample:</b><br/>sample_liftover_accepted.vcf.gz<br/>sample_liftover_rejected.vcf.gz)]
+wg5{Cram?}
+wg6[Validate Cram]
+wg7@{ shape: f-circ, label: "Junction" }
+wg--&gt;wg0
+wg0--&gt;wg1
+wg1--&gt;|"true"|wg2
+wg1--&gt;|"false"|wg3
+wg2--&gt;wg3
+wg3--&gt;|"true"|wg4
+wg3--&gt;|"false"|wg5
+wg4--&gt;wg4t
+wg4--&gt;wg7
+wg5--&gt;wg6
+wg5--&gt;wg7
+wg6--&gt;wg7
+wg7--&gt;g0
+end
+subgraph "Subworkflow: cram"
+subgraph "Subworkflow: cnv"
+cc0{Sequencing platform?}
+cc1[Spectre]
+cc1t[(<b>per sample:</b><br/>sample_cnv.vcf.gz)]
+cc2@{ shape: f-circ, label: "Junction" }
+cc0--&gt;|"nanopore<br/>pacbio_hifi"|cc1
+cc0--&gt;|"illumina"|cc2
+cc1--&gt;cc1t
+cc1--&gt;cc2
+cc0--&gt;cc2
+end
+subgraph "Subworkflow: snv"
+cn0{Sequencing platform?}
+cn1{Trio or duo?}
+cn2[Deeptrio]
+cn3[Deepvariant]
+cn4[GLnexus]
+cn5[WhatsHap]
+cn6[Concat VCF]
+cn6t[(<b>per project:</b><br/>project_snv.vcf.gz)]
+cn7@{ shape: f-circ, label: "Junction" }
+cn0--&gt;|"illumina<br/>pacbio_hifi"|cn1
+cn0--&gt;|"nanopore"|cn3
+cn1--&gt;|"true"|cn2
+cn1--&gt;|"false"|cn3
+cn2--&gt;cn4
+cn3--&gt;cn4
+cn4--&gt;cn5
+cn5--&gt;cn6
+cn6--&gt;cn6t
+cn6--&gt;cn7
+end
+subgraph "Subworkflow: str"
+ct0{PCR performed?}
+ct1{Sequencing platform?}
+ct2[Expansion Hunter]
+ct3[Straglr]
+ct2-3t[(<b>per sample:</b><br/>sample_str.vcf.gz)]
+ct4@{ shape: f-circ, label: "Junction" }
+ct0--&gt;|"false"|ct1
+ct0--&gt;|"true"|ct4
+ct1--&gt;|"illumina"|ct2
+ct1--&gt;|"nanopore<br/>pacbio_hifi"|ct3
+ct2--&gt;ct2-3t
+ct2--&gt;ct4
+ct3--&gt;ct2-3t
+ct3--&gt;ct4
+end
+subgraph "Subworkflow: sv"
+cv0{Sequencing platform?}
+cv1[Manta]
+cv1t[(<b>per project:</b><br/>project_sv.vcf.gz)]
+cv2[cuteSV]
+cv2t[(<b>per sample:</b><br/>sample_sv.vcf.gz)]
+cv3@{ shape: f-circ, label: "Junction" }
+cv0--&gt;|"illumina"|cv1
+cv0--&gt;|"nanopore<br/>pacbio_hifi"|cv2
+cv1--&gt;cv1t
+cv1--&gt;cv3
+cv2--&gt;cv3
+cv2--&gt;cv2t
+end
+c0@{ shape: f-circ, label: "Junction" }
+c1[mosdepth]
+c1t[(<b>per sample:</b><br/>sample_mosdepth.global.dist.txt<br/>sample_mosdepth.per-base.bed.gz<br/>sample_mosdepth.region.dist.txt<br/>sample_mosdepth.regions.bed.gz<br/>sample_mosdepth.summary.txt<br/>sample_mosdepth.thresholds.bed.gz)]
+c6[concat VCF]
+c6t[(<b>per project</b><br/>project.vcf.gz)]
+c7{Regions?}
+c8[Filter]
+c9@{ shape: f-circ, label: "Junction" }
+c0--&gt;c1
+c0--&gt;cn0
+c0--&gt;ct0
+c0--&gt;cv0
+c0--&gt;cc0
+c1--&gt;c1t
+cn7--&gt;c6
+ct4--&gt;c6
+cv3--&gt;c6
+cc2--&gt;c6
+c6--&gt;c6t
+c6--&gt;c7
+c7--&gt;|"true"|c8
+c7--&gt;|"false"|c9
+c8--&gt;c9
+c9--&gt;v0
+end
+subgraph "Workflow: cram"
+wc([Start])
+wc0[Validate Cram]
+wc--&gt;wc0
+wc0--&gt;c0
+end
+subgraph "Subworkflow: fastq"
+f0{Adaptive sampling?}
+f1[Filter reads]
+f2[fastp]
+f2t[(<b>per sample:</b><br/>sample_pass.fastq.gz<br/>sample_fail.fastq.gz<br/>sample_report.html<br/>sample_report.json)]
+f3[minimap2]
+f3t0[(<b>per sample:</b><br/>sample.cram)]
+f0--&gt;|"true"|f1
+f0--&gt;|"false"|f2
+f1--&gt;f2
+f2--&gt;f2t
+f2--&gt;f3
+f3--&gt;f3t0
+f3--&gt;c0
+end
+subgraph "Workflow: fastq"
+wf([Start])
+wf--&gt;f0
+end
+</div>
+</div>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
@@ -204,7 +366,7 @@ The following sections provide an overview of the steps of each of these workflo
 <hr/>
 <div role="contentinfo">
 <!-- Copyright etc -->
-<p>Copyright © 2023 University Medical Center Groningen All rights reserved</p>
+<p>Copyright © 2026 University Medical Center Groningen All rights reserved</p>
 </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -228,10 +390,12 @@ The following sections provide an overview of the steps of each of these workflo
 <script src="../../js/theme.js"></script>
 <script src="../../js/mermaid.min.js"></script>
 <script src="../../search/main.js"></script>
+<script src="../../assets/javascripts/panzoom.min.js"></script>
+<script src="../../assets/javascripts/zoompan.js"></script>
 <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
         });
     </script>
-</body>
+<script>mermaid.initialize({});</script></body>
 </html>
