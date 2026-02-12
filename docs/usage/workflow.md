@@ -78,7 +78,7 @@ wv6-->|"false"|wv7
 wv7-->v0
 end
 subgraph "Subworkflow: gvcf"
-g0[merge]
+g0[GLnexus]
 g0t[(<b>per sample chunk:</b><br>sample_chunk.vcf.gz)]
 g0-->g0t
 g0-->v0
