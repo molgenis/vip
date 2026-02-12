@@ -46,7 +46,6 @@ plugins:
   - panzoom:
       always_show_hint: true
       hint_location: "top"
-      key: "ctrl"
 theme: readthedocs
 strict: true
 extra_css: [ custom.css ]
