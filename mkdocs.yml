@@ -35,11 +35,17 @@ markdown_extensions:
   - admonition
   - toc:
       permalink: True
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
 plugins:
   - search
   - mermaid2
+  - panzoom
 theme: readthedocs
 strict: true
 extra_css: [ custom.css ]
 extra_javascript: [ js/mermaid.min.js ]
-copyright: Copyright © 2023 University Medical Center Groningen All rights reserved
+copyright: Copyright © 2026 University Medical Center Groningen All rights reserved
