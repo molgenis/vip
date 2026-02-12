@@ -45,15 +45,16 @@ specific columns.
 
 ## Columns: FASTQ
 
-| column                  | type          | required        | default      | description                                                                                                               |
-|-------------------------|---------------|-----------------|--------------|---------------------------------------------------------------------------------------------------------------------------|
-| ``adaptive_sampling``   | ``file``      |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving` reads | 
-| ``fastq``               | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                               |
-| ``fastq_r1``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                        |
-| ``fastq_r2``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                        |
-| ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples               |
+| column                  | type          | required        | default      | description                                                                                                                                                     |
+|-------------------------|---------------|-----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ``adaptive_sampling``   | ``file``      |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving`<sup>3</sup> or `sequence`<sup>3</sup> reads | 
+| ``fastq``               | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                                                                     |
+| ``fastq_r1``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                                                              |
+| ``fastq_r2``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                                                              |
+| ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples                                                     |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
+<sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) adaptive sampling file specification < 0.1 was used, `sequence` for version 0.1 and above.
 
 ## Columns: CRAM
 
