@@ -8,7 +8,7 @@ branches:
     - main
     - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 install:
-  - pip install mkdocs==1.6.1 mkdocs-mermaid2-plugin==1.2.1
+  - pip install mkdocs==1.6.1 mkdocs-mermaid2-plugin==1.2.3 mkdocs-panzoom-plugin==0.5.2
 script:
   - mkdocs build
 before_deploy:
