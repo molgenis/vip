@@ -309,7 +309,7 @@ specific columns.</p>
 <td><code>file</code></td>
 <td></td>
 <td></td>
-<td>allowed file extensions: [<code>csv</code>]. for <code>nanopore</code> adaptive sampling experiments, used to filter <code>stop_receiving</code> reads</td>
+<td>allowed file extensions: [<code>csv</code>]. for <code>nanopore</code> adaptive sampling experiments, used to filter <code>stop_receiving</code><sup>3</sup> or <code>sequence</code><sup>3</sup> reads</td>
 </tr>
 <tr>
 <td><code>fastq</code></td>
@@ -341,7 +341,8 @@ specific columns.</p>
 </tr>
 </tbody>
 </table>
-<p><sup>2</sup> Either the <code>fastq</code> or the <code>fastq_r1</code> and <code>fastq_r2</code> are required.</p>
+<p><sup>2</sup> Either the <code>fastq</code> or the <code>fastq_r1</code> and <code>fastq_r2</code> are required.
+<sup>3</sup> <code>stop_receiving</code> when <a href="https://software-docs.nanoporetech.com/output-specifications">Nanopore output</a> adaptive sampling file specification &lt; 0.1 was used, <code>sequence</code> for version 0.1 and above.</p>
 <h2 id="columns-cram">Columns: CRAM<a class="headerlink" href="#columns-cram" title="Permanent link">¶</a></h2>
 <table>
 <thead>
