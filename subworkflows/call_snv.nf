@@ -12,8 +12,22 @@ include { deepvariant; validateCallDeepVariantParams } from '../subworkflows/cal
 workflow snv {
   take: meta
   main:
-    // add family to each sample
     meta
+      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
+			| split_cram_chrm
+			| map { meta, chrmCram, chrmCramIndex, chrCramStats, nonchrmCram, nonchrmCramIndex, nonchrmCramStats
+				-> 
+				[*:meta, sample: [*meta.sample, cram: [data:nonchrmCram, index: nonchrmCramIndex, stats: nonchrmCramStats, chrmdata: chrmCram, chrmindex: chrmCramIndex, chrmstats: chrmCramStats]]]
+				}
+			| multiMap { it -> normal: chrm: it }
+			| set { ch_snv }
+    
+    ch_snv.chrm
+      | mtdnasnv
+      | set { ch_snv_mtdna }
+
+    // add family to each sample
+    ch_snv.normal
       | map { meta ->
           def familySize = meta.project.samples.count { it.family_id == meta.sample.family_id }
           def family = [id: meta.sample.family_id]
@@ -43,7 +57,7 @@ workflow snv {
       | set { ch_snv_deepvariant }
     
     // mix outputs of all tools
-    Channel.empty().mix(ch_snv_deepvariant)
+    Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
       | set { ch_snv_processed }
   emit:
     ch_snv_processed
