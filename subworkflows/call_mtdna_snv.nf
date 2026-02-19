@@ -37,15 +37,15 @@ workflow mtdnasnv {
     ch_mtdnasnv_by_platform.deepvariant
       | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
       | call
-      | map {}
-      | set {}
+      | map { meta, vcfOut, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set {  }
     */
 
     // Perform the GATK Mutect2 calling on chrM data
     ch_mtdnasnv.with_reads
       | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
       | mutect2_mito
-      | map { meta, vcfOut, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | map { meta, vcfOut, vcfOutIndex, vcfOutStats -> [meta, [data: vcfOut, index: vcfOutIndex, stats: vcfOutStats]] }
       | set {ch_mtdnasnv_gatk}
 
     /*

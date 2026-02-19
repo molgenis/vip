@@ -17,7 +17,7 @@ workflow snv {
 			| split_cram_chrm
 			| map { meta, chrmCram, chrmCramIndex, chrCramStats, nonchrmCram, nonchrmCramIndex, nonchrmCramStats
 				-> 
-				[*:meta, sample: [*meta.sample, cram: [data:nonchrmCram, index: nonchrmCramIndex, stats: nonchrmCramStats, chrmdata: chrmCram, chrmindex: chrmCramIndex, chrmstats: chrmCramStats]]]
+				[*:meta, sample: [*:meta.sample, cram: [data: nonchrmCram, index: nonchrmCramIndex, stats: nonchrmCramStats, chrmdata: chrmCram, chrmindex: chrmCramIndex, chrmstats: chrmCramStats]]]
 				}
 			| multiMap { it -> normal: chrm: it }
 			| set { ch_snv }

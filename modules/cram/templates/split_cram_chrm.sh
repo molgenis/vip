@@ -15,9 +15,15 @@ index () {
     ${CMD_SAMTOOLS} index "!{nonchrmCramOut}"
 }
 
+stats () {
+    ${CMD_SAMTOOLS} idxstats "!{chrmCramOut}" > "!{chrmCramOutStats}"
+    ${CMD_SAMTOOLS} idxstats "!{nonchrmCramOut}" > "!{nonchrmCramOutStats}"
+}
+
 main () {
     split_cram
     index
+    stats
 }
 
 main "$@"

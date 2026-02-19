@@ -96,10 +96,10 @@ process merge_mtdnasnv_vcf {
 	publishDir "$params.output/intermediates", mode 'link'
 	
 	input:
-		tuple val(meta) path(vcfs) path(vcfIndices)
+		tuple val(meta), path(vcfs), path(vcfIndices)
 	
 	output:
-		tuple val(meta) path(vcfOut) path(vcfOutIndex) path(vcfOutStats)
+		tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
 	
 	shell:
 		vcfOut = "${meta.project.id}_mtdnasnv.vcf.gz"

@@ -220,7 +220,6 @@ install_files() {
   data+=("7aae5033717425b26c454865a5fd30bc" "resources/GRCh38/apogee_scores_20251118.tsv.gz" "")
   data+=("2a2d3dfdc7d7d412d3d2203db154c289" "resources/GRCh38/apogee_scores_20251118.tsv.gz.tbi" "")
   data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2_v6.ubj" "")
-  data+=("7789ea44a0b1c1bab692578ddfa9e7a4" "resources/GRCh38/chrm.bed")
   data+=("cd2ec9dfb12669f57d58aeb413d35966" "resources/GRCh38/clinical_repeats-20260127.tsv" "")
   data+=("d3ae8978ce5e593f7dac78b9a52cad05" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz" "")
   data+=("cc5e3a837a770aede91cfb7502e31769" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz.tbi" "")
