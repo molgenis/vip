@@ -147,6 +147,7 @@ vep() {
   local -r vcf="${1}"
 
   local args=()
+  args+=("--fork" "1")
   args+=("--input_file" "${vcf}")
   args+=("--format" "vcf")
   args+=("--output_file" "vep_!{vcfOut}")
@@ -230,7 +231,11 @@ vep() {
   if [ -n "!{vepPluginHmtVarPath}" ]; then
     args+=("--plugin" "HmtVar,!{vepPluginHmtVarPath}")
   fi
-  
+  IFS=';' read -ra plugins <<< "!{vepPluginsAdditional}"
+  for plugin in "${plugins[@]}"; do
+    args+=("--plugin" "$plugin")
+  done
+
   ${CMD_VEP} "${args[@]}"
 }
 
