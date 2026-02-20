@@ -1,0 +1,29 @@
+Bootstrap: localimage
+From: sif/build/alpine-3.23.3.sif
+
+%help
+    fastp - A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
+
+%post
+    version_major=1
+    version_minor=1
+    version_patch=0
+
+    apk add --virtual=.build-dependencies curl
+    
+    # download
+    curl --fail --silent --show-error --location --output /usr/local/bin/fastp http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
+    echo "a3418335d4d2ce272c7a26fe3a9155b4d3573f4dcefb87d626660cc638f0e9e7  /usr/local/bin/fastp" | sha256sum -c
+
+    # install
+    chmod a+x /usr/local/bin/fastp
+
+    # cleanup
+    apk del .build-dependencies
+
+%test
+    set -euo pipefail
+    fastp --help > /dev/null 2>&1
+
+%runscript
+    exec fastp "$@"

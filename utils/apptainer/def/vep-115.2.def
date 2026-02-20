@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: ensemblorg/ensembl-vep:release_115.2
