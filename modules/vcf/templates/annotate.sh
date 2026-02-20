@@ -147,7 +147,6 @@ vep() {
   local -r vcf="${1}"
 
   local args=()
-  args+=("--fork" "1")
   args+=("--input_file" "${vcf}")
   args+=("--format" "vcf")
   args+=("--output_file" "vep_!{vcfOut}")
