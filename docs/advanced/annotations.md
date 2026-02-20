@@ -313,3 +313,7 @@ A custom MitoTIP VEP plugin annotates mitochondrial variants with computed [mito
 #### HmtVar
 [HmtVar](https://doi.org/10.1093/nar/gky1024) contains disease scores for mtDNA SNVs.
 A custom HmtVar VEP plugin annotates mitochondrial tRNA variants with computed disease scores.
+
+#### BRAIN-MAGNET
+[BRAIN-MAGNET](https://github.com/ruizhideng/BRAIN-MAGNET) predictions for all possible SNPs from NSC NCREs (~100 million), you can easily score your interested variants from our pre-scored data.
+Please note that this plugin is not enabled by default. It can be added through the "params.vcf.vep_additional_plugins" configuration option.

@@ -230,7 +230,11 @@ vep() {
   if [ -n "!{vepPluginHmtVarPath}" ]; then
     args+=("--plugin" "HmtVar,!{vepPluginHmtVarPath}")
   fi
-  
+  IFS=';' read -ra plugins <<< "!{vepPluginsAdditional}"
+  for plugin in "${plugins[@]}"; do
+    args+=("--plugin" "$plugin")
+  done
+
   ${CMD_VEP} "${args[@]}"
 }
 
