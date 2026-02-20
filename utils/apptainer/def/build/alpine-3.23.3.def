@@ -1,0 +1,28 @@
+Bootstrap: scratch
+
+%environment
+    export PATH=/usr/local/bin:$PATH
+ 
+%setup
+    version_major=3
+    version_minor=23
+    version_patch=3
+    
+    alpine_minirootfs="alpine-minirootfs-${version_major}.${version_minor}.${version_patch}-x86_64.tar.gz"
+    alpine_minirootfs_url="http://dl-cdn.alpinelinux.org/alpine/v${version_major}.${version_minor}/releases/x86_64/${alpine_minirootfs}"
+    alpine_minirootfs_path="${APPTAINER_TMPDIR}/${alpine_minirootfs}"
+
+    curl --silent --output "${alpine_minirootfs_path}" "${alpine_minirootfs_url}"
+    echo "42d0e6d8de5521e7bf92e075e032b5690c1d948fa9775efa32a51a38b25460fb  ${alpine_minirootfs_path}" | sha256sum --check
+    tar --extract --gzip --file="${alpine_minirootfs_path}" --directory="${APPTAINER_ROOTFS}" --exclude=./dev --exclude=./etc/hosts
+
+%post
+    # create wrapper script for apk to add --no-cache -q by default
+    cat > /usr/local/bin/apk <<'EOF'
+#!/bin/sh
+exec /sbin/apk --quiet --no-cache --no-progress "$@"
+EOF
+    chmod +x /usr/local/bin/apk
+
+%help
+    Apptainer container running Alpine Linux

@@ -1,22 +1,26 @@
 Bootstrap: localimage
-From: sif/build/ubuntu-22.04.sif
+From: sif/build/python-3.11.14.sif
 
 %post
     version_major=2
     version_minor=4
 
-    apt-get -y update
-    apt-get install -qq build-essential python3-dev python3-pip
+    export PIP_DISABLE_PIP_VERSION_CHECK=1
+    export PIP_NO_CACHE_DIR=1
+    export PIP_ROOT_USER_ACTION=ignore
+    export PIP_QUIET=2
 
-    # install
-    python3 -m pip install whatshap==${version_major}.${version_minor}
+    # --only-binary :all: : disable all source packages. packages without binary distributions will fail to install
+    pip install --only-binary :all: whatshap==${version_major}.${version_minor}
 
-    # cleanup
-    pip cache purge
-    apt-get clean
+#%environment
+#   PATH=$PATH:/usr/local/lib/python3.10/dist-packages/
 
-%environment
-   PATH=$PATH:/usr/local/lib/python3.10/dist-packages/
+%test
+    whatshap --help > /dev/null
+
+%runscript
+    exec whatshap "$@"
 
 %help
    WhatsHap is a read-based phasing tool.

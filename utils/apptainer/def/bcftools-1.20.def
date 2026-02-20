@@ -1,12 +1,12 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: build
 
 %post
     version_major=1
     version_minor=20
 
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
     
     # download
     curl -Ls -o bcftools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/bcftools/releases/download/${version_major}.${version_minor}/bcftools-${version_major}.${version_minor}.tar.bz2
@@ -20,7 +20,7 @@ Stage: build
     make install
 
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: final
 
 %files from build
@@ -28,7 +28,7 @@ Stage: final
     /usr/local/libexec/bcftools
 
 %post
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
 
 %help
     BCFtools - utilities for variant calling and manipulating VCFs and BCFs

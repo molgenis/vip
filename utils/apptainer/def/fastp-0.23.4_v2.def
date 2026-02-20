@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: build
 
 %post
@@ -7,7 +7,7 @@ Stage: build
     version_minor=23
     version_patch=4
 
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl
     
     # download
     curl -Ls -o fastp.${version_major}.${version_minor}.${version_patch} http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
@@ -17,7 +17,7 @@ Stage: build
     mv  fastp.${version_major}.${version_minor}.${version_patch} /opt/fastp
 
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: final
 
 %files from build

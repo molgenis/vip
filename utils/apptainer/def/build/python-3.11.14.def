@@ -1,0 +1,33 @@
+Bootstrap: docker
+From: python:3.11.14-slim-trixie
+
+%environment
+    export DEBIAN_FRONTEND=noninteractive
+
+    # don’t periodically check pypi to determine whether a new version of pip is available for download
+    export PIP_DISABLE_PIP_VERSION_CHECK=1
+
+    # disable pip cache
+    export PIP_NO_CACHE_DIR=1
+
+    # ignore if pip is run as a root user
+    export PIP_ROOT_USER_ACTION=ignore
+
+    # give less output (corresponding to WARNING log level)
+    export PIP_QUIET=1
+
+%post
+    # copied from debian-13.3.def
+    cat > /etc/apt/apt.conf.d/99custom <<'EOF'
+APT::Get::Assume-Yes "true";
+APT::Get::Quiet "2";
+Acquire::Progress-Fancy "0";
+Dir::Cache::archives "0";
+Dir::Cache::pkgcache "";
+Dir::Cache::srcpkgcache "";
+EOF
+
+%test
+    set -euo pipefail
+    python --version > /dev/null
+    pip --version > /dev/null

@@ -1,17 +1,17 @@
-Bootstrap: docker
-From: ubuntu:22.04
+Bootstrap: localimage
+From: sif/build/python-3.11.14.sif
 
 %post
-    apt-get -y update
+    # --only-binary              : ensure deps are not installed from source packages
+    pip install \
+      --only-binary=numpy,pandas,scipy,scikit-learn,xgboost \
+      capice==5.1.2
 
-    apt-get -y install software-properties-common
-    add-apt-repository universe
-    apt-get -y install python3 python3-pip python3-wheel
+%test
+    capice --help > /dev/null
 
-    python3 -m pip install capice==5.1.2
-
-    # cleanup
-    apt-get clean
+%runscript
+    exec capice "$@"
 
 %help
     CAPICE is a computational method for predicting the pathogenicity of SNVs and InDels.

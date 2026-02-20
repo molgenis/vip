@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 
 %post
     version_major=5
@@ -24,8 +24,11 @@ From: sif/build/alpine-3.20.3.sif
 %environment
    PATH=$PATH:/ExpansionHunter-v5.0.0-linux_x86_64/bin
 
+%test
+   ExpansionHunter --help > /dev/null
+
 %runscript
-   exec "$@"
+   exec ExpansionHunter "$@"
 
 %help
     A tool for estimating repeat sizes.

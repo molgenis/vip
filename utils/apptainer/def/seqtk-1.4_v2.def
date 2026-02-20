@@ -1,12 +1,12 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: build
 
 %post
     version_major=1
     version_minor=4
 
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev git
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev git
     
     # download
     git clone --depth 1 --branch v${version_major}.${version_minor} https://github.com/lh3/seqtk.git
@@ -14,11 +14,11 @@ Stage: build
     (cd seqtk && make)
 
 Bootstrap: localimage
-From: sif/build/alpine-3.20.3.sif
+From: sif/build/alpine-3.23.3.sif
 Stage: final
 
 %files from build
     /seqtk/seqtk /usr/local/bin/seqtk
 
 %post
-    apk --no-cache add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
+    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate

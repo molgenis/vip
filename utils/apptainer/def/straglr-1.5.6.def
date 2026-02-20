@@ -1,25 +1,8 @@
 Bootstrap: localimage
-From: sif/build/ubuntu-22.04.sif
+From: sif/build/python-3.11.14.sif
 
 %post
     apt-get update
-    apt-get install -qq curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git python3-pip python3
-    pip install --upgrade pip setuptools wheel
-
-    apt install ncbi-blast+ --assume-yes
-
-    mkdir -p /opt/trf/
-    curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
-    chmod +x /opt/trf/trf
-
-    pip install git+https://github.com/bcgsc/straglr.git@v1.5.6#egg=straglr
-
-    # cleanup
-    pip cache purge
-    apt-get clean
-
-%environment
-   PATH=$PATH:/opt/trf
-
-%help
-    Long-read-based human genomic short tandem repeat detection.
+    apt-get install build-essential zlib1g-dev
+    pip install pybedtools==0.12.0
+    # FIXME re-implement rest

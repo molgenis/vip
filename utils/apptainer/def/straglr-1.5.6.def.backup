@@ -1,0 +1,33 @@
+Bootstrap: localimage
+From: sif/build/python-3.11.14.sif
+
+%post
+    apt-get update
+    apt-get install -qq bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git
+
+    # --disable-pip-version-check: suppress build warning
+    # --root-user-action=ignore  : suppress build warning, see https://stackoverflow.com/a/72551258
+    # --only-binary              : ensure deps are not installed from source packages
+    pip install \
+      --disable-pip-version-check \
+      --root-user-action=ignore \
+      --only-binary=pysam,numpy,pathos,scikit-learn,scipy \
+      pysam==0.23.3 pybedtools==0.12.0 numpy==1.26.4 pathos==0.3.5 scikit-learn==1.8.0 scipy==1.17.0
+
+    apt install ncbi-blast+ --assume-yes
+
+    mkdir -p /opt/trf/
+    curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
+    chmod +x /opt/trf/trf
+
+    pip install git+https://github.com/bcgsc/straglr.git@v1.5.6#egg=straglr
+
+    # cleanup
+    pip cache purge
+    apt-get clean
+
+%environment
+   PATH=$PATH:/opt/trf
+
+%help
+    Long-read-based human genomic short tandem repeat detection.

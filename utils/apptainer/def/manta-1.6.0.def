@@ -1,5 +1,5 @@
-Bootstrap: docker
-From: ubuntu:22.04
+Bootstrap: localimage
+From: sif/build/debian-13.3.sif
 
 %post
     version_major=1
@@ -7,16 +7,14 @@ From: ubuntu:22.04
     version_patch=0
 
     apt-get update
+    apt-get install curl bzip2
 
-    apt-get install -qq bzip2 gcc g++ make python2 zlib1g-dev wget cmake
-
-    wget https://github.com/Illumina/manta/releases/download/v${version_major}.${version_minor}.${version_patch}/manta-${version_major}.${version_minor}.${version_patch}.release_src.tar.bz2
-    tar -xjf manta-${version_major}.${version_minor}.${version_patch}.release_src.tar.bz2
-    mkdir build && cd build
-    ../manta-${version_major}.${version_minor}.${version_patch}.release_src/configure --jobs=4 --prefix=/opt/manta
-    make -j4 install
+    curl --fail --silent --location --output manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2 https://github.com/Illumina/manta/releases/download/v${version_major}.${version_minor}.${version_patch}/manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
+    tar -xjf manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
 
     # cleanup
+    apt-get purge curl bzip2
+    apt-get autoremove
     apt-get clean
 
 %help
