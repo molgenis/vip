@@ -269,7 +269,7 @@ validate() {
     exit 1
   fi
   if ! command -v sacct &> /dev/null; then
-    >&2 echo -e "error: tests require 'scancel' in order to run"
+    >&2 echo -e "error: tests require 'sacct' in order to run"
     exit 1
   fi
 }

@@ -1,0 +1,27 @@
+Bootstrap: localimage
+From: sif/build/openjdk-25.sif
+
+%help
+    A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats.
+
+%post    
+    version_major=3
+    version_minor=4
+    version_patch=0
+
+    # install
+    apk add gcompat
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/picard/lib
+    curl --fail --silent --show-error --location --output /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
+    echo "e76128c283889fc583c9dea33a3b7448974c067d102c9e35be152642d4d5f901  /opt/picard/lib/picard.jar" | sha256sum -c
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/*
+
+%runscript
+    exec java -jar /opt/picard/lib/picard.jar "$@"
+
+# picard returns 'exit 1' on '--help' and '--version' calls, no straightforward way to %test if executable is working

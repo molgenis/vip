@@ -1,0 +1,28 @@
+Bootstrap: localimage
+From: sif/build/python-3.11.14.sif
+
+%post
+    apt-get update > /dev/null
+    apt-get install git > /dev/null
+
+    # --only-binary              : ensure deps are not installed from source packages
+    pip install \
+      --only-binary=scipy,pysam,biopython,pyVCF3 \
+      scipy==1.16.1 pysam==0.23.3 biopython==1.85 cigar==0.1.3 PyVCF3==1.0.4
+    # install from commit after 2.1.3 release containing fix https://github.com/tjiangHIT/cuteSV/issues/124
+    pip install "cuteSV @ git+https://github.com/tjiangHIT/cuteSV.git@441433d9e5a4e03be96afd796b313ba77159d421"
+
+    # cleanup
+    apt-get purge git > /dev/null
+    apt-get autoremove > /dev/null
+    rm -rf /var/lib/apt/lists/*
+
+%test
+    set -euo pipefail
+    cuteSV --help > /dev/null 2>&1
+
+%runscript
+    exec cuteSV "$@"
+
+%help
+    Long-read-based human genomic structural variation detection.
