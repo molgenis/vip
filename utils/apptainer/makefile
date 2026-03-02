@@ -9,11 +9,14 @@ VER_BCFTOOLS := 1.20
 VER_CAPICE := 5.1.2
 VER_CUTESV := 2.1.3-patch1
 VER_DEBIAN := 13.3
+VER_DEEPVARIANT := 1.9.0
+VER_DEEPVARIANT_DEEPTRIO := 1.9.0
 VER_EXPANSIONHUNTER := 5.0.0_v2
 VER_FASTP := 0.23.4_v2
 VER_GADO := 1.0.3_v2
 VER_MANTA := 1.6.0
 VER_MINIMAP2 := 2.27_v2
+VER_MOSDEPTH := 0.3.8
 VER_OPENJDK := 25
 VER_PICARD := 3.1.1_v2
 VER_PYTHON := 3.11.14
@@ -26,6 +29,7 @@ VER_STRANGER := 0.9.3
 VER_VCF_DECISION_TREE := 6.0.0
 VER_VCF_INHERITANCE_MATCHER := 4.0.0
 VER_VCF_REPORT := 8.2.0
+VER_VEP := 111.0
 VER_WHATSHAP := 2.4
 
 SIF_ALPINE := $(SIF_BUILD_DIR)/alpine-$(VER_ALPINE).sif
@@ -34,11 +38,14 @@ SIF_BCFTOOLS := $(SIF_DIR)/bcftools-$(VER_BCFTOOLS).sif
 SIF_CAPICE := $(SIF_DIR)/capice-$(VER_CAPICE).sif
 SIF_CUTESV := $(SIF_DIR)/cutesv-$(VER_CUTESV).sif
 SIF_DEBIAN := $(SIF_BUILD_DIR)/debian-$(VER_DEBIAN).sif
+SIF_DEEPVARIANT := $(SIF_DIR)/deepvariant-$(VER_DEEPVARIANT).sif
+SIF_DEEPVARIANT_DEEPTRIO := $(SIF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).sif
 SIF_EXPANSIONHUNTER := $(SIF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).sif
 SIF_FASTP := $(SIF_DIR)/fastp-$(VER_FASTP).sif
 SIF_GADO := $(SIF_DIR)/gado-$(VER_GADO).sif
 SIF_MANTA := $(SIF_DIR)/manta-$(VER_MANTA).sif
 SIF_MINIMAP2 := $(SIF_DIR)/minimap2-$(VER_MINIMAP2).sif
+SIF_MOSDEPTH := $(SIF_DIR)/mosdepth-$(VER_MOSDEPTH).sif
 SIF_OPENJDK := $(SIF_BUILD_DIR)/openjdk-$(VER_OPENJDK).sif
 SIF_PICARD := $(SIF_DIR)/picard-$(VER_PICARD).sif
 SIF_PYTHON := $(SIF_BUILD_DIR)/python-$(VER_PYTHON).sif
@@ -51,6 +58,7 @@ SIF_STRANGER := $(SIF_DIR)/stranger-$(VER_STRANGER).sif
 SIF_VCF_DECISION_TREE := $(SIF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).sif
 SIF_VCF_INHERITANCE_MATCHER := $(SIF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).sif
 SIF_VCF_REPORT := $(SIF_DIR)/vcf-report-$(VER_VCF_REPORT).sif
+SIF_VEP := $(SIF_DIR)/vep-$(VER_VEP).sif
 SIF_WHATSHAP := $(SIF_DIR)/whatshap-$(VER_WHATSHAP).sif
 
 BUILD_CMD := sudo apptainer --quiet build \
@@ -67,11 +75,14 @@ all: \
 	capice \
 	cutesv \
 	debian \
+	deepvariant \
+	deepvariant_deeptrio \
 	expansionhunter \
 	fastp \
 	gado \
 	manta \
 	minimap2 \
+	mosdepth \
 	openjdk \
 	picard \
 	python \
@@ -84,6 +95,7 @@ all: \
 	vcf-decision-tree \
 	vcf-inheritance-matcher \
 	vcf-report \
+	vep \
 	whatshap
 
 # clean
@@ -146,6 +158,20 @@ $(SIF_DEBIAN): $(DEF_BUILD_DIR)/debian-$(VER_DEBIAN).def \
 .PHONY: debian
 debian: $(SIF_DEBIAN)
 
+# deepvariant
+$(SIF_DEEPVARIANT): $(DEF_DIR)/deepvariant-$(VER_DEEPVARIANT).def \
+	| $(SIF_DIR)
+	$(BUILD_CMD) $@ $<
+.PHONY: deepvariant
+deepvariant: $(SIF_DEEPVARIANT)
+
+# deepvariant_deeptrio
+$(SIF_DEEPVARIANT_DEEPTRIO): $(DEF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).def \
+	| $(SIF_DIR)
+	$(BUILD_CMD) $@ $<
+.PHONY: deepvariant_deeptrio
+deepvariant_deeptrio: $(SIF_DEEPVARIANT_DEEPTRIO)
+
 # expansionhunter: depends on alpine
 $(SIF_EXPANSIONHUNTER): $(DEF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).def \
 	$(SIF_ALPINE) \
@@ -186,6 +212,13 @@ $(SIF_MINIMAP2): $(DEF_DIR)/minimap2-$(VER_MINIMAP2).def \
 .PHONY: minimap2
 minimap2: $(SIF_MINIMAP2)
 
+# mosdepth
+$(SIF_MOSDEPTH): $(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def \
+	| $(SIF_DIR)
+	$(BUILD_CMD) $@ $<
+.PHONY: mosdepth
+mosdepth: $(SIF_MOSDEPTH)
+
 # openjdk: depends on alpine
 $(SIF_OPENJDK): $(DEF_BUILD_DIR)/openjdk-$(VER_OPENJDK).def \
 	$(SIF_ALPINE) \
@@ -205,7 +238,7 @@ picard: $(SIF_PICARD)
 
 # python
 $(SIF_PYTHON): $(DEF_BUILD_DIR)/python-$(VER_PYTHON).def \
-	$(SIF_BUILD_DIR)
+	| $(SIF_BUILD_DIR)
 	$(BUILD_CMD) $@ $<
 .PHONY: python
 python: $(SIF_PYTHON)
@@ -240,7 +273,7 @@ $(SIF_STRAGLR): $(DEF_DIR)/straglr-$(VER_STRAGLR).def \
 	| $(SIF_DIR)
 	$(BUILD_CMD) $@ $<
 .PHONY: straglr
-manta: $(SIF_STRAGLR)
+straglr: $(SIF_STRAGLR)
 
 # straglr_tsv2vcf: depends on openjdk
 $(SIF_STRAGLR_TSV2VCF): \
@@ -286,6 +319,13 @@ $(SIF_VCF_REPORT): \
 .PHONY: vcf-report
 vcf-report: $(SIF_VCF_REPORT)
 
+# vep
+$(SIF_VEP): $(DEF_DIR)/vep-$(VER_VEP).def \
+	| $(SIF_DIR)
+	$(BUILD_CMD) $@ $<
+.PHONY: vep
+vep: $(SIF_VEP)
+
 # whatshap: depends on python
 $(SIF_WHATSHAP): $(DEF_DIR)/whatshap-$(VER_WHATSHAP).def \
 	$(SIF_PYTHON) \
@@ -293,4 +333,3 @@ $(SIF_WHATSHAP): $(DEF_DIR)/whatshap-$(VER_WHATSHAP).def \
 	$(BUILD_CMD) $@ $<
 .PHONY: whatshap
 whatshap: $(SIF_WHATSHAP)
-
