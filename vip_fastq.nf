@@ -28,6 +28,7 @@ workflow fastq {
       | set { ch_fastp_paired_end }
 
     ch_fastp_paired_end.reads_pass
+      | map { meta, fastq_r1, fastq_r2 -> [meta, fastq_r1, fastq_r2, meta.project.regions ? meta.project.regions : meta.project.sequencing_method == "WES" ? params.cram.coverage[meta.project.assembly].default_bed_exon : params.cram.coverage[meta.project.assembly].default_bed_gene]}
       | minimap2_align_paired_end
       | set { ch_input_paired_end_aligned }
 
@@ -50,7 +51,8 @@ workflow fastq {
       | fastp
       | set { ch_fastp }
 
-    ch_fastp.reads_pass  
+    ch_fastp.reads_pass
+      | map { meta, fastq -> [meta, fastq, meta.project.regions ? meta.project.regions : meta.project.sequencing_method == "WES" ? params.cram.coverage[meta.project.assembly].default_bed_exon : params.cram.coverage[meta.project.assembly].default_bed_gene]}
       | minimap2_align
       | set { ch_input_single_aligned }
 
