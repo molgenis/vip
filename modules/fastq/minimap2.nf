@@ -1,6 +1,8 @@
 process minimap2_align {
   label 'minimap2_align'
 
+  publishDir "$params.output/intermediates", mode: 'link'
+
   input:
     tuple val(meta), path(fastq, arity: '1'), path(bedFile)
 
@@ -10,7 +12,7 @@ process minimap2_align {
   shell:
     reference=params[params.assembly].reference.fasta
     referenceMmi=params[params.assembly].reference.fastaMmi
-    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_unfiltered.cram"
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
     
@@ -23,7 +25,7 @@ process minimap2_align {
     template 'minimap2_align.sh'
 
   stub:
-    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_unfiltered.cram"
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
     
@@ -36,6 +38,8 @@ process minimap2_align {
 
 process minimap2_align_paired_end {
   label 'minimap2_align_paired_end'
+  
+  publishDir "$params.output/intermediates", mode: 'link'
   
   input:
     tuple val(meta), path(fastqR1, arity: '1'), path(fastqR2, arity: '1'), path(bedFile)
