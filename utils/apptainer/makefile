@@ -1,8 +1,15 @@
+# create/remove tmp directory (source: https://stackoverflow.com/a/77878760)
+SHELL := /bin/bash
+export TMPDIR:=$(shell mktemp --directory)
+$(shell { trap 'rm -rf ${TMPDIR};' EXIT; tail --pid=$$PPID -f /dev/null; } </dev/null >/dev/null 2>/dev/null &)
+
+# directories
 DEF_DIR := def
 DEF_BUILD_DIR := $(DEF_DIR)/build
 SIF_DIR := sif
 SIF_BUILD_DIR := $(SIF_DIR)/build
 
+# .sif versions
 VER_ALPINE := 3.23.3
 VER_ANNOTSV := 3.4.6
 VER_BCFTOOLS := 1.20
@@ -32,6 +39,7 @@ VER_VCF_REPORT := 8.2.0
 VER_VEP := 111.0
 VER_WHATSHAP := 2.4
 
+# .sif targets
 SIF_ALPINE := $(SIF_BUILD_DIR)/alpine-$(VER_ALPINE).sif
 SIF_ANNOTSV := $(SIF_DIR)/annotsv-$(VER_ANNOTSV).sif
 SIF_BCFTOOLS := $(SIF_DIR)/bcftools-$(VER_BCFTOOLS).sif
@@ -61,48 +69,29 @@ SIF_VCF_REPORT := $(SIF_DIR)/vcf-report-$(VER_VCF_REPORT).sif
 SIF_VEP := $(SIF_DIR)/vep-$(VER_VEP).sif
 SIF_WHATSHAP := $(SIF_DIR)/whatshap-$(VER_WHATSHAP).sif
 
-BUILD_CMD := sudo apptainer --quiet build \
-    --disable-cache \
-    --force \
-    --mksquashfs-args "-quiet -reproducible -no-xattrs -comp zstd -Xcompression-level 19"
+# build settings
+ARCH ?= amd64
+ARCH_VARIANT ?= x86-64-v3
 
-# default target
-.PHONY: all
-all: \
-	alpine \
-	annotsv \
-	bcftools \
-	capice \
-	cutesv \
-	debian \
-	deepvariant \
-	deepvariant_deeptrio \
-	expansionhunter \
-	fastp \
-	gado \
-	manta \
-	minimap2 \
-	mosdepth \
-	openjdk \
-	picard \
-	python \
-	samtools \
-	seqtk \
-	spectre \
-	straglr \
-	straglr_tsv2vcf \
-	stranger \
-	vcf-decision-tree \
-	vcf-inheritance-matcher \
-	vcf-report \
-	vep \
-	whatshap
-
-# clean
-.PHONY: clean
-clean:
-	rm -rf $(SIF_DIR) $(SIF_BUILD_DIR)
-.NOTPARALLEL: clean
+# build macro
+# $1 = phony name
+# $2 = .sif path
+# $3 = .def path
+# $4 = .sif dependencies (optional)
+define build_image
+$1: $2
+.PHONY: $1
+$2: $3 $4
+	@mkdir -p $(dir $2)
+	APPTAINER_TMPDIR=$(TMPDIR) apptainer --quiet build \
+		--arch $(ARCH) \
+		--arch-variant $(ARCH_VARIANT) \
+		--disable-cache \
+		--fakeroot \
+		--force \
+		--mksquashfs-args "-quiet -reproducible -no-xattrs -comp zstd -Xcompression-level 19" \
+		$$@ $$<;
+endef
 
 # directories
 $(SIF_BUILD_DIR):
@@ -111,225 +100,70 @@ $(SIF_BUILD_DIR):
 $(SIF_DIR):
 	mkdir -p $@
 
-# alpine
-$(SIF_ALPINE): $(DEF_BUILD_DIR)/alpine-$(VER_ALPINE).def \
-	| $(SIF_BUILD_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: alpine
-alpine: $(SIF_ALPINE)
+# image build targets
+$(eval $(call build_image,alpine,$(SIF_ALPINE),$(DEF_BUILD_DIR)/alpine-$(VER_ALPINE).def,))
+$(eval $(call build_image,annotsv,$(SIF_ANNOTSV),$(DEF_DIR)/annotsv-$(VER_ANNOTSV).def,$(SIF_BCFTOOLS) $(SIF_OPENJDK)))
+$(eval $(call build_image,bcftools,$(SIF_BCFTOOLS),$(DEF_DIR)/bcftools-$(VER_BCFTOOLS).def,$(SIF_ALPINE)))
+$(eval $(call build_image,capice,$(SIF_CAPICE),$(DEF_DIR)/capice-$(VER_CAPICE).def,$(SIF_PYTHON)))
+$(eval $(call build_image,cutesv,$(SIF_CUTESV),$(DEF_DIR)/cutesv-$(VER_CUTESV).def,$(SIF_PYTHON)))
+$(eval $(call build_image,debian,$(SIF_DEBIAN),$(DEF_BUILD_DIR)/debian-$(VER_DEBIAN).def,))
+$(eval $(call build_image,deepvariant,$(SIF_DEEPVARIANT),$(DEF_DIR)/deepvariant-$(VER_DEEPVARIANT).def,))
+$(eval $(call build_image,deepvariant_deeptrio,$(SIF_DEEPVARIANT_DEEPTRIO),$(DEF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).def,))
+$(eval $(call build_image,expansionhunter,$(SIF_EXPANSIONHUNTER),$(DEF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).def,$(SIF_ALPINE)))
+$(eval $(call build_image,fastp,$(SIF_FASTP),$(DEF_DIR)/fastp-$(VER_FASTP).def,$(SIF_ALPINE)))
+$(eval $(call build_image,gado,$(SIF_GADO),$(DEF_DIR)/gado-$(VER_GADO).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,manta,$(SIF_MANTA),$(DEF_DIR)/manta-$(VER_MANTA).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,minimap2,$(SIF_MINIMAP2),$(DEF_DIR)/minimap2-$(VER_MINIMAP2).def,$(SIF_ALPINE)))
+$(eval $(call build_image,mosdepth,$(SIF_MOSDEPTH),$(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def,))
+$(eval $(call build_image,openjdk,$(SIF_OPENJDK),$(DEF_BUILD_DIR)/openjdk-$(VER_OPENJDK).def,$(SIF_ALPINE)))
+$(eval $(call build_image,picard,$(SIF_PICARD),$(DEF_DIR)/picard-$(VER_PICARD).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,python,$(SIF_PYTHON),$(DEF_BUILD_DIR)/python-$(VER_PYTHON).def,))
+$(eval $(call build_image,samtools,$(SIF_SAMTOOLS),$(DEF_DIR)/samtools-$(VER_SAMTOOLS).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,seqtk,$(SIF_SEQTK),$(DEF_DIR)/seqtk-$(VER_SEQTK).def,$(SIF_ALPINE)))
+$(eval $(call build_image,spectre,$(SIF_SPECTRE),$(DEF_DIR)/spectre-$(VER_SPECTRE).def,$(SIF_ALPINE)))
+$(eval $(call build_image,straglr,$(SIF_STRAGLR),$(DEF_DIR)/straglr-$(VER_STRAGLR).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,straglr_tsv2vcf,$(SIF_STRAGLR_TSV2VCF),$(DEF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,stranger,$(SIF_STRANGER),$(DEF_DIR)/stranger-$(VER_STRANGER).def,$(SIF_ALPINE)))
+$(eval $(call build_image,vcf-decision-tree,$(SIF_VCF_DECISION_TREE),$(DEF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vcf-inheritance-matcher,$(SIF_VCF_INHERITANCE_MATCHER),$(DEF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vcf-report,$(SIF_VCF_REPORT),$(DEF_DIR)/vcf-report-$(VER_VCF_REPORT).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vep,$(SIF_VEP),$(DEF_DIR)/vep-$(VER_VEP).def,))
+$(eval $(call build_image,whatshap,$(SIF_WHATSHAP),$(DEF_DIR)/whatshap-$(VER_WHATSHAP).def,$(SIF_PYTHON)))
 
-# annotsv: depends on bcftools, openjdk
-$(SIF_ANNOTSV): $(DEF_DIR)/annotsv-$(VER_ANNOTSV).def \
-	$(SIF_BCFTOOLS) \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: annotsv
-annotsv: $(SIF_ANNOTSV)
+# default target
+.PHONY: all
+all: \
+        alpine \
+        annotsv \
+        bcftools \
+        capice \
+        cutesv \
+        debian \
+        deepvariant \
+        deepvariant_deeptrio \
+        expansionhunter \
+        fastp \
+        gado \
+        manta \
+        minimap2 \
+        mosdepth \
+        openjdk \
+        picard \
+        python \
+        samtools \
+        seqtk \
+        spectre \
+        straglr \
+        straglr_tsv2vcf \
+        stranger \
+        vcf-decision-tree \
+        vcf-inheritance-matcher \
+        vcf-report \
+        vep \
+        whatshap
 
-# bcftools: depends on alpine
-$(SIF_BCFTOOLS): $(DEF_DIR)/bcftools-$(VER_BCFTOOLS).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: bcftools
-bcftools: $(SIF_BCFTOOLS)
-
-# capice: depends on python
-$(SIF_CAPICE): $(DEF_DIR)/capice-$(VER_CAPICE).def \
-	$(SIF_PYTHON) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: capice
-capice: $(SIF_CAPICE)
-
-# cutesv: depends on python
-$(SIF_CUTESV): $(DEF_DIR)/cutesv-$(VER_CUTESV).def \
-	$(SIF_PYTHON) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: cutesv
-cutesv: $(SIF_CUTESV)
-
-# debian
-$(SIF_DEBIAN): $(DEF_BUILD_DIR)/debian-$(VER_DEBIAN).def \
-	| $(SIF_BUILD_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: debian
-debian: $(SIF_DEBIAN)
-
-# deepvariant
-$(SIF_DEEPVARIANT): $(DEF_DIR)/deepvariant-$(VER_DEEPVARIANT).def \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: deepvariant
-deepvariant: $(SIF_DEEPVARIANT)
-
-# deepvariant_deeptrio
-$(SIF_DEEPVARIANT_DEEPTRIO): $(DEF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).def \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: deepvariant_deeptrio
-deepvariant_deeptrio: $(SIF_DEEPVARIANT_DEEPTRIO)
-
-# expansionhunter: depends on alpine
-$(SIF_EXPANSIONHUNTER): $(DEF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: expansionhunter
-expansionhunter: $(SIF_EXPANSIONHUNTER)
-
-# fastp: depends on alpine
-$(SIF_FASTP): $(DEF_DIR)/fastp-$(VER_FASTP).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: fastp
-fastp: $(SIF_FASTP)
-
-# gado: depends on openjdk
-$(SIF_GADO): $(DEF_DIR)/gado-$(VER_GADO).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: gado
-gado: $(SIF_GADO)
-
-# manta: depends on debian
-$(SIF_MANTA): $(DEF_DIR)/manta-$(VER_MANTA).def \
-	$(SIF_DEBIAN) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: manta
-manta: $(SIF_MANTA)
-
-# minimap2: depends on alpine
-$(SIF_MINIMAP2): $(DEF_DIR)/minimap2-$(VER_MINIMAP2).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: minimap2
-minimap2: $(SIF_MINIMAP2)
-
-# mosdepth
-$(SIF_MOSDEPTH): $(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: mosdepth
-mosdepth: $(SIF_MOSDEPTH)
-
-# openjdk: depends on alpine
-$(SIF_OPENJDK): $(DEF_BUILD_DIR)/openjdk-$(VER_OPENJDK).def \
-	$(SIF_ALPINE) \
-	| $(SIF_BUILD_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: openjdk
-openjdk: $(SIF_OPENJDK)
-
-# picard: depends on openjdk
-$(SIF_PICARD): \
-	$(DEF_DIR)/picard-$(VER_PICARD).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: picard
-picard: $(SIF_PICARD)
-
-# python
-$(SIF_PYTHON): $(DEF_BUILD_DIR)/python-$(VER_PYTHON).def \
-	| $(SIF_BUILD_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: python
-python: $(SIF_PYTHON)
-
-# samtools: depends on debian
-$(SIF_SAMTOOLS): $(DEF_DIR)/samtools-$(VER_SAMTOOLS).def \
-	$(SIF_DEBIAN) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: samtools
-samtools: $(SIF_SAMTOOLS)
-
-# seqtk: depends on alpine
-$(SIF_SEQTK): $(DEF_DIR)/seqtk-$(VER_SEQTK).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: seqtk
-seqtk: $(SIF_SEQTK)
-
-# spectre: depends on alpine
-$(SIF_SPECTRE): $(DEF_DIR)/spectre-$(VER_SPECTRE).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: spectre
-spectre: $(SIF_SPECTRE)
-
-# straglr: depends on debian
-$(SIF_STRAGLR): $(DEF_DIR)/straglr-$(VER_STRAGLR).def \
-	$(SIF_DEBIAN) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: straglr
-straglr: $(SIF_STRAGLR)
-
-# straglr_tsv2vcf: depends on openjdk
-$(SIF_STRAGLR_TSV2VCF): \
-	$(DEF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: straglr_tsv2vcf
-straglr_tsv2vcf: $(SIF_STRAGLR_TSV2VCF)
-
-# stranger: depends on alpine
-$(SIF_STRANGER): $(DEF_DIR)/stranger-$(VER_STRANGER).def \
-	$(SIF_ALPINE) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: stranger
-stranger: $(SIF_STRANGER)
-
-# vcf-decision-tree: depends on openjdk
-$(SIF_VCF_DECISION_TREE): \
-	$(DEF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: vcf-decision-tree
-vcf-decision-tree: $(SIF_VCF_DECISION_TREE)
-
-# vcf-inheritance-matcher: depends on openjdk
-$(SIF_VCF_INHERITANCE_MATCHER): \
-	$(DEF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: vcf-inheritance-matcher
-vcf-inheritance-matcher: $(SIF_VCF_INHERITANCE_MATCHER)
-
-# vcf-report: depends on openjdk
-$(SIF_VCF_REPORT): \
-	$(DEF_DIR)/vcf-report-$(VER_VCF_REPORT).def \
-	$(SIF_OPENJDK) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: vcf-report
-vcf-report: $(SIF_VCF_REPORT)
-
-# vep
-$(SIF_VEP): $(DEF_DIR)/vep-$(VER_VEP).def \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: vep
-vep: $(SIF_VEP)
-
-# whatshap: depends on python
-$(SIF_WHATSHAP): $(DEF_DIR)/whatshap-$(VER_WHATSHAP).def \
-	$(SIF_PYTHON) \
-	| $(SIF_DIR)
-	$(BUILD_CMD) $@ $<
-.PHONY: whatshap
-whatshap: $(SIF_WHATSHAP)
+# clean
+.PHONY: clean
+clean:
+	rm -rf $(SIF_DIR) $(SIF_BUILD_DIR)
+.NOTPARALLEL: clean
