@@ -130,6 +130,8 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#hmtvar">HmtVar</a>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="#brain-magnet">BRAIN-MAGNET</a>
+</li>
 </ul>
 </li>
 </ul>
@@ -1249,6 +1251,10 @@ A custom MitoTIP VEP plugin annotates mitochondrial variants with computed <a hr
 <h4 id="hmtvar">HmtVar<a class="headerlink" href="#hmtvar" title="Permanent link">¶</a></h4>
 <p><a href="https://doi.org/10.1093/nar/gky1024">HmtVar</a> contains disease scores for mtDNA SNVs.
 A custom HmtVar VEP plugin annotates mitochondrial tRNA variants with computed disease scores.</p>
+<h4 id="brain-magnet">BRAIN-MAGNET<a class="headerlink" href="#brain-magnet" title="Permanent link">¶</a></h4>
+<p><a href="https://github.com/ruizhideng/BRAIN-MAGNET">BRAIN-MAGNET</a> predictions for all possible SNPs from NSC NCREs (~100 million), you can easily score your interested variants from our pre-scored data.
+Please note that this plugin is not enabled by default. It can be added through the "params.vcf.vep_additional_plugins" configuration option.
+Resources for this plugin should be provided by the user and are not part of the VIP install script. The resources can be found here: <a href="https://huggingface.co/datasets/RuizhiDeng/BRAIN-MAGNET/tree/main">resources</a> </p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
