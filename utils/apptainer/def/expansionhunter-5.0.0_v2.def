@@ -7,7 +7,6 @@ From: sif/build/alpine-3.23.3.sif
     version_patch=0
 
     # install
-    apk update
     apk add zlib libbz2 xz-libs libdeflate curl gcompat
 
     curl -Ls -o ExpansionHunter.tar.gz https://github.com/Illumina/ExpansionHunter/releases/download/v${version_major}.${version_minor}.${version_patch}/ExpansionHunter-v${version_major}.${version_minor}.${version_patch}-linux_x86_64.tar.gz

@@ -11,7 +11,6 @@ From: sif/build/openjdk-25.sif
     version_patch=1
 
     # install
-    apk update
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-inheritance/lib
@@ -27,5 +26,4 @@ From: sif/build/openjdk-25.sif
 
 %test
     set -euo pipefail
-    echo $PWD
     java -jar /opt/vcf-inheritance/lib/genemap-mapper.jar --version > /dev/null

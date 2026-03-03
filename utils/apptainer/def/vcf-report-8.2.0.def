@@ -11,7 +11,6 @@ From: sif/build/openjdk-25.sif
     version_patch=0
 
     # install
-    apk update
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-report/lib

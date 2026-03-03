@@ -6,7 +6,7 @@ Stage: build
     version_major=2
     version_minor=27
 
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev libdeflate-dev
+    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev libdeflate-dev
 
     # download
     curl -Ls -o minimap2-${version_major}.${version_minor}.tar.bz2 https://github.com/lh3/minimap2/releases/download/v${version_major}.${version_minor}/minimap2-${version_major}.${version_minor}.tar.bz2
@@ -25,4 +25,4 @@ Stage: final
     /usr/local/bin/minimap2
 
 %post
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libdeflate
+    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libdeflate

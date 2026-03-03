@@ -6,7 +6,6 @@ From: sif/build/alpine-3.23.3.sif
     version_minor=9
     version_patch=3
 
-    apk update
     apk add python3 cython zlib libbz2 xz-libs libdeflate py3-setuptools
     apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
 

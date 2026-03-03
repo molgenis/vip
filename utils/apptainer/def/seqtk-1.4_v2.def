@@ -6,7 +6,7 @@ Stage: build
     version_major=1
     version_minor=4
 
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev git
+    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev git
     
     # download
     git clone --depth 1 --branch v${version_major}.${version_minor} https://github.com/lh3/seqtk.git
@@ -21,4 +21,4 @@ Stage: final
     /seqtk/seqtk /usr/local/bin/seqtk
 
 %post
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
+    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate

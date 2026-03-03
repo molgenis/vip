@@ -7,7 +7,7 @@ Stage: build
     version_minor=23
     version_patch=4
 
-    apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/community curl
+    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl
     
     # download
     curl -Ls -o fastp.${version_major}.${version_minor}.${version_patch} http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
