@@ -1,6 +1,9 @@
 Bootstrap: docker
 From: debian:13.3-slim
 
+%help
+    Debian 13 "Trixie"
+
 %environment
     export DEBIAN_FRONTEND=noninteractive
 
@@ -15,5 +18,6 @@ Dir::Cache::pkgcache "";
 Dir::Cache::srcpkgcache "";
 EOF
 
-%help
-    Debian 13 codename 'trixie'.
+%test
+		set -euo pipefail
+		bash --help > /dev/null

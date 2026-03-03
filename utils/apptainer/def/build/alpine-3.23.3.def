@@ -1,8 +1,8 @@
 Bootstrap: scratch
 
-%environment
-    export PATH=/usr/local/bin:$PATH
- 
+%help
+    Alpine Linux 3.23
+
 %setup
     version_major=3
     version_minor=23
@@ -16,6 +16,9 @@ Bootstrap: scratch
     echo "42d0e6d8de5521e7bf92e075e032b5690c1d948fa9775efa32a51a38b25460fb  ${alpine_minirootfs_path}" | sha256sum --check
     tar --extract --gzip --file="${alpine_minirootfs_path}" --directory="${APPTAINER_ROOTFS}" --exclude=./dev --exclude=./etc/hosts
 
+%environment
+    export PATH=/usr/local/bin:$PATH
+
 %post
     # create wrapper script for apk to add --no-cache -q by default
     cat > /usr/local/bin/apk <<'EOF'
@@ -24,5 +27,6 @@ exec /sbin/apk --quiet --no-cache --no-progress "$@"
 EOF
     chmod +x /usr/local/bin/apk
 
-%help
-    Apptainer container running Alpine Linux
+%test
+		set -euo pipefail
+		bash --help > /dev/null

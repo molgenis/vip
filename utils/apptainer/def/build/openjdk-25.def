@@ -2,7 +2,14 @@ Bootstrap: localimage
 From: sif/build/alpine-3.23.3.sif
 
 %help
-	Apptainer container running Oracle OpenJDK 25 (JRE headless) on Alpine Linux
+	Oracle OpenJDK 25 (JRE headless) on Alpine Linux
 
 %post
 	apk --no-cache add openjdk25-jre-headless
+
+%runscript
+    exec java "$@"
+
+%test
+		set -euo pipefail
+		java --help > /dev/null
