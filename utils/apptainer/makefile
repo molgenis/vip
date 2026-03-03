@@ -93,44 +93,7 @@ $2: $3 $4
 		$$@ $$<;
 endef
 
-# directories
-$(SIF_BUILD_DIR):
-	mkdir -p $@
-
-$(SIF_DIR):
-	mkdir -p $@
-
-# image build targets
-$(eval $(call build_image,alpine,$(SIF_ALPINE),$(DEF_BUILD_DIR)/alpine-$(VER_ALPINE).def,))
-$(eval $(call build_image,annotsv,$(SIF_ANNOTSV),$(DEF_DIR)/annotsv-$(VER_ANNOTSV).def,$(SIF_BCFTOOLS) $(SIF_OPENJDK)))
-$(eval $(call build_image,bcftools,$(SIF_BCFTOOLS),$(DEF_DIR)/bcftools-$(VER_BCFTOOLS).def,$(SIF_ALPINE)))
-$(eval $(call build_image,capice,$(SIF_CAPICE),$(DEF_DIR)/capice-$(VER_CAPICE).def,$(SIF_PYTHON)))
-$(eval $(call build_image,cutesv,$(SIF_CUTESV),$(DEF_DIR)/cutesv-$(VER_CUTESV).def,$(SIF_PYTHON)))
-$(eval $(call build_image,debian,$(SIF_DEBIAN),$(DEF_BUILD_DIR)/debian-$(VER_DEBIAN).def,))
-$(eval $(call build_image,deepvariant,$(SIF_DEEPVARIANT),$(DEF_DIR)/deepvariant-$(VER_DEEPVARIANT).def,))
-$(eval $(call build_image,deepvariant_deeptrio,$(SIF_DEEPVARIANT_DEEPTRIO),$(DEF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).def,))
-$(eval $(call build_image,expansionhunter,$(SIF_EXPANSIONHUNTER),$(DEF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).def,$(SIF_ALPINE)))
-$(eval $(call build_image,fastp,$(SIF_FASTP),$(DEF_DIR)/fastp-$(VER_FASTP).def,$(SIF_ALPINE)))
-$(eval $(call build_image,gado,$(SIF_GADO),$(DEF_DIR)/gado-$(VER_GADO).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,manta,$(SIF_MANTA),$(DEF_DIR)/manta-$(VER_MANTA).def,$(SIF_DEBIAN)))
-$(eval $(call build_image,minimap2,$(SIF_MINIMAP2),$(DEF_DIR)/minimap2-$(VER_MINIMAP2).def,$(SIF_ALPINE)))
-$(eval $(call build_image,mosdepth,$(SIF_MOSDEPTH),$(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def,))
-$(eval $(call build_image,openjdk,$(SIF_OPENJDK),$(DEF_BUILD_DIR)/openjdk-$(VER_OPENJDK).def,$(SIF_ALPINE)))
-$(eval $(call build_image,picard,$(SIF_PICARD),$(DEF_DIR)/picard-$(VER_PICARD).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,python,$(SIF_PYTHON),$(DEF_BUILD_DIR)/python-$(VER_PYTHON).def,))
-$(eval $(call build_image,samtools,$(SIF_SAMTOOLS),$(DEF_DIR)/samtools-$(VER_SAMTOOLS).def,$(SIF_DEBIAN)))
-$(eval $(call build_image,seqtk,$(SIF_SEQTK),$(DEF_DIR)/seqtk-$(VER_SEQTK).def,$(SIF_ALPINE)))
-$(eval $(call build_image,spectre,$(SIF_SPECTRE),$(DEF_DIR)/spectre-$(VER_SPECTRE).def,$(SIF_ALPINE)))
-$(eval $(call build_image,straglr,$(SIF_STRAGLR),$(DEF_DIR)/straglr-$(VER_STRAGLR).def,$(SIF_DEBIAN)))
-$(eval $(call build_image,straglr_tsv2vcf,$(SIF_STRAGLR_TSV2VCF),$(DEF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,stranger,$(SIF_STRANGER),$(DEF_DIR)/stranger-$(VER_STRANGER).def,$(SIF_ALPINE)))
-$(eval $(call build_image,vcf-decision-tree,$(SIF_VCF_DECISION_TREE),$(DEF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,vcf-inheritance-matcher,$(SIF_VCF_INHERITANCE_MATCHER),$(DEF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,vcf-report,$(SIF_VCF_REPORT),$(DEF_DIR)/vcf-report-$(VER_VCF_REPORT).def,$(SIF_OPENJDK)))
-$(eval $(call build_image,vep,$(SIF_VEP),$(DEF_DIR)/vep-$(VER_VEP).def,))
-$(eval $(call build_image,whatshap,$(SIF_WHATSHAP),$(DEF_DIR)/whatshap-$(VER_WHATSHAP).def,$(SIF_PYTHON)))
-
-# default target
+# target: default
 .PHONY: all
 all: \
         alpine \
@@ -162,8 +125,38 @@ all: \
         vep \
         whatshap
 
-# clean
+# target: clean
 .PHONY: clean
 clean:
 	rm -rf $(SIF_DIR) $(SIF_BUILD_DIR)
 .NOTPARALLEL: clean
+
+# target: build images
+$(eval $(call build_image,alpine,$(SIF_ALPINE),$(DEF_BUILD_DIR)/alpine-$(VER_ALPINE).def,))
+$(eval $(call build_image,annotsv,$(SIF_ANNOTSV),$(DEF_DIR)/annotsv-$(VER_ANNOTSV).def,$(SIF_BCFTOOLS) $(SIF_OPENJDK)))
+$(eval $(call build_image,bcftools,$(SIF_BCFTOOLS),$(DEF_DIR)/bcftools-$(VER_BCFTOOLS).def,$(SIF_ALPINE)))
+$(eval $(call build_image,capice,$(SIF_CAPICE),$(DEF_DIR)/capice-$(VER_CAPICE).def,$(SIF_PYTHON)))
+$(eval $(call build_image,cutesv,$(SIF_CUTESV),$(DEF_DIR)/cutesv-$(VER_CUTESV).def,$(SIF_PYTHON)))
+$(eval $(call build_image,debian,$(SIF_DEBIAN),$(DEF_BUILD_DIR)/debian-$(VER_DEBIAN).def,))
+$(eval $(call build_image,deepvariant,$(SIF_DEEPVARIANT),$(DEF_DIR)/deepvariant-$(VER_DEEPVARIANT).def,))
+$(eval $(call build_image,deepvariant_deeptrio,$(SIF_DEEPVARIANT_DEEPTRIO),$(DEF_DIR)/deepvariant_deeptrio-$(VER_DEEPVARIANT_DEEPTRIO).def,))
+$(eval $(call build_image,expansionhunter,$(SIF_EXPANSIONHUNTER),$(DEF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).def,$(SIF_ALPINE)))
+$(eval $(call build_image,fastp,$(SIF_FASTP),$(DEF_DIR)/fastp-$(VER_FASTP).def,$(SIF_ALPINE)))
+$(eval $(call build_image,gado,$(SIF_GADO),$(DEF_DIR)/gado-$(VER_GADO).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,manta,$(SIF_MANTA),$(DEF_DIR)/manta-$(VER_MANTA).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,minimap2,$(SIF_MINIMAP2),$(DEF_DIR)/minimap2-$(VER_MINIMAP2).def,$(SIF_ALPINE)))
+$(eval $(call build_image,mosdepth,$(SIF_MOSDEPTH),$(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def,))
+$(eval $(call build_image,openjdk,$(SIF_OPENJDK),$(DEF_BUILD_DIR)/openjdk-$(VER_OPENJDK).def,$(SIF_ALPINE)))
+$(eval $(call build_image,picard,$(SIF_PICARD),$(DEF_DIR)/picard-$(VER_PICARD).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,python,$(SIF_PYTHON),$(DEF_BUILD_DIR)/python-$(VER_PYTHON).def,))
+$(eval $(call build_image,samtools,$(SIF_SAMTOOLS),$(DEF_DIR)/samtools-$(VER_SAMTOOLS).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,seqtk,$(SIF_SEQTK),$(DEF_DIR)/seqtk-$(VER_SEQTK).def,$(SIF_ALPINE)))
+$(eval $(call build_image,spectre,$(SIF_SPECTRE),$(DEF_DIR)/spectre-$(VER_SPECTRE).def,$(SIF_ALPINE)))
+$(eval $(call build_image,straglr,$(SIF_STRAGLR),$(DEF_DIR)/straglr-$(VER_STRAGLR).def,$(SIF_DEBIAN)))
+$(eval $(call build_image,straglr_tsv2vcf,$(SIF_STRAGLR_TSV2VCF),$(DEF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,stranger,$(SIF_STRANGER),$(DEF_DIR)/stranger-$(VER_STRANGER).def,$(SIF_ALPINE)))
+$(eval $(call build_image,vcf-decision-tree,$(SIF_VCF_DECISION_TREE),$(DEF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vcf-inheritance-matcher,$(SIF_VCF_INHERITANCE_MATCHER),$(DEF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vcf-report,$(SIF_VCF_REPORT),$(DEF_DIR)/vcf-report-$(VER_VCF_REPORT).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vep,$(SIF_VEP),$(DEF_DIR)/vep-$(VER_VEP).def,))
+$(eval $(call build_image,whatshap,$(SIF_WHATSHAP),$(DEF_DIR)/whatshap-$(VER_WHATSHAP).def,$(SIF_PYTHON)))
