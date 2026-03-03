@@ -43,11 +43,11 @@ sub feature_types {
 
 sub get_header_info {
   return {
-    BRAIN_MAGNET_CATEGORY => "TODO",
-    BRAIN_MAGNET_GENE => "TODO",
-    BRAIN_MAGNET_CB_SCORE => "TODO",
-    BRAIN_MAGNET_PERC_ALL => "TODO",
-    BRAIN_MAGNET_PERC_EACH => "TODO"
+    BRAIN_MAGNET_CATEGORY => "BRAIN-MAGNET NCREs activity category.",
+    BRAIN_MAGNET_GENE => "BRAIN-MAGNET target gene.",
+    BRAIN_MAGNET_CB_SCORE => "BRAIN-MAGNET contribution (cb) scores.",
+    BRAIN_MAGNET_PERC_ALL => "BRAIN-MAGNET percentile all score.",
+    BRAIN_MAGNET_PERC_EACH => "BRAIN-MAGNET percentile each score."
   };
 }
 

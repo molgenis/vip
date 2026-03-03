@@ -317,3 +317,4 @@ A custom HmtVar VEP plugin annotates mitochondrial tRNA variants with computed d
 #### BRAIN-MAGNET
 [BRAIN-MAGNET](https://github.com/ruizhideng/BRAIN-MAGNET) predictions for all possible SNPs from NSC NCREs (~100 million), you can easily score your interested variants from our pre-scored data.
 Please note that this plugin is not enabled by default. It can be added through the "params.vcf.vep_additional_plugins" configuration option.
+Resources for this plugin should be provided by the user and are not part of the VIP install script. The resources can be found here: [resources](https://huggingface.co/datasets/RuizhiDeng/BRAIN-MAGNET/tree/main) 
