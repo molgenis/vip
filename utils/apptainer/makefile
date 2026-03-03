@@ -87,7 +87,7 @@ $1: $2
 .PHONY: $1
 $2: $3 $4
 	@mkdir -p $(dir $2)
-	APPTAINER_TMPDIR=$(TMPDIR) apptainer --quiet build \
+	APPTAINER_TMPDIR=$(TMPDIR) apptainer --silent build \
 		--arch $(ARCH) \
 		--arch-variant $(ARCH_VARIANT) \
 		--disable-cache \

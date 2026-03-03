@@ -10,8 +10,8 @@ From: debian:13.3-slim
 %post
     # configure apt-get to always run quietly, assume yes, disable progress bar, disable caching
     cat > /etc/apt/apt.conf.d/99custom <<'EOF'
+quiet "2";
 APT::Get::Assume-Yes "true";
-APT::Get::Quiet "2";
 Acquire::Progress-Fancy "0";
 Dir::Cache::archives "0";
 Dir::Cache::pkgcache "";

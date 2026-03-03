@@ -1,26 +1,26 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.23.3.sif
-
-%post
-    apk update
-    apk add python3 cython zlib libbz2 xz-libs libdeflate py3-setuptools
-    apk add --virtual=.build-dependencies curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev python3-dev py3-pip git
-
-    # install
-    pip install --root-user-action=ignore pysam==0.22.0 numpy==1.26.4 scipy==1.11.4 matplotlib==3.9.1 pandas==2.2.2 --break-system-packages
-
-    pip install build --break-system-packages
-    git clone https://github.com/fritzsedlazeck/Spectre.git
-    cd ./Spectre
-    # checkout bugfixes commit from the main branch.
-    git checkout 07e61de
-    python3 -m build
-    pip install dist/spectre_cnv-0.2.1.tar.gz --root-user-action=ignore --no-deps --break-system-packages
-
-    # cleanup
-    pip cache purge
-    apk del .build-dependencies
-    rm -rf /var/cache/apk/*
+From: sif/build/python-3.11.14.sif
 
 %help
    Spectre is a long read copy number variation (CNV) caller.
+
+%post
+    apt-get update > /dev/null
+    apt-get install git > /dev/null
+
+    # --only-binary :all: : disable all source packages. packages without binary distributions will fail to install
+    # install fixed versions for https://github.com/fritzsedlazeck/Spectre/blob/905809435a6bb00aa413a4cf4d4424365112a0af/requirements.txt
+    pip install --only-binary :all: pysam==0.22.1 numpy==1.24.4 pandas==2.0.3 matplotlib==3.7.5 scipy==1.10.1
+    pip install "spectre-cnv @ git+https://github.com/fritzsedlazeck/Spectre.git@905809435a6bb00aa413a4cf4d4424365112a0af"
+
+    # cleanup
+    apt-get purge git > /dev/null
+    apt-get autoremove > /dev/null
+    rm -rf /var/lib/apt/lists/*
+
+%runscript
+    exec spectre "$@"
+
+%test
+    set -euo pipefail
+    spectre --help > /dev/null
