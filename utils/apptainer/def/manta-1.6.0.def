@@ -6,16 +6,16 @@ From: sif/build/debian-13.3.sif
     version_minor=6
     version_patch=0
 
-    apt-get update
-    apt-get install curl bzip2
+    apt-get update > /dev/null
+    apt-get install curl bzip2 > /dev/null
 
     curl --fail --silent --location --output manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2 https://github.com/Illumina/manta/releases/download/v${version_major}.${version_minor}.${version_patch}/manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
     tar -xjf manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
 
     # cleanup
-    apt-get purge curl bzip2
-    apt-get autoremove
-    apt-get clean
+    apt-get purge curl bzip2 > /dev/null
+    apt-get autoremove > /dev/null
+    rm -rf /var/lib/apt/lists/*
 
 %help
     Manta calls structural variants (SVs) and indels from mapped paired-end sequencing reads.
