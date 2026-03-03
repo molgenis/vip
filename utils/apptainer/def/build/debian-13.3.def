@@ -20,4 +20,4 @@ EOF
 
 %test
     set -euo pipefail
-    bash --help > /dev/null
+    bash --help > /dev/null 2>&1

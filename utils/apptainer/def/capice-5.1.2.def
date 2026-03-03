@@ -8,7 +8,7 @@ From: sif/build/python-3.11.14.sif
       capice==5.1.2
 
 %test
-    capice --help > /dev/null
+    capice --help > /dev/null 2>&1
 
 %runscript
     exec capice "$@"

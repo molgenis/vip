@@ -23,4 +23,4 @@ From: sif/build/python-3.11.14.sif
 
 %test
     set -euo pipefail
-    spectre --help > /dev/null
+    spectre --help > /dev/null 2>&1

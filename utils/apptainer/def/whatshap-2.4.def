@@ -17,7 +17,7 @@ From: sif/build/python-3.11.14.sif
 #   PATH=$PATH:/usr/local/lib/python3.10/dist-packages/
 
 %test
-    whatshap --help > /dev/null
+    whatshap --help > /dev/null 2>&1
 
 %runscript
     exec whatshap "$@"

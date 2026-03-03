@@ -20,7 +20,7 @@ From: sif/build/python-3.11.14.sif
     rm -rf /var/lib/apt/lists/*
 
 %test
-    cuteSV --help > /dev/null
+    cuteSV --help > /dev/null 2>&1
 
 %runscript
     exec cuteSV "$@"
