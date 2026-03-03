@@ -15,7 +15,7 @@ Stage: build
     # install
     tar xf bcftools-${version_major}.${version_minor}.tar.bz2
     cd bcftools-${version_major}.${version_minor}
-    ./configure --silent --disable-libcurl --disable-gcs --disable-s3 --disable-ref-cache
+    ./configure --silent --disable-libcurl --disable-gcs --disable-s3 --without-curses --disable-ref-cache
     make --silent
     make --silent install
 
