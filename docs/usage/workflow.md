@@ -1,65 +1,224 @@
 # Workflow
-VIP consists of four workflows depending on the type of input data: fastq, bam/cram, gvcf or vcf.
-The `fastq` workflow is an extension of the `cram` workflow. The `cram` and `gvcf` workflows are extensions of the `vcf` workflow.
-The `vcf` workflow produces the pipeline outputs as described [here](./output.md).
-The following sections provide an overview of the steps of each of these workflows. 
 
-## FASTQ
-The `fastq` workflow consists of the following steps:
-
-1. Parallelize sample sheet per sample and for each sample
-2. Quality reporting and preprocessing using [fastp](https://github.com/OpenGene/fastp)
-3. Alignment using [minimap2](https://github.com/lh3/minimap2) producing a `cram` file per sample
-4. In case of multiple fastq files per sample, concatenate the cram output files
-5. Continue with step 3. of the `cram` workflow
-
-For details, see [here](https://github.com/molgenis/vip/blob/main/vip_fastq.nf).
-
-## CRAM
-The `cram` workflow consists of the following steps:
-
-1. Parallelize sample sheet per sample and for each sample
-2. Create validated, indexed `.bam` file from `bam/cram/sam` input
-4. Generate coverage metrics using [MosDepth](https://github.com/brentp/mosdepth), using the the `regions` file provided in the sample sheet if present. If no regions file is provided a default `.bed` file will be used containing all exons in case of WES data, and all genes in case of WGS data.
-5. Discover short tandem repeats and publish as intermediate result.
-    1. Using [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) for Illumina short read data.
-    2. Using [Straglr](https://github.com/bcgsc/straglr) tsv output for PacBio and Nanopore long read data, which is converted to VCF using [straglr-tsv2vcf](https://github.com/molgenis/straglr-tsv2vcf),the VCF output that enables VIP to combine it with the SV and SNV data in the VCF workflow.
-6. Discover copy number variants for for PacBio and Nanopore long read data using [Spectre](https://github.com/fritzsedlazeck/Spectre) data and publish as intermediate result.
-7. Parallelize cram in chunks consisting of one or more contigs and for each chunk
-    1. Perform short variant calling with [DeepVariant](https://github.com/google/deepvariant) producing a `gvcf` file per chunk per sample, the gvcfs of the samples in a project are than merged to one vcf per project (using [GLnexus](https://github.com/dnanexus-rnd/GLnexus) and phased using [Whatshap](https://github.com/whatshap/whatshap)<sup>1</sup>.
-    2. Perform structural variant calling with [Manta](https://github.com/Illumina/manta) or [cuteSV](https://github.com/tjiangHIT/cuteSV) producing a `vcf` file per chunk per project.
-8. Concatenate short variant calling and structural variant calling `vcf` files per chunk per sample
-9. Continue with step 3. of the `vcf` workflow
-
-For details, see [here](https://github.com/molgenis/vip/blob/main/vip_cram.nf).
-
-<sup>1</sup>): In case of projects containing pedigree information the phasing requires the bam/cram/sam file to have readgroup information in order to be able to determine which reads belong to which family member. Phasing is skipped if this information is not present.
-
-## gVCF
-The `gvcf` workflow consists of the following steps:
-
-1. For each project in the sample sheet
-2. Create validated, indexed `.g.vcf.gz` file from `bcf/bcf.gz/bcf.bgz/gvcf/gvcf.gz/gvcf.bgz/vcf/vcf.gz/vcf.bgz` inputs
-3. Merge `.g.vcf.gz` files using [GLnexus](https://github.com/dnanexus-rnd/GLnexus) resulting in one `vcf.gz` per project
-4. Continue with step 3. of the `vcf` workflow
-
-For details, see [here](https://github.com/molgenis/vip/blob/main/vip_gvcf.nf).
- 
-## VCF
-The `vcf` workflow consists of the following steps:
-
-1. For each project in the sample sheet
-2. Create validated, indexed `.vcf.gz` file from `bcf|bcf.gz|bcf.bgz|vcf|vcf.gz|vcf.bgz` input
-3. Chunk `vcf.gz` files and for each chunk
-    1. Normalize
-    2. Annotate
-    3. Classify
-    4. Filter
-    5. Perform inheritance matching
-    6. Classify in the context of samples
-    7. Filter in the context of samples
-4. Concatenate chunks resulting in one `vcf.gz` file per project
-5. If `cram` data is available slice the `cram` files to only keep relevant reads
-6. Create report
-
-For details, see [here](https://github.com/molgenis/vip/blob/main/vip_vcf.nf).
+```mermaid
+flowchart TB
+subgraph "Subworkflow: vcf"
+subgraph "annotate"
+va0[AnnotSV]
+va1[Stranger]
+va2{SpliceAI?}
+va3[CAPICE]
+va4[VEP]
+va4t[(<b>per project:</b><br>project_annotations.vcf.gz)]
+va0-->va1
+va1-->va2
+va2-->|"true"|va3
+va2-->|"false"|va4
+va3-->va4
+va4-->va4t
+end
+v0{Phenotypes?}
+v1[GADO]
+v2[Normalize]
+v3[Classify]
+v3t[(<b>per project:</b><br>project_classifications.vcf.gz)]
+v4[Filter]
+v5[Inheritance]
+v6[Classify samples]
+v6t[(<b>per project:</b><br>project_sample_classifications.vcf.gz)]
+v7[Filter samples]
+v8{Cram?}
+v9[Slice]
+v10[Report]
+v10t0[(<b>per project:</b><br>project.html)]
+v10t1[(<b>per project:</b><br>project.vcf.gz)]
+v10t2[(<b>per project:</b><br>project.db)]
+v0-->|"true"|v1
+v0-->|"false"|v2
+v1-->v2
+v2-->va0
+v3-->v3t
+v3-->v4
+v4-->v5
+v5-->v6
+v6-->v6t
+v6-->v7
+v7-->v8
+v8-->|"true"|v9
+v8-->|"false"|v10
+v9-->v10
+v10-->v10t0
+v10-->v10t1
+v10-->v10t2
+va4-->v3
+end
+subgraph "Workflow: vcf"
+wv([Start])
+wv0[Validate VCF]
+wv1{Regions?}
+wv2[Filter]
+wv3{Liftover?}
+wv4[Liftover]
+wv4t[(<b>per project:</b><br>project_liftover_accepted.vcf.gz<br>project_liftover_rejected.vcf.gz)]
+wv5{Cram?}
+wv6[Validate Cram]
+wv7@{ shape: f-circ, label: "Junction" }
+wv-->wv0
+wv0-->wv1
+wv1-->|"true"|wv2
+wv1-->|"false"|wv3
+wv2-->wv3
+wv3-->|"true"|wv4
+wv3-->|"false"|wv5
+wv4-->wv4t
+wv4-->wv7
+wv5-->wv6
+wv5-->|"true"|wv7
+wv6-->|"false"|wv7
+wv7-->v0
+end
+subgraph "Subworkflow: gvcf"
+g0[GLnexus]
+g0t[(<b>per sample chunk:</b><br>sample_chunk.vcf.gz)]
+g0-->g0t
+g0-->v0
+end
+subgraph "Workflow: gvcf"
+wg([Start])
+wg0[Validate gVCF]
+wg1{Regions?}
+wg2[Filter]
+wg3{Liftover?}
+wg4[Liftover]
+wg4t[(<b>per sample:</b><br>sample_liftover_accepted.vcf.gz<br>sample_liftover_rejected.vcf.gz)]
+wg5{Cram?}
+wg6[Validate Cram]
+wg7@{ shape: f-circ, label: "Junction" }
+wg-->wg0
+wg0-->wg1
+wg1-->|"true"|wg2
+wg1-->|"false"|wg3
+wg2-->wg3
+wg3-->|"true"|wg4
+wg3-->|"false"|wg5
+wg4-->wg4t
+wg4-->wg7
+wg5-->wg6
+wg5-->wg7
+wg6-->wg7
+wg7-->g0
+end
+subgraph "Subworkflow: cram"
+subgraph "Subworkflow: cnv"
+cc0{Sequencing platform?}
+cc1[Spectre]
+cc1t[(<b>per sample:</b><br>sample_cnv.vcf.gz)]
+cc2@{ shape: f-circ, label: "Junction" }
+cc0-->|"nanopore<br>pacbio_hifi"|cc1
+cc0-->|"illumina"|cc2
+cc1-->cc1t
+cc1-->cc2
+cc0-->cc2
+end
+subgraph "Subworkflow: snv"
+cn0{Sequencing platform?}
+cn1{Trio or duo?}
+cn2[Deeptrio]
+cn3[Deepvariant]
+cn4[GLnexus]
+cn5[WhatsHap]
+cn6[Concat VCF]
+cn6t[(<b>per project:</b><br>project_snv.vcf.gz)]
+cn7@{ shape: f-circ, label: "Junction" }
+cn0-->|"illumina<br>pacbio_hifi"|cn1
+cn0-->|"nanopore"|cn3
+cn1-->|"true"|cn2
+cn1-->|"false"|cn3
+cn2-->cn4
+cn3-->cn4
+cn4-->cn5
+cn5-->cn6
+cn6-->cn6t
+cn6-->cn7
+end
+subgraph "Subworkflow: str"
+ct0{PCR performed?}
+ct1{Sequencing platform?}
+ct2[Expansion Hunter]
+ct3[Straglr]
+ct2-3t[(<b>per sample:</b><br>sample_str.vcf.gz)]
+ct4@{ shape: f-circ, label: "Junction" }
+ct0-->|"false"|ct1
+ct0-->|"true"|ct4
+ct1-->|"illumina"|ct2
+ct1-->|"nanopore<br>pacbio_hifi"|ct3
+ct2-->ct2-3t
+ct2-->ct4
+ct3-->ct2-3t
+ct3-->ct4
+end
+subgraph "Subworkflow: sv"
+cv0{Sequencing platform?}
+cv1[Manta]
+cv1t[(<b>per project:</b><br>project_sv.vcf.gz)]
+cv2[cuteSV]
+cv2t[(<b>per sample:</b><br>sample_sv.vcf.gz)]
+cv3@{ shape: f-circ, label: "Junction" }
+cv0-->|"illumina"|cv1
+cv0-->|"nanopore<br>pacbio_hifi"|cv2
+cv1-->cv1t
+cv1-->cv3
+cv2-->cv3
+cv2-->cv2t
+end
+c0@{ shape: f-circ, label: "Junction" }
+c1[mosdepth]
+c1t[(<b>per sample:</b><br>sample_mosdepth.global.dist.txt<br>sample_mosdepth.per-base.bed.gz<br>sample_mosdepth.region.dist.txt<br>sample_mosdepth.regions.bed.gz<br>sample_mosdepth.summary.txt<br>sample_mosdepth.thresholds.bed.gz)]
+c6[concat VCF]
+c6t[(<b>per project</b><br>project.vcf.gz)]
+c7{Regions?}
+c8[Filter]
+c9@{ shape: f-circ, label: "Junction" }
+c0-->c1
+c0-->cn0
+c0-->ct0
+c0-->cv0
+c0-->cc0
+c1-->c1t
+cn7-->c6
+ct4-->c6
+cv3-->c6
+cc2-->c6
+c6-->c6t
+c6-->c7
+c7-->|"true"|c8
+c7-->|"false"|c9
+c8-->c9
+c9-->v0
+end
+subgraph "Workflow: cram"
+wc([Start])
+wc0[Validate Cram]
+wc-->wc0
+wc0-->c0
+end
+subgraph "Subworkflow: fastq"
+f0{Adaptive sampling?}
+f1[Filter reads]
+f2[fastp]
+f2t[(<b>per sample:</b><br>sample_pass.fastq.gz<br>sample_fail.fastq.gz<br>sample_report.html<br>sample_report.json)]
+f3[minimap2]
+f3t0[(<b>per sample:</b><br>sample.cram)]
+f0-->|"true"|f1
+f0-->|"false"|f2
+f1-->f2
+f2-->f2t
+f2-->f3
+f3-->f3t0
+f3-->c0
+end
+subgraph "Workflow: fastq"
+wf([Start])
+wf-->f0
+end
+```
