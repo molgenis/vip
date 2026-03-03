@@ -52,7 +52,7 @@ workflow fastq {
       | set { ch_fastp }
 
     ch_fastp.reads_pass
-      | map { meta, fastq -> [meta, fastq, meta.project.regions ? meta.project.regions : meta.project.sequencing_method == "WES" ? params.cram.coverage[params.assembly].default_bed_exon : params.cram.coverage[params.assembly].default_bed_gene]}
+      | map { meta, fastq -> [meta, fastq, meta.project.regions]}
       | minimap2_align
       | set { ch_input_single_aligned }
 
