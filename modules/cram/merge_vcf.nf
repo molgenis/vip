@@ -93,7 +93,7 @@ process merge_cnv_vcf {
 process merge_mtdnasnv_vcf {
 	label 'vcf_merge_mtdnasnv'
 	
-	publishDir "$params.output/intermediates", mode 'link'
+	publishDir "$params.output/intermediates", mode: 'link'
 	
 	input:
 		tuple val(meta), path(vcfs), path(vcfIndices)

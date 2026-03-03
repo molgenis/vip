@@ -3,6 +3,8 @@ nextflow.enable.dsl=2
 include { scatter; validateGroup } from '../modules/utils'
 include { nrMappedReadsInChunk } from '../modules/cram/utils'
 include { deepvariant; validateCallDeepVariantParams } from '../subworkflows/call_snv_deepvariant'
+include { mtdnasnv } from '../subworkflows/call_mtdna_snv'
+include { split_cram_chrm } from '../modules/cram/split_cram_chrm'
 /*
  * Variant calling: single nucleotide variants and short insertions/deletions
  *
@@ -15,7 +17,7 @@ workflow snv {
     meta
       | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
 			| split_cram_chrm
-			| map { meta, chrmCram, chrmCramIndex, chrCramStats, nonchrmCram, nonchrmCramIndex, nonchrmCramStats
+			| map { meta, chrmCram, chrmCramIndex, chrmCramStats, nonchrmCram, nonchrmCramIndex, nonchrmCramStats
 				-> 
 				[*:meta, sample: [*:meta.sample, cram: [data: nonchrmCram, index: nonchrmCramIndex, stats: nonchrmCramStats, chrmdata: chrmCram, chrmindex: chrmCramIndex, chrmstats: chrmCramStats]]]
 				}
@@ -58,6 +60,7 @@ workflow snv {
     
     // mix outputs of all tools
     Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
+      | view
       | set { ch_snv_processed }
   emit:
     ch_snv_processed

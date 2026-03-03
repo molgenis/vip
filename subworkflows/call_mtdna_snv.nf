@@ -1,8 +1,10 @@
 nextflow.enable.dsl=2
 
-include {mutect2_mito} from '../modules/cram/gatk.nf'
-include {merge_mtdnasnv_vcf} from '../modules/cram/merge_vcf.nf'
-include {publish_vcf} from '../modules/cram/publish_vcf.nf'
+include { nrMappedReads } from '../modules/cram/utils'
+include { mutect2_mito } from '../modules/cram/gatk.nf'
+include { merge_mtdnasnv_vcf } from '../modules/cram/merge_vcf.nf'
+include { publish_vcf } from '../modules/cram/publish_vcf.nf'
+include { validateGroup } from '../modules/utils'
 // include {call} from '../modules/cram/deepvariant.nf'
 
 workflow mtdnasnv {
@@ -16,42 +18,14 @@ workflow mtdnasnv {
           zero_reads: true
                       return meta
         }
-      | set {ch_mtdnasnv}
-
-    /*
-    ch_mtdnasnv.with_reads
-      | branch { meta -> 
-          gatk: meta.project.sequencing_platform == 'illumina'
-                return meta
-          deepvariant: meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi'
-                return meta
-        }
-      | set { ch_mtdnasnv_by_platform }
-
-    ch_mtdnasnv_by_platform.gatk
-      | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
-      | mutect2_mito
-      | map { meta, vcfOut, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set {  }
-
-    ch_mtdnasnv_by_platform.deepvariant
-      | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
-      | call
-      | map { meta, vcfOut, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
-      | set {  }
-    */
+      | set { ch_mtdnasnv }
 
     // Perform the GATK Mutect2 calling on chrM data
     ch_mtdnasnv.with_reads
       | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
       | mutect2_mito
       | map { meta, vcfOut, vcfOutIndex, vcfOutStats -> [meta, [data: vcfOut, index: vcfOutIndex, stats: vcfOutStats]] }
-      | set {ch_mtdnasnv_gatk}
-
-    /*
-    emit:
-      ch_mtdnasnv_gatk
-    */
+      | set { ch_mtdnasnv_gatk }
 
     // Group the vcfs per project
     Channel.empty().mix(ch_mtdnasnv_gatk, ch_mtdnasnv.zero_reads)
@@ -59,7 +33,7 @@ workflow mtdnasnv {
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
       | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], group.collect { it.vcf }] }
-      | branch {
+      | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
                     return [meta, vcfs.findAll { it != null }]
           single:   vcfs.count { it != null } == 1
@@ -78,10 +52,10 @@ workflow mtdnasnv {
     
 
     // Merge the multiple vcf files per project
-    ch_mtdnasv_by_project.multiple
+    ch_mtdnasnv_by_project.multiple
       | map { meta, vcfs -> [meta, vcfs.collect { it.data }, vcfs.collect { it.index }] }
       | merge_mtdnasnv_vcf
-      | map { meta -> vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_mtdnasnv_by_project_merged }
 
     // Mix the output
