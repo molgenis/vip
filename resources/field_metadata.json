@@ -88,9 +88,9 @@
           "numberCount": 1,
           "type": "INTEGER"
         },
-        "ALPHSCORE": {
-          "label": "AlphScore",
-          "description": "AlphScore pathogenicity score for missense variants",
+        "am_pathogenicity": {
+          "label": "AmScore",
+          "description": "AlphaMissense pathogenicity score for missense variants",
           "numberType": "NUMBER",
           "numberCount": 1,
           "type": "FLOAT"
@@ -569,6 +569,13 @@
               "description": "Mitochondrial"
             }
           }
+        },
+        "LOEUF_gene_value": {
+          "label": "LOEUF",
+          "numberType": "NUMBER",
+          "description": "An Ensembl VEP plugin that adds the loss-of-function observed/expected upper bound fraction (LOEUF) score ",
+          "type": "FLOAT",
+          "numberCount":1
         },
         "mitoTip_Quartile": {
           "label": "MitoTIP Quartile",
