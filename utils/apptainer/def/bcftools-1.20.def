@@ -16,8 +16,8 @@ Stage: build
     tar xf bcftools-${version_major}.${version_minor}.tar.bz2
     cd bcftools-${version_major}.${version_minor}
     ./configure --disable-libcurl --disable-gcs --disable-s3
-    make
-    make install
+    make --silent
+    make --silent install
 
 Bootstrap: localimage
 From: sif/build/alpine-3.23.3.sif

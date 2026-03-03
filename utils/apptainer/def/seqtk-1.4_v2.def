@@ -11,7 +11,7 @@ Stage: build
     # download
     git clone --depth 1 --branch v${version_major}.${version_minor} https://github.com/lh3/seqtk.git
     # install
-    (cd seqtk && make)
+    (cd seqtk && make --silent)
 
 Bootstrap: localimage
 From: sif/build/alpine-3.23.3.sif

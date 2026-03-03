@@ -14,7 +14,7 @@ Stage: build
 
     # install
     tar xf minimap2-${version_major}.${version_minor}.tar.bz2
-    (cd minimap2-${version_major}.${version_minor} && make)
+    (cd minimap2-${version_major}.${version_minor} && make --silent)
     mv /minimap2-${version_major}.${version_minor}/minimap2 /usr/local/bin
 
 Bootstrap: localimage

@@ -37,7 +37,7 @@ From: sif/build/openjdk-25.sif
     (
       cd "/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}"
       sed -i 's|/usr/bin/bash|/bin/bash|' Makefile
-      make PREFIX=. install
+      make --silent PREFIX=. install
     )
 
     # Set Environment

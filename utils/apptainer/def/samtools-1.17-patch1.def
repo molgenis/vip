@@ -17,8 +17,8 @@ Stage: build
     tar xf samtools-${version_major}.${version_minor}.tar.bz2
     cd samtools-${version_major}.${version_minor}
     ./configure --disable-libcurl --disable-gcs --disable-s3 --without-curses
-    make
-    make install
+    make --silent
+    make --silent install
 
 		# cleanup
     rm -rf /var/lib/apt/lists/*

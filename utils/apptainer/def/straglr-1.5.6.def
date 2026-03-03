@@ -6,7 +6,7 @@ From: sif/build/python-3.11.14.sif
     apt-get install curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev git python3-pip python3  > /dev/null
     pip install --upgrade pip setuptools wheel
 
-    apt install ncbi-blast+ > /dev/null
+    apt-get install ncbi-blast+ > /dev/null
 
     mkdir -p /opt/trf/
     curl -Ls -o /opt/trf/trf "https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.linux64"
