@@ -3,7 +3,7 @@ From: sif/build/alpine-3.23.3.sif
 Stage: build
 
 %post
-		# fix for https://github.com/samtools/bcftools/issues/1187
+    # fix for https://github.com/samtools/bcftools/issues/1187
     version_major=1
     version_minor=18
 

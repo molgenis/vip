@@ -2,7 +2,7 @@ Bootstrap: docker
 From: python:3.11.14-slim-trixie
 
 %help
-		Python 3.11 on Debian 13 "Trixie"
+    Python 3.11 on Debian 13 "Trixie"
 
 %environment
     export DEBIAN_FRONTEND=noninteractive

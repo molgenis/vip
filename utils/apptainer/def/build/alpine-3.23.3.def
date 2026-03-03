@@ -28,5 +28,5 @@ EOF
     chmod +x /usr/local/bin/apk
 
 %test
-		set -euo pipefail
-		bash --help > /dev/null
+    set -euo pipefail
+    bash --help > /dev/null
