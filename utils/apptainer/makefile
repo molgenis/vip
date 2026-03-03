@@ -6,8 +6,10 @@ $(shell { trap 'rm -rf ${TMPDIR};' EXIT; tail --pid=$$PPID -f /dev/null; } </dev
 # directories
 DEF_DIR := def
 DEF_BUILD_DIR := $(DEF_DIR)/build
+DEF_UTILS_DIR := $(DEF_DIR)/utils
 SIF_DIR := sif
 SIF_BUILD_DIR := $(SIF_DIR)/build
+SIF_UTILS_DIR := $(SIF_DIR)/utils
 
 # .sif versions
 VER_ALPINE := 3.23.3
@@ -34,6 +36,7 @@ VER_STRAGLR := 1.5.6
 VER_STRAGLR_TSV2VCF := 1.2.0
 VER_STRANGER := 0.9.3
 VER_VCF_DECISION_TREE := 6.0.0
+VER_VCF_INHERITANCE := 3.2.1
 VER_VCF_INHERITANCE_MATCHER := 4.0.0
 VER_VCF_REPORT := 8.2.0
 VER_VEP := 111.0
@@ -64,6 +67,7 @@ SIF_STRAGLR := $(SIF_DIR)/straglr-$(VER_STRAGLR).sif
 SIF_STRAGLR_TSV2VCF := $(SIF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def
 SIF_STRANGER := $(SIF_DIR)/stranger-$(VER_STRANGER).sif
 SIF_VCF_DECISION_TREE := $(SIF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).sif
+SIF_VCF_INHERITANCE := $(SIF_UTILS_DIR)/vcf-inheritance-$(VER_VCF_INHERITANCE).sif
 SIF_VCF_INHERITANCE_MATCHER := $(SIF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).sif
 SIF_VCF_REPORT := $(SIF_DIR)/vcf-report-$(VER_VCF_REPORT).sif
 SIF_VEP := $(SIF_DIR)/vep-$(VER_VEP).sif
@@ -120,6 +124,7 @@ all: \
         straglr_tsv2vcf \
         stranger \
         vcf-decision-tree \
+        vcf-inheritance \
         vcf-inheritance-matcher \
         vcf-report \
         vep \
@@ -128,7 +133,7 @@ all: \
 # target: clean
 .PHONY: clean
 clean:
-	rm -rf $(SIF_DIR) $(SIF_BUILD_DIR)
+	rm -rf $(SIF_DIR) $(SIF_BUILD_DIR) $(SIF_UTILS_DIR)
 .NOTPARALLEL: clean
 
 # target: build images
@@ -156,6 +161,7 @@ $(eval $(call build_image,straglr,$(SIF_STRAGLR),$(DEF_DIR)/straglr-$(VER_STRAGL
 $(eval $(call build_image,straglr_tsv2vcf,$(SIF_STRAGLR_TSV2VCF),$(DEF_DIR)/straglr-tsv2vcf-$(VER_STRAGLR_TSV2VCF).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,stranger,$(SIF_STRANGER),$(DEF_DIR)/stranger-$(VER_STRANGER).def,$(SIF_ALPINE)))
 $(eval $(call build_image,vcf-decision-tree,$(SIF_VCF_DECISION_TREE),$(DEF_DIR)/vcf-decision-tree-$(VER_VCF_DECISION_TREE).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,vcf-inheritance,$(SIF_VCF_INHERITANCE),$(DEF_UTILS_DIR)/vcf-inheritance-$(VER_VCF_INHERITANCE).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,vcf-inheritance-matcher,$(SIF_VCF_INHERITANCE_MATCHER),$(DEF_DIR)/vcf-inheritance-matcher-$(VER_VCF_INHERITANCE_MATCHER).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,vcf-report,$(SIF_VCF_REPORT),$(DEF_DIR)/vcf-report-$(VER_VCF_REPORT).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,vep,$(SIF_VEP),$(DEF_DIR)/vep-$(VER_VEP).def,))

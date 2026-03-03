@@ -21,3 +21,13 @@ From: sif/build/openjdk-25.sif
     # cleanup
     apk del .build-dependencies
     rm -rf /var/cache/apk/*
+
+%environment
+    export PATH=/opt/vcf-inheritance/lib:$PATH
+
+%runscript
+    exec java -jar genemap-mapper.jar "$@"
+
+%test
+    set -euo pipefail
+    java -jar genemap-mapper.jar --version > /dev/null
