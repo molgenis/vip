@@ -26,4 +26,4 @@ From: sif/build/openjdk-25.sif
 
 %test
     set -euo pipefail
-    java -jar /opt/picard/lib/picard.jar --version > /dev/null
+    java -jar /opt/picard/lib/picard.jar -h > /dev/null
