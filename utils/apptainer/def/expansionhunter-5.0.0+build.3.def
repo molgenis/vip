@@ -24,6 +24,7 @@ From: sif/build/alpine-3.23.3.sif
    PATH=$PATH:/ExpansionHunter-v5.0.0-linux_x86_64/bin
 
 %test
+   set -euo pipefail
    ExpansionHunter --help > /dev/null 2>&1
 
 %runscript

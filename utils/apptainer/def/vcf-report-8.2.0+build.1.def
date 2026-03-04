@@ -20,3 +20,10 @@ From: sif/build/openjdk-25.sif
     # cleanup
     apk del .build-dependencies
     rm -rf /var/cache/apk/*
+
+%runscript
+    exec java -jar /opt/vcf-report/lib/vcf-report.jar "$@"
+
+%test
+    set -euo pipefail
+    java -jar /opt/vcf-report/lib/vcf-report.jar --version > /dev/null

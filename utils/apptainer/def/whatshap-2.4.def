@@ -1,6 +1,9 @@
 Bootstrap: localimage
 From: sif/build/python-3.11.14.sif
 
+%help
+   WhatsHap is a read-based phasing tool.
+
 %post
     version_major=2
     version_minor=4
@@ -13,14 +16,9 @@ From: sif/build/python-3.11.14.sif
     # --only-binary :all: : disable all source packages. packages without binary distributions will fail to install
     pip install --only-binary :all: whatshap==${version_major}.${version_minor}
 
-#%environment
-#   PATH=$PATH:/usr/local/lib/python3.10/dist-packages/
-
 %test
+    set -euo pipefail
     whatshap --help > /dev/null 2>&1
 
 %runscript
     exec whatshap "$@"
-
-%help
-   WhatsHap is a read-based phasing tool.

@@ -18,6 +18,7 @@ From: sif/build/python-3.11.14.sif
     rm -rf /var/lib/apt/lists/*
 
 %test
+    set -euo pipefail
     cuteSV --help > /dev/null 2>&1
 
 %runscript

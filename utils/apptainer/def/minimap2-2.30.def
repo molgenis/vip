@@ -4,7 +4,7 @@ Stage: build
 
 %post
     version_major=2
-    version_minor=27
+    version_minor=30
 
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev libdeflate-dev
 
@@ -21,8 +21,18 @@ Bootstrap: localimage
 From: sif/build/alpine-3.23.3.sif
 Stage: final
 
+%help
+    Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database.
+
 %files from build
     /usr/local/bin/minimap2
 
 %post
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libdeflate
+
+%test
+    set -euo pipefail
+    minimap2 --help > /dev/null 2>&1
+
+%runscript
+    exec minimap2 "$@"

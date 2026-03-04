@@ -8,6 +8,7 @@ From: sif/build/python-3.11.14.sif
       capice==5.1.2
 
 %test
+    set -euo pipefail
     capice --help > /dev/null 2>&1
 
 %runscript
