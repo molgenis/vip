@@ -1,2 +1,0 @@
-Bootstrap: docker
-From: google/deepvariant:1.9.0
