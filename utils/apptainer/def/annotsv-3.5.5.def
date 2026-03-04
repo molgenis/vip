@@ -30,7 +30,7 @@ From: sif/build/openjdk-25.sif
 
     # AnnotSv
     curl --fail --silent --show-error --location --output annot-sv.tar.gz "https://github.com/lgmgeo/AnnotSV/archive/refs/tags/v${version_major}.${version_minor}.${version_patch}.tar.gz"
-    echo "ad523cd4fbf8c65b0e7be935a417b75bbf755422bd8f4a0ec3b55a2b4c576d4d  annot-sv.tar.gz" | sha256sum -c
+    echo "64dfac580143f55136b42b23a9c48520fd77b081c3d6496e26036d9a832b750e  annot-sv.tar.gz" | sha256sum -c
     tar xf annot-sv.tar.gz -C /usr/share
 
     (
@@ -48,4 +48,8 @@ From: sif/build/openjdk-25.sif
     rm -rf /var/cache/apk/* annot-sv.tar.gz
 
 %runscript
-    AnnotSV "$@"
+    exec AnnotSV "$@"
+
+%test
+    set -euo pipefail
+    AnnotSV --help > /dev/null 2>&1
