@@ -6,12 +6,7 @@ From: sif/build/python-3.11.14.sif
 
 %post
     version_major=2
-    version_minor=4
-
-    export PIP_DISABLE_PIP_VERSION_CHECK=1
-    export PIP_NO_CACHE_DIR=1
-    export PIP_ROOT_USER_ACTION=ignore
-    export PIP_QUIET=2
+    version_minor=8
 
     # --only-binary :all: : disable all source packages. packages without binary distributions will fail to install
     pip install --only-binary :all: whatshap==${version_major}.${version_minor}
