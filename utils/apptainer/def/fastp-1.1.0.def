@@ -1,33 +1,25 @@
 Bootstrap: localimage
 From: sif/build/alpine-3.23.3.sif
-Stage: build
+
+%help
+    fastp - A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
 
 %post
     version_major=1
     version_minor=1
     version_patch=0
 
-    apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl
+    apk add --virtual=.build-dependencies curl
     
     # download
-    curl -Ls -o fastp.${version_major}.${version_minor}.${version_patch} http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
-    echo "a3418335d4d2ce272c7a26fe3a9155b4d3573f4dcefb87d626660cc638f0e9e7  fastp.${version_major}.${version_minor}.${version_patch}" | sha256sum -c
+    curl --fail --silent --show-error --location --output /usr/local/bin/fastp http://opengene.org/fastp/fastp.${version_major}.${version_minor}.${version_patch}
+    echo "a3418335d4d2ce272c7a26fe3a9155b4d3573f4dcefb87d626660cc638f0e9e7  /usr/local/bin/fastp" | sha256sum -c
 
     # install
-    mv fastp.${version_major}.${version_minor}.${version_patch} /opt/fastp
+    chmod a+x /usr/local/bin/fastp
 
-Bootstrap: localimage
-From: sif/build/alpine-3.23.3.sif
-Stage: final
-
-%help
-    fastp - A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
-
-%files from build
-    /opt/fastp
-
-%post
-    chmod a+x /opt/fastp
+    # cleanup
+    apk del .build-dependencies
 
 %test
     fastp --help > /dev/null 2>&1
