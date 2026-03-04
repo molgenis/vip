@@ -23,7 +23,7 @@ align() {
         ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --no-PG - - | \
         ${CMD_SAMTOOLS} view  --cram --output "!{cram}" --target-file "!{bedFile}" --reference "!{reference}" --write-index --no-PG --threads "!{task.cpus}" -
       else
-        ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --no-PG - "!{cram}"
+        ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --no-PG  --write-index - "!{cram}"
       fi
     else
       ${CMD_MINIMAP2} "${args[@]}" |\
