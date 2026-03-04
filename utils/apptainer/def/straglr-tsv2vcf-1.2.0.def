@@ -14,7 +14,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/straglr-tsv2vcf/lib
-    curl -Ls -o /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar "https://github.com/molgenis/straglr-tsv2vcf/releases/download/v${version_major}.${version_minor}.${version_patch}/straglrTsv2Vcf.jar"
+    curl --fail --silent --show-error --location --output /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar "https://github.com/molgenis/straglr-tsv2vcf/releases/download/v${version_major}.${version_minor}.${version_patch}/straglrTsv2Vcf.jar"
     echo "469b8114ed1aab0292b122d06836e8490dfdceec8e879abb80a5de328beaca24  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
 
     # cleanup

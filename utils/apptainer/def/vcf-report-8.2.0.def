@@ -14,7 +14,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-report/lib
-    curl -Ls -o /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
+    curl --fail --silent --show-error --location --output /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
     echo "4b03a0419a2a588faef3a15c8a74757da337e8b9ddd4f01980f56ca90d18f988  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup

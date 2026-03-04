@@ -14,7 +14,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-decision-tree/lib
-    curl -Ls -o /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
+    curl --fail --silent --show-error --location --output /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "https://github.com/molgenis/vip-decision-tree/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-decision-tree.jar"
     echo "f7221fba0ce48bf7b2f9b5f81e733dc0bb4d70b0e93ad437260c1ad74d5b1332  /opt/vcf-decision-tree/lib/vcf-decision-tree.jar" | sha256sum -c
 
     # cleanup

@@ -9,7 +9,7 @@ From: sif/build/debian-13.3.sif
     apt-get update > /dev/null
     apt-get install curl bzip2 > /dev/null
 
-    curl --fail --silent --location --output manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2 https://github.com/Illumina/manta/releases/download/v${version_major}.${version_minor}.${version_patch}/manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
+    curl --fail --silent --show-error --location --output manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2 https://github.com/Illumina/manta/releases/download/v${version_major}.${version_minor}.${version_patch}/manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
     tar -xjf manta-${version_major}.${version_minor}.${version_patch}.centos6_x86_64.tar.bz2
 
     # cleanup

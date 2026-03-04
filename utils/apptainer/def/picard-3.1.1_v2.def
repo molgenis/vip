@@ -15,7 +15,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/picard/lib
-    curl -Ls -o /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
+    curl --fail --silent --show-error --location --output /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
     echo "15c79f51fd0ac001049f9dd7b9bac1dbdf759dcb0230a89c7f6d1f246e8bbab4  /opt/picard/lib/picard.jar" | sha256sum -c
 
     # cleanup

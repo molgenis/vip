@@ -14,7 +14,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-inheritance-matcher/lib
-    curl -Ls -o /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
+    curl --fail --silent --show-error --location --output /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
     echo "d41a2bf17149b3808a75c70c52bbc9500f801a5a763b6ca5cbc0e271e7c7db24  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
 
     # cleanup

@@ -14,7 +14,7 @@ From: sif/build/openjdk-25.sif
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-inheritance/lib
-    curl -Ls -o /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
+    curl --fail --silent --show-error --location --output /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
     echo "fe480f31b19ae42c65193ddb92ddc1a4cfef94280426a3f9424e9b1e30d15bb8  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
 
     # cleanup
