@@ -4,7 +4,7 @@ process minimap2_align {
   publishDir "$params.output/intermediates", mode: 'link'
 
   input:
-    tuple val(meta), path(fastq, arity: '1'), path(bedFile)
+    tuple val(meta), path(fastq, arity: '1')
 
   output:
     tuple val(meta), path(cram), path(cramCrai), path(cramStats)
@@ -16,8 +16,9 @@ process minimap2_align {
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
     
-    sampleId=meta.sample.individual_id;
+    sampleId=meta.sample.individual_id
     platform=meta.project.sequencing_platform
+    bedFile=meta.project.regions ? meta.project.regions : ""
     preset=platform == "nanopore" ? params.minimap2.nanopore_preset : (platform == "pacbio_hifi" ? "map-hifi" : "")
     softClipping=params.minimap2.soft_clipping
 		markDuplicates=platform != "nanopore"
@@ -42,7 +43,7 @@ process minimap2_align_paired_end {
   publishDir "$params.output/intermediates", mode: 'link'
   
   input:
-    tuple val(meta), path(fastqR1, arity: '1'), path(fastqR2, arity: '1'), path(bedFile)
+    tuple val(meta), path(fastqR1, arity: '1'), path(fastqR2, arity: '1')
 
   output:
     tuple val(meta), path(cram), path(cramCrai), path(cramStats)
@@ -50,6 +51,7 @@ process minimap2_align_paired_end {
   shell:
     reference=params[params.assembly].reference.fasta
     referenceMmi=params[params.assembly].reference.fastaMmi
+    bedFile=meta.project.regions
     cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_unfiltered.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
