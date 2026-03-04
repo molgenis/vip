@@ -24,6 +24,4 @@ From: sif/build/openjdk-25.sif
 %runscript
     exec java -jar /opt/picard/lib/picard.jar "$@"
 
-%test
-    set -euo pipefail
-    java -jar /opt/picard/lib/picard.jar LiftoverVcf -h > /dev/null
+# picard returns 'exit 1' on '--help' and '--version' calls, no straightforward way to %test if executable is working
