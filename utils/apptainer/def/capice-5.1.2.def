@@ -2,7 +2,7 @@ Bootstrap: localimage
 From: sif/build/python-3.11.14.sif
 
 %post
-    # --only-binary              : ensure deps are not installed from source packages
+    # --only-binary: ensure deps are not installed from source packages
     pip install \
       --only-binary=numpy,pandas,scipy,scikit-learn,xgboost \
       capice==5.1.2
