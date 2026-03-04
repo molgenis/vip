@@ -17,8 +17,8 @@ From: sif/build/openjdk-25.sif
 
 %post
     version_major=3
-    version_minor=4
-    version_patch=6
+    version_minor=5
+    version_patch=5
 
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
     apk add --virtual=.build-dependencies build-base curl
