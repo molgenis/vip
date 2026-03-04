@@ -21,9 +21,4 @@ From: sif/build/openjdk-25.sif
     apk del .build-dependencies
     rm -rf /var/cache/apk/*
 
-%runscript
-    exec java -jar /opt/vcf-decision-tree/lib/vcf-decision-tree.jar "$@"
 
-%test
-    set -euo pipefail
-    java -jar /opt/vcf-decision-tree/lib/vcf-decision-tree.jar --version > /dev/null

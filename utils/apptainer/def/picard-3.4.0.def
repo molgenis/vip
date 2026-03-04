@@ -2,13 +2,12 @@ Bootstrap: localimage
 From: sif/build/openjdk-25.sif
 
 %help
-    A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats..
-    Usage: java -jar /opt/picard/lib/picard.jar
+    A set of Java command line tools for manipulating high-throughput sequencing (HTS) data and formats.
 
 %post    
     version_major=3
-    version_minor=1
-    version_patch=1
+    version_minor=4
+    version_patch=0
 
     # install
     apk add gcompat
@@ -21,3 +20,10 @@ From: sif/build/openjdk-25.sif
     # cleanup
     apk del .build-dependencies
     rm -rf /var/cache/apk/*
+
+%runscript
+    exec java -jar /opt/picard/lib/picard.jar "$@"
+
+%test
+    set -euo pipefail
+    java -jar /opt/picard/lib/picard.jar --version > /dev/null
