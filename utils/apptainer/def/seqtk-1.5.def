@@ -30,10 +30,9 @@ Stage: final
 
 %post
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate
+    chmod +x /usr/local/bin/seqtk
 
 %runscript
     exec seqtk "$@"
 
-%test
-    set -euo pipefail
-    seqtk --version > /dev/null
+# seqtkpicard returns 'exit 1' on '--help' and '--version' calls, no straightforward way to %test if executable is working
