@@ -32,7 +32,7 @@ align() {
           ${CMD_SAMTOOLS} sort -@ "!{task.cpus}" --reference "!{reference}" --no-PG - | \
           ${CMD_SAMTOOLS} view  --cram --output "!{cram}" --target-file "!{bedFile}" --reference "!{reference}" --write-index --no-PG --threads "!{task.cpus}" -
         else
-          ${CMD_SAMTOOLS} sort -@ "!{task.cpus}" --reference "!{reference}" --output "!{cram}" --no-PG -
+          ${CMD_SAMTOOLS} sort -@ "!{task.cpus}" --reference "!{reference}" --output "!{cram}" --no-PG --write-index -
         fi
     fi
 }
