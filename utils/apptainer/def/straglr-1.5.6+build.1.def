@@ -3,7 +3,7 @@ From: sif/build/python-3.11.14.sif
 
 %post
     apt-get update > /dev/null
-    apt-get install build-essentials zlib1g-dev libdeflate-dev curl git > /dev/null
+    apt-get install build-essential zlib1g-dev libdeflate-dev curl git > /dev/null
     apt-get install ncbi-blast+ zlib1g libdeflate0 > /dev/null
 
     mkdir -p /opt/trf/
