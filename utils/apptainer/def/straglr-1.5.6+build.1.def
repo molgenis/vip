@@ -13,7 +13,7 @@ From: sif/build/python-3.11.14.sif
     pip install "straglr @ git+https://github.com/bcgsc/straglr.git@v1.5.6"
 
     # cleanup
-    apt-get purge build-essentials zlib1g-dev libdeflate-dev curl git > /dev/null
+    apt-get purge build-essential zlib1g-dev libdeflate-dev curl git > /dev/null
     apt-get autoremove > /dev/null
     rm -rf /var/lib/apt/lists/*
 
