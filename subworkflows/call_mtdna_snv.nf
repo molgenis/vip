@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 include { nrMappedReads } from '../modules/cram/utils'
 include { mutect2_mito } from '../modules/cram/gatk.nf'
 include { merge_mtdnasnv_vcf } from '../modules/cram/merge_vcf.nf'
-include { publish_vcf } from '../modules/cram/publish_vcf.nf'
+include { publish_mtdna_vcf } from '../modules/cram/publish_mtdna_vcf.nf'
 include { validateGroup } from '../modules/utils'
 // include {call} from '../modules/cram/deepvariant.nf'
 
@@ -46,7 +46,7 @@ workflow mtdnasnv {
     // Publish the single VCF
     ch_mtdnasnv_by_project.single
       | map { meta, vcf -> [meta, vcf.data, vcf.index, vcf.stats] }
-      | publish_vcf
+      | publish_mtdna_vcf
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_mtdnasnv_by_project_single }
     

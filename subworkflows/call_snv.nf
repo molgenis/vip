@@ -5,6 +5,7 @@ include { nrMappedReadsInChunk } from '../modules/cram/utils'
 include { deepvariant; validateCallDeepVariantParams } from '../subworkflows/call_snv_deepvariant'
 include { mtdnasnv } from '../subworkflows/call_mtdna_snv'
 include { split_cram_chrm } from '../modules/cram/split_cram_chrm'
+include { concat_snv_vcf } from '../modules/cram/concat_snv_vcf'
 /*
  * Variant calling: single nucleotide variants and short insertions/deletions
  *
@@ -58,10 +59,34 @@ workflow snv {
       | deepvariant
       | set { ch_snv_deepvariant }
     
-    // mix outputs of all tools
+    // Concat the vcfs of both deepvariant and gatk
     Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
-      | view
+      | map { meta, vcf -> [groupKey(meta, 2), vcf] }
+      | groupTuple(remainder: true)
+      | map { key, group -> validateGroup(key, group) }
+      | branch { meta, vcfs ->
+        multiple: vcfs.count { it != null } > 1
+                  return [meta, vcfs.findAll { it != null } ]
+        single:   vcfs.count { it != null } == 1
+                  return [meta, vcfs.find { it != null } ]
+        zero:     true
+                  return [meta, null]
+        }
+      | set { ch_snv_called }
+
+    ch_snv_called.multiple
+      | map { meta, vcfs -> [meta, vcfs.collect { it.data }, vcfs.collect { it.index }] }
+      | concat_snv_vcf
+      | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | set { ch_snv_called_multiple }
+    
+    Channel.empty().mix(ch_snv_called_multiple, ch_snv_called.single)
       | set { ch_snv_processed }
+
+    // mix outputs of all tools
+    //Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
+    //  | view
+    //  | set { ch_snv_processed }
   emit:
     ch_snv_processed
 }
