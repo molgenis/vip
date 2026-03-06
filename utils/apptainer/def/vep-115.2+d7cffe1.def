@@ -1,0 +1,6 @@
+Bootstrap: docker
+From: ensemblorg/ensembl-vep:release_115.2
+
+%post
+  # workaround for https://github.com/Ensembl/ensembl-vep/issues/1710
+  curl --fail --silent --show-error --location --output /opt/vep/src/ensembl-vep/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm https://raw.githubusercontent.com/palakpsheth/ensembl-variation/2f282d6fc0379719e352079ae29f21da69b9ff7e/modules/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm

@@ -6,8 +6,8 @@ From: sif/build/python-3.11.14.sif
 
 %post
     version_major=0
-    version_minor=10
-    version_patch=0
+    version_minor=9
+    version_patch=3
 
 		pip install stranger==${version_major}.${version_minor}.${version_patch}
 
