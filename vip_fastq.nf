@@ -50,7 +50,7 @@ workflow fastq {
       | fastp
       | set { ch_fastp }
 
-    ch_fastp.reads_pass  
+    ch_fastp.reads_pass
       | minimap2_align
       | set { ch_input_single_aligned }
 
