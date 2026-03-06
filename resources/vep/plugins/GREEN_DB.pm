@@ -69,7 +69,9 @@ sub get_scores {
   if($start <= $end){
     @data = @{$self->get_data($chr, $start, $end)};
   }else{
-    die "ERROR: Encountered an end position before the stop position";
+    #structural variant on the reverse strand
+    #This can occur because VEP determines end pos for small indels and takes strand into account.
+    @data = @{$self->get_data($chr, $end, $start)};
   }
 
   my $size = @data;
