@@ -14,7 +14,7 @@ process publish_mtdna_vcf {
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
 
-    template 'publish_vcf.sh'
+    template 'publish_mtdna_vcf.sh'
 
   stub:
     vcfOut = "${meta.project.id}_mtdnasnv.vcf.gz"
