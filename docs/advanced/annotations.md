@@ -84,7 +84,7 @@ your output file depending on the sample sheet content and configuration.
 | INFO/STRAND             | string list  | [cuteSV](https://github.com/tjiangHIT/cuteSV)                                                                                                                       | Strand orientation of the adjacency in BEDPE format (DEL:+-, DUP:-+, INV:++/--)  |
 | INFO/SVLEN              | integer      | [cuteSV](https://github.com/tjiangHIT/cuteSV), [Spectre](https://github.com/fritzsedlazeck/Spectre)                                                                 | Length of the SV                                                                 |
 | INFO/SVSUPPORT          | string       | [Spectre](https://github.com/fritzsedlazeck/Spectre)                                                                                                                | Indicator if a SV support was found in a provided SNFJ file                      |
-| INFO/SVTYPE             | string       | [cuteSV](https://github.com/tjiangHIT/cuteSV), [Spectre](https://github.com/fritzsedlazeck/Spectre), [straglr-tsv2vcf](straglr-tsv2vcf)                             | Type of copy number variant                                                      |
+| INFO/SVTYPE             | string       | [cuteSV](https://github.com/tjiangHIT/cuteSV), [Spectre](https://github.com/fritzsedlazeck/Spectre), [straglr-tsv2vcf](https://github.com/molgenis/straglr-tsv2vcf)                             | Type of copy number variant                                                      |
 | INFO/SweGenMean         | float        | [Stranger](https://github.com/Clinical-Genomics/stranger/)                                                                                                          | Average number of repeat unit copies in population                               |
 | INFO/SweGenStd          | float        | [Stranger](https://github.com/Clinical-Genomics/stranger/)                                                                                                          | Standard deviation of number of repeat unit copies in population                 |
 | INFO/VIPC_S             | string list  |                                                                                                                                                                     | VIP decision tree classification (samples)                                       |
@@ -313,3 +313,8 @@ A custom MitoTIP VEP plugin annotates mitochondrial variants with computed [mito
 #### HmtVar
 [HmtVar](https://doi.org/10.1093/nar/gky1024) contains disease scores for mtDNA SNVs.
 A custom HmtVar VEP plugin annotates mitochondrial tRNA variants with computed disease scores.
+
+#### BRAIN-MAGNET
+[BRAIN-MAGNET](https://github.com/ruizhideng/BRAIN-MAGNET) predictions for all possible SNPs from NSC NCREs (~100 million), you can easily score your interested variants from our pre-scored data.
+Please note that this plugin is not enabled by default. It can be added through the "params.vcf.vep_additional_plugins" configuration option.
+Resources for this plugin should be provided by the user and are not part of the VIP install script. The resources can be found here: [resources](https://huggingface.co/datasets/RuizhiDeng/BRAIN-MAGNET/tree/main) 
