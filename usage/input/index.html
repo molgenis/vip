@@ -201,6 +201,7 @@ specific columns.</p>
 <tr>
 <th>column</th>
 <th>type</th>
+<th>scope</th>
 <th>required</th>
 <th>default</th>
 <th>description</th>
@@ -210,6 +211,7 @@ specific columns.</p>
 <tr>
 <td><code>project_id</code></td>
 <td><code>string</code></td>
+<td>project</td>
 <td></td>
 <td><code>vip</code></td>
 <td>project identifier, see <a href="../../examples/multi-project/">here</a></td>
@@ -217,6 +219,7 @@ specific columns.</p>
 <tr>
 <td><code>family_id</code></td>
 <td><code>string</code></td>
+<td>family</td>
 <td></td>
 <td><code>fam&lt;index&gt;</code></td>
 <td>family identifier</td>
@@ -224,6 +227,7 @@ specific columns.</p>
 <tr>
 <td><code>individual_id</code></td>
 <td><code>string</code></td>
+<td>sample</td>
 <td>yes</td>
 <td></td>
 <td>sample identifier of the individual</td>
@@ -231,6 +235,7 @@ specific columns.</p>
 <tr>
 <td><code>paternal_id</code></td>
 <td><code>string</code></td>
+<td>family</td>
 <td></td>
 <td></td>
 <td>sample identifier of the father</td>
@@ -238,6 +243,7 @@ specific columns.</p>
 <tr>
 <td><code>maternal_id</code></td>
 <td><code>string</code></td>
+<td>family</td>
 <td></td>
 <td></td>
 <td>sample identifier of the mother</td>
@@ -245,6 +251,7 @@ specific columns.</p>
 <tr>
 <td><code>sex</code></td>
 <td><code>enum</code></td>
+<td>sample</td>
 <td></td>
 <td>unknown sex</td>
 <td><code>values: [male,female]</code> Please note that an unknown sex leads to a Spectre CNV analysis that assumes <code>female</code> for the ploidy determination of chromosome X.</td>
@@ -252,6 +259,7 @@ specific columns.</p>
 <tr>
 <td><code>affected</code></td>
 <td><code>boolean</code></td>
+<td>sample</td>
 <td></td>
 <td>unknown affected status</td>
 <td>whether the individual is affected</td>
@@ -259,6 +267,7 @@ specific columns.</p>
 <tr>
 <td><code>proband</code></td>
 <td><code>boolean</code></td>
+<td>sample</td>
 <td></td>
 <td>depends<sup>1</sup></td>
 <td>individual being reported on</td>
@@ -266,6 +275,7 @@ specific columns.</p>
 <tr>
 <td><code>hpo_ids</code></td>
 <td><code>string list</code></td>
+<td>sample</td>
 <td></td>
 <td></td>
 <td>regex: <code>/HP:\d{7}/</code> from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)</td>
@@ -273,13 +283,15 @@ specific columns.</p>
 <tr>
 <td><code>sequencing_method</code></td>
 <td><code>enum</code></td>
+<td>project</td>
 <td></td>
 <td><code>WGS</code></td>
-<td>allowed values: [<code>WES</code>,<code>WGS</code>], value must be the same for all project samples</td>
+<td>allowed values: [<code>WES</code>,<code>WGS</code>]</td>
 </tr>
 <tr>
 <td><code>regions</code></td>
 <td><code>file</code></td>
+<td>project</td>
 <td></td>
 <td></td>
 <td>allowed file extensions: [<code>bed</code>]. filter variants overlapping with regions in bed file</td>
@@ -287,6 +299,7 @@ specific columns.</p>
 <tr>
 <td><code>pcr_performed</code></td>
 <td><code>boolean</code></td>
+<td>project</td>
 <td>false</td>
 <td>false</td>
 <td>Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.</td>
@@ -300,6 +313,7 @@ specific columns.</p>
 <tr>
 <th>column</th>
 <th>type</th>
+<th>scope</th>
 <th>required</th>
 <th>default</th>
 <th>description</th>
@@ -309,6 +323,7 @@ specific columns.</p>
 <tr>
 <td><code>adaptive_sampling</code></td>
 <td><code>file</code></td>
+<td>sample</td>
 <td></td>
 <td></td>
 <td>allowed file extensions: [<code>csv</code>]. for <code>nanopore</code> adaptive sampling experiments, used to filter <code>stop_receiving</code><sup>3</sup> or <code>sequence</code><sup>3</sup> reads</td>
@@ -316,6 +331,7 @@ specific columns.</p>
 <tr>
 <td><code>fastq</code></td>
 <td><code>file list</code></td>
+<td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. single-reads file(s)</td>
@@ -323,6 +339,7 @@ specific columns.</p>
 <tr>
 <td><code>fastq_r1</code></td>
 <td><code>file list</code></td>
+<td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #1</td>
@@ -330,6 +347,7 @@ specific columns.</p>
 <tr>
 <td><code>fastq_r2</code></td>
 <td><code>file list</code></td>
+<td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
 <td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #2</td>
@@ -337,9 +355,10 @@ specific columns.</p>
 <tr>
 <td><code>sequencing_platform</code></td>
 <td><code>enum</code></td>
+<td>project</td>
 <td></td>
 <td><code>nanopore</code></td>
-<td>allowed values: [<code>illumina</code>,<code>nanopore</code>,<code>pacbio_hifi</code>], value must be the same for all project samples</td>
+<td>allowed values: [<code>illumina</code>,<code>nanopore</code>,<code>pacbio_hifi</code>]</td>
 </tr>
 </tbody>
 </table>
@@ -351,6 +370,7 @@ specific columns.</p>
 <tr>
 <th>column</th>
 <th>type</th>
+<th>scope</th>
 <th>required</th>
 <th>default</th>
 <th>description</th>
@@ -360,6 +380,7 @@ specific columns.</p>
 <tr>
 <td><code>cram</code></td>
 <td><code>file</code></td>
+<td>sample</td>
 <td>yes</td>
 <td></td>
 <td>allowed file extensions: [<code>bam</code>, <code>cram</code>, <code>sam</code>]</td>
@@ -367,9 +388,10 @@ specific columns.</p>
 <tr>
 <td><code>sequencing_platform</code></td>
 <td><code>enum</code></td>
+<td>project</td>
 <td></td>
 <td><code>illumina</code></td>
-<td>allowed values: [<code>illumina</code>,<code>nanopore</code>,<code>pacbio_hifi</code>], value must be the same for all project samples</td>
+<td>allowed values: [<code>illumina</code>,<code>nanopore</code>,<code>pacbio_hifi</code>]</td>
 </tr>
 </tbody>
 </table>
@@ -379,6 +401,7 @@ specific columns.</p>
 <tr>
 <th>column</th>
 <th>type</th>
+<th>scope</th>
 <th>required</th>
 <th>default</th>
 <th>description</th>
@@ -388,6 +411,7 @@ specific columns.</p>
 <tr>
 <td><code>assembly</code></td>
 <td><code>enum</code></td>
+<td>project</td>
 <td></td>
 <td><code>GRCh38</code></td>
 <td>allowed values: [<code>GRCh37</code>, <code>GRCh38</code>, <code>T2T</code>]</td>
@@ -395,6 +419,7 @@ specific columns.</p>
 <tr>
 <td><code>gvcf</code></td>
 <td><code>file</code></td>
+<td>sample</td>
 <td>yes</td>
 <td></td>
 <td>allowed file extensions: [<code>gvcf</code>, <code>gvcf.gz</code>, <code>gvcf.bgz</code>, <code>vcf</code>, <code>vcf.gz</code>, <code>vcf.bgz</code>, <code>bcf</code>, <code>bcf.gz</code>, <code>bcf.bgz</code>]</td>
@@ -402,6 +427,7 @@ specific columns.</p>
 <tr>
 <td><code>cram</code></td>
 <td><code>file</code></td>
+<td>sample</td>
 <td></td>
 <td></td>
 <td>allowed file extensions: [<code>bam</code>, <code>cram</code>, <code>sam</code>]</td>
@@ -414,6 +440,7 @@ specific columns.</p>
 <tr>
 <th>column</th>
 <th>type</th>
+<th>scope</th>
 <th>required</th>
 <th>default</th>
 <th>description</th>
@@ -423,20 +450,23 @@ specific columns.</p>
 <tr>
 <td><code>assembly</code></td>
 <td><code>enum</code></td>
+<td>project</td>
 <td></td>
 <td><code>GRCh38</code></td>
-<td>allowed values: [<code>GRCh37</code>, <code>GRCh38</code>, <code>T2T</code>], value must be the same for all project samples</td>
+<td>allowed values: [<code>GRCh37</code>, <code>GRCh38</code>, <code>T2T</code>]</td>
 </tr>
 <tr>
 <td><code>vcf</code></td>
 <td><code>file</code></td>
+<td>project</td>
 <td>yes</td>
 <td></td>
-<td>allowed file extensions: [<code>vcf</code>, <code>vcf.gz</code>, <code>vcf.bgz</code>, <code>bcf</code>, <code>bcf.gz</code>, <code>bcf.bgz</code>], value must be the same for all project samples</td>
+<td>allowed file extensions: [<code>vcf</code>, <code>vcf.gz</code>, <code>vcf.bgz</code>, <code>bcf</code>, <code>bcf.gz</code>, <code>bcf.bgz</code>]</td>
 </tr>
 <tr>
 <td><code>cram</code></td>
 <td><code>file</code></td>
+<td>sample</td>
 <td></td>
 <td></td>
 <td>allowed file extensions: [<code>bam</code>, <code>cram</code>, <code>sam</code>]</td>
