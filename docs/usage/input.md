@@ -26,55 +26,55 @@ specific columns.
 
 ## Columns
 
-| column                | type            | required | default                 | description                                                                                                                                                     |                                        
-|-----------------------|-----------------|----------|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ``project_id``        | ``string``      |          | ``vip``                 | project identifier, see [here](../examples/multi-project.md)                                                                                                    |
-| ``family_id``         | ``string``      |          | ``fam<index>``          | family identifier                                                                                                                                               |
-| ``individual_id``     | ``string``      | yes      |                         | sample identifier of the individual                                                                                                                             |
-| ``paternal_id``       | ``string``      |          |                         | sample identifier of the father                                                                                                                                 |
-| ``maternal_id``       | ``string``      |          |                         | sample identifier of the mother                                                                                                                                 |
-| ``sex``               | ``enum``        |          | unknown sex             | ``values: [male,female]`` Please note that an unknown sex leads to a Spectre CNV analysis that assumes ``female`` for the ploidy determination of chromosome X. |
-| ``affected``          | ``boolean``     |          | unknown affected status | whether the individual is affected                                                                                                                              |
-| ``proband``           | ``boolean``     |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
-| ``hpo_ids``           | ``string list`` |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
-| ``sequencing_method`` | ``enum``        |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples                                                                               |
-| ``regions``           | ``file``        |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
-| ``pcr_performed``     | ``boolean``     | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                               |
+| column                | type            | scope   | required | default                 | description                                                                                                                                                     |                                        
+|-----------------------|-----------------|---------|----------|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ``project_id``        | ``string``      | project |          | ``vip``                 | project identifier, see [here](../examples/multi-project.md)                                                                                                    |
+| ``family_id``         | ``string``      | family  |          | ``fam<index>``          | family identifier                                                                                                                                               |
+| ``individual_id``     | ``string``      | sample  | yes      |                         | sample identifier of the individual                                                                                                                             |
+| ``paternal_id``       | ``string``      | family  |          |                         | sample identifier of the father                                                                                                                                 |
+| ``maternal_id``       | ``string``      | family  |          |                         | sample identifier of the mother                                                                                                                                 |
+| ``sex``               | ``enum``        | sample  |          | unknown sex             | ``values: [male,female]`` Please note that an unknown sex leads to a Spectre CNV analysis that assumes ``female`` for the ploidy determination of chromosome X. |
+| ``affected``          | ``boolean``     | sample  |          | unknown affected status | whether the individual is affected                                                                                                                              |
+| ``proband``           | ``boolean``     | sample  |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
+| ``hpo_ids``           | ``string list`` | sample  |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
+| ``sequencing_method`` | ``enum``        | project |          | ``WGS``                 | allowed values: [``WES``,``WGS``]                                                                                                                               |
+| ``regions``           | ``file``        | project |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
+| ``pcr_performed``     | ``boolean``     | project | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                               |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
 ## Columns: FASTQ
 
-| column                  | type          | required        | default      | description                                                                                                                                                     |
-|-------------------------|---------------|-----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ``adaptive_sampling``   | ``file``      |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving`<sup>3</sup> or `sequence`<sup>3</sup> reads | 
-| ``fastq``               | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                                                                     |
-| ``fastq_r1``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                                                              |
-| ``fastq_r2``            | ``file list`` | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                                                              |
-| ``sequencing_platform`` | ``enum``      |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples                                                     |
+| column                  | type          | scope   | required        | default      | description                                                                                                                                                     |
+|-------------------------|---------------|---------|-----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ``adaptive_sampling``   | ``file``      | sample  |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving`<sup>3</sup> or `sequence`<sup>3</sup> reads | 
+| ``fastq``               | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                                                                     |
+| ``fastq_r1``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                                                              |
+| ``fastq_r2``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                                                              |
+| ``sequencing_platform`` | ``enum``      | project |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                                                                     |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 <sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) adaptive sampling file specification < 0.1 was used, `sequence` for version 0.1 and above.
 
 ## Columns: CRAM
 
-| column                  | type     | required | default      | description                                                                                                 |
-|-------------------------|----------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
-| ``cram``                | ``file`` | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
-| ``sequencing_platform`` | ``enum`` |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
+| column                  | type     | scope   | required | default      | description                                                                                                 |
+|-------------------------|----------|---------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
+| ``cram``                | ``file`` | sample  | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
+| ``sequencing_platform`` | ``enum`` | project |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                 |
 
 ## Columns: gVCF
 
-| column       | type     | required | default    | description                                                                                                                        |
-|--------------|----------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
-| ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
-| ``gvcf``     | ``file`` | yes      |            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
-| ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
+| column       | type     | scope   | required | default    | description                                                                                                                        |
+|--------------|----------|---------|----------|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ``assembly`` | ``enum`` | project |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                  |
+| ``gvcf``     | ``file`` | sample  | yes      |            | allowed file extensions: [``gvcf``, ``gvcf.gz``, ``gvcf.bgz``, ``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``] |
+| ``cram``     | ``file`` | sample  |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                              |
 
 ## Columns: VCF
 
-| column       | type     | required | default    | description                                                                                                                                   |
-|--------------|----------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| ``assembly`` | ``enum`` |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |
-| ``vcf``      | ``file`` | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
-| ``cram``     | ``file`` |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
+| column       | type     | scope   | required | default    | description                                                                                                                                   |
+|--------------|----------|---------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| ``assembly`` | ``enum`` | project |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                             |
+| ``vcf``      | ``file`` | project | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``]                                                 |
+| ``cram``     | ``file`` | sample  |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
