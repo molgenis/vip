@@ -167,7 +167,7 @@ def parseSampleSheet(params) {
     ],
     sequencing_platform: [
       type: "string",
-      default: { 'illumina' },
+      default: { 'nanopore' },
       enum: ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
     ]
