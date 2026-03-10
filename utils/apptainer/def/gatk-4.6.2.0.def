@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: sif/build/openjdk-21.sif
+
+%help
+    Genome Analysis Toolkit - Variant Discovery in High-Throughput Sequencing Data.
+    Usage: java -jar /opt/gatk/lib/gatk.jar
+
+%post
+    version=4.6.2.0
+
+    # install
+    apk update
+    apk add libgomp gcompat
+    apk add --virtual=.build-dependencies curl
+
+    mkdir -p /opt/gatk/lib
+    curl -Ls -o gatk.zip "https://github.com/broadinstitute/gatk/releases/download/${version}/gatk-${version}.zip"
+    echo "32d2f90bf13fcb3a8ac765bb2cb8ec1fc9a6cc447055d0156bd1db2092d4e3e8  gatk.zip" | sha256sum -c
+    unzip -p gatk.zip "gatk-${version}/gatk-package-${version}-local.jar" > /opt/gatk/lib/gatk.jar
+
+    # cleanup
+    apk del .build-dependencies
+    rm -rf /var/cache/apk/* gatk.zip

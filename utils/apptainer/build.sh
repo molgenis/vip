@@ -91,6 +91,7 @@ main() {
   #see ./def/glnexus_v1.4.5-patched.txt
   #images+=("glnexus_v1.4.5-patched")
   images+=("gado-1.0.3_v2")
+  images+=("gatk-4.6.2.0")
   images+=("manta-1.6.0")
   images+=("minimap2-2.27_v2")
   images+=("picard-3.1.1_v2")
