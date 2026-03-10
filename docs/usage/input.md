@@ -61,7 +61,7 @@ specific columns.
 | column                  | type     | scope   | required | default      | description                                                                                                 |
 |-------------------------|----------|---------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
 | ``cram``                | ``file`` | sample  | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
-| ``sequencing_platform`` | ``enum`` | project |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                 |
+| ``sequencing_platform`` | ``enum`` | project |          | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                 |
 
 ## Columns: gVCF
 
