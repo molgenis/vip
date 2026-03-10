@@ -64,7 +64,7 @@ process minimap2_align_paired_end {
     template 'minimap2_align_paired_end.sh'
   
   stub:
-    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_unfiltered.cram"
+    cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"
     

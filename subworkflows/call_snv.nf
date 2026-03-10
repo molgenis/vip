@@ -83,10 +83,6 @@ workflow snv {
     Channel.empty().mix(ch_snv_called_multiple, ch_snv_called.single)
       | set { ch_snv_processed }
 
-    // mix outputs of all tools
-    //Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
-    //  | view
-    //  | set { ch_snv_processed }
   emit:
     ch_snv_processed
 }
