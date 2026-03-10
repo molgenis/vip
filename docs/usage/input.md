@@ -37,7 +37,7 @@ specific columns.
 | ``affected``          | ``boolean``     | sample  |          | unknown affected status | whether the individual is affected                                                                                                                              |
 | ``proband``           | ``boolean``     | sample  |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
 | ``hpo_ids``           | ``string list`` | sample  |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
-| ``sequencing_method`` | ``enum``        | project |          | ``WGS``                 | allowed values: [``WES``,``WGS``], value must be the same for all project samples                                                                               |
+| ``sequencing_method`` | ``enum``        | project |          | ``WGS``                 | allowed values: [``WES``,``WGS``]                                                                                                                               |
 | ``regions``           | ``file``        | project |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
 | ``pcr_performed``     | ``boolean``     | project | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                               |
 
@@ -51,7 +51,7 @@ specific columns.
 | ``fastq``               | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                                                                     |
 | ``fastq_r1``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                                                              |
 | ``fastq_r2``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                                                              |
-| ``sequencing_platform`` | ``enum``      | project |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples                                                     |
+| ``sequencing_platform`` | ``enum``      | project |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                                                                     |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 <sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) adaptive sampling file specification < 0.1 was used, `sequence` for version 0.1 and above.
@@ -61,7 +61,7 @@ specific columns.
 | column                  | type     | scope   | required | default      | description                                                                                                 |
 |-------------------------|----------|---------|----------|--------------|-------------------------------------------------------------------------------------------------------------|
 | ``cram``                | ``file`` | sample  | yes      |              | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                       |
-| ``sequencing_platform`` | ``enum`` | project |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``], value must be the same for all project samples |
+| ``sequencing_platform`` | ``enum`` | project |          | ``illumina`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                 |
 
 ## Columns: gVCF
 
@@ -75,6 +75,6 @@ specific columns.
 
 | column       | type     | scope   | required | default    | description                                                                                                                                   |
 |--------------|----------|---------|----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| ``assembly`` | ``enum`` | project |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``], value must be the same for all project samples                                             |
-| ``vcf``      | ``file`` | sample  | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``], value must be the same for all project samples |
+| ``assembly`` | ``enum`` | project |          | ``GRCh38`` | allowed values: [``GRCh37``, ``GRCh38``, ``T2T``]                                                                                             |
+| ``vcf``      | ``file`` | project | yes      |            | allowed file extensions: [``vcf``, ``vcf.gz``, ``vcf.bgz``, ``bcf``, ``bcf.gz``, ``bcf.bgz``]                                                 |
 | ``cram``     | ``file`` | sample  |          |            | allowed file extensions: [``bam``, ``cram``, ``sam``]                                                                                         |
