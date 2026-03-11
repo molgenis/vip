@@ -7,8 +7,9 @@ process coverage {
     tuple val(meta), path(cram), path(cramCrai), path(regions)
   
   output:
-    tuple val(meta), path(mosdepth_global), path(mosdepth_region),path(mosdepth_summary), path(mosdepth_per_base_bed),path(mosdepth_per_base_bed_csi), path(mosdepth_regions_bed), path(mosdepth_regions_bed_csi), path(mosdepth_thresholds_bed), path(mosdepth_thresholds_bed_csi)
-  
+    tuple val(meta), path(mosdepth_global), path(mosdepth_region),path(mosdepth_summary), path(mosdepth_regions_bed), path(mosdepth_regions_bed_csi), path(mosdepth_thresholds_bed), path(mosdepth_thresholds_bed_csi)
+    tuple path(mosdepth_per_base_bed), path(mosdepth_per_base_bed_csi), optional: true, emit: optional_files
+
   shell:
     mosdepth_global = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_mosdepth.global.dist.txt"
     mosdepth_region = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_mosdepth.region.dist.txt"
@@ -21,6 +22,7 @@ process coverage {
     mosdepth_thresholds_bed_csi= "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_mosdepth.thresholds.bed.gz.csi"
 
     paramReference = params[meta.project.assembly].reference.fasta
+    paramPerBaseCov = params.cram.coverage.per_base
 
     template 'coverage.sh'
   
