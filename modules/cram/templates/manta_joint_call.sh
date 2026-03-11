@@ -3,7 +3,7 @@ set -euo pipefail
 
 manta_config () {
   local args=()
-  args+=("/opt/manta/bin/configManta.py")
+  args+=("configManta.py")
   for cram in !{crams}; do
     args+=("--bam" "${cram}")
   done
