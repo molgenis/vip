@@ -41,7 +41,7 @@ esac
 
 concat() {
   # concatenate both compressed and uncompressed files
-  zcat --force !{fastqs}
+  printf '%s\0' !{fastqs} | xargs -0 -I {} sh -c 'zcat --force "$1"' _ {}
 }
 
 filter_reads() {
