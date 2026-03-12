@@ -42,7 +42,7 @@ process call {
 process call_duo {
   label 'deepvariant_call_duo'
 
-  memory { 4.GB * task.cpus }
+  memory { 6.GB * task.cpus }
 
   input:
     tuple val(meta), path(cramChild), path(cramCraiChild),

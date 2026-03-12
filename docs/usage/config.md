@@ -10,21 +10,21 @@ listed [here](https://www.nextflow.io/docs/latest/executor.html#slurm).
 
 ## Parameters
 
-| key                           | default     | description                                                                                                                       |
-|-------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| assembly                      | GRCh38      | output assembly, allowed values: [GRCh38]                                                                                         |
-| GRCh37.chain.GRCh38           |             | chain file to convert GRCh37 to GRCh38 data                                                                                       |
-| GRCh37.reference.fasta        |             |                                                                                                                                   |
-| GRCh37.reference.fastaFai     |             |                                                                                                                                   |
-| GRCh37.reference.fastaGzi     |             |                                                                                                                                   |
-| GRCh38.reference.fasta        | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set                                                                                       |
-| GRCh38.reference.fastaFai     | *installed* |                                                                                                                                   |
-| GRCh38.reference.fastaGzi     | *installed* |                                                                                                                                   |
-| hpo_phenotypic_abnormality    | *installed* | TSV file containing HPO terms that are children of HP:000018 "Phenotypic abnormality" with their label and description            |
-| T2T.chain.GRCh38              | *installed* | chain file to convert T2T to GRCh38 data                                                                                          |
-| T2T.reference.fasta           |             |                                                                                                                                   |
-| T2T.reference.fastaFai        |             |                                                                                                                                   |
-| T2T.reference.fastaGzi        |             |                                                                                                                                   |
+| key                        | default     | description                                                                                                            |
+|----------------------------|-------------|------------------------------------------------------------------------------------------------------------------------|
+| assembly                   | GRCh38      | output assembly, allowed values: [GRCh38]                                                                              |
+| GRCh37.chain.GRCh38        |             | chain file to convert GRCh37 to GRCh38 data                                                                            |
+| GRCh37.reference.fasta     |             |                                                                                                                        |
+| GRCh37.reference.fastaFai  |             |                                                                                                                        |
+| GRCh37.reference.fastaGzi  |             |                                                                                                                        |
+| GRCh38.reference.fasta     | *installed* | GCA_000001405.15_GRCh38_no_alt_analysis_set                                                                            |
+| GRCh38.reference.fastaFai  | *installed* |                                                                                                                        |
+| GRCh38.reference.fastaGzi  | *installed* |                                                                                                                        |
+| hpo_phenotypic_abnormality | *installed* | TSV file containing HPO terms that are children of HP:000018 "Phenotypic abnormality" with their label and description |
+| T2T.chain.GRCh38           | *installed* | chain file to convert T2T to GRCh38 data                                                                               |
+| T2T.reference.fasta        |             |                                                                                                                        |
+| T2T.reference.fastaFai     |             |                                                                                                                        |
+| T2T.reference.fastaGzi     |             |                                                                                                                        |
 
 **Warning:**
 Please take note of the fact that for a different reference fasta.gz the unzipped referenfasta file is also required.
@@ -228,8 +228,8 @@ The following sections list all processes and their non-default configuration.
 | cram_validate           | *default*                                     |
 | cutesv_call             | cpus=4 memory='8GB' time='5h'                 |
 | deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h'  |
-| deepvariant_call_duo    | cpus=*default* memory='4GB * cpus' time='23h' |
-| deepvariant_call_trio   | cpus=*default* memory='4GB * cpus' time='23h' |
+| deepvariant_call_duo    | cpus=*default* memory='6GB * cpus' time='23h' |
+| deepvariant_call_trio   | cpus=*default* memory='6GB * cpus' time='23h' |
 | deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'        |
 | deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'        |
 | deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'        |
