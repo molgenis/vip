@@ -41,6 +41,7 @@ esac
 
 concat() {
   # concatenate both compressed and uncompressed files
+  # use printf + xargs with -i {} to force per file concatenation to prevent "argument list too long" errors.
   printf '%s\0' !{fastqs} | xargs -0 -I {} sh -c 'zcat --force "$1"' _ {}
 }
 
