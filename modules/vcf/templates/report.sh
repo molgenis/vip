@@ -7,18 +7,24 @@ create_vcf () {
   local args=()
   args+=("annotate")
   args+=("--header-lines" "!{basename}.header")
+  args+=("--output-type" "z9")
+  args+=("--output" "!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
   # workaround for https://github.com/samtools/bcftools/issues/2385
   # and
   # https://github.com/samtools/htsjdk/issues/1718
-  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" "!{vcf}" | ${CMD_BCFTOOLS} "${args[@]}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "!{vcfOut}"
+  ${CMD_BCFTOOLS} view --no-version --threads "!{task.cpus}" "!{vcf}" | ${CMD_BCFTOOLS} "${args[@]}"
 }
 
 index () {
   ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+}
+
+postprocess_vcf() {
+    zcat "!{vcfOut}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "postprocessed_!{vcfOut}"
 }
 
 report() {
@@ -29,7 +35,7 @@ report() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
-  args+=("--input" "!{vcfOut}")
+  args+=("--input" "postprocessed_!{vcfOut}")
   args+=("--metadata" "!{metadata}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
@@ -72,12 +78,15 @@ EOF
   fi
 
   ${CMD_VCFREPORT} java "${args[@]}"
+  #strip prefix from output database
+  mv "postprocessed_!{reportDbPath}" "!{reportDbPath}"
 }
 
 
 main() {
   create_vcf
   index
+  postprocess_vcf
   report
 }
 
