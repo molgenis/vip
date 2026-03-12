@@ -229,7 +229,7 @@ The following sections list all processes and their non-default configuration.
 | cutesv_call             | cpus=4 memory='8GB' time='5h'                 |
 | deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h'  |
 | deepvariant_call_duo    | cpus=*default* memory='6GB * cpus' time='23h' |
-| deepvariant_call_trio   | cpus=*default* memory='4GB * cpus' time='23h' |
+| deepvariant_call_trio   | cpus=*default* memory='6GB * cpus' time='23h' |
 | deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'        |
 | deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'        |
 | deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'        |
