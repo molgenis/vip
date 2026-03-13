@@ -25,7 +25,7 @@ VIP documentation is available at this link https://molgenis.github.io/vip/.
   e.g. Ubuntu, [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))
   with [x86_64](https://en.wikipedia.org/wiki/X86-64) architecture
 - Bash ≥ 3.2
-- Java ≥ 11
+- Java ≥ 17
 - [Apptainer](https://apptainer.org/docs/admin/main/installation.html#install-from-pre-built-packages) (setuid
   installation)
 - 8GB RAM (an estimate, see also the [documentation](https://molgenis.github.io/vip/get_started/requirements/))
