@@ -8,7 +8,7 @@ create_vcf () {
   args+=("annotate")
   args+=("--header-lines" "!{basename}.header")
   args+=("--output-type" "z9")
-  args+=("--output" "!{vcfOut}")
+  args+=("--output" "original_!{vcfOut}")
   args+=("--no-version")
   args+=("--threads" "!{task.cpus}")
 
@@ -19,12 +19,15 @@ create_vcf () {
 }
 
 index () {
-  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" --force "!{vcfOut}"
+}
+
+stats () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 postprocess_vcf() {
-    zcat "!{vcfOut}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "postprocessed_!{vcfOut}"
+    zcat "original_!{vcfOut}" | awk 'BEGIN{FS=OFS="\t"} {i=0; while(sub(/<CNV:TR>/,"<CNV:TR"++i">",$5));}1' | ${CMD_BGZIP} -c > "!{vcfOut}"
 }
 
 report() {
@@ -35,7 +38,7 @@ report() {
   args+=("-XX:ParallelGCThreads=2")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/vcf-report/lib/vcf-report.jar")
-  args+=("--input" "postprocessed_!{vcfOut}")
+  args+=("--input" "!{vcfOut}")
   args+=("--metadata" "!{metadata}")
   args+=("--reference" "!{refSeqPath}")
   args+=("--output" "!{reportPath}")
@@ -78,16 +81,19 @@ EOF
   fi
 
   ${CMD_VCFREPORT} java "${args[@]}"
-  #strip prefix from output database
-  mv "postprocessed_!{reportDbPath}" "!{reportDbPath}"
+  
+  #set output to vcf before postprocessing
+  mv "original_!{vcfOut}" "!{vcfOut}"
 }
 
 
 main() {
   create_vcf
-  index
   postprocess_vcf
+  index #index the vcf with postprocessing
   report
+  index #index the vcf without postprocessing
+  stats
 }
 
 main "$@"
