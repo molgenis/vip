@@ -31,10 +31,16 @@ case "$version" in
     ' "!{adaptiveSamplingCsv}" > "accepted_read_ids.txt"
     ;;
   "v2")
-    awk -F',' -v read_id="$readIdCol" -v status="$statusCol" -v response="$responseCol" '
-      NR==1 {next}
-      $status == "sequence" && $response == "SUCCESS" {print $read_id}
-    ' "!{adaptiveSamplingCsv}" > "accepted_read_ids.txt"
+    accepted_responses_param="!{acceptedResponses}"
+    accepted_responses_list="${accepted_responses_param//,/|}"
+    awk -F',' \
+      -v read_id="$readIdCol" \
+      -v status="$statusCol" \
+      -v response_col="$responseCol" \
+      -v accepted_responses="$accepted_responses_list" '  # All -v first, THEN single quotes for script
+        NR==1 {next}
+        $status == "sequence" && $response_col ~ "^(" accepted_responses ")$" {print $read_id}
+      ' "!{adaptiveSamplingCsv}" > "accepted_read_ids.txt"
     ;;
 esac
 }
