@@ -32,13 +32,15 @@ Both the zipped and unzipped fasta should have an index.
 
 ### FASTQ
 
-| key                       | default     | description                                                                                            |
-|---------------------------|-------------|--------------------------------------------------------------------------------------------------------|
-| GRCh38.reference.fastaMmi | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
-| fastp.options             |             | for details, see [here](https://github.com/OpenGene/fastp)                                             |
-| minimap2.soft_clipping    | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
-| minimap2.nanopore_preset  | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq' 'map-ont'.                                  |
+| key                                              | default     | description                                                                                            |
+|--------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| adaptive_sampling.accepted_responses<sup>1</sup> | SUCCESS | Comma separated list of action_response values that should be kept, options: SUCCESS,FAILED_READ_FINISHED,FAILED_READ_TOO_LONG|
+| GRCh38.reference.fastaMmi                        | *installed* | for details, see [here](https://github.com/lh3/minimap2)                                               |
+| fastp.options                                    |             | for details, see [here](https://github.com/OpenGene/fastp)                                             |
+| minimap2.soft_clipping                           | true        | In SAM output, use soft clipping for supplementary alignments (required when STR calling with Straglr) |
+| minimap2.nanopore_preset                         | lr:hq       | Preset to use for aligning Nanopore data, options: 'lr:hq' 'map-ont'.                                  |
 
+<sup>1</sup> This option only has effect if [Nanopore adaptive sampling file specification](https://software-docs.nanoporetech.com/output-specifications) version 0.1 or above was used.
 ### CRAM
 
 | key                                            | default                                                      | description                                                                                                                                                                                                                                                   |
