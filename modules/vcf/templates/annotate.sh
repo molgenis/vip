@@ -78,8 +78,16 @@ capice_vep() {
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
   args+=("--plugin" "Grantham")
+  args+=("--plugin" "NMD")
+  args+=("--plugin" "pLI_LOEUF")
+  args+=("--plugin" "Downstream")
+  args+=("--plugin" "UTRannotator,!{vepPluginUtrAnnotatorPath}")
   args+=("--custom" "!{vepCustomPhyloPPath},phyloP,bigwig,exact,0")
   args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
+  args+=("--plugin" "AlphaMissense,file=!{amScorePath}")
+  args+=("--plugin" "ncER,!{vepPluginNcerPath}")
+  args+=("--plugin" "FATHMM_MKL_NC,!{fathmmMKLScoresPath}")
+  args+=("--plugin" "ReMM,!{reMMScoresPath}")
 
   ${CMD_VEP} "${args[@]}"
 }
@@ -178,6 +186,9 @@ vep() {
   args+=("--hgvs")
   args+=("--dir_plugins" "!{params.vcf.annotate.vep_plugin_dir}")
   args+=("--plugin" "Grantham")
+  args+=("--plugin" "NMD")
+  args+=("--plugin" "pLI_LOEUF")
+  args+=("--plugin" "Downstream")
   if [ "!{vepPluginSpliceAiEnabled}" = true  ]; then
     args+=("--plugin" "SpliceAI,snv=!{vepPluginSpliceAiSnvPath},indel=!{vepPluginSpliceAiIndelPath}")
     args+=("--plugin" "Capice,${capiceOutputPath}")
@@ -206,8 +217,8 @@ vep() {
     # when you change the field also update the empty file header in this file
     args+=("--plugin" "AnnotSV,!{vcf}.tsv,!{params.vcf.annotate.vep_plugin_annotsv_columns}")
   fi
-  if [ -n "!{alphScorePath}" ]; then
-    args+=("--plugin" "AlphScore,!{alphScorePath}")
+  if [ -n "!{amScorePath}" ]; then
+    args+=("--plugin" "AlphaMissense,file=!{amScorePath}")
   fi
   if [ -n "!{vepPluginNcerPath}" ]; then
     args+=("--plugin" "ncER,!{vepPluginNcerPath}")
