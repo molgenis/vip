@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -306,6 +306,11 @@ Both the zipped and unzipped fasta should have an index.</p>
 <td>cram.call_sv</td>
 <td>true</td>
 <td>enable/disable the detection of structural variants. disable this manually in case of non-paired-end Illumina data.</td>
+</tr>
+<tr>
+<td>cram.coverage.per_base</td>
+<td>false</td>
+<td>output per-base depth</td>
 </tr>
 <tr>
 <td>snv.GRCh37.reference.haploidContigs</td>
