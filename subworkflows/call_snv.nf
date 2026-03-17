@@ -4,7 +4,6 @@ include { scatter; validateGroup } from '../modules/utils'
 include { nrMappedReadsInChunk } from '../modules/cram/utils'
 include { deepvariant; validateCallDeepVariantParams } from '../subworkflows/call_snv_deepvariant'
 include { mtdnasnv } from '../subworkflows/call_mtdna_snv'
-include { split_cram_chrm } from '../modules/cram/split_cram_chrm'
 include { concat_snv_vcf } from '../modules/cram/concat_snv_vcf'
 /*
  * Variant calling: single nucleotide variants and short insertions/deletions
@@ -16,12 +15,6 @@ workflow snv {
   take: meta
   main:
     meta
-      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
-			| split_cram_chrm
-			| map { meta, chrmCram, chrmCramIndex, chrmCramStats, nonchrmCram, nonchrmCramIndex, nonchrmCramStats
-				-> 
-				[*:meta, sample: [*:meta.sample, cram: [data: nonchrmCram, index: nonchrmCramIndex, stats: nonchrmCramStats, chrmdata: chrmCram, chrmindex: chrmCramIndex, chrmstats: chrmCramStats]]]
-				}
 			| multiMap { it -> normal: chrm: it }
 			| set { ch_snv }
     
@@ -80,7 +73,7 @@ workflow snv {
       | map { meta, vcf, vcfIndex, vcfStats -> [meta, [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | set { ch_snv_called_multiple }
     
-    Channel.empty().mix(ch_snv_called_multiple, ch_snv_called.single)
+    Channel.empty().mix(ch_snv_called_multiple, ch_snv_called.single, ch_snv_called.zero)
       | set { ch_snv_processed }
 
   emit:

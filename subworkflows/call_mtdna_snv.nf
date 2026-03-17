@@ -13,16 +13,16 @@ workflow mtdnasnv {
     // Split the channel in crams with mapped and without mapped reads
     meta
       | branch { meta ->
-          with_reads: nrMappedReads(meta.sample.cram.chrmstats) > 0
+          with_reads: nrMappedReads(meta.sample.cram.stats) > 0
                       return meta
           zero_reads: true
-                      return meta
+                      return [meta, null]
         }
       | set { ch_mtdnasnv }
 
     // Perform the GATK Mutect2 calling on chrM data
     ch_mtdnasnv.with_reads
-      | map { meta -> [meta, meta.sample.cram.chrmdata, meta.sample.cram.chrmindex] }
+      | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | mutect2_mito
       | map { meta, vcfOut, vcfOutIndex, vcfOutStats -> [meta, [data: vcfOut, index: vcfOutIndex, stats: vcfOutStats]] }
       | set { ch_mtdnasnv_gatk }
