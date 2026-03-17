@@ -17,7 +17,6 @@ We also added HPO terms for two affected individuals. This will select found var
 
 ### Samplesheet
 
-```
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | affected | proband | hpo_ids                          | sequencing_platform | fastq                     |
 |------------|-----------|---------------|-------------|-------------|--------|-------------------------------------------------------|---------------------|---------------------------|
 | vip0       | fam01     | sample01      |             |             | female | true     | true    | HP:0004383,HP:0045017,HP:0001627 | pacbio_hifi         | path/to/sample01.fastq.gz |
@@ -26,7 +25,6 @@ We also added HPO terms for two affected individuals. This will select found var
 | vip1       | fam02     | sample04      |             |             | female |          |         |                                  | nanopore            | path/to/sample04.fastq.gz |
 | vip2       | fam03     | sample05      |             | sample06    | male   | true     | true    | HP:0012103                       | pacbio_hifi         | path/to/sample05.fastq.gz |
 | vip2       | fam03     | sample06      |             |             | female |          |         |                                  | pacbio_hifi         | path/to/sample06.fastq.gz |
-```
 
 ### Copy the samplesheet
 
@@ -56,7 +54,6 @@ Two samples have a bed file in the regions column. This will filter the cram aft
 
 ### Samplesheet
 
-```
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | cram                  | regions           |
 |------------|-----------|---------------|-------------|-------------|--------|-------------------------------------------|
 | vip0       | fam01     | sample01      |             |             | female | path/to/sample01.cram | path/to/chr10.bed |
@@ -65,7 +62,6 @@ Two samples have a bed file in the regions column. This will filter the cram aft
 | vip1       | fam02     | sample04      |             |             | female | path/to/sample04.cram |                   |
 | vip2       | fam03     | sample05      |             | sample06    | male   | path/to/sample05.cram | path/to/chrm.bed  |
 | vip2       | fam03     | sample06      |             |             | female | path/to/sample06.cram |                   |
-```
 
 ### Copy the samplesheet
 
@@ -94,7 +90,6 @@ We added the assembly column to let VIP know that the variants in the gVCF file 
 
 ### Samplesheet
 
-```
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | assembly | gvcf                   |
 |------------|-----------|---------------|-------------|-------------|--------|----------|------------------------|
 | vip0       | fam01     | sample01      |             |             | female | GRCh38   | path/to/sample01.g.vcf |
@@ -103,7 +98,6 @@ We added the assembly column to let VIP know that the variants in the gVCF file 
 | vip1       | fam02     | sample04      |             |             | female | GRCh38   | path/to/sample04.g.vcf |
 | vip2       | fam03     | sample05      |             | sample06    | male   | GRCh38   | path/to/sample05.g.vcf |
 | vip2       | fam03     | sample06      |             |             | female | GRCh38   | path/to/sample06.g.vcf |
-```
 
 ### Copy the samplesheet
 
@@ -133,7 +127,6 @@ We also added the cram files for each sample. This allows the VIP report to also
 
 ### Samplesheet
 
-```
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | assembly | vcf                     | cram                  |
 |------------|-----------|---------------|-------------|-------------|--------|------------------------------------|-----------------------|
 | vip0       | fam01     | sample01      |             |             | female | GRCh38   | path/to/sample01.vcf.gz | path/to/sample01.cram |
@@ -142,7 +135,6 @@ We also added the cram files for each sample. This allows the VIP report to also
 | vip1       | fam02     | sample04      |             |             | female | GRCh38   | path/to/sample04.vcf.gz | path/to/sample04.cram |  
 | vip2       | fam03     | sample05      |             | sample06    | male   | GRCh38   | path/to/sample05.vcf.gz | path/to/sample05.cram |
 | vip2       | fam03     | sample06      |             |             | female | GRCh38   | path/to/sample06.vcf.gz | path/to/sample06.cram |
-```
 
 ### Copy the samplesheet
 
