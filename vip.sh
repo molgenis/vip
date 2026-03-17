@@ -141,7 +141,7 @@ execute_workflow() {
   fi
   local envStrict="true"
 
-  local -r nextflow_version="25.10.2"
+  local -r nextflow_version="25.10.4"
 
   local args=()
   args+=("-C" "${configs}")

@@ -51,7 +51,7 @@ process minimap2_align_paired_end {
   shell:
     reference=params[params.assembly].reference.fasta
     referenceMmi=params[params.assembly].reference.fastaMmi
-    bedFile=meta.project.regions
+    bedFile=meta.project.regions ? meta.project.regions : ""
     cram="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}.cram"
     cramCrai="${cram}.crai"
     cramStats="${cram}.stats"

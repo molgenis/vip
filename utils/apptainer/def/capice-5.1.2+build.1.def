@@ -1,0 +1,18 @@
+Bootstrap: localimage
+From: sif/build/python-3.11.14.sif
+
+%post
+    # --only-binary: ensure deps are not installed from source packages
+    pip install \
+      --only-binary=numpy,pandas,scipy,scikit-learn,xgboost \
+      capice==5.1.2
+
+%test
+    set -euo pipefail
+    capice --help > /dev/null 2>&1
+
+%runscript
+    exec capice "$@"
+
+%help
+    CAPICE is a computational method for predicting the pathogenicity of SNVs and InDels.

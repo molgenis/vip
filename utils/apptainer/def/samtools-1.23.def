@@ -1,0 +1,48 @@
+Bootstrap: localimage
+From: sif/build/debian-13.3.sif
+Stage: build
+
+%post
+    version_major=1
+    version_minor=23
+
+    apt-get update > /dev/null
+    apt-get install curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev > /dev/null
+
+    # download
+    curl --fail --silent --show-error --location --output samtools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/samtools/releases/download/${version_major}.${version_minor}/samtools-${version_major}.${version_minor}.tar.bz2
+    echo "f228db57d25b724ea26fe55c1c91529f084ef564888865fb190dd87bd04ee74c  samtools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
+
+    # install
+    tar xf samtools-${version_major}.${version_minor}.tar.bz2
+    cd samtools-${version_major}.${version_minor}
+    ./configure --silent --disable-libcurl --disable-gcs --disable-s3 --without-curses --disable-ref-cache
+    make --silent
+    make --silent install
+
+		# cleanup
+    rm -rf /var/lib/apt/lists/*
+
+Bootstrap: localimage
+From: sif/build/debian-13.3.sif
+Stage: final
+
+%help
+    Set of utilities that manipulate alignments in the SAM (Sequence Alignment/Map), BAM, and CRAM formats.
+
+%files from build
+    /usr/local/bin/samtools
+
+%post
+    apt-get update > /dev/null
+    apt-get install zlib1g libbz2-1.0 liblzma5 libdeflate0 > /dev/null
+
+    # cleanup
+    rm -rf /var/lib/apt/lists/*
+
+%runscript
+    exec samtools "$@"
+
+%test
+    set -euo pipefail
+    samtools --version > /dev/null

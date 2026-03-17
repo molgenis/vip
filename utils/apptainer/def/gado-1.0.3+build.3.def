@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/openjdk-21.sif
+From: sif/build/openjdk-25.sif
 
 %help
     Command-line application to prioritize genes based on the HPO terms of a patient.
@@ -11,11 +11,10 @@ From: sif/build/openjdk-21.sif
     version_patch=3
 
     # install
-    apk update
     apk add --virtual=.build-dependencies curl unzip
 
     mkdir -p /opt/gado/lib
-    curl -Ls -o /opt/gado/gado.tar.gz "https://download.molgeniscloud.org/downloads/vip/resources/gado/v${version_major}.${version_minor}.${version_patch}/GadoCommandline-${version_major}.${version_minor}.${version_patch}-dist.tar.gz"
+    curl --fail --silent --show-error --location --output /opt/gado/gado.tar.gz "https://download.molgeniscloud.org/downloads/vip/resources/gado/v${version_major}.${version_minor}.${version_patch}/GadoCommandline-${version_major}.${version_minor}.${version_patch}-dist.tar.gz"
     echo "449c60bd3b1e354325905a03cf0b259cd2685b27f30540641387e2d1b4a9497a  /opt/gado/gado.tar.gz" | sha256sum -c
 
     tar -xf /opt/gado/gado.tar.gz -C /opt/gado/lib

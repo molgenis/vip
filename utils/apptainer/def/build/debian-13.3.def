@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: debian:13.3-slim
+
+%help
+    Debian 13 "Trixie"
+
+%environment
+    export DEBIAN_FRONTEND=noninteractive
+
+%post
+    # configure apt-get to always run quietly, assume yes, disable progress bar, disable caching
+    cat > /etc/apt/apt.conf.d/99custom <<'EOF'
+quiet "2";
+APT::Get::Assume-Yes "true";
+Acquire::Progress-Fancy "0";
+Dir::Cache::archives "0";
+Dir::Cache::pkgcache "";
+Dir::Cache::srcpkgcache "";
+EOF
+
+%test
+    set -euo pipefail
+    bash --help > /dev/null 2>&1
