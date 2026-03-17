@@ -18,7 +18,7 @@ We also added HPO terms for two affected individuals. This will select found var
 ### Samplesheet
 
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | affected | proband | hpo_ids                          | sequencing_platform | fastq                     |
-|------------|-----------|---------------|-------------|-------------|--------|-------------------------------------------------------|---------------------|---------------------------|
+|------------|-----------|---------------|-------------|-------------|--------|----------|---------|----------------------------------|---------------------|---------------------------|
 | vip0       | fam01     | sample01      |             |             | female | true     | true    | HP:0004383,HP:0045017,HP:0001627 | pacbio_hifi         | path/to/sample01.fastq.gz |
 | vip1       | fam02     | sample02      | sample03    | sample04    | male   | true     | true    |                                  | nanopore            | path/to/sample02.fastq.gz |
 | vip1       | fam02     | sample03      |             |             | male   |          |         |                                  | nanopore            | path/to/sample03.fastq.gz |
@@ -55,7 +55,7 @@ Two samples have a bed file in the regions column. This will filter the cram aft
 ### Samplesheet
 
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | cram                  | regions           |
-|------------|-----------|---------------|-------------|-------------|--------|-------------------------------------------|
+|------------|-----------|---------------|-------------|-------------|--------|-----------------------|-------------------|
 | vip0       | fam01     | sample01      |             |             | female | path/to/sample01.cram | path/to/chr10.bed |
 | vip1       | fam02     | sample02      | sample03    | sample04    | male   | path/to/sample02.cram |                   |
 | vip1       | fam02     | sample03      |             |             | male   | path/to/sample03.cram |                   |
@@ -128,7 +128,7 @@ We also added the cram files for each sample. This allows the VIP report to also
 ### Samplesheet
 
 | project_id | family_id | individual_id | paternal_id | maternal_id | sex    | assembly | vcf                     | cram                  |
-|------------|-----------|---------------|-------------|-------------|--------|------------------------------------|-----------------------|
+|------------|-----------|---------------|-------------|-------------|--------|----------|-------------------------|-----------------------|
 | vip0       | fam01     | sample01      |             |             | female | GRCh38   | path/to/sample01.vcf.gz | path/to/sample01.cram |
 | vip1       | fam02     | sample02      | sample03    | sample04    | male   | GRCh38   | path/to/sample02.vcf.gz | path/to/sample02.cram |
 | vip1       | fam02     | sample03      |             |             | male   | GRCh38   | path/to/sample03.vcf.gz | path/to/sample03.cram |
