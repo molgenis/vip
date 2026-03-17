@@ -21,3 +21,10 @@ From: sif/build/openjdk-25.sif
     # cleanup
     apk del .build-dependencies
     rm -rf /var/cache/apk/* gatk.zip
+
+%runscript
+    exec java -jar /opt/gatk/lib/gatk.jar "$@"
+
+%test
+    set -euo pipefail
+    java -jar /opt/gatk/lib/gatk.jar --version > /dev/null
