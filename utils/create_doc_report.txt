@@ -1,0 +1,99 @@
+# Creating a new report for VIP documentation
+While we continue to modify and improve VIP we might want to make a new example report for the documentation to show to users. Previously a new report was created using a modified 
+AskenazimTrio GIAB WES dataset in which the three samples (HG002, HG003, HG004) had a real variant spiked in from three (trio) samples. In this trio the child was affected and the mother 
+carried the variant as well. VaSeBuilder was used to spike-in these variants and create the new modified AshkenazimTrio.
+This document describes the steps taken to create the new report.
+
+
+## VaSeBuilder
+
+### What is VaSeBuilder?
+VaSeBuilder is a tool that can be used to exchange reads from a donor (sample with a variant and reads supporting that variant) and an acceptor (the sample where we spike-in the variant and
+reads). Essentially VaSeBuilder first identifies reads (and their read mates) that overlap with a supplied variant in the originating sample (the donor). Then it identifies reads (and 
+their read mates) in the sample we will use to spike-in the variant (the acceptor), which is this case would be HG002, HG003, or HG004. For both cases a window from these reads is made 
+(VaSeBuilder has some magic that prevents reads that map much further away than others influencing this process). These two windows are then merged to create the maximum window (smallest 
+start position and largest stop position). Reads (and their read mates) in both donor and acceptor samples overlapping with this window are then selected. These are the reads that 
+VaSeBuilder will later exchange. In this exchange, reads from the acceptor will be removed and the identified donor reads will be added in their place.
+See the [VaSeBuilder documentation](https://vasebuilder.readthedocs.io/en/stable/) for more info.
+
+
+### Setting up VaSeBuilder (on the cluster (nibbler))
+First move to the folder that should contain the subfolder with the working VaSeBuilder installation. The following commands should create a working VaSeBuilder installation:
+```
+ml Python
+python -m venv vasebuilder/
+source vasebuilder/bin/activate
+pip install vasebuilder
+pip install pybedtools
+deactivate
+```
+If the steps above don’t work maybe also load SAMtools and HTSlib before making the VaSeBuilder installation.
+
+
+### Running VaSeBuilder
+To run VaSeBuilder you can activate the python virtual environment that was created above and do the following to make sure it works:
+```
+ml SAMtools
+ml HTSlib
+source vasebuilder/bin/activate
+VaSeBuilder
+```
+
+This should have displayed the usage info of the program. Once you’re done, make sure to deactivate the python venv using `deactivate`.
+When using VaSeBuilder for slurm jobs you can do the following:
+```
+#Multiline SBATCH parameters here
+ml SAMtools
+ml HTSlib
+ml Python
+
+module list
+
+cd path/to/folder/containing/vasebuilder_subfolder
+source vasebuilder/bin/activate
+<VaSeBuilder command to run>
+deactivate
+```
+
+## Creating the modified AshkenazimTrio set
+To create the modified AshkenazimTrio set, first select a variant you want to add. This was done inspecting VIP reports.
+Second, you need the acceptor set, in this case I used the AshkenazimTrio WES trio set that VIP also uses for the GIAB test.
+
+
+#### Subset the vcf
+In order to spike in a single variant the VCF containing the variant should be subsetted to only contain the variant of interest. In cases of a trio set, such as those used, the VCF also 
+needs to be subsetted for each specific sample. Make sure to bgzip and tabix index the subsetted vcf files.
+
+
+#### Modify the BAM/CRAM
+VaSeBuilder expects each BAM/CRAM to have an `@RG` line in the file. These lines should for example be like `@RG	ID:SAMPLE01	SM:SAMPLE01`. VaSeBuilder needs these to make a sample map and 
+not having them will result in a python error. The sample name in the @RG line and the sample name in the VCF should be the same otherwise they will be seen as two different samples by 
+VaSeBuilder which results in a successful run without errors but no actual work done. Therefore a reheader might need to be performed on donor samples that don’t have this @RG line 
+(as was the case for the used donor samples). Afterwards you might want to run `samtools index` again.
+
+
+#### Creating the modified set
+After the preparations mentioned above, VaSeBuilder can be used in two steps (although it can also be used in a single step). First run `VaSeBuilder BuildSpikeIns` to create the variant 
+contexts and create the selection of reads to be exchanged. This process creates a BAM file containing the donor reads to be exchanged as well as a vcf containing the spiked in variant(s). 
+Note that this vcf manually needs to be bgzipped and tabix indexed before further use.
+
+To run `VaSeBuilder BuildSpikeIns`:
+`VaSeBuilder BuildSpikeIns --output-mode P -o /path/to/output_folder/buildspikeins/ -b /path/to/donor_alignment_file.cram -v /path/to/donor_variant_file.vcf.gz -a /path/to/acceptor_alignment_file.cram -r /path/to/reference_genome.fna`
+Optionally you can add `--debug` to obtain more runtime information in the logfile.
+Note that, due to a bug, the variant context file (text file ending in `.varcon`) and VaSeBuilder log file (named VaSeBuilder_<date>.log) will actually be written in your current working 
+directory, not the supplied output directory. Make sure to move them to the correct output directory.
+
+After that the `VaSeBuilder AssembleValidationSet` can be run with the spike-in data created in the previous step.
+To run `VaSeBuilder AssembleValidationSet`:
+`VaSeBuilder AssembleValidationSet -kb /path/to/buildspikeins/spikein.bam -kv /path/to/buildspikeins/spikein.vcf.gz -1 /path/to/acceptor_fastq_r1.fastq.gz -2 /path/to/acceptor_fastq_r2.fastq.gz -c /path/to/buildspikeins/varconfile.varcon -o /path/to/output_folder/assemblevalidationset/ -r /path/to/reference_genome.fna`
+Again, the `VaSeBuilder_<date>.log` file will be written in the working directory.
+
+This process will create fastq files containing mostly reads from the acceptor as well as the donor reads from the previous step. Note that the fastq files are written as plain text 
+`.fastq` files and need to be gzipped or bgzipped manually afterwards (during development of VaSeBuilder we found that writing fastq files and later gzipping them was faster than doing so 
+from Python).
+
+
+## Making the new report
+Once the modified AshkenazimTrio set has been created a samplesheet can be made with the appropriate columns and values for a fastq workflow. For our case, we added HPO terms for HG002 and 
+HG004 and gave them both the affected status. Once VIP has been run the new report can be used to add to the documentation.
+
