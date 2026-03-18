@@ -1,0 +1,5 @@
+To create a new catalog (for stranger, expansionhunter and straglr)
+-   curl -o input.json https://gitlab.com/andreassh/stripy-pipeline/-/raw/main/catalog.json
+-   create_str_catalogs.sh -i input.json -o strs_<date> (add -d if you need debug logging)
+!!! Please note that this script has a specific workaround for the RFC1 repeat that has 2 repeat units.
+-   Three files are create *.sh.json for expansionhunter, *.stranger.json for stanger and *.tsv for straglr
