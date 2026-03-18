@@ -3,7 +3,6 @@ From: sif/build/openjdk-25.sif
 
 %help
     Genome Analysis Toolkit - Variant Discovery in High-Throughput Sequencing Data.
-    Usage: java -jar /opt/gatk/lib/gatk.jar
 
 %post
     version=4.6.2.0
