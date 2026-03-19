@@ -48,7 +48,7 @@ The internal database of the vip report is also available as .db database file i
 *Above: report example*
 
 ## Intermediates
-VIP publishes selected intermediate results to allow [reanalysis](../examples/reanalysis.md) using the `vcf.start` [parameter](../usage/config.md).
+VIP publishes selected intermediate results to allow reanalysis using the `vcf.start` [parameter](../usage/config.md).
 Additionaly these results can be used to understand why variant records did not make it into the report. 
 
 The content of the intermediates directory depends on the used ``--workflow`` and looks similar to: 
