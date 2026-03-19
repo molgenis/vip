@@ -25,15 +25,19 @@
          <lastmod>2026-03-19</lastmod>
     </url>
     <url>
-         <loc>https://molgenis.github.io/vip/examples/multi-project/</loc>
+         <loc>https://molgenis.github.io/vip/examples/cram/</loc>
          <lastmod>2026-03-19</lastmod>
     </url>
     <url>
-         <loc>https://molgenis.github.io/vip/examples/nanopore/</loc>
+         <loc>https://molgenis.github.io/vip/examples/fastq/</loc>
          <lastmod>2026-03-19</lastmod>
     </url>
     <url>
-         <loc>https://molgenis.github.io/vip/examples/reanalysis/</loc>
+         <loc>https://molgenis.github.io/vip/examples/gvcf/</loc>
+         <lastmod>2026-03-19</lastmod>
+    </url>
+    <url>
+         <loc>https://molgenis.github.io/vip/examples/vcf/</loc>
          <lastmod>2026-03-19</lastmod>
     </url>
     <url>

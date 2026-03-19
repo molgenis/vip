@@ -4,9 +4,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://molgenis.github.io/vip/examples/nanopore/" rel="canonical"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://molgenis.github.io/vip/examples/cram/" rel="canonical"/>
 <link href="../../img/favicon.ico" rel="shortcut icon"/>
-<title>Nanopore - Variant Interpretation Pipeline</title>
+<title>CRAM - Variant Interpretation Pipeline</title>
 <link href="../../css/theme.css" rel="stylesheet"/>
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
@@ -14,9 +14,9 @@
 <link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
-        var mkdocs_page_name = "Nanopore";
-        var mkdocs_page_input_path = "examples/nanopore.md";
-        var mkdocs_page_url = "/vip/examples/nanopore/";
+        var mkdocs_page_name = "CRAM";
+        var mkdocs_page_input_path = "examples/cram.md";
+        var mkdocs_page_url = "/vip/examples/cram/";
       </script>
 <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
@@ -69,17 +69,21 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal current" href="#">Nanopore</a>
+<li class="toctree-l1"><a class="reference internal" href="../fastq/">FastQ</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="#">CRAM</a>
 <ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="#samplesheet">Samplesheet</a>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-the-pipeline">Run the pipeline</a>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a>
+</li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../multi-project/">Multi-project</a>
+<li class="toctree-l1"><a class="reference internal" href="../gvcf/">gVCF</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../reanalysis/">Reanalysis</a>
+<li class="toctree-l1"><a class="reference internal" href="../vcf/">VCF</a>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced</span></p>
@@ -118,34 +122,81 @@
 <ul class="wy-breadcrumbs">
 <li><a aria-label="Docs" class="icon icon-home" href="../.."></a></li>
 <li class="breadcrumb-item">Examples</li>
-<li class="breadcrumb-item active">Nanopore</li>
+<li class="breadcrumb-item active">CRAM</li>
 <li class="wy-breadcrumbs-aside">
-<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/main/docs/examples/nanopore.md"> Edit on GitHub</a>
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/main/docs/examples/cram.md"> Edit on GitHub</a>
 </li>
 </ul>
 <hr/>
 </div>
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
-<h1 id="nanopore">Nanopore<a class="headerlink" href="#nanopore" title="Permanent link">¶</a></h1>
-<p>To run vip with nanopore data, just specify nanopore as the sequencing_platform in your sample sheet.
-The other options for this field are "illumina" and "pacbio_hifi" and can be used in a similar manner.</p>
+<h1 id="cram">CRAM<a class="headerlink" href="#cram" title="Permanent link">¶</a></h1>
+<p>The cram workflow can be run when starting with already aligned BAM/CRAM files.</p>
 <h2 id="samplesheet">Samplesheet<a class="headerlink" href="#samplesheet" title="Permanent link">¶</a></h2>
-<p>See an example for the samplesheet below, the example show the samplesheet for a run starting from the cram,
-but the 'sequencing_platform' can also be used to achieve the same for a run with the fastq workflow.</p>
-<div class="highlight"><pre><span></span><code>individual_id   sequencing_platform cram
-your_sample_id  nanopore    path/to/your/nanopore.cram
+<div class="highlight"><pre><span></span><code>family_id   proband individual_id   hpo_ids sequencing_platform cram    sequencing_method   regions
+fam0    true    NA12878 HP:0001626,HP:0000707   illumina    illumina_WES_GRCh38_chr20.cram  WES single.bed
 </code></pre></div>
+<p>The required cram file can be downloaded from the <a href="https://download.molgeniscloud.org/downloads/vip/test/resources/">test resources</a> folder.
+The required bed and config files can be downloaded from <a href="https://github.com/molgenis/vip/tree/main/test/suites/cram/resources">GitHub</a>.</p>
 <h2 id="run-the-pipeline">Run the pipeline<a class="headerlink" href="#run-the-pipeline" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code>vip.sh<span class="w"> </span>--workflow<span class="w"> </span>cram<span class="w"> </span>--input<span class="w"> </span>path/to/samplesheet.tsv<span class="w"> </span>--output<span class="w"> </span>path/to/output/folder
+<div class="highlight"><pre><span></span><code>vip.sh<span class="w"> </span>--workflow<span class="w"> </span>cram<span class="w"> </span>--input<span class="w"> </span>samplesheet.tsv<span class="w"> </span>--config<span class="w"> </span>single.cfg<span class="w"> </span>--output<span class="w"> </span>path/to/output/folder
 </code></pre></div>
-<p>For an example on how to generate output for FASTQ files using the Oxford Nanopore platform
-see <a href="https://github.com/molgenis/vip/blob/main/test/suites/fastq/nanopore.sh#L17">here</a>.</p>
+<h2 id="output-files">Output files<a class="headerlink" href="#output-files" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>.
+├── coverage
+│   ├── vip_fam0_NA12878_mosdepth.global.dist.txt
+│   ├── vip_fam0_NA12878_mosdepth.per-base.bed.gz
+│   ├── vip_fam0_NA12878_mosdepth.per-base.bed.gz.csi
+│   ├── vip_fam0_NA12878_mosdepth.region.dist.txt
+│   ├── vip_fam0_NA12878_mosdepth.regions.bed.gz
+│   ├── vip_fam0_NA12878_mosdepth.regions.bed.gz.csi
+│   ├── vip_fam0_NA12878_mosdepth.summary.txt
+│   ├── vip_fam0_NA12878_mosdepth.thresholds.bed.gz
+│   └── vip_fam0_NA12878_mosdepth.thresholds.bed.gz.csi
+├── intermediates
+│   ├── NA12878_snv.g.vcf.gz
+│   ├── NA12878_snv.g.vcf.gz.csi
+│   ├── NA12878_snv.g.vcf.gz.stats
+│   ├── vip_annotations.vcf.gz
+│   ├── vip_annotations.vcf.gz.csi
+│   ├── vip_classifications.vcf.gz
+│   ├── vip_classifications.vcf.gz.csi
+│   ├── vip_complete_snv.vcf.gz
+│   ├── vip_complete_snv.vcf.gz.csi
+│   ├── vip_complete_snv.vcf.gz.stats
+│   ├── vip_fam0_NA12878_str.vcf.gz
+│   ├── vip_fam0_NA12878_str.vcf.gz.csi
+│   ├── vip_fam0_NA12878_str.vcf.gz.stats
+│   ├── vip_mtdnasnv.vcf.gz
+│   ├── vip_mtdnasnv.vcf.gz.csi
+│   ├── vip_mtdnasnv.vcf.gz.stats
+│   ├── vip_sample_classifications.vcf.gz
+│   ├── vip_sample_classifications.vcf.gz.csi
+│   ├── vip_snv.vcf.gz
+│   ├── vip_snv.vcf.gz.csi
+│   ├── vip_snv.vcf.gz.stats
+│   ├── vip_sv.vcf.gz
+│   ├── vip_sv.vcf.gz.csi
+│   ├── vip_sv.vcf.gz.stats
+│   ├── vip.vcf.gz
+│   ├── vip.vcf.gz.csi
+│   └── vip.vcf.gz.stats
+├── job.err
+├── job.out
+├── nxf_report.html
+├── nxf_timeline.html
+├── samplesheet.tsv
+├── vip.db
+├── vip.html
+├── vip.vcf.gz
+└── vip.vcf.gz.csi
+</code></pre></div>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
-<a class="btn btn-neutral float-left" href="../../usage/config/" title="Config"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-<a class="btn btn-neutral float-right" href="../multi-project/" title="Multi-project">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral float-left" href="../fastq/" title="FastQ"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../gvcf/" title="gVCF">Next <span class="icon icon-circle-arrow-right"></span></a>
 </div>
 <hr/>
 <div role="contentinfo">
@@ -164,8 +215,8 @@ see <a href="https://github.com/molgenis/vip/blob/main/test/suites/fastq/nanopor
 <span>
 <a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
 </span>
-<span><a href="../../usage/config/" style="color: #fcfcfc">« Previous</a></span>
-<span><a href="../multi-project/" style="color: #fcfcfc">Next »</a></span>
+<span><a href="../fastq/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../gvcf/" style="color: #fcfcfc">Next »</a></span>
 </span>
 </div>
 <script src="../../js/jquery-3.6.0.min.js"></script>

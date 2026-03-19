@@ -4,9 +4,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://molgenis.github.io/vip/home/key_features/" rel="canonical"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://molgenis.github.io/vip/examples/vcf/" rel="canonical"/>
 <link href="../../img/favicon.ico" rel="shortcut icon"/>
-<title>Key features - Variant Interpretation Pipeline</title>
+<title>VCF - Variant Interpretation Pipeline</title>
 <link href="../../css/theme.css" rel="stylesheet"/>
 <link href="../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
@@ -14,9 +14,9 @@
 <link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
 <script>
         // Current page data
-        var mkdocs_page_name = "Key features";
-        var mkdocs_page_input_path = "home/key_features.md";
-        var mkdocs_page_url = "/vip/home/key_features/";
+        var mkdocs_page_name = "VCF";
+        var mkdocs_page_input_path = "examples/vcf.md";
+        var mkdocs_page_url = "/vip/examples/vcf/";
       </script>
 <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
@@ -39,12 +39,10 @@
 </div>
 <div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
 <p class="caption"><span class="caption-text">Home</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
 </li>
-<li class="toctree-l1 current"><a class="reference internal current" href="#">Key features</a>
-<ul class="current">
-</ul>
+<li class="toctree-l1"><a class="reference internal" href="../../home/key_features/">Key features</a>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Get Started</span></p>
@@ -70,14 +68,22 @@
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/fastq/">FastQ</a>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../fastq/">FastQ</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/cram/">CRAM</a>
+<li class="toctree-l1"><a class="reference internal" href="../cram/">CRAM</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/gvcf/">gVCF</a>
+<li class="toctree-l1"><a class="reference internal" href="../gvcf/">gVCF</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/vcf/">VCF</a>
+<li class="toctree-l1 current"><a class="reference internal current" href="#">VCF</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#samplesheet">Samplesheet</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-pipeline">Run the pipeline</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a>
+</li>
+</ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced</span></p>
@@ -115,46 +121,50 @@
 <div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
 <ul class="wy-breadcrumbs">
 <li><a aria-label="Docs" class="icon icon-home" href="../.."></a></li>
-<li class="breadcrumb-item">Home</li>
-<li class="breadcrumb-item active">Key features</li>
+<li class="breadcrumb-item">Examples</li>
+<li class="breadcrumb-item active">VCF</li>
 <li class="wy-breadcrumbs-aside">
-<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/main/docs/home/key_features.md"> Edit on GitHub</a>
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/main/docs/examples/vcf.md"> Edit on GitHub</a>
 </li>
 </ul>
 <hr/>
 </div>
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
-<h1 id="key-features">Key features<a class="headerlink" href="#key-features" title="Permanent link">¶</a></h1>
-<p>VIP is an easy to install, easy to use, portable and flexible pipeline implemented
-using <a href="https://www.nextflow.io/">Nextflow</a>.
-Features include:</p>
-<ul>
-<li>Workflows for a broad range of input file types: <code>bam</code>, <code>cram</code>, <code>fastq</code>, <code>g.vcf</code>, <code>vcf</code></li>
-<li>Produces stand-alone variant interpretation HTML report with integrated genome browser</li>
-<li>Long-read sequencing support (Oxford Nanopore, PacBio HiFi)</li>
-<li>Short-read sequencing support (Illumina, both single and paired-end reads)</li>
-<li>Supports GRCh38, supports GRCh37 and T2T via liftover</li>
-<li>Supports multiallelic variants</li>
-<li>Short variant detection</li>
-<li>Structural variant detection</li>
-<li>Short tandem repeat detection</li>
-<li>Copy number variant detection (Oxford Nanopore, PacBio HiFi)</li>
-<li>Phasing of hetrozygous short variants</li>
-<li><a href="https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html">Consequence</a> aware</li>
-<li>Rich set of variant annotations</li>
-<li>Pathogenic variant prioritization <a href="https://github.com/molgenis/capice">(CAPICE)</a></li>
-<li>Phenotype support <a href="https://hpo.jax.org/">(HPO v2024-08-13)</a></li>
-<li>Inheritance matching <a href="https://github.com/molgenis/vip-inheritance-matcher">(VIP inheritance matcher)</a></li>
-<li>Variant classification and filtration using customizable decision trees</li>
-<li>Variant reporting using customizable report templates</li>
-<li>Quick reanalysis</li>
-</ul>
+<h1 id="vcf">VCF<a class="headerlink" href="#vcf" title="Permanent link">¶</a></h1>
+<p>The vcf workflow can be run when starting with vcf files.</p>
+<h2 id="samplesheet">Samplesheet<a class="headerlink" href="#samplesheet" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>individual_id   sex proband affected    vcf
+SAMPLE0 male    true    true    chd7.tsv
+</code></pre></div>
+<p>The required vcf file can be downloaded from <a href="https://github.com/molgenis/vip/tree/main/test/suites/vcf/resources">GitHub</a>.</p>
+<h2 id="run-the-pipeline">Run the pipeline<a class="headerlink" href="#run-the-pipeline" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>vip.sh<span class="w"> </span>--workflow<span class="w"> </span>vcf<span class="w"> </span>--input<span class="w"> </span>samplesheet.tsv<span class="w"> </span>--output<span class="w"> </span>path/to/output/folder
+</code></pre></div>
+<h2 id="output-files">Output files<a class="headerlink" href="#output-files" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>.
+├── intermediates
+│   ├── vip_annotations.vcf.gz
+│   ├── vip_annotations.vcf.gz.csi
+│   ├── vip_classifications.vcf.gz
+│   ├── vip_classifications.vcf.gz.csi
+│   ├── vip_sample_classifications.vcf.gz
+│   └── vip_sample_classifications.vcf.gz.csi
+├── job.err
+├── job.out
+├── nxf_report.html
+├── nxf_timeline.html
+├── samplesheet.tsv
+├── vip.db
+├── vip.html
+├── vip.vcf.gz
+└── vip.vcf.gz.csi
+</code></pre></div>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
-<a class="btn btn-neutral float-left" href="../.." title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-<a class="btn btn-neutral float-right" href="../../get_started/requirements/" title="Requirements">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral float-left" href="../gvcf/" title="gVCF"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../advanced/annotations/" title="Annotations">Next <span class="icon icon-circle-arrow-right"></span></a>
 </div>
 <hr/>
 <div role="contentinfo">
@@ -173,8 +183,8 @@ Features include:</p>
 <span>
 <a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
 </span>
-<span><a href="../.." style="color: #fcfcfc">« Previous</a></span>
-<span><a href="../../get_started/requirements/" style="color: #fcfcfc">Next »</a></span>
+<span><a href="../gvcf/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../advanced/annotations/" style="color: #fcfcfc">Next »</a></span>
 </span>
 </div>
 <script src="../../js/jquery-3.6.0.min.js"></script>

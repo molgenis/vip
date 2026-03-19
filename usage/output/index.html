@@ -77,11 +77,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/nanopore/">Nanopore</a>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/fastq/">FastQ</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/multi-project/">Multi-project</a>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/cram/">CRAM</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/reanalysis/">Reanalysis</a>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/gvcf/">gVCF</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/vcf/">VCF</a>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced</span></p>
@@ -172,7 +174,7 @@ The internal database of the vip report is also available as .db database file i
 <p><img alt="Example report" src="../../img/report_example.png"/></p>
 <p><em>Above: report example</em></p>
 <h2 id="intermediates">Intermediates<a class="headerlink" href="#intermediates" title="Permanent link">¶</a></h2>
-<p>VIP publishes selected intermediate results to allow <a href="../../examples/reanalysis/">reanalysis</a> using the <code>vcf.start</code> <a href="../config/">parameter</a>.
+<p>VIP publishes selected intermediate results to allow reanalysis using the <code>vcf.start</code> <a href="../config/">parameter</a>.
 Additionaly these results can be used to understand why variant records did not make it into the report. </p>
 <p>The content of the intermediates directory depends on the used <code>--workflow</code> and looks similar to: 
 <div class="highlight"><pre><span></span><code>hlhs_famA_grch38_annotations.vcf.gz
