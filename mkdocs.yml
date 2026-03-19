@@ -22,9 +22,6 @@ nav:
       - 'CRAM': 'examples/cram.md'
       - 'gVCF': 'examlpes/gvcf.md'
       - 'VCF': 'examples/vcf.md'
-      - 'Nanopore': 'examples/nanopore.md'
-      - 'Multi-project': 'examples/multi-project.md'
-      - 'Reanalysis': 'examples/reanalysis.md'
   - 'Advanced':
       - 'Annotations': 'advanced/annotations.md'
       - 'Classification trees': 'advanced/classification_trees.md'
