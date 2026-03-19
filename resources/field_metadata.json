@@ -806,6 +806,13 @@
       "numberType": "NUMBER",
       "numberCount": 1,
       "type": "STRING"
+    },
+    "RU_CAT": {
+      "label": "Repeat Unit",
+      "description": "Repeat unit on the plus strand, as specified in the catalog.",
+      "numberType": "NUMBER",
+      "numberCount": 1,
+      "type": "STRING"
     }
   }
 }

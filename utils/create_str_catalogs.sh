@@ -159,7 +159,8 @@ process_non_rfc1_loci() {
     data=$(curl -s "https://api.stripy.org/locus/$locus")
 
     region=$(echo "$data" | jq -r '.LocationCoordinates.hg38 // empty')
-    motif_api=$(echo "$data" | jq -r '.Motif // empty')
+    #use MotifPlusStrand for calling
+    motif_api=$(echo "$data" | jq -r '.MotifPlusStrand // empty')
     gene=$(echo "$data" | jq -r '.Gene // empty')
 
     if [[ -n "$motifs" ]]; then
