@@ -20,7 +20,7 @@ nav:
   - 'Examples':
       - 'FastQ': 'examples/fastq.md'
       - 'CRAM': 'examples/cram.md'
-      - 'gVCF': 'examlpes/gvcf.md'
+      - 'gVCF': 'examples/gvcf.md'
       - 'VCF': 'examples/vcf.md'
   - 'Advanced':
       - 'Annotations': 'advanced/annotations.md'
