@@ -8,14 +8,14 @@ From: sif/build/openjdk-25.sif
 %post
     version_major=3
     version_minor=2
-    version_patch=1
+    version_patch=2
 
     # install
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-inheritance/lib
     curl --fail --silent --show-error --location --output /opt/vcf-inheritance/lib/genemap-mapper.jar "https://github.com/molgenis/vip-inheritance/releases/download/v${version_major}.${version_minor}.${version_patch}/genemap-mapper.jar"
-    echo "fe480f31b19ae42c65193ddb92ddc1a4cfef94280426a3f9424e9b1e30d15bb8  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
+    echo "68494f6a76fa762fb9db3486f920729634498ca74fa000d8fc94cef17b8b3b00  /opt/vcf-inheritance/lib/genemap-mapper.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
