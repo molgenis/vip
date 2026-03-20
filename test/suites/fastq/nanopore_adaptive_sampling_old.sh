@@ -14,11 +14,11 @@ download "${base_url}/m54238_180628_014238_s0_10000.Q20.adaptive_sampling.csv" "
 
 args=()
 args+=("--workflow" "fastq")
-args+=("--config" "${TEST_RESOURCES_DIR}/nanopore_adaptive_sampling.cfg")
+args+=("--config" "${TEST_RESOURCES_DIR}/nanopore_adaptive_sampling_old.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
-runVip "${args}" "${TEST_RESOURCES_DIR}/nanopore_adaptive_sampling.tsv"
+runVip "${args}" "${TEST_RESOURCES_DIR}/nanopore_adaptive_sampling_old.tsv"
 
 # compare expected to actual output and store result
 if [ "$(zcat "${OUTPUT_DIR}/vip.vcf.gz" | grep -vc "^#")" -gt 0 ]; then
