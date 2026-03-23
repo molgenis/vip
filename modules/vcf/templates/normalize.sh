@@ -4,13 +4,7 @@ set -euo pipefail
 normalize () {
   local args=()
   args+=("norm")
-  # throw error or warn when incorrect or missing REF allele is encountered or when alternate allele is non-ACGTN (e.g. structural variant)
-  # see https://github.com/samtools/bcftools/issues/2389
-  if [ "!{allowInvalidRef}" = true  ]; then
-    args+=("--check-ref" "w")
-  else
-    args+=("--check-ref" "e")
-  fi
+  args+=("--check-ref" "e")
   args+=("--fasta-ref" "!{refSeqPath}")
   args+=("--no-version")
   args+=("--output-type" "z")
