@@ -413,8 +413,7 @@ main () {
     capice "${vcfPreprocessed}"
   fi
   vep "${vcfPreprocessed}"
-  fix_vep_str
-  viab "vep_fixed_!{vcfOut}"
+  viab "vep_!{vcfOut}"
   index
 }
 
