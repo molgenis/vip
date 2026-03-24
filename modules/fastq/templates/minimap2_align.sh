@@ -2,40 +2,59 @@
 set -euo pipefail
 
 align() {
-  local args=()
-  args+=("-t" "!{task.cpus}")
-  args+=("-a")
+  # minimap2
+  local minimap2_args=()
+  minimap2_args+=("-t" "!{task.cpus}")
+  minimap2_args+=("-a")
   # MarkDuplicates uses the LB (= DNA preparation library identifier) field to determine which read groups might contain molecular duplicates, in case the same DNA library was sequenced on multiple lanes.
-  args+=("-R" "@RG\tID:$(basename !{fastq})\tPL:!{platform}\tLB:!{sampleId}\tSM:!{sampleId}")
+  minimap2_args+=("-R" "@RG\tID:$(basename !{fastq})\tPL:!{platform}\tLB:!{sampleId}\tSM:!{sampleId}")
   if [[ -n "!{preset}" ]]; then
-      args+=("-x" "!{preset}")
+      minimap2_args+=("-x" "!{preset}")
   fi
   if [[ "!{softClipping}" == "true" ]]; then
-      args+=("-Y")
+      minimap2_args+=("-Y")
   fi
-  args+=("!{referenceMmi}")
-  args+=("!{fastq}") 
+  minimap2_args+=("!{referenceMmi}")
+  minimap2_args+=("!{fastq}")
+
+  # samtools sort
+  local samtools_sort_args=()
+  samtools_sort_args+=("-u")                              # uncompressed output
+  samtools_sort_args+=("--reference" "!{reference}")      # fasta format reference file
+  samtools_sort_args+=("--no-PG")                         # do not add a @PG line to the header of the output file
+  samtools_sort_args+=("-@" "!{task.cpus}")               # number of sorting and compression threads
+  samtools_sort_args+=("-")                               # read input from standard input
+
+  # samtools view
+  local samtools_view_args=()
+  samtools_view_args+=("--output-fmt" "cram,version=3.0") # some downstream tools do not support 3.1
+  samtools_view_args+=("--output" "!{cram}")              # output file
+  if [[ -n "!{bedFile}" ]]; then
+    samtools_view_args+=("--target-file" "!{bedFile}")    # only output alignments overlapping the input .bed file
+  fi
+  samtools_view_args+=("--reference" "!{reference}")      # fasta format reference file
+  samtools_view_args+=("--write-index")                   # index creation
+  samtools_view_args+=("--no-PG")                         # do not add a @PG line to the header of the output file
+  samtools_view_args+=("--threads" "!{task.cpus}")        # number of compression threads to use in addition to main thread
+  samtools_view_args+=("-")                               # read input from standard input
 
   if [[ "!{markDuplicates}" == "true" ]]; then
-      if [[ -n "!{bedFile}" ]]; then
-        ${CMD_MINIMAP2} "${args[@]}" | \
-          ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" --no-PG - | \
-          ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --no-PG - - | \
-          ${CMD_SAMTOOLS} view  --cram --output "!{cram}" --target-file "!{bedFile}" --reference "!{reference}" --write-index --no-PG --threads "!{task.cpus}" -
-      else
-        ${CMD_MINIMAP2} "${args[@]}" | \
-          ${CMD_SAMTOOLS} sort -u -@ "!{task.cpus}" --reference "!{reference}" --no-PG - | \
-          ${CMD_SAMTOOLS} markdup -@ "!{task.cpus}" --reference "!{reference}" --no-PG  --write-index - "!{cram}"
-      fi
+    # samtools markdup
+    local samtools_markdup_args=()
+    samtools_markdup_args+=("-@" "!{task.cpus}")          # number of input/output compression threads to use in addition to main thread
+    samtools_markdup_args+=("--reference" "!{reference}") # fasta format reference file
+    samtools_markdup_args+=("--no-PG")                    # do not add a PG line to the output file
+    samtools_markdup_args+=("-")                          # read input from standard input
+    samtools_markdup_args+=("-")                          # write output to standard output
+
+    ${CMD_MINIMAP2} "${minimap2_args[@]}" | \
+      ${CMD_SAMTOOLS} sort "${samtools_sort_args[@]}" | \
+      ${CMD_SAMTOOLS} markdup "${samtools_markdup_args[@]}" | \
+      ${CMD_SAMTOOLS} view "${samtools_view_args[@]}"
   else
-      if [[ -n "!{bedFile}" ]]; then
-        ${CMD_MINIMAP2} "${args[@]}" | \
-          ${CMD_SAMTOOLS} sort -@ "!{task.cpus}" --reference "!{reference}" --no-PG - | \
-          ${CMD_SAMTOOLS} view  --cram --output "!{cram}" --target-file "!{bedFile}" --reference "!{reference}" --write-index --no-PG --threads "!{task.cpus}" -
-      else
-        ${CMD_MINIMAP2} "${args[@]}" | \
-          ${CMD_SAMTOOLS} sort -@ "!{task.cpus}" --reference "!{reference}" -o "!{cram}" --no-PG --write-index -
-      fi
+      ${CMD_MINIMAP2} "${minimap2_args[@]}" | \
+        ${CMD_SAMTOOLS} sort "${samtools_sort_args[@]}" | \
+        ${CMD_SAMTOOLS} view "${samtools_view_args[@]}"
   fi
 }
 

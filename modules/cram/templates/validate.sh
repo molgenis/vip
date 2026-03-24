@@ -31,11 +31,12 @@ view () {
   local view_args=()
   view_args+=("--with-header")
   view_args+=("--reference" "!{reference}")
-  view_args+=("--sanitize" "off")            # perform sanity checks, but do not fix them
-  view_args+=("--fast")                      # enable fast compression
+  view_args+=("--sanitize" "off")                # perform sanity checks, but do not fix them
+  view_args+=("--fast")                          # enable fast compression
   view_args+=("--bam")
+  view_args+=("--output-fmt" "cram,version=3.0") # some downstream tools do not support 3.1
   view_args+=("--output" "!{cramOut}")
-  view_args+=("--no-PG")                     # do not add a @PG line to the header of the output file
+  view_args+=("--no-PG")                         # do not add a @PG line to the header of the output file
   view_args+=("--threads" "!{task.cpus}")
   view_args+=("-")
 
