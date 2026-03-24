@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -542,7 +542,7 @@ Both the zipped and unzipped fasta should have an index.</p>
 <tr>
 <td>str.straglr.GRCh38.loci</td>
 <td><em>installed</em></td>
-<td>tsv adapted from <a href="https://github.com/epi2me-labs/wf-human-variation/blob/master/data/wf_str_repeats.bed">here</a>, renames to tsv and with '-' repeat unit to call any repeat, added a column with the expected RU for matching against the called RU afterwards</td>
+<td>tsv based on <a href="https://stripy.org/">stripy</a>, tsv contains '-' repeat unit to call any repeat, an added column with the expected RU is used for matching against the called RU afterwards</td>
 </tr>
 <tr>
 <td>str.straglr.tsv2vcf.haploid_contigs_male</td>
