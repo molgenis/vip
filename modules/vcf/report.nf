@@ -48,11 +48,13 @@ process report {
     vcfOut = "${basename}.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     reportPath = "${basename}.html"
+    reportDbPath = "${basename}.db"
 
     """
     touch "${vcfOut}"
     touch "${vcfOutIndex}"
     touch "${reportPath}"
+    touch "${reportDbPath}
     """
 }
 
