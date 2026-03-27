@@ -11,7 +11,7 @@ base_url="${VIP_URL_DATA}${test_dir}"
 download() {
   local -r file_url="${1}"
   local -r md5="${2}"
-    local -r file_basename="$(basename "${file_url}")"
+  local -r file_basename="$(basename "${file_url}")"
   local -r file="${VIP_DIR_DATA}${test_dir}${file_basename}"
 
   mkdir -p ${VIP_DIR_DATA}${test_dir}
@@ -22,7 +22,8 @@ download() {
     touch "${vip_install_test_db_file}"
   fi
 
-  if ! grep -Fxq "${file_basename}" "${vip_install_test_db_file}"; then
+  local -r file_db_entry="$(realpath --relative-to="$(dirname "${vip_install_test_db_file}")" "${file}")"
+  if ! grep --fixed-strings --line-regexp --quiet "${file_db_entry}" "${vip_install_test_db_file}"; then
     local -r file_dir="$(dirname "${file}")"
     if [[ ! -d "${file_dir}" ]]; then
       mkdir -p "${file_dir}"
@@ -41,7 +42,7 @@ download() {
       fi
       exit 1
     fi
-    echo -e "${file}" >> "${vip_install_test_db_file}"
+    echo -e "${file_db_entry}" >> "${vip_install_test_db_file}"
   fi
 }
 
