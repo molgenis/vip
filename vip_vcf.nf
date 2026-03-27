@@ -223,7 +223,7 @@ workflow vcf {
             | groupTuple(remainder: true)
             | map { key, metaList -> 
                 def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
-                [*:meta, crams: metaList.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+                [*:meta, crams: metaList.sort { left, right -> left.sample.index <=> right.sample.index }.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
               }
             | set { ch_sliced }
 
