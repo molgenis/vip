@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# duplicate of modules/gvcf/templates/publish.sh
+# duplicate of modules/vcf/templates/publish.sh
 
 concat () {
   local args=()

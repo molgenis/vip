@@ -6,7 +6,8 @@ include { validate as validate_gvcf } from './modules/gvcf/validate'
 include { liftover as liftover_gvcf } from './modules/gvcf/liftover'
 include { validate as validate_cram } from './modules/cram/validate'
 include { scatter; validateGroup } from './modules/utils'
-include { merge } from './modules/gvcf/merge'
+include { preGroupTupleConcat; postGroupTupleConcat } from './modules/vcf/utils'
+include { merge; merge_publish } from './modules/gvcf/merge'
 include { vcf; validateVcfParams } from './vip_vcf'
 include { bed_filter } from './modules/vcf/bed_filter'
 include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
@@ -28,10 +29,17 @@ workflow gvcf {
       | map { key, group -> validateGroup(key, group) }
       | map { meta, samples -> [meta, samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
       | merge
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | multiMap { it -> done: publish: it }
       | set { ch_vcf_per_chunk_called }
 
-    ch_vcf_per_chunk_called
+    ch_vcf_per_chunk_called.publish
+      | map { meta, vcf, vcfCsi, vcfStats -> preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) }
+      | groupTuple(remainder: true)
+      | map { key, metaList -> postGroupTupleConcat(key, metaList) }
+      | merge_publish
+
+    ch_vcf_per_chunk_called.done
+      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | vcf
 }
 
