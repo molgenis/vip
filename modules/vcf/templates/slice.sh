@@ -10,7 +10,7 @@ create_bed () {
     args+=("!{vcf}")
     
     # -1 because positions in .bed are 0-based and 1-based in .vcf
-    ${CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1 "\t" $2-1 "\t"}' > "!{vcf.simpleName}.bed"
+    ${CMD_BCFTOOLS} "${args[@]}" | awk -v FS='\t' -v OFS='\t' '{print $1 "\t" $2-1 "\t" $2 "\t"}' > "!{vcf.simpleName}.bed"
 }
 
 slice () {
