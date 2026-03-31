@@ -14,8 +14,7 @@ process normalize {
     vcfOut = "${basename}_normalized.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
-    
-    allowInvalidRef = params.vcf.normalize.allow_invalid_ref
+
     refSeqPath = params[meta.project.assembly].reference.fasta
     
     template 'normalize.sh'

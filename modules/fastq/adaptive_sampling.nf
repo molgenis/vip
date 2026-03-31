@@ -9,7 +9,7 @@ process filter_reads {
 
   shell:
     fastqOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_filtered.fastq.gz"
-
+    acceptedResponses = params.adaptive_sampling.accepted_responses
     template 'adaptive_sampling_filter_reads.sh'
 
   stub:
