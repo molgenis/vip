@@ -296,13 +296,7 @@
             "Y_RNA": {
               "label": "Y RNA"
             },
-            "promoter_tss": {
-              "label": "promoter with TSS"
-            },
-            "distal_enhancer": {
-              "label": "distal enhancer"
-            },
-            "promoter": {
+                        "promoter": {
               "label": "promoter"
             },
             "promoter_flanking_region": {
@@ -311,21 +305,18 @@
             "enhancer": {
               "label": "enhancer"
             },
-            "ctcf_binding_site": {
+            "CTCF_binding_site": {
               "label": "CTCF binding site"
             },
             "open_chromatin_region": {
               "label": "open chromatin region"
             },
-            "tf_binding_site": {
+            "TF_binding_site": {
               "label": "transcription factor binding site"
             },
-            "transcribed_region": {
-              "label": "transcribed region"
-            },
-            "repressed_region": {
-              "label": "repressed or low-activity region"
-            }
+            "non_transcribed_region": {
+              "label": "non-transcribed region"
+                        }
           }
         },
         "CAPICE_CL": {
