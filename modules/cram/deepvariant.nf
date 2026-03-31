@@ -14,8 +14,9 @@ process call {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
-    bed="${meta.sample.individual_id}_${meta.chunk.index}.bed"
-    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
+    bed="regions_chunk_${meta.chunk.index}.bed"
+    bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     sampleName = "${meta.sample.individual_id}"
     sampleSex = "${meta.sample.sex}"
 
@@ -57,8 +58,9 @@ process call_duo {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
+    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
     bed="regions_chunk_${meta.chunk.index}.bed"
-    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 
     modelType=meta.project.sequencing_platform == "illumina" ? params.snv.deeptrio[meta.project.sequencing_platform][meta.project.sequencing_method].model_name : params.snv.deeptrio[meta.project.sequencing_platform].model_name
 
@@ -136,8 +138,9 @@ process call_trio {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
+    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
     bed="regions_chunk_${meta.chunk.index}.bed"
-    bedContent = meta.chunk.regions.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
+    bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 
     modelType=meta.project.sequencing_platform == "illumina" ? params.snv.deeptrio[meta.project.sequencing_platform][meta.project.sequencing_method].model_name : params.snv.deeptrio[meta.project.sequencing_platform].model_name
 

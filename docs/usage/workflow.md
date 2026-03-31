@@ -121,6 +121,7 @@ cc1-->cc2
 cc0-->cc2
 end
 subgraph "Subworkflow: snv"
+subgraph "Subworkflow: nuclear snv"
 cn0{Sequencing platform?}
 cn1{Trio or duo?}
 cn2[Deeptrio]
@@ -140,6 +141,22 @@ cn4-->cn5
 cn5-->cn6
 cn6-->cn6t
 cn6-->cn7
+end
+subgraph "Subworkflow: mitochondrial snv"
+cm0[Mutect2]
+cm1[Merge VCF]
+cm1t[(<b>per project:</b><br>project_mtdnasnv.vcf.gz)]
+cm0-->cm1
+cm1-->cm1t
+end
+cs0{Mitochondrial?}
+cs1[Merge SNV VCF]
+cs2[(<b>per project:</b><br>project_complete_snv.vcf.gz)]
+cs0-->|"false"|cn0
+cs0-->|"true"|cm0
+cn7-->cs1
+cm1-->cs1
+cs1-->cs2
 end
 subgraph "Subworkflow: str"
 ct0{PCR performed?}
@@ -180,12 +197,12 @@ c7{Regions?}
 c8[Filter]
 c9@{ shape: f-circ, label: "Junction" }
 c0-->c1
-c0-->cn0
+c0-->cs0
 c0-->ct0
 c0-->cv0
 c0-->cc0
 c1-->c1t
-cn7-->c6
+cs1-->c6
 ct4-->c6
 cv3-->c6
 cc2-->c6

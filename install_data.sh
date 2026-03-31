@@ -187,6 +187,7 @@ install_files() {
   data+=("8c65c0ec075781c49dffc78d87a64360" "images/expansionhunter-5.0.0+build.3.sif" "")
   data+=("570df812e546946ebe2a11141be4ea12" "images/fastp-1.1.0.sif" "")
   data+=("f3bf2f8f28698a86fad298da369bfab5" "images/gado-1.0.3+build.3.sif" "")
+  data+=("f9ea6cdc68f0b586a0673b07c65ced28" "images/gatk-4.6.2.0.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("aaf3545a239ddfac7965f9f5d726d143" "images/manta-1.6.0+build.1.sif" "")
   data+=("54337bc1bed4fd505a7773e8920f2c0d" "images/minimap2-2.30.sif" "")
