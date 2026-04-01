@@ -10,7 +10,7 @@ process concat_vcf {
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
   
   shell:
-    vcfOut = "${meta.project.id}.vcf.gz"
+    vcfOut = "${meta.project.id}_combined.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
     

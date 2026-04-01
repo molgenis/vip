@@ -102,8 +102,8 @@ execute_workflow() {
   local -r paramResume="${6}"
   local -r paramStub="${7}"
 
-  rm -f "${paramOutput}/nxf_report.html"
-  rm -f "${paramOutput}/nxf_timeline.html"
+  rm -f "${paramOutput}/log/nxf_report.html"
+  rm -f "${paramOutput}/log/nxf_timeline.html"
 
   local configs="${VIP_DIR}/config/nxf_${paramWorkflow}.config"
   if [[ -n "${paramConfig}" ]]; then
@@ -117,20 +117,20 @@ execute_workflow() {
   local envCacheDir="${VIP_DIR_DATA}/images"
   local envHome
   if [[ -z "${NXF_HOME}" ]]; then
-    envHome="${paramOutput}/.nxf.home"
+    envHome="${paramOutput}/tmp/nxf.home"
   else
     envHome="${NXF_HOME}"
   fi
   local envTemp
   if [[ -z "${NXF_TEMP}" ]]; then
-    envTemp="${paramOutput}/.nxf.tmp"
+    envTemp="${paramOutput}/tmp/nxf.tmp"
   else
     envTemp="${NXF_TEMP}"
   fi
   mkdir -p "${envTemp}"
   local envWork
   if [[ -z "${NXF_WORK}" ]]; then
-    envWork="${paramOutput}/.nxf.work"
+    envWork="${paramOutput}/tmp/nxf.work"
   else 
     envWork="${NXF_WORK}"
   fi
@@ -145,13 +145,13 @@ execute_workflow() {
 
   local args=()
   args+=("-C" "${configs}")
-  args+=("-log" "${paramOutput}/.nxf.log")
+  args+=("-log" "${paramOutput}/log/nxf.log")
   args+=("run")
   args+=("${VIP_DIR}/vip_${paramWorkflow}.nf")
   args+=("-offline")
   args+=("-profile" "${paramProfile}")
-  args+=("-with-report" "${paramOutput}/nxf_report.html")
-  args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
+  args+=("-with-report" "${paramOutput}/log/nxf_report.html")
+  args+=("-with-timeline" "${paramOutput}/log/nxf_timeline.html")
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
   if [[ "${paramResume}" == "true" ]]; then
