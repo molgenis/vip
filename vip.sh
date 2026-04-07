@@ -102,8 +102,8 @@ execute_workflow() {
   local -r paramResume="${6}"
   local -r paramStub="${7}"
 
-  rm -f "${paramOutput}/nxf_report.html"
-  rm -f "${paramOutput}/nxf_timeline.html"
+  rm -f "${paramOutput}/log/nxf_report.html"
+  rm -f "${paramOutput}/log/nxf_timeline.html"
 
   local configs="${VIP_DIR}/config/nxf_${paramWorkflow}.config"
   if [[ -n "${paramConfig}" ]]; then
@@ -117,20 +117,20 @@ execute_workflow() {
   local envCacheDir="${VIP_DIR_DATA}/images"
   local envHome
   if [[ -z "${NXF_HOME}" ]]; then
-    envHome="${paramOutput}/.nxf.home"
+    envHome="${paramOutput}/tmp/nxf.home"
   else
     envHome="${NXF_HOME}"
   fi
   local envTemp
   if [[ -z "${NXF_TEMP}" ]]; then
-    envTemp="${paramOutput}/.nxf.tmp"
+    envTemp="${paramOutput}/tmp/nxf.tmp"
   else
     envTemp="${NXF_TEMP}"
   fi
   mkdir -p "${envTemp}"
   local envWork
   if [[ -z "${NXF_WORK}" ]]; then
-    envWork="${paramOutput}/.nxf.work"
+    envWork="${paramOutput}/tmp/nxf.work"
   else 
     envWork="${NXF_WORK}"
   fi
@@ -139,19 +139,25 @@ execute_workflow() {
   else 
     envJvm="${NXF_JVM_ARGS}"
   fi
+  local envNxfCacheDir
+  if [[ -z "${NXF_CACHE_DIR}" ]]; then
+    envNxfCacheDir="${paramOutput}/tmp/nextflow"
+  else
+    envNxfCacheDir="${NXF_CACHE_DIR}"
+  fi
   local envStrict="true"
 
   local -r nextflow_version="25.10.4"
 
   local args=()
   args+=("-C" "${configs}")
-  args+=("-log" "${paramOutput}/.nxf.log")
+  args+=("-log" "${paramOutput}/log/nxf.log")
   args+=("run")
   args+=("${VIP_DIR}/vip_${paramWorkflow}.nf")
   args+=("-offline")
   args+=("-profile" "${paramProfile}")
-  args+=("-with-report" "${paramOutput}/nxf_report.html")
-  args+=("-with-timeline" "${paramOutput}/nxf_timeline.html")
+  args+=("-with-report" "${paramOutput}/log/nxf_report.html")
+  args+=("-with-timeline" "${paramOutput}/log/nxf_timeline.html")
   args+=("--input" "${paramInput}")
   args+=("--output" "${paramOutput}")
   if [[ "${paramResume}" == "true" ]]; then
@@ -160,7 +166,7 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
-  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="${nextflow_version}" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" NXF_OFFLINE="true" NXF_DISABLE_CHECK_LATEST="true" VIP_DIR="${VIP_DIR}" VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_VERSION="${VIP_VERSION}" bash "${VIP_DIR_DATA}/nextflow-${nextflow_version}-dist" "${args[@]}")
+  (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="${nextflow_version}" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_CACHE_DIR="${envNxfCacheDir}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" NXF_OFFLINE="true" NXF_DISABLE_CHECK_LATEST="true" VIP_DIR="${VIP_DIR}" VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_VERSION="${VIP_VERSION}" bash "${VIP_DIR_DATA}/nextflow-${nextflow_version}-dist" "${args[@]}")
 }
 
 main() {
