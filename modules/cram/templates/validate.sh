@@ -36,7 +36,7 @@ view () {
   view_args+=("--bam")
   view_args+=("--output" "!{cramOut}")
   view_args+=("--no-PG")                     # do not add a @PG line to the header of the output file
-  view_args+=("--threads" "!{task.cpus}")
+  view_args+=("--threads" "!{task.cpus - 1}")
   view_args+=("-")
 
   ${CMD_SAMTOOLS} reheader "${reheader_args[@]}" | ${CMD_SAMTOOLS} view "${view_args[@]}"

@@ -7,7 +7,8 @@ gado_process() {
 
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
-  args+=("-XX:ParallelGCThreads=2")
+  args+=("-XX:ParallelGCThreads=!{task.cpus - 1}")
+  args+=("-Xmx!{(task.memory.toMega() * 0.75).intValue()}m")
   args+=("-Xmx!{task.memory.toMega() - 512}m")
   args+=("-jar" "/opt/gado/lib/GADO.jar")
   args+=("--mode" "PROCESS")
@@ -22,8 +23,8 @@ gado_process() {
 gado_prioritize() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
-  args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx!{task.memory.toMega() - 512}m")
+  args+=("-XX:ParallelGCThreads=!{task.cpus - 1}")
+  args+=("-Xmx!{(task.memory.toMega() * 0.75).intValue()}m")
   args+=("-jar" "/opt/gado/lib/GADO.jar")
   args+=("--mode" "PRIORITIZE")
   args+=("--output" "./gado")

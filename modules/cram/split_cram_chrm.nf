@@ -10,7 +10,7 @@ process split_cram_chrm {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
+    chrmName = params.mt[meta.project.assembly].chrm_name
 
     chrmCramOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm.cram"
     chrmCramOutIndex = "${chrmCramOut}.crai"
