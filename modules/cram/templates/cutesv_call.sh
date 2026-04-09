@@ -63,13 +63,15 @@ call_structural_variants_postprocess () {
 }
 
 call_structural_variants_cleanup () {
-    rm "cutesv_output.vcf"
+    rm -f "cutesv_output.vcf"
 }
 
 main() {
+    trap 'rc=$?; call_structural_variants_cleanup; exit $rc' EXIT INT TERM
+
     call_structural_variants
     call_structural_variants_postprocess
-    call_structural_variants_cleanup
+    
 }
 
 main "$@"

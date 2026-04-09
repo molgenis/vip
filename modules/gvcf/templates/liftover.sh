@@ -35,14 +35,15 @@ postprocess() {
 }
 
 cleanup(){
-  rm picard_accepted.g.vcf.gz
-  rm picard_rejected.g.vcf.gz
+  rm -f picard_accepted.g.vcf.gz
+  rm -f picard_rejected.g.vcf.gz
 }
 
 main() {
+  trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
   liftover
   postprocess
-  cleanup
 }
 
 main "$@"

@@ -144,7 +144,7 @@ vep_preprocess() {
 }
 
 vep() {
-  local -r vcf="${1}"
+    local -r vcf="${1}"
 
   local args=()
   args+=("--input_file" "${vcf}")
@@ -397,7 +397,6 @@ main () {
   if [ -n "!{params.vcf.annotate.annotsv_cache_dir}" ]; then
     annot_sv
   fi
-
 
   local vepInputPath=""
   if [ -n "!{strangerCatalog}" ]; then
