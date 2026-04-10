@@ -13,14 +13,14 @@ process mutect2_mito {
     chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv.vcf.gz"
-    vcfOutIndex = "${vcfOut}.csi"
+    vcfOutIndex = "${vcfOut}.tbi"
     vcfOutStats = "${vcfOut}.stats"
 
     template 'mutect2_mito.sh'
 
   stub:
     vcfOut="${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv.vcf.gz"
-    vcfOutIndex="${vcfOut}.csi"
+    vcfOutIndex="${vcfOut}.tbi"
     vcfOutStats="${vcfOut}.stats"
 
     """
@@ -34,7 +34,7 @@ process filtermutect2_mito {
   label 'gatk_filtermutect2_mito'
 
   input:
-    tuple val(meta), path(vcf), path(vcfIndex)
+    tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
 
   output:
     tuple val(meta), path(vcfOut), path(vcfOutIndex), path(vcfOutStats)
@@ -42,10 +42,13 @@ process filtermutect2_mito {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
+    tmpVcfName = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv"
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv.filtered.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
     vcfOutStats = "${vcfOut}.stats"
+
+    template 'filtermutect2_mito.sh'
 
   stub:
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv.filtered.vcf.gz"

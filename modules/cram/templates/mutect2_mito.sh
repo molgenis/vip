@@ -17,7 +17,6 @@ mutect2 () {
 
 index () {
     ${CMD_BCFTOOLS} index --csi "!{vcfOut}"
-    ${CMD_BCFTOOLS} stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main () {

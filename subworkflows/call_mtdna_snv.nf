@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 include { nrMappedReads } from '../modules/cram/utils'
-include { mutect2_mito } from '../modules/cram/gatk.nf'
+include { mutect2_mito; filtermutect2_mito } from '../modules/cram/gatk.nf'
 include { merge_mtdnasnv_vcf } from '../modules/cram/merge_vcf.nf'
 include { publish_mtdna_vcf } from '../modules/cram/publish_mtdna_vcf.nf'
 include { validateGroup } from '../modules/utils'
@@ -24,6 +24,12 @@ workflow mtdnasnv {
     ch_mtdnasnv.with_reads
       | map { meta -> [meta, meta.sample.cram.data, meta.sample.cram.index] }
       | mutect2_mito
+      | map { meta, vcfOut, vcfOutIndex, vcfOutStats -> [meta, [data: vcfOut, index: vcfOutIndex, stats: vcfOutStats]] }
+      | set { ch_mtdnasnv_gatk_unfiltered }
+
+    ch_mtdnasnv_gatk_unfiltered
+      | map { meta, vcf -> [meta, vcf.data, vcf.index, vcf.stats] }
+      | filtermutect2_mito
       | map { meta, vcfOut, vcfOutIndex, vcfOutStats -> [meta, [data: vcfOut, index: vcfOutIndex, stats: vcfOutStats]] }
       | set { ch_mtdnasnv_gatk }
 
