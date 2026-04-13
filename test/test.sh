@@ -120,7 +120,7 @@ run() {
     local time="${SLURM_TIMELIMIT:-"23:59:59"}"
     local sbatch_args=()
     sbatch_args+=("--parsable")
-    sbatch_args+=("--job-name=vip_test")
+    sbatch_args+=("--job-name=vip_test_${case_id}")
     sbatch_args+=("--time=${time}")
     sbatch_args+=("--cpus-per-task=1")
     sbatch_args+=("--mem=1gb")
