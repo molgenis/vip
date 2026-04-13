@@ -51,19 +51,20 @@ restore_cnv_tr(){
 }
 
 cleanup(){
-  rm "!{vcf}_replaced.vcf.gz"
-  rm "!{vcfOut}_replaced.vcf.gz"
-  rm header.tmp
+  rm -f "!{vcf}_replaced.vcf.gz"
+  rm -f "!{vcfOut}_replaced.vcf.gz"
+  rm -f header.tmp
 }
 
 main () {
+  trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
   store_alt
   replace_cnv_tr
   classify
   restore_cnv_tr
   insert_alt
   index
-  cleanup
 }
 
 main "$@"

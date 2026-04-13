@@ -61,9 +61,10 @@ index () {
 }
 
 main() {
+    trap 'rc=$?; call_small_variants_cleanup; exit $rc' EXIT INT TERM
+
     create_bed
     call_small_variants
-    call_small_variants_cleanup
     index
 }
 

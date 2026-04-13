@@ -43,25 +43,23 @@ index () {
   ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
-reheader_cleanup () {
-  rm "empty_contigs.vcf"
-  rm "empty.vcf"
-  rm "new_header.vcf"
-}
+cleanup () {
+  rm -f "empty_contigs.vcf"
+  rm -f "empty.vcf"
+  rm -f "new_header.vcf"
 
-create_sliced_vcfs_cleanup () {
   for gVcf in !{gVcfs}; do
-    rm "sliced_${gVcf}"
+    rm -f "sliced_${gVcf}"
   done
 }
 
 main () {
+   trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
   create_bed
   create_sliced_vcfs
   reheader
   merge
-  reheader_cleanup
-  create_sliced_vcfs_cleanup
   index
 }
 

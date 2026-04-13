@@ -108,10 +108,11 @@ cleanup () {
 }
 
 main() {
+    trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
     create_ped
     filter_bams
     phase_variants
-    cleanup
 }
 
 main "$@"
