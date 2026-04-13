@@ -71,7 +71,6 @@ main() {
 
     call_structural_variants
     call_structural_variants_postprocess
-    
 }
 
 main "$@"

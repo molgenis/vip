@@ -65,7 +65,6 @@ main() {
 
     create_bed
     call_small_variants
-  
     index
 }
 
