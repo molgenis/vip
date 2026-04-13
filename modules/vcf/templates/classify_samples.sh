@@ -60,7 +60,7 @@ cleanup(){
 }
 
 main() {
-  trap cleanup EXIT
+  trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
 
   replace_cnv_tr
   store_alt
