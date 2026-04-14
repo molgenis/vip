@@ -24,18 +24,16 @@ vip.sh --workflow fastq --input samplesheet.tsv --config nanopore.cfg --output p
 .
 ├── coverage
 │   ├── vip_fam0_HG002_mosdepth.global.dist.txt
-│   ├── vip_fam0_HG002_mosdepth.per-base.bed.gz
-│   ├── vip_fam0_HG002_mosdepth.per-base.bed.gz.csi
 │   ├── vip_fam0_HG002_mosdepth.region.dist.txt
 │   ├── vip_fam0_HG002_mosdepth.regions.bed.gz
 │   ├── vip_fam0_HG002_mosdepth.regions.bed.gz.csi
 │   ├── vip_fam0_HG002_mosdepth.summary.txt
 │   ├── vip_fam0_HG002_mosdepth.thresholds.bed.gz
 │   └── vip_fam0_HG002_mosdepth.thresholds.bed.gz.csi
+├── fastp
+│   ├── vip_fam0_HG002_report.html
+│   └── vip_fam0_HG002_report.json
 ├── intermediates
-│   ├── fastp
-│   │   ├── vip_fam0_HG002_report.html
-│   │   └── vip_fam0_HG002_report.json
 │   ├── HG002_snv.g.vcf.gz
 │   ├── HG002_snv.g.vcf.gz.csi
 │   ├── HG002_snv.g.vcf.gz.stats
@@ -43,9 +41,13 @@ vip.sh --workflow fastq --input samplesheet.tsv --config nanopore.cfg --output p
 │   ├── vip_annotations.vcf.gz.csi
 │   ├── vip_classifications.vcf.gz
 │   ├── vip_classifications.vcf.gz.csi
+│   ├── vip_combined.vcf.gz
+│   ├── vip_combined.vcf.gz.csi
+│   ├── vip_combined.vcf.gz.stats
 │   ├── vip_complete_snv.vcf.gz
 │   ├── vip_complete_snv.vcf.gz.csi
 │   ├── vip_complete_snv.vcf.gz.stats
+│   ├── vip.db
 │   ├── vip_fam0_HG002_cnv.vcf.gz
 │   ├── vip_fam0_HG002_cnv.vcf.gz.csi
 │   ├── vip_fam0_HG002_cnv.vcf.gz.stats
@@ -66,16 +68,18 @@ vip.sh --workflow fastq --input samplesheet.tsv --config nanopore.cfg --output p
 │   ├── vip_sample_classifications.vcf.gz.csi
 │   ├── vip_snv.vcf.gz
 │   ├── vip_snv.vcf.gz.csi
-│   ├── vip_snv.vcf.gz.stats
-│   ├── vip.vcf.gz
-│   ├── vip.vcf.gz.csi
-│   └── vip.vcf.gz.stats
-├── job.err
-├── job.out
-├── nxf_report.html
-├── nxf_timeline.html
+│   └── vip_snv.vcf.gz.stats
+├── log
+│   ├── nxf.log
+│   ├── nxf_report.html
+│   ├── nxf_timeline.html
+│   ├── slurm_job.err
+│   └── slurm_job.out
 ├── samplesheet.tsv
-├── vip.db
+├── tmp
+│   ├── nextflow
+│   ├── nxf.temp
+│   └── nxf.work
 ├── vip.html
 ├── vip.vcf.gz
 └── vip.vcf.gz.csi

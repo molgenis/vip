@@ -26,14 +26,20 @@ vip.sh --workflow vcf --input samplesheet.tsv --output path/to/output/folder
 │   ├── vip_annotations.vcf.gz.csi
 │   ├── vip_classifications.vcf.gz
 │   ├── vip_classifications.vcf.gz.csi
+│   ├── vip.db
 │   ├── vip_sample_classifications.vcf.gz
 │   └── vip_sample_classifications.vcf.gz.csi
-├── job.err
-├── job.out
-├── nxf_report.html
-├── nxf_timeline.html
+├── log
+│   ├── nxf.log
+│   ├── nxf_report.html
+│   ├── nxf_timeline.html
+│   ├── slurm_job.err
+│   └── slurm_job.out
 ├── samplesheet.tsv
-├── vip.db
+├── tmp
+│   ├── nextflow
+│   ├── nxf.temp
+│   └── nxf.work
 ├── vip.html
 ├── vip.vcf.gz
 └── vip.vcf.gz.csi
