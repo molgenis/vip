@@ -8,14 +8,14 @@ From: sif/build/openjdk-25.sif
 %post
     version_major=8
     version_minor=2
-    version_patch=3
+    version_patch=4
 
     # install
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-report/lib
     curl --fail --silent --show-error --location --output /opt/vcf-report/lib/vcf-report.jar "https://github.com/molgenis/vip-report/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-report.jar"
-    echo "9f1b82c2ced7cdc8cbe95920fbdf2d522a180ca39ca5868822163f88b3816cad  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
+    echo "bb88ad5a2f02dabf444f7fb7ba6e9c8c075ef57350f3f0ca132ee8df3f68a3b1  /opt/vcf-report/lib/vcf-report.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
