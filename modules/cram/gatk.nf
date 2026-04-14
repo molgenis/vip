@@ -42,7 +42,6 @@ process filtermutect2_mito {
   shell:
     refSeqPath = params[meta.project.assembly].reference.fasta
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
-    tmpVcfName = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv"
 
     vcfOut = "${meta.project.id}_${meta.sample.family_id}_${meta.sample.individual_id}_chrm_snv.filtered.vcf.gz"
     vcfOutIndex = "${vcfOut}.csi"
