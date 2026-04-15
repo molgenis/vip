@@ -102,13 +102,6 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
-        "apogee_Uscore": {
-          "label": "Apogee unbiased score",
-          "description": "Apogee unbiased score for protein coding mtDNA variants",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "FLOAT"
-        },
         "BIOTYPE": {
           "label": "Biotype",
           "description": "The Ensembl VEP Biotype.",
