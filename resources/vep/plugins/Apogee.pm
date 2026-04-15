@@ -12,7 +12,7 @@ use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
 	mv Apogee.pm ~/.vep/Plugins
 	./vep -i variations.vcf --plugin Apogee,/FULL_PATH_TO_APOGEE_FILE
 =head1 DESCRIPTION
-	Plugin to annotate Apogee Score and Unbiased score values
+	Plugin to annotate Apogee Score value
 =cut
 
 my $self;
@@ -44,7 +44,6 @@ sub feature_types {
 sub get_header_info {
 	return {
 		apogee_Score => "Score assigned by APOGEE",
-		apogee_Uscore => "Unbiased score assigned by APOGEE",
 	};
 }
 
@@ -71,7 +70,7 @@ sub run {
 
 sub parse_data {
 	my ($self, $line) = @_;
-	my ($chr, $pos, $ref, $alt, $genesym, $apo_score, $apo_uscore) = split /\t/, $line;
+	my ($chr, $pos, $ref, $alt, $genesym, $apo_score) = split /\t/, $line;
 	
 	return {
 		chr => $chr,
@@ -80,8 +79,7 @@ sub parse_data {
 		alt => $alt,
 		genesym => $genesym,
 		result => {
-			apogee_Score => $apo_score,
-			apogee_Uscore => $apo_uscore
+			apogee_Score => $apo_score
 		}
 	};
 }
