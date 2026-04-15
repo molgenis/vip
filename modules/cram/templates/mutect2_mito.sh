@@ -1,8 +1,8 @@
 mutect2 () {
     local mutect_args=()
     mutect_args+=("-Djava.io.tmpdir=${TMPDIR}")
-    mutect_args+=("-XX:ParallelGCThreads=2")
-    mutect_args+=("-Xmx!{task.memory.toMega() - 512}m")
+    mutect_args+=("-XX:ParallelGCThreads=!{Math.max(task.cpus - 4, 1)}")
+    mutect_args+=("-Xmx!{(task.memory.toMega() * 0.75).intValue()}m")
     mutect_args+=("-jar" "/opt/gatk/lib/gatk.jar")
     mutect_args+=("Mutect2")
     mutect_args+=("-R" "!{reference}")

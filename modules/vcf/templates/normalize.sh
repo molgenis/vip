@@ -18,7 +18,7 @@ normalize () {
 
 sort () {
   # sort since order can change due to normalization, cant pipe due to concurrent modification cause by 'norm' multithreading
-  ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{task.memory.toGiga() - 1}G" --output-type z --output "!{vcfOut}" "unsorted_!{vcfOut}"
+  ${CMD_BCFTOOLS} sort --temp-dir . --max-mem "!{(task.memory.toMega() * 0.75).intValue()}M" --output-type z --output "!{vcfOut}" "unsorted_!{vcfOut}"
 }
 
 index () {
