@@ -70,7 +70,7 @@
     "VIPC_S": {
       "label": "VIP sample classification",
       "numberType": "OTHER",
-      "type": "STRING",
+      "type": "CATEGORICAL",
       "separator": ","
     }
   },
@@ -861,7 +861,7 @@
           "description": "Human Phenotype Ontology (HPO) terms describing phenotypic abnormalities, see https://hpo.jax.org/ and https://doi.org/10.1093/nar/gkad1005",
           "numberType": "OTHER",
           "separator": "&",
-          "type": "STRING"
+          "type": "CATEGORICAL"
         },
         "IMPACT": {
           "label": "Impact",
@@ -1083,7 +1083,7 @@
           "description": "Variant consequence classification predicted by the Variant Interpretation Pipeline (VIP), see https://vip.molgeniscloud.org/ and https://doi.org/10.1101/2024.04.11.24305656",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "STRING",
+          "type": "CATEGORICAL",
           "required": true
         },
         "VIPP": {
@@ -1202,6 +1202,12 @@
       "numberType": "NUMBER",
       "numberCount": 1,
       "type": "STRING"
+    },
+    "VIPC_S": {
+      "label": "VIP sample classification",
+      "numberType": "OTHER",
+      "type": "CATEGORICAL",
+      "separator": ","
     }
   }
 }
