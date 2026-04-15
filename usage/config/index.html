@@ -1014,34 +1014,44 @@ Both the zipped and unzipped fasta should have an index.</p>
 added to your configuration file and used on the command-line, for example to run VIP on the Amazon, Azure or Google
 Cloud.</p>
 <h2 id="process">Process<a class="headerlink" href="#process" title="Permanent link">¶</a></h2>
-<p>By default, each process gets assigned <code>4 cpus</code>, <code>8GB of memory</code> and a <code>max runtime of 4 hours</code>. Depending on your
-system specifications and your analysis you might need to use updated values. For information on how to update process
-configuration see the <a href="https://www.nextflow.io/docs/latest/config.html#scope-process">Nextflow documentation</a>.
-The following sections list all processes and their non-default configuration.</p>
+<p>Depending on your system specifications and your analysis you might need to use updated resource values. For information
+on how to update process configuration see
+the <a href="https://www.nextflow.io/docs/latest/config.html#scope-process">Nextflow documentation</a>. The following sections list
+all processes and their non-default configuration.</p>
 <h3 id="fastq_1">FASTQ<a class="headerlink" href="#fastq_1" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th>process label</th>
-<th>configuration</th>
+<th>Process label</th>
+<th>CPUs (WES / WGS)</th>
+<th>Memory (WES / WGS)</th>
+<th>Time (WES / WGS)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>concat_fastq</td>
-<td><em>default</em></td>
+<td>fastp</td>
+<td>4</td>
+<td>20 / 2 GB</td>
+<td>2 h / 30 m</td>
 </tr>
 <tr>
-<td>concat_fastq_paired_end</td>
-<td><em>default</em></td>
+<td>filter_reads</td>
+<td>1</td>
+<td>4 GB</td>
+<td>4 h</td>
 </tr>
 <tr>
 <td>minimap2_align</td>
-<td>cpus=8 memory='16GB' time='23h'</td>
+<td>8 / 16</td>
+<td>16 / 32 GB</td>
+<td>1 h / 24 h</td>
 </tr>
 <tr>
 <td>minimap2_align_paired_end</td>
-<td>cpus=8 memory='16GB' time='23h'</td>
+<td>8 / 16</td>
+<td>16 / 32 GB</td>
+<td>1 h / 24 h</td>
 </tr>
 </tbody>
 </table>
@@ -1049,105 +1059,176 @@ The following sections list all processes and their non-default configuration.</
 <table>
 <thead>
 <tr>
-<th>process label</th>
-<th>configuration</th>
+<th>Process label</th>
+<th>CPUs (WES / WGS)</th>
+<th>Memory (WES / WGS)</th>
+<th>Time (WES / WGS)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>concat_snv_vcf</td>
+<td>2</td>
+<td>3 GB</td>
+<td>15 m</td>
+</tr>
+<tr>
 <td>concat_vcf</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>3 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>coverage</td>
-<td>cpus=1 memory='16GB' time=<em>default</em></td>
-</tr>
-<tr>
-<td>cram_validate</td>
-<td><em>default</em></td>
+<td>1</td>
+<td>4 GB</td>
+<td>15 m / 30 m</td>
 </tr>
 <tr>
 <td>cutesv_call</td>
-<td>cpus=4 memory='8GB' time='5h'</td>
+<td>4</td>
+<td>8 GB</td>
+<td>5 h</td>
 </tr>
 <tr>
 <td>deepvariant_call</td>
-<td>cpus=<em>default</em> memory='2GB * cpus' time='5h'</td>
+<td>4</td>
+<td>16 GB</td>
+<td>6 h / 12 h</td>
 </tr>
 <tr>
 <td>deepvariant_call_duo</td>
-<td>cpus=<em>default</em> memory='6GB * cpus' time='23h'</td>
+<td>4</td>
+<td>32 GB</td>
+<td>12 h / 24 h</td>
 </tr>
 <tr>
 <td>deepvariant_call_trio</td>
-<td>cpus=<em>default</em> memory='6GB * cpus' time='23h'</td>
+<td>4</td>
+<td>32 GB</td>
+<td>12 h / 24 h</td>
 </tr>
 <tr>
-<td>deepvariant_concat_gvcf</td>
-<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
+<td>deepvariant_concat_gvcfs</td>
+<td>4</td>
+<td>2 GB</td>
+<td>30 m</td>
 </tr>
 <tr>
-<td>deepvariant_concat_vcf</td>
-<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
+<td>deepvariant_concat_vcfs</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>deepvariant_joint_call</td>
-<td>cpus=<em>default</em> memory='2GB' time='30m'</td>
+<td>2</td>
+<td>2 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
-<td>expansionhunter_call</td>
-<td>cpus=4 memory='16GB' time='5h'</td>
+<td>gatk_mutect2_mito</td>
+<td>4</td>
+<td>2 GB</td>
+<td>30 m</td>
 </tr>
 <tr>
 <td>manta_joint_call</td>
-<td>cpus=4 memory='8GB' time='5h'</td>
+<td>4</td>
+<td>2 / 8 GB</td>
+<td>2 / 5 h</td>
+</tr>
+<tr>
+<td>publish_gvcf</td>
+<td>2</td>
+<td>3 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>publish_vcf</td>
-<td>memory='100MB' time='30m'</td>
+<td>2</td>
+<td>32 / 64 MB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>publish_mtdna_vcf</td>
+<td>2</td>
+<td>32 / 64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>spectre_call</td>
-<td>cpus=<em>default</em> memory='4GB' time=<em>default</em></td>
+<td>4</td>
+<td>4 GB</td>
+<td>1 h</td>
 </tr>
 <tr>
 <td>straglr_call</td>
-<td><em>default</em></td>
+<td>1</td>
+<td>1 GB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>vcf_merge_cnv</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>vcf_merge_mtdnasnv</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_merge_str</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_merge_sv</td>
-<td><em>default</em></td>
-</tr>
-<tr>
-<td>whatshap</td>
-<td>cpus=<em>default</em> memory=<em>default</em> time='23h'</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 </tbody>
 </table>
+<p>| whatshap | 2 | 2 GB | 1 h |</p>
 <h3 id="gvcf_1">gVCF<a class="headerlink" href="#gvcf_1" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th>process label</th>
-<th>configuration</th>
+<th>Process label</th>
+<th>CPUs (WES / WGS)</th>
+<th>Memory (WES / WGS)</th>
+<th>Time (WES / WGS)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>gvcf_liftover</td>
-<td><em>default</em></td>
-</tr>
-<tr>
-<td>gvcf_validate</td>
-<td>memory='100MB' time='30m'</td>
+<td>2</td>
+<td>4 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>gvcf_merge</td>
-<td>memory='2GB' time='30m'</td>
+<td>4</td>
+<td>2 GB</td>
+<td>30 m</td>
+</tr>
+<tr>
+<td>gvcf_merge_publish</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>gvcf_validate</td>
+<td>2 / 3</td>
+<td>100 MB</td>
+<td>30 m</td>
 </tr>
 </tbody>
 </table>
@@ -1155,74 +1236,126 @@ The following sections list all processes and their non-default configuration.</
 <table>
 <thead>
 <tr>
-<th>process label</th>
-<th>configuration</th>
+<th>Process label</th>
+<th>CPUs (WES / WGS)</th>
+<th>Memory (WES / WGS)</th>
+<th>Time (WES / WGS)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>bed_filter</td>
+<td>2</td>
+<td>32 / 64 MB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>cram_validate</td>
+<td>2 / 3</td>
+<td>512 MB / 1 GB</td>
+<td>1 h / 30 m</td>
+</tr>
+<tr>
+<td>gado</td>
+<td>2</td>
+<td>1 GB</td>
+<td>15 m</td>
+</tr>
+<tr>
 <td>vcf_annotate</td>
-<td>cpus=4 memory='8GB' time='4h'</td>
+<td>4</td>
+<td>4 / 8 GB</td>
+<td>1 h / 4 h</td>
 </tr>
 <tr>
 <td>vcf_annotate_publish</td>
-<td><em>default</em></td>
-</tr>
-<tr>
-<td>vcf_classify</td>
-<td>memory = '2GB'</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_classify_publish</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
+</tr>
+<tr>
+<td>vcf_classify</td>
+<td>2</td>
+<td>1 / 2 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_classify_samples</td>
-<td>memory = '2GB'</td>
+<td>2</td>
+<td>256 / 512 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_classify_samples_publish</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_concat</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>32 / 64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_filter</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>128 / 256 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_filter_samples</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>32 / 64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_inheritance</td>
-<td>memory = '2GB'</td>
+<td>2</td>
+<td>1 / 2 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_liftover</td>
-<td><em>default</em></td>
+<td>2</td>
+<td>4 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_normalize</td>
-<td><em>default</em></td>
+<td>2 / 4</td>
+<td>256 / 512 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_report</td>
-<td>memory = '4GB'</td>
+<td>2</td>
+<td>4 / 8 GB</td>
+<td>15 m / 30 m</td>
 </tr>
 <tr>
 <td>vcf_slice</td>
-<td><em>default</em></td>
+<td>4</td>
+<td>2 GB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_split</td>
-<td>memory='100MB' time='30m'</td>
+<td>2</td>
+<td>64 MB</td>
+<td>15 m</td>
 </tr>
 <tr>
 <td>vcf_validate</td>
-<td>memory='100MB' time='30m'</td>
+<td>2 / 3</td>
+<td>100 MB</td>
+<td>30 m</td>
 </tr>
 </tbody>
 </table>
