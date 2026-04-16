@@ -201,7 +201,7 @@ install_files() {
   data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
   data+=("b87879d31670125bddb81b2187f1c1d8" "images/vcf-decision-tree-6.0.2.sif" "")
   data+=("cd4518870075d0ab92127ce810b5bc06" "images/vcf-inheritance-matcher-4.0.1.sif" "")
-  data+=("3c0bd4c0f88e27f0556ec27963a91210" "images/vcf-report-8.2.2.sif" "")
+  data+=("1fa055c46e0ca6787f4450ec67fbc9e2" "images/vcf-report-8.2.4.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
   data+=("552b8da06541123bde302a03bc5372ef" "nextflow-25.10.4-dist" "postprocess_nextflow")
@@ -217,8 +217,8 @@ install_files() {
   data+=("74b9abc9a94c81fc27393e2f77ad498b" "resources/gado/v1.0.4_HPO_v2024-08-13/HPO_2024_08_13_prediction_info.txt.gz" "")
   data+=("55d49c8d95ffc9aee2ec584359c197d2" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz" "")
   data+=("c6178d80393254789ebf9c43df6f2d6f" "resources/GRCh38/AlphScore_final_20230825_stripped_GRCh38.tsv.gz.tbi" "")
-  data+=("7aae5033717425b26c454865a5fd30bc" "resources/GRCh38/apogee_scores_20251118.tsv.gz" "")
-  data+=("2a2d3dfdc7d7d412d3d2203db154c289" "resources/GRCh38/apogee_scores_20251118.tsv.gz.tbi" "")
+  data+=("b12d66a565a43c32d2791972064040c3" "resources/GRCh38/apogee2_scores_20260414.tsv.gz" "")
+  data+=("5a114663f9717cd86a6b315997197069" "resources/GRCh38/apogee2_scores_20260414.tsv.gz.tbi" "")
   data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2_v6.ubj" "")
   data+=("d3ae8978ce5e593f7dac78b9a52cad05" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz" "")
   data+=("cc5e3a837a770aede91cfb7502e31769" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz.tbi" "")
@@ -263,7 +263,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("b4ad11f1299acb2d023ea8b188931da1" "resources/vep/cache/homo_sapiens_refseq_vep_115_GRCh38.tar.gz" "postprocess_vep")
-  data+=("eca5fcba8422b7a1a5a9e55de9f78569" "resources/vip-report-template-v8.3.2.html" "")
+  data+=("9a6085a1cd7bf5cd06027d32d57a2291" "resources/vip-report-template-v8.3.3.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do

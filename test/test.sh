@@ -93,21 +93,24 @@ run() {
   local test_resources_dir
   local test_nextflow_temp_dir
   local test_nextflow_work_dir
+  local test_nextflow_cache_dir
 
   for case in "${cases[@]}"; do
     case_id="${case#"${TEST_SUITES_DIR}/"}"
     case_id=${case_id%".sh"}
 
     test_output_dir="${tests_output_dir}/${case_id}"
-    test_nextflow_temp_dir="${test_output_dir}/.nxf.temp"
-    test_nextflow_work_dir="${test_output_dir}/.nxf.work"
+    test_nextflow_temp_dir="${test_output_dir}/tmp/nxf.temp"
+    test_nextflow_work_dir="${test_output_dir}/tmp/nxf.work"
+    test_nextflow_cache_dir="${test_output_dir}/tmp/nextflow"
 
     if [[ -d "${test_output_dir}" ]]; then
       # only remove certain output test files so that --resume uses cached results
-      rm -f "${test_output_dir}/.exitcode" "${test_output_dir}/job.err" "${test_output_dir}/job.out" "${test_output_dir}/.nxf.log"
+      rm -f "${test_output_dir}/.exitcode" "${test_output_dir}/log/slurm_job.err" "${test_output_dir}/log/slurm_job.out" "${test_output_dir}/log/nxf.log"
       if [[ "${clean}" == "true" ]]; then
         rm -rf "${test_nextflow_temp_dir}"
         rm -rf "${test_nextflow_work_dir}"
+        rm -rf "${test_nextflow_cache_dir}"
       fi
     else
       mkdir -p "${test_output_dir}"
@@ -117,16 +120,16 @@ run() {
     local time="${SLURM_TIMELIMIT:-"23:59:59"}"
     local sbatch_args=()
     sbatch_args+=("--parsable")
-    sbatch_args+=("--job-name=vip_test")
+    sbatch_args+=("--job-name=vip_test_${case_id}")
     sbatch_args+=("--time=${time}")
     sbatch_args+=("--cpus-per-task=1")
     sbatch_args+=("--mem=1gb")
     sbatch_args+=("--nodes=1")
     sbatch_args+=("--open-mode=append")
-    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},VIP_DIR_DATA=${vip_dir_data},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
+    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},VIP_DIR_DATA=${vip_dir_data},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},NXF_CACHE_DIR=${test_nextflow_cache_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
     sbatch_args+=("--get-user-env=L")
-    sbatch_args+=("--output=${test_output_dir}/job.out")
-    sbatch_args+=("--error=${test_output_dir}/job.err")
+    sbatch_args+=("--output=${test_output_dir}/log/slurm_job.out")
+    sbatch_args+=("--error=${test_output_dir}/log/slurm_job.err")
     sbatch_args+=("--chdir=${vip_dir}")
     sbatch_args+=("${case}")
     
@@ -212,7 +215,7 @@ run() {
         test_result_color="${NC}"
       fi
 
-      log_display="$(realpath --relative-to="${EXECUTION_DIR}" "${tests_output_dir}/${case_id}/.nxf.log")"
+      log_display="$(realpath --relative-to="${EXECUTION_DIR}" "${tests_output_dir}/${case_id}")/log/nxf.log"
       printf "\e[0K%-40s | ${test_result_color}%-6s${NC} | %s=%-9s %s\n" "${case_id}" "${test_result_display}" "${job_id}" "${job_status_display}" "${log_display}"
     done
     

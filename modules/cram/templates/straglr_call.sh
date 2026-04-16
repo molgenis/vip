@@ -17,7 +17,6 @@ call_short_tandem_repeats () {
     ${CMD_STRAGLR} "${args[@]}"
 
     mv straglr.tsv "!{tsvOut}"
-    rm straglr.vcf
 }
 
 index () {
@@ -43,7 +42,13 @@ tsv2vcf() {
   ${CMD_STRAGLR_TSV2VCF} java "${args[@]}"
 }
 
+cleanup() {
+    rm -f straglr.vcf
+}
+
 main() {
+    trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+    
     call_short_tandem_repeats
     tsv2vcf
     index

@@ -1,8 +1,6 @@
 process call {
   label 'deepvariant_call'
 
-  memory { 2.GB * task.cpus }
-
   input:
     tuple val(meta), path(cram), path(cramCrai)
 
@@ -14,7 +12,7 @@ process call {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
-    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
+    chrmName = params.mt[meta.project.assembly].chrm_name
     bed="regions_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
     sampleName = "${meta.sample.individual_id}"
@@ -43,8 +41,6 @@ process call {
 process call_duo {
   label 'deepvariant_call_duo'
 
-  memory { 6.GB * task.cpus }
-
   input:
     tuple val(meta), path(cramChild), path(cramCraiChild),
                      path(cramParent), path(cramCraiParent)
@@ -58,7 +54,7 @@ process call_duo {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
-    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
+    chrmName = params.mt[meta.project.assembly].chrm_name
     bed="regions_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 
@@ -138,7 +134,7 @@ process call_trio {
     reference = refSeqPath.substring(0, refSeqPath.lastIndexOf('.'))
     haploidContigs = params.snv[meta.project.assembly].reference.haploidContigs
     parRegionsBed = params.snv[meta.project.assembly].reference.parRegionsBed
-    chrmName = params.cram.mitochondria[meta.project.assembly].chrm_name
+    chrmName = params.mt[meta.project.assembly].chrm_name
     bed="regions_chunk_${meta.chunk.index}.bed"
     bedContent = meta.chunk.regions.findAll{ region -> "${region.chrom}" != "${chrmName}" }.collect { region -> "${region.chrom}\t${region.chromStart}\t${region.chromEnd}" }.join("\n")
 

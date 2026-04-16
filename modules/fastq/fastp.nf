@@ -1,7 +1,7 @@
 process fastp {
   label 'fastp'
 
-  publishDir "$params.output/intermediates/fastp", mode: 'link', pattern: "*.{json,html}"
+  publishDir "$params.output/fastp", mode: 'link', pattern: "*.{json,html}"
 
   input:
     tuple val(meta), path(fastqs, arity: '1..*')
@@ -41,7 +41,7 @@ process fastp {
 process fastp_paired_end {
   label 'fastp'
 
-  publishDir "$params.output/intermediates/fastp", mode: 'link'
+  publishDir "$params.output/fastp", mode: 'link'
 
   input:
     tuple val(meta), path(fastqR1s, arity: '1..*'), path(fastqR2s, arity: '1..*')

@@ -70,7 +70,7 @@
     "VIPC_S": {
       "label": "VIP sample classification",
       "numberType": "OTHER",
-      "type": "STRING",
+      "type": "CATEGORICAL",
       "separator": ","
     }
   },
@@ -102,12 +102,215 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
-        "apogee_Uscore": {
-          "label": "Apogee unbiased score",
-          "description": "Apogee unbiased score for protein coding mtDNA variants",
+        "BIOTYPE": {
+          "label": "Biotype",
+          "description": "The Ensembl VEP Biotype.",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "FLOAT"
+          "type": "CATEGORICAL",
+          "categories": {
+            "IG_C_gene": {
+              "label": "IG C gene"
+            },
+            "protein_coding_CDS_not_defined": {
+              "label": "protein coding CDS not defined"
+            },
+            "Mt_tRNA": {
+              "label": "Mt tRNA"
+            },
+            "TR_V_pseudogene": {
+              "label": "TR V pseudogene"
+            },
+            "other": {
+              "label": "other"
+            },
+            "vault_RNA": {
+              "label": "vault RNA"
+            },
+            "scRNA": {
+              "label": "scRNA"
+            },
+            "transcribed_pseudogene": {
+              "label": "transcribed pseudogene"
+            },
+            "lncRNA": {
+              "label": "lncRNA"
+            },
+            "IG_pseudogene": {
+              "label": "IG pseudogene"
+            },
+            "transcribed_unprocessed_pseudogene": {
+              "label": "transcribed unprocessed pseudogene"
+            },
+            "IG_V_pseudogene": {
+              "label": "IG V pseudogene"
+            },
+            "transcribed_unitary_pseudogene": {
+              "label": "transcribed unitary pseudogene"
+            },
+            "pseudogene": {
+              "label": "pseudogene"
+            },
+            "RNase_P_RNA": {
+              "label": "RNase P RNA"
+            },
+            "rRNA": {
+              "label": "rRNA"
+            },
+            "TR_V_gene": {
+              "label": "TR V gene"
+            },
+            "rRNA_pseudogene": {
+              "label": "rRNA pseudogene"
+            },
+            "TR_J_gene": {
+              "label": "TR J gene"
+            },
+            "aligned_transcript": {
+              "label": "aligned transcript"
+            },
+            "RNase_MRP_RNA": {
+              "label": "RNase MRP RNA"
+            },
+            "TR_D_gene": {
+              "label": "TR D gene"
+            },
+            "unprocessed_pseudogene": {
+              "label": "unprocessed pseudogene"
+            },
+            "IG_J_pseudogene": {
+              "label": "IG J pseudogene"
+            },
+            "processed_transcript": {
+              "label": "processed transcript"
+            },
+            "telomerase_RNA": {
+              "label": "telomerase RNA"
+            },
+            "protein_coding_LoF": {
+              "label": "protein coding LoF"
+            },
+            "ncRNA": {
+              "label": "ncRNA"
+            },
+            "TR_J_pseudogene": {
+              "label": "TR J pseudogene"
+            },
+            "retained_intron": {
+              "label": "retained intron"
+            },
+            "nonsense_mediated_decay": {
+              "label": "nonsense mediated decay"
+            },
+            "snRNA": {
+              "label": "snRNA"
+            },
+            "transcribed_processed_pseudogene": {
+              "label": "transcribed processed pseudogene"
+            },
+            "TR_C_gene": {
+              "label": "TR C gene"
+            },
+            "processed_pseudogene": {
+              "label": "processed pseudogene"
+            },
+            "translated_processed_pseudogene": {
+              "label": "translated processed pseudogene"
+            },
+            "miRNA": {
+              "label": "miRNA"
+            },
+            "protein_coding": {
+              "label": "protein coding"
+            },
+            "antisense_RNA": {
+              "label": "antisense RNA"
+            },
+            "IG_D_gene": {
+              "label": "IG D gene"
+            },
+            "LRG_gene": {
+              "label": "LRG gene"
+            },
+            "Mt_rRNA": {
+              "label": "Mt rRNA"
+            },
+            "mRNA": {
+              "label": "mRNA"
+            },
+            "ribozyme": {
+              "label": "ribozyme"
+            },
+            "unitary_pseudogene": {
+              "label": "unitary pseudogene"
+            },
+            "IG_J_gene": {
+              "label": "IG J gene"
+            },
+            "IG_V_gene": {
+              "label": "IG V gene"
+            },
+            "artifact": {
+              "label": "artifact"
+            },
+            "cdna_update": {
+              "label": "cdna update"
+            },
+            "ncRNA_pseudogene": {
+              "label": "ncRNA pseudogene"
+            },
+            "IG_C_pseudogene": {
+              "label": "IG C pseudogene"
+            },
+            "TEC": {
+              "label": "TEC"
+            },
+            "non_stop_decay": {
+              "label": "non stop decay"
+            },
+            "sRNA": {
+              "label": "sRNA"
+            },
+            "ccds_gene": {
+              "label": "ccds gene"
+            },
+            "tRNA": {
+              "label": "tRNA"
+            },
+            "snoRNA": {
+              "label": "snoRNA"
+            },
+            "scaRNA": {
+              "label": "scaRNA"
+            },
+            "misc_RNA": {
+              "label": "misc RNA"
+            },
+            "Y_RNA": {
+              "label": "Y RNA"
+            },
+                        "promoter": {
+              "label": "promoter"
+            },
+            "promoter_flanking_region": {
+              "label": "promoter flanking region"
+            },
+            "enhancer": {
+              "label": "enhancer"
+            },
+            "CTCF_binding_site": {
+              "label": "CTCF binding site"
+            },
+            "open_chromatin_region": {
+              "label": "open chromatin region"
+            },
+            "TF_binding_site": {
+              "label": "transcription factor binding site"
+            },
+            "non_transcribed_region": {
+              "label": "non-transcribed region"
+                        }
+          }
         },
         "CAPICE_CL": {
           "label": "CAPICE",
@@ -280,7 +483,173 @@
           "description": "Effect(s) described as Sequence Ontology term(s)",
           "numberType": "OTHER",
           "separator": "&",
-          "type": "STRING"
+          "type": "CATEGORICAL",
+          "categories": {
+            "transcript_ablation": {
+              "label": "transcript ablation",
+              "description": "A feature ablation whereby the deleted region includes a transcript feature"
+            },
+            "splice_acceptor_variant": {
+              "label": "splice acceptor variant",
+              "description": "A splice variant that changes the 2 base region at the 3' end of an intron"
+            },
+            "splice_donor_variant": {
+              "label": "splice donor variant",
+              "description": "A splice variant that changes the 2 base region at the 5' end of an intron"
+            },
+            "stop_gained": {
+              "label": "stop gained",
+              "description": "A sequence variant whereby at least one base of a codon is changed, resulting in a premature stop codon, leading to a shortened transcript"
+            },
+            "frameshift_variant": {
+              "label": "frameshift variant",
+              "description": "A sequence variant which causes a disruption of the translational reading frame, because the number of nucleotides inserted or deleted is not a multiple of three"
+            },
+            "stop_lost": {
+              "label": "stop lost",
+              "description": "A sequence variant where at least one base of the terminator codon (stop) is changed, resulting in an elongated transcript"
+            },
+            "start_lost": {
+              "label": "start lost",
+              "description": "A codon variant that changes at least one base of the canonical start codon"
+            },
+            "transcript_amplification": {
+              "label": "transcript amplification",
+              "description": "A feature amplification of a region containing a transcript"
+            },
+            "feature_elongation": {
+              "label": "feature elongation",
+              "description": "A sequence variant that causes the extension of a genomic feature, with regard to the reference sequence"
+            },
+            "feature_truncation": {
+              "label": "feature truncation",
+              "description": "A sequence variant that causes the reduction of a genomic feature, with regard to the reference sequence"
+            },
+            "inframe_insertion": {
+              "label": "inframe insertion",
+              "description": "An inframe non synonymous variant that inserts bases into in the coding sequence"
+            },
+            "inframe_deletion": {
+              "label": "inframe deletion",
+              "description": "An inframe non synonymous variant that deletes bases from the coding sequence"
+            },
+            "missense_variant": {
+              "label": "missense variant",
+              "description": "A sequence variant, that changes one or more bases, resulting in a different amino acid sequence but where the length is preserved"
+            },
+            "protein_altering_variant": {
+              "label": "protein altering variant",
+              "description": "A sequence_variant which is predicted to change the protein encoded in the coding sequence"
+            },
+            "splice_donor_5th_base_variant": {
+              "label": "splice donor 5th base variant",
+              "description": "A sequence variant that causes a change at the 5th base pair after the start of the intron in the orientation of the transcript"
+            },
+            "splice_region_variant": {
+              "label": "splice region variant",
+              "description": "A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron"
+            },
+            "splice_donor_region_variant": {
+              "label": "splice donor region variant",
+              "description": "A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron)"
+            },
+            "splice_polypyrimidine_tract_variant": {
+              "label": "splice polypyrimidine tract variant",
+              "description": "A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17)"
+            },
+            "incomplete_terminal_codon_variant": {
+              "label": "incomplete terminal codon variant",
+              "description": "A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed"
+            },
+            "start_retained_variant": {
+              "label": "start retained variant",
+              "description": "A sequence variant where at least one base in the start codon is changed, but the start remains"
+            },
+            "stop_retained_variant": {
+              "label": "stop retained variant",
+              "description": "A sequence variant where at least one base in the terminator codon is changed, but the terminator remains"
+            },
+            "synonymous_variant": {
+              "label": "synonymous variant",
+              "description": "A sequence variant where there is no resulting change to the encoded amino acid"
+            },
+            "coding_sequence_variant": {
+              "label": "coding sequence variant",
+              "description": "A sequence variant that changes the coding sequence"
+            },
+            "mature_miRNA_variant": {
+              "label": "mature miRNA variant",
+              "description": "A transcript variant located with the sequence of the mature miRNA"
+            },
+            "5_prime_UTR_variant": {
+              "label": "5 prime UTR variant",
+              "description": "A UTR variant of the 5' UTR"
+            },
+            "3_prime_UTR_variant": {
+              "label": "3 prime UTR variant",
+              "description": "A UTR variant of the 3' UTR"
+            },
+            "non_coding_transcript_exon_variant": {
+              "label": "non coding transcript exon variant",
+              "description": "A sequence variant that changes non-coding exon sequence in a non-coding transcript"
+            },
+            "intron_variant": {
+              "label": "intron variant",
+              "description": "A transcript variant occurring within an intron"
+            },
+            "NMD_transcript_variant": {
+              "label": "NMD transcript variant",
+              "description": "A variant in a transcript that is the target of NMD"
+            },
+            "non_coding_transcript_variant": {
+              "label": "non coding transcript variant",
+              "description": "A transcript variant of a non coding RNA gene"
+            },
+            "coding_transcript_variant": {
+              "label": "coding transcript variant",
+              "description": "A transcript variant of a protein coding gene"
+            },
+            "upstream_gene_variant": {
+              "label": "upstream gene variant",
+              "description": "A sequence variant located 5' of a gene"
+            },
+            "downstream_gene_variant": {
+              "label": "downstream gene variant",
+              "description": "A sequence variant located 3' of a gene"
+            },
+            "TFBS_ablation": {
+              "label": "TFBS ablation",
+              "description": "A feature ablation whereby the deleted region includes a transcription factor binding site"
+            },
+            "TFBS_amplification": {
+              "label": "TFBS amplification",
+              "description": "A feature amplification of a region containing a transcription factor binding site"
+            },
+            "TF_binding_site_variant": {
+              "label": "TF binding site variant",
+              "description": "A sequence variant located within a transcription factor binding site"
+            },
+            "regulatory_region_ablation": {
+              "label": "regulatory region ablation",
+              "description": "A feature ablation whereby the deleted region includes a regulatory region"
+            },
+            "regulatory_region_amplification": {
+              "label": "regulatory region amplification",
+              "description": "A feature amplification of a region containing a regulatory region"
+            },
+            "regulatory_region_variant": {
+              "label": "regulatory region variant",
+              "description": "A sequence variant located within a regulatory region"
+            },
+            "intergenic_variant": {
+              "label": "intergenic variant",
+              "description": "A sequence variant located in the intergenic region, between genes"
+            },
+            "sequence_variant": {
+              "label": "sequence variant",
+              "description": "A sequence_variant is a non exact copy of a sequence_feature or genome exhibiting one or more sequence_alteration"
+            }
+          }
         },
         "Existing_variation": {
           "label": "Ex. var.",
@@ -485,7 +854,7 @@
           "description": "Human Phenotype Ontology (HPO) terms describing phenotypic abnormalities, see https://hpo.jax.org/ and https://doi.org/10.1093/nar/gkad1005",
           "numberType": "OTHER",
           "separator": "&",
-          "type": "STRING"
+          "type": "CATEGORICAL"
         },
         "IMPACT": {
           "label": "Impact",
@@ -689,12 +1058,25 @@
           "numberCount": 1,
           "type": "STRING"
         },
+        "SYMBOL_SOURCE": {
+          "label": "Symbol Source",
+          "description": "The source of the symbol.",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "CATEGORICAL",
+          "categories": {
+            "EntrezGene": {
+              "label": "EntrezGene",
+              "description": "Symbol source Entrez Gene"
+            }
+          }
+        },
         "VIPC": {
           "label": "VIP classification",
           "description": "Variant consequence classification predicted by the Variant Interpretation Pipeline (VIP), see https://vip.molgeniscloud.org/ and https://doi.org/10.1101/2024.04.11.24305656",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "STRING",
+          "type": "CATEGORICAL",
           "required": true
         },
         "VIPP": {
@@ -813,6 +1195,12 @@
       "numberType": "NUMBER",
       "numberCount": 1,
       "type": "STRING"
+    },
+    "VIPC_S": {
+      "label": "VIP sample classification",
+      "numberType": "OTHER",
+      "type": "CATEGORICAL",
+      "separator": ","
     }
   }
 }

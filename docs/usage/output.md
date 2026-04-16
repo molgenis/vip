@@ -4,13 +4,11 @@
 After VIP completes successfully the path specified by `--output` contains content similar to:
 ```bash
 .nextflow
-.nxf.home
-.nxf.log
-.nxf.tmp
-.nxf.work
+coverage
+fastp
 intermediates
-nxf_report.html
-nxf_timeline.html
+log
+tmp
 my_project_id.html
 my_project_id.vcf.gz
 my_project_id.vcf.gz.csi

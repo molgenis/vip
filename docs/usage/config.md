@@ -205,71 +205,80 @@ Cloud.
 
 ## Process
 
-By default, each process gets assigned `4 cpus`, `8GB of memory` and a `max runtime of 4 hours`. Depending on your
-system specifications and your analysis you might need to use updated values. For information on how to update process
-configuration see the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#scope-process).
-The following sections list all processes and their non-default configuration.
+Depending on your system specifications and your analysis you might need to use updated resource values. For information
+on how to update process configuration see
+the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html#scope-process). The following sections list
+all processes and their non-default configuration.
 
 ### FASTQ
 
-| process label             | configuration                   |
-|---------------------------|---------------------------------|
-| concat_fastq              | *default*                       |
-| concat_fastq_paired_end   | *default*                       |
-| minimap2_align            | cpus=8 memory='16GB' time='23h' |
-| minimap2_align_paired_end | cpus=8 memory='16GB' time='23h' |
+| Process label             | CPUs (WES / WGS) | Memory (WES / WGS) | Time (WES / WGS) |
+|---------------------------|------------------|--------------------|------------------|
+| fastp                     | 4                | 20 / 2 GB          | 2 h / 30 m       |
+| filter_reads              | 1                | 4 GB               | 4 h              |
+| minimap2_align            | 8 / 16           | 16 / 32 GB         | 1 h / 24 h       |
+| minimap2_align_paired_end | 8 / 16           | 16 / 32 GB         | 1 h / 24 h       |
 
 ### CRAM
 
-| process label           | configuration                                 |
-|-------------------------|-----------------------------------------------|
-| concat_vcf              | *default*                                     |
-| coverage                | cpus=1 memory='16GB' time=*default*           |
-| cram_validate           | *default*                                     |
-| cutesv_call             | cpus=4 memory='8GB' time='5h'                 |
-| deepvariant_call        | cpus=*default* memory='2GB * cpus' time='5h'  |
-| deepvariant_call_duo    | cpus=*default* memory='6GB * cpus' time='23h' |
-| deepvariant_call_trio   | cpus=*default* memory='6GB * cpus' time='23h' |
-| deepvariant_concat_gvcf | cpus=*default* memory='2GB' time='30m'        |
-| deepvariant_concat_vcf  | cpus=*default* memory='2GB' time='30m'        |
-| deepvariant_joint_call  | cpus=*default* memory='2GB' time='30m'        |
-| expansionhunter_call    | cpus=4 memory='16GB' time='5h'                |
-| manta_joint_call        | cpus=4 memory='8GB' time='5h'                 |
-| publish_vcf             | memory='100MB' time='30m'                     |
-| spectre_call            | cpus=*default* memory='4GB' time=*default*    |
-| straglr_call            | *default*                                     |
-| vcf_merge_str           | *default*                                     |
-| vcf_merge_sv            | *default*                                     |
-| whatshap                | cpus=*default* memory=*default* time='23h'    |
+| Process label            | CPUs (WES / WGS) | Memory (WES / WGS) | Time (WES / WGS) |
+|--------------------------|------------------|--------------------|------------------|
+| concat_snv_vcf           | 2                | 3 GB               | 15 m             |
+| concat_vcf               | 2                | 3 GB               | 15 m             |
+| coverage                 | 1                | 4 GB               | 15 m / 30 m      |
+| cutesv_call              | 4                | 8 GB               | 5 h              |
+| deepvariant_call         | 4                | 16 GB              | 6 h / 12 h       |
+| deepvariant_call_duo     | 4                | 32 GB              | 12 h / 24 h      |
+| deepvariant_call_trio    | 4                | 32 GB              | 12 h / 24 h      |
+| deepvariant_concat_gvcfs | 4                | 2 GB               | 30 m             |
+| deepvariant_concat_vcfs  | 2                | 64 MB              | 15 m             |
+| deepvariant_joint_call   | 2                | 2 GB               | 15 m             |
+| gatk_mutect2_mito        | 4                | 2 GB               | 30 m             |
+| manta_joint_call         | 4                | 2 / 8 GB           | 2 / 5 h          |
+| publish_gvcf             | 2                | 3 GB               | 15 m             |
+| publish_vcf              | 2                | 32 / 64 MB         | 15 m             |
+| publish_mtdna_vcf        | 2                | 32 / 64 MB         | 15 m             |
+| spectre_call             | 4                | 4 GB               | 1 h              |
+| straglr_call             | 1                | 1 GB               | 15 m             |
+| vcf_merge_cnv            | 2                | 64 MB              | 15 m             |
+| vcf_merge_mtdnasnv       | 2                | 64 MB              | 15 m             |
+| vcf_merge_str            | 2                | 64 MB              | 15 m             |
+| vcf_merge_sv             | 2                | 64 MB              | 15 m             |
+
+| whatshap | 2 | 2 GB | 1 h |
 
 ### gVCF
 
-| process label | configuration             |
-|---------------|---------------------------|
-| gvcf_liftover | *default*                 |
-| gvcf_validate | memory='100MB' time='30m' |
-| gvcf_merge    | memory='2GB' time='30m'   |
+| Process label      | CPUs (WES / WGS) | Memory (WES / WGS) | Time (WES / WGS) |
+|--------------------|------------------|--------------------|------------------|
+| gvcf_liftover      | 2                | 4 GB               | 15 m             |
+| gvcf_merge         | 4                | 2 GB               | 30 m             |
+| gvcf_merge_publish | 2                | 64 MB              | 15 m             |
+| gvcf_validate      | 2 / 3            | 100 MB             | 30 m             |
 
 ### VCF
 
-| process label                | configuration                 |
-|------------------------------|-------------------------------|
-| vcf_annotate                 | cpus=4 memory='8GB' time='4h' |
-| vcf_annotate_publish         | *default*                     |
-| vcf_classify                 | memory = '2GB'                |
-| vcf_classify_publish         | *default*                     |
-| vcf_classify_samples         | memory = '2GB'                |
-| vcf_classify_samples_publish | *default*                     |
-| vcf_concat                   | *default*                     |
-| vcf_filter                   | *default*                     |
-| vcf_filter_samples           | *default*                     |
-| vcf_inheritance              | memory = '2GB'                |
-| vcf_liftover                 | *default*                     |
-| vcf_normalize                | *default*                     |
-| vcf_report                   | memory = '4GB'                |
-| vcf_slice                    | *default*                     |
-| vcf_split                    | memory='100MB' time='30m'     |
-| vcf_validate                 | memory='100MB' time='30m'     |
+| Process label                | CPUs (WES / WGS) | Memory (WES / WGS) | Time (WES / WGS) |
+|------------------------------|------------------|--------------------|------------------|
+| bed_filter                   | 2                | 32 / 64 MB         | 15 m             |
+| cram_validate                | 2 / 3            | 512 MB / 1 GB      | 1 h / 30 m       |
+| gado                         | 2                | 1 GB               | 15 m             |
+| vcf_annotate                 | 4                | 4 / 8 GB           | 1 h / 4 h        |
+| vcf_annotate_publish         | 2                | 64 MB              | 15 m             |
+| vcf_classify_publish         | 2                | 64 MB              | 15 m             |
+| vcf_classify                 | 2                | 1 / 2 GB           | 15 m             |
+| vcf_classify_samples         | 2                | 256 / 512 MB       | 15 m             |
+| vcf_classify_samples_publish | 2                | 64 MB              | 15 m             |
+| vcf_concat                   | 2                | 32 / 64 MB         | 15 m             |
+| vcf_filter                   | 2                | 128 / 256 MB       | 15 m             |
+| vcf_filter_samples           | 2                | 32 / 64 MB         | 15 m             |
+| vcf_inheritance              | 2                | 1 / 2 GB           | 15 m             |
+| vcf_liftover                 | 2                | 4 GB               | 15 m             |
+| vcf_normalize                | 2 / 4            | 256 / 512 MB       | 15 m             |
+| vcf_report                   | 2                | 4 / 8 GB           | 15 m / 30 m      |
+| vcf_slice                    | 4                | 2 GB               | 15 m             |
+| vcf_split                    | 2                | 64 MB              | 15 m             |
+| vcf_validate                 | 2 / 3            | 100 MB             | 30 m             |
 
 ## Environment
 

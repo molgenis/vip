@@ -4,8 +4,8 @@ set -euo pipefail
 classify () {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
-  args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx!{task.memory.toMega() - 512}m")
+  args+=("-XX:ParallelGCThreads=!{task.cpus - 1}")
+  args+=("-Xmx!{(task.memory.toMega() * 0.75).intValue()}m")
   args+=("-jar" "/opt/vcf-decision-tree/lib/vcf-decision-tree.jar")
   args+=("--input" "!{vcf}_replaced.vcf.gz")
   args+=("--metadata" "!{metadata}")
@@ -51,19 +51,20 @@ restore_cnv_tr(){
 }
 
 cleanup(){
-  rm "!{vcf}_replaced.vcf.gz"
-  rm "!{vcfOut}_replaced.vcf.gz"
-  rm header.tmp
+  rm -f "!{vcf}_replaced.vcf.gz"
+  rm -f "!{vcfOut}_replaced.vcf.gz"
+  rm -f header.tmp
 }
 
 main () {
+  trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
   store_alt
   replace_cnv_tr
   classify
   restore_cnv_tr
   insert_alt
   index
-  cleanup
 }
 
 main "$@"

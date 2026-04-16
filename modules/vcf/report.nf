@@ -5,7 +5,8 @@ import groovy.json.JsonOutput
 process report {
   label 'vcf_report'
   
-  publishDir "$params.output", mode: 'link'
+  publishDir "$params.output", pattern: "*.{vcf.gz,vcf.gz.csi,vcf.gz.stats,html}", mode: 'link'
+  publishDir "$params.output/intermediates", pattern: "*.db", mode: 'link'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex), path(crams)

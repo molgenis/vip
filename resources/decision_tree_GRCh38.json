@@ -303,7 +303,7 @@
       "description": "APOGEE score",
       "type": "BOOL",
       "query": {
-          "field": "INFO/CSQ/apogee_Uscore",
+          "field": "INFO/CSQ/apogee_Score",
           "operator": ">=",
           "value": 0.5
       },

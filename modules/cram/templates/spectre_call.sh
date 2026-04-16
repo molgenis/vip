@@ -55,7 +55,6 @@ fixref () {
     (IFS=$'\t'; echo "${fields[*]}") >> "fixed_ref_output.vcf"
   done
   ${CMD_BCFTOOLS} view --output-type z --output "!{vcfOut}" --no-version --threads "!{task.cpus}" fixed_ref_output.vcf
-  rm "fixed_ref_output.vcf"
 }
 
 index () {
@@ -63,7 +62,13 @@ index () {
     ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
+cleanup() {
+  rm -f "fixed_ref_output.vcf"
+}
+
 main() {
+    trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+
     mosdepth
     call_copy_number_variation
     fixref

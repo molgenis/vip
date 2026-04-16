@@ -4,8 +4,8 @@ set -euo pipefail
 liftover() {
   local args=()
   args+=("-Djava.io.tmpdir=\"${TMPDIR}\"")
-  args+=("-XX:ParallelGCThreads=2")
-  args+=("-Xmx!{task.memory.toMega() - 512}m")
+  args+=("-XX:ParallelGCThreads=!{task.cpus - 1}")
+  args+=("-Xmx!{(task.memory.toMega() * 0.75).intValue()}m")
   args+=("-jar" "/opt/picard/lib/picard.jar")
   args+=("LiftoverVcf")
   args+=("--CHAIN" "!{chain}")
@@ -35,14 +35,15 @@ postprocess() {
 }
 
 cleanup(){
-  rm picard_accepted.vcf.gz
-  rm picard_rejected.vcf.gz
+  rm -f picard_accepted.vcf.gz
+  rm -f picard_rejected.vcf.gz
 }
 
 main() {
+  trap 'rc=$?; cleanup; exit $rc' EXIT INT TERM
+  
   liftover
   postprocess
-  cleanup
 }
 
 main "$@"
