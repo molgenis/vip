@@ -144,10 +144,12 @@ cn6-->cn7
 end
 subgraph "Subworkflow: mitochondrial snv"
 cm0[Mutect2]
-cm1[Merge VCF]
-cm1t[(<b>per project:</b><br>project_mtdnasnv.vcf.gz)]
+cm1[FilterMutectCalls]
+cm2[Merge VCF]
+cm2t[(<b>per project:</b><br>project_mtdnasnv.vcf.gz)]
 cm0-->cm1
-cm1-->cm1t
+cm1-->cm2
+cm2-->cm2t
 end
 cs0{Mitochondrial?}
 cs1[Merge SNV VCF]
@@ -155,7 +157,7 @@ cs2[(<b>per project:</b><br>project_complete_snv.vcf.gz)]
 cs0-->|"false"|cn0
 cs0-->|"true"|cm0
 cn7-->cs1
-cm1-->cs1
+cm2-->cs1
 cs1-->cs2
 end
 subgraph "Subworkflow: str"
