@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -203,9 +203,99 @@ your output file depending on the sample sheet content and configuration.</p>
 <tbody>
 <tr>
 <td>FILTER</td>
+<td>base_qual</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>alt median base quality</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>clustered_events</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Clustered events observed in the tumor</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>contimation</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>contamination</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>duplicate</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>evidence for alt allele is overrepresented by apparent duplicates</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>FAIL</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Fail the site if all alleles fail but for different reasons.</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>fragment</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>abs(ref - alt) median fragment length</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>germline</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Evidence indicates this site is germline, not somatic</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>haplotype</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Variant near filtered variant on same haplotype.</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>low_allele_frac</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Allele fraction is below specified threshold</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>map_qual</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>ref - alt median mapping quality</td>
+</tr>
+<tr>
+<td>FILTER</td>
 <td>MONOALLELIC</td>
 <td><a href="https://github.com/dnanexus-rnd/GLnexus">GLnexus</a></td>
 <td>Site represents one ALT allele in a region with multiple variants that could not be unified into non-overlapping multi-allelic sites</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>multiallelic</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Site filtered because too many alt alleles pass tumor LOD</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>n_ratio</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Ratio of N to alt exceeds specified ratio</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>normal_artifact</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>artifact_in_normal</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>orientation</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>orientation bias detected by the orientation bias mixture model</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>panel_of_normals</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Blacklisted site in panel of normals</td>
 </tr>
 <tr>
 <td>FILTER</td>
@@ -215,15 +305,51 @@ your output file depending on the sample sheet content and configuration.</p>
 </tr>
 <tr>
 <td>FILTER</td>
+<td>position</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>median distance of alt variants from end of reads</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>possible_numt</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Allele depth is below expected coverage of NuMT in autosome</td>
+</tr>
+<tr>
+<td>FILTER</td>
 <td>q5</td>
 <td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
 <td>Quality below 5</td>
 </tr>
 <tr>
 <td>FILTER</td>
+<td>slippage</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Site filtered due to contraction of short tandem repeat region</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>strand_bias</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Evidence for alt allele comes from one read direction only</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>strict_strand</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Evidence for alt allele is not represented in both directions</td>
+</tr>
+<tr>
+<td>FILTER</td>
 <td>UNRESOLVED</td>
 <td><a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
 <td>An insertion that is longer than the read and thus we cannot predict the full size</td>
+</tr>
+<tr>
+<td>FILTER</td>
+<td>weak_evidence</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Mutation does not meet likelihood threshold</td>
 </tr>
 </tbody>
 </table>
@@ -238,6 +364,18 @@ your output file depending on the sample sheet content and configuration.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>FORMAT/AD</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Allelic depths for the ref and alt alleles in the order listed</td>
+</tr>
+<tr>
+<td>FORMAT/AF</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Allele fractions of alternate alleles in the tumor</td>
+</tr>
 <tr>
 <td>FORMAT/CD</td>
 <td>float list</td>
@@ -263,15 +401,33 @@ your output file depending on the sample sheet content and configuration.</p>
 <td># High-quality variant reads</td>
 </tr>
 <tr>
+<td>FORMAT/F1R2</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Count of reads in F1R2 pair orientation supporting each allele</td>
+</tr>
+<tr>
+<td>FORMAT/F2R1</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Count of reads in F2R1 pair orientation supporting each allele</td>
+</tr>
+<tr>
+<td>FORMAT/FAD</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Count of fragments supporting each allele.</td>
+</tr>
+<tr>
 <td>FORMAT/GQ</td>
 <td>integer</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a></td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/broadinstitute/gatk">GATK</a></td>
 <td>Genotype Quality</td>
 </tr>
 <tr>
 <td>FORMAT/GT</td>
 <td>string</td>
-<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
+<td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a>, <a href="https://github.com/broadinstitute/gatk">GATK</a></td>
 <td>Genotype</td>
 </tr>
 <tr>
@@ -291,6 +447,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>integer</td>
 <td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Locus coverage</td>
+</tr>
+<tr>
+<td>FORMAT/PGT</td>
+<td>string</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another; will always be heterozygous and is not intended to describe called alleles</td>
 </tr>
 <tr>
 <td>FORMAT/PL</td>
@@ -345,6 +507,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>integer</td>
 <td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Number of spanning reads per allele.</td>
+</tr>
+<tr>
+<td>FORMAT/SB</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.</td>
 </tr>
 <tr>
 <td>FORMAT/VI</td>
@@ -432,6 +600,24 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Allele Quality score reflecting evidence for each alternate allele (Phred scale)</td>
 </tr>
 <tr>
+<td>INFO/AS_FilterStatus</td>
+<td>string</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Filter status for each allele, as assessed by ApplyVQSR. Note that the VCF filter field will reflect the most lenient/sensitive status across all alleles.</td>
+</tr>
+<tr>
+<td>INFO/AS_SB_TABLE</td>
+<td>string</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Allele-specific forward/reverse read counts for strand bias tests. Includes the reference and alleles separated by |.</td>
+</tr>
+<tr>
+<td>INFO/AS_UNIQ_ALT_READ_COUNT</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Number of reads with unique start and mate end positions for each alt at a variant site</td>
+</tr>
+<tr>
 <td>INFO/CHR2</td>
 <td>string</td>
 <td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
@@ -456,6 +642,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Estimated copy number status</td>
 </tr>
 <tr>
+<td>INFO/CONTQ</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled qualities that alt allele are not due to contamination</td>
+</tr>
+<tr>
 <td>INFO/Disease</td>
 <td>string</td>
 <td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
@@ -468,10 +660,34 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Display repeat unit familiar to clinician</td>
 </tr>
 <tr>
+<td>INFO/DP</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Approximate read depth; some reads may have been filtered</td>
+</tr>
+<tr>
+<td>INFO/ECNT</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Number of potential somatic events in the assembly region</td>
+</tr>
+<tr>
+<td>INFO/ECNTH</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Number of somatic events in best supporting haplotype for each alt allele</td>
+</tr>
+<tr>
 <td>INFO/END</td>
 <td>integer</td>
 <td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a>, <a href="https://github.com/fritzsedlazeck/Spectre">Spectre</a>, <a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>End position of the structural variant</td>
+</tr>
+<tr>
+<td>INFO/GERMQ</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled quality that alt alleles are not germline variants</td>
 </tr>
 <tr>
 <td>INFO/HGNCId</td>
@@ -492,10 +708,70 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Main mode of inheritance for disorder</td>
 </tr>
 <tr>
+<td>INFO/MBQ</td>
+<td>integere</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>median base quality by allele</td>
+</tr>
+<tr>
+<td>INFO/MFRL</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>median fragment length by allele</td>
+</tr>
+<tr>
+<td>INFO/MMQ</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>median mapping quality by allele</td>
+</tr>
+<tr>
+<td>INFO/MPOS</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>median distance from end of read</td>
+</tr>
+<tr>
+<td>INFO/NALOD</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Log 10 odds of artifact in normal with same allele fraction as tumor</td>
+</tr>
+<tr>
+<td>INFO/NCount</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Count of N bases in the pileup</td>
+</tr>
+<tr>
+<td>INFO/NLOD</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Normal log 10 likelihood ratio of diploid het or hom alt genotypes</td>
+</tr>
+<tr>
+<td>INFO/OCM</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Number of alt reads whose original alignment doesn't match the current contig.</td>
+</tr>
+<tr>
 <td>INFO/OLD_REC</td>
 <td>string</td>
 <td></td>
 <td>Original variant. Format: CHR|POS|REF|ALT|USED_ALT_IDX</td>
+</tr>
+<tr>
+<td>INFO/PON</td>
+<td>flag</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>site found in panel of normals</td>
+</tr>
+<tr>
+<td>INFO/POPAF</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>negative log 10 population allele frequencies of alt alleles</td>
 </tr>
 <tr>
 <td>INFO/PRECISE</td>
@@ -522,10 +798,34 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>Locus identifier.</td>
 </tr>
 <tr>
+<td>INFO/ROQ</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled qualities that alt allele are not due to read orientation artifact</td>
+</tr>
+<tr>
+<td>INFO/RPA</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Number of times tandem repeat unit is repeated, for each allele (including reference)</td>
+</tr>
+<tr>
+<td>INFO/RU</td>
+<td>string</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Tandem repeat unit (bases)</td>
+</tr>
+<tr>
 <td>INFO/RU_CAT</td>
 <td>string</td>
 <td><a href="https://github.com/molgenis/straglr-tsv2vcf">straglr-tsv2vcf</a></td>
 <td>Catalog repeat motif</td>
+</tr>
+<tr>
+<td>INFO/SEQQ</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled quality that alt alleles are not sequencing errors</td>
 </tr>
 <tr>
 <td>INFO/Source</td>
@@ -544,6 +844,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>string</td>
 <td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
 <td>Source id for variant definition</td>
+</tr>
+<tr>
+<td>INFO/STR</td>
+<td>flag</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Variant is a short tandem repeat</td>
 </tr>
 <tr>
 <td>INFO/STR_NORMAL_MAX</td>
@@ -568,6 +874,18 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>string list</td>
 <td><a href="https://github.com/tjiangHIT/cuteSV">cuteSV</a></td>
 <td>Strand orientation of the adjacency in BEDPE format (DEL:+-, DUP:-+, INV:++/--)</td>
+</tr>
+<tr>
+<td>INFO/STRANDQ</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled quality of strand bias artifact</td>
+</tr>
+<tr>
+<td>INFO/STRQ</td>
+<td>integer</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Phred-scaled quality that alt alleles in STRs are not polymerase slippage errors</td>
 </tr>
 <tr>
 <td>INFO/SVLEN</td>
@@ -598,6 +916,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>float</td>
 <td><a href="https://github.com/Clinical-Genomics/stranger/">Stranger</a></td>
 <td>Standard deviation of number of repeat unit copies in population</td>
+</tr>
+<tr>
+<td>INFO/TLOD</td>
+<td>float</td>
+<td><a href="https://github.com/broadinstitute/gatk">GATK</a></td>
+<td>Log 10 likelihood ratio score of variant existing versus not existing</td>
 </tr>
 <tr>
 <td>INFO/VIPC_S</td>

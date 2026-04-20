@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -280,10 +280,12 @@ cn6--&gt;cn7
 end
 subgraph "Subworkflow: mitochondrial snv"
 cm0[Mutect2]
-cm1[Merge VCF]
-cm1t[(<b>per project:</b><br/>project_mtdnasnv.vcf.gz)]
+cm1[FilterMutectCalls]
+cm2[Merge VCF]
+cm2t[(<b>per project:</b><br/>project_mtdnasnv.vcf.gz)]
 cm0--&gt;cm1
-cm1--&gt;cm1t
+cm1--&gt;cm2
+cm2--&gt;cm2t
 end
 cs0{Mitochondrial?}
 cs1[Merge SNV VCF]
@@ -291,7 +293,7 @@ cs2[(<b>per project:</b><br/>project_complete_snv.vcf.gz)]
 cs0--&gt;|"false"|cn0
 cs0--&gt;|"true"|cm0
 cn7--&gt;cs1
-cm1--&gt;cs1
+cm2--&gt;cs1
 cs1--&gt;cs2
 end
 subgraph "Subworkflow: str"
