@@ -83,8 +83,8 @@ run() {
   
   local -r vip_dir="$(realpath "${SCRIPT_DIR}/..")"
   local -r vip_dir_data="${VIP_DIR_DATA:-"${vip_dir}/../data"}"
-  local -r tests_output_dir="${SCRIPT_DIR}/output"
-  local -r nextflow_home_dir="${tests_output_dir}/.nextflow"
+  local -r tests_output_dir="${VIP_DIR_TEST_OUTPUT:-"${SCRIPT_DIR}/output"}"
+  local -r nextflow_home_dir="${NXF_HOME:-"${tests_output_dir}/.nextflow"}"
 
   # submit test jobs
   local case_id
@@ -100,9 +100,9 @@ run() {
     case_id=${case_id%".sh"}
 
     test_output_dir="${tests_output_dir}/${case_id}"
-    test_nextflow_temp_dir="${test_output_dir}/tmp/nxf.temp"
-    test_nextflow_work_dir="${test_output_dir}/tmp/nxf.work"
-    test_nextflow_cache_dir="${test_output_dir}/tmp/nextflow"
+    test_nextflow_temp_dir="${NXF_TEMP:-"${test_output_dir}/tmp/nxf.temp"}"
+    test_nextflow_work_dir="${NXF_WORK:-"${test_output_dir}/tmp/nxf.work"}"
+    test_nextflow_cache_dir="${NXF_CACHE_DIR:-"${test_output_dir}/tmp/nextflow"}"
 
     if [[ -d "${test_output_dir}" ]]; then
       # only remove certain output test files so that --resume uses cached results
