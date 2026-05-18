@@ -31,5 +31,5 @@ resources. Among them we would like to thank the people behind the following pro
 - [Whatshap](https://github.com/whatshap/whatshap/)
 - [MITOMAP](https://doi.org/10.1093/nar/24.1.177)
 - [APOGEE](https://doi.org/10.1038/s41467-023-40797-7)
-- [HmtVar](https://doi.org/10.1093/nar/gky1024)
 - [GATK](https://gatk.broadinstitute.org/)
+- [HmtVar](https://doi.org/10.1093/nar/gky1024)
