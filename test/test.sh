@@ -101,8 +101,10 @@ run() {
 
     test_output_dir="${tests_output_dir}/${case_id}"
     test_nextflow_temp_dir="${NXF_TEMP:-"${test_output_dir}/tmp/nxf.temp"}"
-    test_nextflow_work_dir="${NXF_WORK:-"${test_output_dir}/tmp/nxf.work"}"
-    test_nextflow_cache_dir="${NXF_CACHE_DIR:-"${test_output_dir}/tmp/nextflow"}"
+    test_nextflow_work_dir="${NXF_WORK:+${NXF_WORK}/${case_id}}"
+    test_nextflow_work_dir="${test_nextflow_work_dir:-"${test_output_dir}/tmp/nxf.work"}"
+    test_nextflow_cache_dir="${NXF_CACHE_DIR:+${NXF_CACHE_DIR}/${case_id}}"
+    test_nextflow_cache_dir="${test_nextflow_cache_dir:-"${test_output_dir}/tmp/nextflow"}"
 
     if [[ -d "${test_output_dir}" ]]; then
       # only remove certain output test files so that --resume uses cached results
