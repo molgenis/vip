@@ -267,7 +267,12 @@ run() {
     job_id="${jobs["${case}"]}"
 
     job_status="${jobs_status["${job_id}"]}"
-    if [[ "${job_status}" != "COMPLETED" ]]; then
+    if [[ "${job_status}" == "COMPLETED" ]]; then
+      test_status="${tests_status["${job_id}"]}"
+      if [[ "${test_status}" -ne "0" ]]; then
+        failed_cases+=("${case_id}=FAILED")
+      fi
+    else
       failed_cases+=("${case_id}=${job_status}")
     fi
   done
