@@ -86,8 +86,10 @@ run() {
     exit 1
   fi
 
-  echo "running tests ..."
-  
+  if [[ "${INTERACTIVE}" == "true" ]]; then
+    echo "running tests ..."
+  fi
+
   local -r vip_dir="$(realpath "${SCRIPT_DIR}/..")"
   local -r vip_dir_data="${VIP_DIR_DATA:-"${vip_dir}/../data"}"
   local -r tests_output_dir="${VIP_DIR_TEST_OUTPUT:-"${SCRIPT_DIR}/output"}"
@@ -255,7 +257,9 @@ run() {
     fi
   done
 
-  echo "done"
+  if [[ "${INTERACTIVE}" == "true" ]]; then
+    echo "done"
+  fi
 
   # print failed cases and determine exit code
   local failed_cases=()
