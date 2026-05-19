@@ -1,5 +1,7 @@
 # Acknowledgements
-Standing on the shoulders of giants. This project could not have possible without the existence of many other tools and resources. Among them we would like to thank the people behind the following projects:
+
+Standing on the shoulders of giants. This project could not have possible without the existence of many other tools and
+resources. Among them we would like to thank the people behind the following projects:
 
 - [CAPICE](https://github.com/molgenis/capice)
 - [Ensembl Variant Effect Predictor (VEP)](https://grch38.ensembl.org/info/docs/tools/vep/index.html)
@@ -29,4 +31,5 @@ Standing on the shoulders of giants. This project could not have possible withou
 - [Whatshap](https://github.com/whatshap/whatshap/)
 - [MITOMAP](https://doi.org/10.1093/nar/24.1.177)
 - [APOGEE](https://doi.org/10.1038/s41467-023-40797-7)
+- [GATK](https://gatk.broadinstitute.org/)
 - [HmtVar](https://doi.org/10.1093/nar/gky1024)

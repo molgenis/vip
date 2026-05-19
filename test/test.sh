@@ -9,10 +9,17 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 TEST_SUITES_DIR="${SCRIPT_DIR}/suites"
 EXECUTION_DIR="${PWD}"
 
-RED="\033[0;31m"
-GREEN="\033[0;32m"
-YELLOW="\033[0;33m"
-NC="\033[0m"
+if [[ -t 1 ]]; then
+    INTERACTIVE="true"
+
+    RED="\033[0;31m"
+    GREEN="\033[0;32m"
+    YELLOW="\033[0;33m"
+    NC="\033[0m"
+else
+    INTERACTIVE="false"
+fi
+
 
 usage() {
   echo -e "usage: ${SCRIPT_NAME} [-t <arg>] [-c]
@@ -79,12 +86,14 @@ run() {
     exit 1
   fi
 
-  echo "running tests ..."
-  
+  if [[ "${INTERACTIVE}" == "true" ]]; then
+    echo "running tests ..."
+  fi
+
   local -r vip_dir="$(realpath "${SCRIPT_DIR}/..")"
   local -r vip_dir_data="${VIP_DIR_DATA:-"${vip_dir}/../data"}"
-  local -r tests_output_dir="${SCRIPT_DIR}/output"
-  local -r nextflow_home_dir="${tests_output_dir}/.nextflow"
+  local -r tests_output_dir="${VIP_DIR_TEST_OUTPUT:-"${SCRIPT_DIR}/output"}"
+  local -r nextflow_home_dir="${NXF_HOME:-"${tests_output_dir}/.nextflow"}"
 
   # submit test jobs
   local case_id
@@ -100,9 +109,11 @@ run() {
     case_id=${case_id%".sh"}
 
     test_output_dir="${tests_output_dir}/${case_id}"
-    test_nextflow_temp_dir="${test_output_dir}/tmp/nxf.temp"
-    test_nextflow_work_dir="${test_output_dir}/tmp/nxf.work"
-    test_nextflow_cache_dir="${test_output_dir}/tmp/nextflow"
+    test_nextflow_temp_dir="${NXF_TEMP:-"${test_output_dir}/tmp/nxf.temp"}"
+    test_nextflow_work_dir="${NXF_WORK:+${NXF_WORK}/${case_id}}"
+    test_nextflow_work_dir="${test_nextflow_work_dir:-"${test_output_dir}/tmp/nxf.work"}"
+    test_nextflow_cache_dir="${NXF_CACHE_DIR:+${NXF_CACHE_DIR}/${case_id}}"
+    test_nextflow_cache_dir="${test_nextflow_cache_dir:-"${test_output_dir}/tmp/nextflow"}"
 
     if [[ -d "${test_output_dir}" ]]; then
       # only remove certain output test files so that --resume uses cached results
@@ -178,47 +189,49 @@ run() {
     done
 
     # update progress on stdout
-    local job_status_display
-    local case_id
-    local test_result_display
-    local test_result_color
-    local test_status
-    local log_display
-    
-    for case in "${cases[@]}"; do
-      case_id="${case#"${TEST_SUITES_DIR}/"}"
-      case_id=${case_id%".sh"}
+    if [[ "${INTERACTIVE}" == "true" ]]; then
+      local job_status_display
+      local case_id
+      local test_result_display
+      local test_result_color
+      local test_status
+      local log_display
 
-      job_id="${jobs["${case}"]}"
+      for case in "${cases[@]}"; do
+        case_id="${case#"${TEST_SUITES_DIR}/"}"
+        case_id=${case_id%".sh"}
 
-      job_status="${jobs_status["${job_id}"]}"
-      if [[ "${job_status}" != "" ]]; then
-        job_status_display="${job_status,,}"
-      else
-        job_status_display="submitted"
-      fi
+        job_id="${jobs["${case}"]}"
 
-      if [[ "${job_status}" == "COMPLETED" ]]; then
-        test_status="${tests_status["${job_id}"]}"
-        if [[ "${test_status}" -eq "0" ]]; then
-          test_result_display="PASSED"
-          test_result_color="${GREEN}"
+        job_status="${jobs_status["${job_id}"]}"
+        if [[ "${job_status}" != "" ]]; then
+          job_status_display="${job_status,,}"
         else
-          test_result_display="FAILED"
-          test_result_color="${RED}"
+          job_status_display="submitted"
         fi
-      elif [[ "${job_status}" == "FAILED" || "${job_status}" == "CANCELLED" || "${job_status}" == "PREEMPTED" || "${job_status}" == "TIMEOUT" ]]; then
-        test_result_display="KAPUTT"
-        test_result_color="${YELLOW}"
-      else
-        test_result_display=""
-        test_result_color="${NC}"
-      fi
 
-      log_display="$(realpath --relative-to="${EXECUTION_DIR}" "${tests_output_dir}/${case_id}")/log/nxf.log"
-      printf "\e[0K%-40s | ${test_result_color}%-6s${NC} | %s=%-9s %s\n" "${case_id}" "${test_result_display}" "${job_id}" "${job_status_display}" "${log_display}"
-    done
-    
+        if [[ "${job_status}" == "COMPLETED" ]]; then
+          test_status="${tests_status["${job_id}"]}"
+          if [[ "${test_status}" -eq "0" ]]; then
+            test_result_display="PASSED"
+            test_result_color="${GREEN}"
+          else
+            test_result_display="FAILED"
+            test_result_color="${RED}"
+          fi
+        elif [[ "${job_status}" == "FAILED" || "${job_status}" == "CANCELLED" || "${job_status}" == "PREEMPTED" || "${job_status}" == "TIMEOUT" ]]; then
+          test_result_display="KAPUTT"
+          test_result_color="${YELLOW}"
+        else
+          test_result_display=""
+          test_result_color="${NC}"
+        fi
+
+        log_display="$(realpath --relative-to="${EXECUTION_DIR}" "${tests_output_dir}/${case_id}")/log/nxf.log"
+        printf "\e[0K%-40s | ${test_result_color}%-6s${NC} | %s=%-9s %s\n" "${case_id}" "${test_result_display}" "${job_id}" "${job_status_display}" "${log_display}"
+      done
+    fi
+
     # determine if jobs are still running
     is_running=false
     for job_id in "${!jobs_status[@]}"; do
@@ -237,26 +250,47 @@ run() {
     # take a break before checking again
     sleep 1
 
-    for job_id in "${!jobs[@]}"; do
-      echo -ne '\033M' # scroll up one line using ANSI/VT100 cursor control sequences 
-    done
+    if [[ "${INTERACTIVE}" == "true" ]]; then
+      for job_id in "${!jobs[@]}"; do
+        echo -ne '\033M' # scroll up one line using ANSI/VT100 cursor control sequences
+      done
+    fi
   done
 
-  echo "done"
+  if [[ "${INTERACTIVE}" == "true" ]]; then
+    echo "done"
+  fi
 
-  # determine exit code
-  for job_id in "${!jobs_status[@]}"; do
+  # print failed cases and determine exit code
+  local failed_cases=()
+
+  for case in "${cases[@]}"; do
+    case_id="${case#"${TEST_SUITES_DIR}/"}"
+    case_id=${case_id%".sh"}
+
+    job_id="${jobs["${case}"]}"
+
     job_status="${jobs_status["${job_id}"]}"
-    if [[ "${job_status}" != "COMPLETED" ]]; then
-      return 1
-    fi
-    test_status="${tests_status["${job_id}"]}"
-    if [[ "${test_status}" != "0" ]]; then
-      return 1
+    if [[ "${job_status}" == "COMPLETED" ]]; then
+      test_status="${tests_status["${job_id}"]}"
+      if [[ "${test_status}" -ne "0" ]]; then
+        failed_cases+=("${case_id}=FAILED")
+      fi
+    else
+      failed_cases+=("${case_id}=${job_status}")
     fi
   done
-        
-  return 0
+
+  if [[ "${#failed_cases[@]}" -gt 0 ]]; then
+    (
+      IFS=','
+      echo "failed tests: ${failed_cases[*]}"
+    )
+    return 1
+  else
+    echo "all tests passed"
+    return 0
+  fi
 }
 
 validate() {
