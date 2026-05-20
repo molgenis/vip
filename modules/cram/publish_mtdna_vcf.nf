@@ -1,7 +1,7 @@
 process publish_mtdna_vcf {
   label 'publish_mtdna_vcf'
 
-  publishDir "$params.output/intermediates"
+  publishDir "$params.output/intermediates", mode: 'link'
 
   input:
     tuple val(meta), path(vcf), path(vcfIndex), path(vcfStats)
