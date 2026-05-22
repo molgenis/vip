@@ -1,4 +1,5 @@
-Before submitting this PR, please make sure:
-- [ ] You have updated documentation for new/updated/removed features
-- [ ] You have added tests
-- [ ] You have manually run tests using `bash test/test.sh` and verified that all tests pass
+## Please complete the checklist before requesting review
+
+- [ ] Docs updated where needed
+- [ ] Tests added or updated where needed
+- [ ] Verified the change works as intended
