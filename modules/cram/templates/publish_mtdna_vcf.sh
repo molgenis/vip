@@ -2,9 +2,9 @@
 set -euo pipefail
 
 link () {
-    cp "!{vcf}" "!{vcfOut}"
-    cp "!{vcfIndex}" "!{vcfOutIndex}"
-    cp "!{vcfStats}" "!{vcfOutStats}"
+    cp --link "!{vcf}" "!{vcfOut}"
+    cp --link "!{vcfIndex}" "!{vcfOutIndex}"
+    cp --link "!{vcfStats}" "!{vcfOutStats}"
 }
 
 main() {  
