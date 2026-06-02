@@ -245,7 +245,7 @@ all processes and their non-default configuration.
 | vcf_merge_mtdnasnv       | 2                | 64 MB              | 15 m             |
 | vcf_merge_str            | 2                | 64 MB              | 15 m             |
 | vcf_merge_sv             | 2                | 64 MB              | 15 m             |
-| whatshap                 | 2                | 2 GB               | 1 h              |
+| whatshap                 | 2                | 2 / 8 GB           | 1 h              |
 
 ### gVCF
 
@@ -263,9 +263,9 @@ all processes and their non-default configuration.
 | bed_filter                   | 2                | 32 / 64 MB         | 15 m             |
 | cram_validate                | 2 / 3            | 512 MB / 1 GB      | 1 h / 30 m       |
 | gado                         | 2                | 1 GB               | 15 m             |
-| vcf_annotate                 | 4                | 4 / 8 GB           | 1 h / 4 h        |
+| vcf_annotate                 | 4                | 4 / 16 GB          | 1 h / 4 h        |
 | vcf_annotate_publish         | 2                | 64 MB              | 15 m             |
-| vcf_classify_publish         | 2                | 64 MB              | 15 m             |
+| vcf_classify_publish         | 2                | 64 MB              | 15 m / 1 h       |
 | vcf_classify                 | 2                | 1 / 2 GB           | 15 m             |
 | vcf_classify_samples         | 2                | 256 / 512 MB       | 15 m             |
 | vcf_classify_samples_publish | 2                | 64 MB              | 15 m             |
