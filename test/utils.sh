@@ -55,3 +55,46 @@ runVip() {
 
   vip.sh "${args[@]}" 1> /dev/null
 }
+
+runHappy() {
+  local happy_args=()
+  happy_args+=("hap.py")
+  happy_args+=("${1}")
+  happy_args+=("${2}")
+  happy_args+=("-o" "${OUTPUT_DIR}/happy_out/test")
+  if [[ -v 3 ]]; then
+    happy_args+=("-r" "${3}")
+  else
+    happy_args+=("-r" "${VIP_DIR_DATA}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna")
+  fi
+  
+  mkdir -p "${OUTPUT_DIR}/happy_out"
+
+  vip_images_dir="${VIP_DIR_DATA}/images"
+  
+  apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${happy_args[@]}"
+}
+
+runSompy() {
+  local sompy_args=()
+  sompy_args+=("som.py")
+  sompy_args+=("${1}")
+  sompy_args+=("${2}")
+  sompy_args+=("-o" "${OUTPUT_DIR}/sompy_out/test")
+  if [[ -v 3 ]]; then
+    sompy_args+=("-r" "${3}")
+  else
+    sompy_args+=("-r" "${VIP_DIR_DATA}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna")
+  fi
+
+  mkdir -p "${OUTPUT_DIR}/sompy_out"
+
+  vip_images_dir="${VIP_DIR_DATA}/images"
+
+  apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${sompy_args[@]}"
+}
+
+sompyF1Score() {
+  f1_score=$(printf "%0.2f" "$(echo "2 * ((${1} * ${2}) / (${1} + ${2}))" | bc -l)")
+  echo "${f1_score}"
+}
