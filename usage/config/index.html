@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -937,6 +937,11 @@ Both the zipped and unzipped fasta should have an index.</p>
 <td>vcf.filter_samples.classes</td>
 <td>U1,U2</td>
 <td>for details, see <a href="../../advanced/classification_trees/">here</a></td>
+</tr>
+<tr>
+<td>vcf.normalize.allow_invalid_ref</td>
+<td>false</td>
+<td>throw error or warn when incorrect or missing REF allele is encountered.</td>
 </tr>
 <tr>
 <td>vcf.report.gado_genes</td>
