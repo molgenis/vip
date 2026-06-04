@@ -24,7 +24,8 @@ call_small_variants () {
         args+=("--par_regions_bed=!{parRegionsBed}")
       fi
     fi
-
+    # workaround for 'default' sample name in output in case sample name can't be derived from CallVariantsOutput or nonvariant site TFRecords
+    args+=("--postprocess_variants_extra_args=--sample_name=\"!{sampleName}\"")
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT} "${args[@]}"
 }
