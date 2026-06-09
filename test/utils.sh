@@ -56,25 +56,10 @@ runVip() {
   vip.sh "${args[@]}" 1> /dev/null
 }
 
-runHappy() {
-  local happy_args=()
-  happy_args+=("hap.py")
-  happy_args+=("${1}")
-  happy_args+=("${2}")
-  happy_args+=("-o" "${OUTPUT_DIR}/happy_out/test")
-  if [[ -v 3 ]]; then
-    happy_args+=("-r" "${3}")
-  else
-    happy_args+=("-r" "${VIP_DIR_DATA}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna")
-  fi
-  
-  mkdir -p "${OUTPUT_DIR}/happy_out"
-
-  vip_images_dir="${VIP_DIR_DATA}/images"
-  
-  apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${happy_args[@]}"
-}
-
+# arguments:
+#   $1  path to vcf gold standard set
+#   $2  path to test vcf results
+#   $3  path to reference genome to use (default = VIP default ref genome)
 runSompy() {
   local sompy_args=()
   sompy_args+=("som.py")
@@ -94,6 +79,9 @@ runSompy() {
   apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${sompy_args[@]}"
 }
 
+# arguments
+#   $1  sompy precision score
+#   $2  sompy recall score
 sompyF1Score() {
   f1_score=$(printf "%0.2f" "$(echo "2 * ((${1} * ${2}) / (${1} + ${2}))" | bc -l)")
   echo "${f1_score}"
