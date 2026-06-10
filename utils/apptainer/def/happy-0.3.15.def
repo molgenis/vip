@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: quay.io/biocontainers/hap.py:0.3.15--py27hcb73b3d_0
