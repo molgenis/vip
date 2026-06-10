@@ -6,12 +6,27 @@ create_bed () {
 }
 
 call_small_variants () {
-    postprocess_args=()
+    # postprocess extra args
+    local postprocess_variants_male_extra_args=()
     if [ -n "!{haploidContigs}" ]; then
-      postprocess_args+=("--haploid_contigs=\"!{haploidContigs}\"")
+      postprocess_variants_male_extra_args+=("--haploid_contigs=\"!{haploidContigs}\"")
     fi
     if [ -n "!{parRegionsBed}" ]; then
-      postprocess_args+=("--par_regions_bed=\"!{parRegionsBed}\"")
+      postprocess_variants_male_extra_args+=("--par_regions_bed=\"!{parRegionsBed}\"")
+    fi
+
+    # postprocess extra args: child
+    # workaround for 'default' sample name in output in case sample name can't be derived from CallVariantsOutput or nonvariant site TFRecords
+    local postprocess_variants_child_extra_args="--sample_name=\"!{sampleNameChild}\""
+    if [ "!{sampleSex}" = "male" ] && [ "${#postprocess_variants_male_extra_args[@]}" -gt 0 ]; then
+      postprocess_variants_child_extra_args+=",$(IFS=,; echo "${postprocess_variants_male_extra_args[*]}")"
+    fi
+
+    # postprocess extra args: parent
+    # workaround for 'default' sample name in output in case sample name can't be derived from CallVariantsOutput or nonvariant site TFRecords
+    local postprocess_variants_parent1_extra_args="--sample_name=\"!{sampleNameParent}\""
+    if [ "!{sampleSexParent}" = "male" ] && [ "${#postprocess_variants_male_extra_args[@]}" -gt 0 ]; then
+      postprocess_variants_parent1_extra_args+=",$(IFS=,; echo "${postprocess_variants_male_extra_args[*]}")"
     fi
 
     local args=()
@@ -30,12 +45,8 @@ call_small_variants () {
     args+=("--output_vcf_child" "!{vcfOutChild}")
     args+=("--output_vcf_parent1" "!{vcfOutParent}")
     args+=("--make_examples_extra_args=include_med_dp=true")
-    if [ "!{sampleSex}" = "male" ] && [ "${#postprocess_args[@]}" -gt 0 ]; then
-      args+=("--postprocess_variants_child_extra_args=$(IFS=','; echo "${postprocess_args[*]}")")
-    fi
-    if [ "!{sampleSexParent}" = "male"  ] && [ "${#postprocess_args[@]}" -gt 0 ]; then
-      args+=("--postprocess_variants_parent1_extra_args=--haploid_contigs=\"!{haploidContigs}\",--par_regions_bed=\"!{parRegionsBed}\"")
-    fi
+    args+=("--postprocess_variants_child_extra_args=${postprocess_variants_child_extra_args}")
+    args+=("--postprocess_variants_parent1_extra_args=${postprocess_variants_parent1_extra_args}")
     mkdir tmp
     TMPDIR=tmp ${CMD_DEEPVARIANT_DEEPTRIO} "${args[@]}"
 }
