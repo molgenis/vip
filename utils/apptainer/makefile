@@ -24,6 +24,7 @@ VER_EXPANSIONHUNTER := 5.0.0+build.3
 VER_FASTP := 1.1.0
 VER_GADO := 1.0.3+build.3
 VER_GATK := 4.6.2.0
+VER_HAPPY := 0.3.15
 VER_MANTA := 1.6.0+build.2
 VER_MINIMAP2 := 2.31
 VER_MOSDEPTH := 0.3.13
@@ -56,6 +57,7 @@ SIF_EXPANSIONHUNTER := $(SIF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).sif
 SIF_FASTP := $(SIF_DIR)/fastp-$(VER_FASTP).sif
 SIF_GADO := $(SIF_DIR)/gado-$(VER_GADO).sif
 SIF_GATK := $(SIF_DIR)/gatk-$(VER_GATK).sif
+SIF_HAPPY := $(SIF_DIR)/happy-$(VER_HAPPY).sif
 SIF_MANTA := $(SIF_DIR)/manta-$(VER_MANTA).sif
 SIF_MINIMAP2 := $(SIF_DIR)/minimap2-$(VER_MINIMAP2).sif
 SIF_MOSDEPTH := $(SIF_DIR)/mosdepth-$(VER_MOSDEPTH).sif
@@ -114,6 +116,7 @@ all: \
         fastp \
         gado \
         gatk \
+        happy \
         manta \
         minimap2 \
         mosdepth \
@@ -152,6 +155,7 @@ $(eval $(call build_image,expansionhunter,$(SIF_EXPANSIONHUNTER),$(DEF_DIR)/expa
 $(eval $(call build_image,fastp,$(SIF_FASTP),$(DEF_DIR)/fastp-$(VER_FASTP).def,$(SIF_ALPINE)))
 $(eval $(call build_image,gado,$(SIF_GADO),$(DEF_DIR)/gado-$(VER_GADO).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,gatk,$(SIF_GATK),$(DEF_DIR)/gatk-$(VER_GATK).def,$(SIF_OPENJDK)))
+$(eval $(call build_image,happy,$(SIF_HAPPY),$(DEF_DIR)/happy-$(VER_HAPPY).def,))
 $(eval $(call build_image,manta,$(SIF_MANTA),$(DEF_DIR)/manta-$(VER_MANTA).def,$(SIF_DEBIAN)))
 $(eval $(call build_image,minimap2,$(SIF_MINIMAP2),$(DEF_DIR)/minimap2-$(VER_MINIMAP2).def,$(SIF_ALPINE)))
 $(eval $(call build_image,mosdepth,$(SIF_MOSDEPTH),$(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def,))
