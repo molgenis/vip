@@ -1,0 +1,3 @@
+family_id	individual_id	maternal_id	proband	sex	affected	hpo_ids	sequencing_platform	sequencing_method	fastq_r1	fastq_r2
+Ashkenazim	HG002	HG004	true	male	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${VIP_DIR_DATA}/test/resources/hg002_chr10_r1.fastq.gz	${VIP_DIR_DATA}/test/resources/hg002_chr10_r2.fastq.gz
+Ashkenazim	HG004		false	female	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${VIP_DIR_DATA}/test/resources/hg004_chr10_r1.fastq.gz	${VIP_DIR_DATA}/test/resources/hg004_chr10_r2.fastq.gz
