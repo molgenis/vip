@@ -190,7 +190,7 @@ install_files() {
   data+=("f9ea6cdc68f0b586a0673b07c65ced28" "images/gatk-4.6.2.0.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("7718ec9b21b13b089bb31e7b97731dc1" "images/manta-1.6.0+build.2.sif" "")
-  data+=("54337bc1bed4fd505a7773e8920f2c0d" "images/minimap2-2.30.sif" "")
+  data+=("db415eb9b9dd11657580d1e7df99ed10" "images/minimap2-2.31.sif" "")
   data+=("ba207b583a9416eec6435c868ae498ea" "images/mosdepth-0.3.13.sif" "")
   data+=("8d7421af13d7db1739b28046bb6f2695" "images/picard-3.4.0.sif" "")
   data+=("0761f8f2466e9b9627ae8f73b3df00ad" "images/samtools-1.23.1.sif" "")
