@@ -9,6 +9,7 @@ resources. Among them we would like to thank the people behind the following pro
 - [AlphScore](https://doi.org/10.5281/zenodo.6288138)
 - [AnnotSV](https://lbgi.fr/AnnotSV/)
 - [Illumina ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
+- [Illumina hap.py](https://github.com/Illumina/hap.py)
 - [Illumina Manta](https://github.com/Illumina/manta)
 - [Illumina SpliceAI](https://github.com/Illumina/SpliceAI)
 - [igv.js](https://github.com/igvteam/igv.js)

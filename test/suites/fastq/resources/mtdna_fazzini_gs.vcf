@@ -1,0 +1,43 @@
+##fileformat=VCFv4.2
+##contig=<ID=chrM,length=16569>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FILTER=<ID=PASS,Description="All filters passed">
+##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of variant">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chrM	73	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	151	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	152	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	263	.	A	G	.	.	TYPE=Homoplasmic
+chrM	477	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	750	.	A	G	.	.	TYPE=Homoplasmic
+chrM	1438	.	A	G	.	.	TYPE=Homoplasmic
+chrM	2706	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	3010	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	3197	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	3768	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	4769	.	A	G	.	.	TYPE=Homoplasmic
+chrM	5979	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	7028	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	8860	.	A	G	.	.	TYPE=Homoplasmic
+chrM	9145	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	9462	.	T	C	.	.	TYPE=H1_Private
+chrM	9477	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	11467	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	11719	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	12308	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	12372	.	G	A	.	.	TYPE=Heteroplasmic
+chrM	13617	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	14766	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	14793	.	A	G	.	.	TYPE=Heteroplasmic
+chrM	15236	.	A	G	.	.	TYPE=H1_Private
+chrM	15289	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	15326	.	A	G	.	.	TYPE=Homoplasmic
+chrM	15372	.	T	C	.	.	TYPE=U5_Private
+chrM	16129	.	G	A	.	.	TYPE=H1_Private
+chrM	16189	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	16234	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	16256	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	16270	.	C	T	.	.	TYPE=Heteroplasmic
+chrM	16311	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	16362	.	T	C	.	.	TYPE=Heteroplasmic
+chrM	16526	.	G	A	.	.	TYPE=Heteroplasmic
