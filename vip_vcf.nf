@@ -400,7 +400,7 @@ def parseSampleSheet(params) {
   	assembly: [
 			type: "string",
 			default: { 'GRCh38' },
-			enum: ['GRCh37', 'GRCh38', 'T2T'],
+			'enum': ['GRCh37', 'GRCh38', 'T2T'],
       scope: "project"
 		],
     vcf: [

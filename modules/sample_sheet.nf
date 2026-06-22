@@ -55,7 +55,7 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     sex: [
       type: "string",
-      enum: ["male", "female"]
+      'enum': ["male", "female"]
     ],
     affected: [
       type: "boolean",
@@ -76,7 +76,7 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     sequencing_method: [
       type: "string",
       default: { 'WGS' },
-      enum: ['WES', 'WGS'],
+      'enum': ['WES', 'WGS'],
       scope: "project"
     ],
     pcr_performed: [
