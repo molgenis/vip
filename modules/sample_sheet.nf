@@ -13,13 +13,13 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 		def lineNr = i + 1
 
 		def line = lines[i]
-		if (line == null) continue;
+		if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != 3) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
 
-		def tokens = line.split('\t', -1)
-		if (tokens.length != 3) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
-
-		def hpoTermId=tokens[0]
-		hpoTermIds[hpoTermId]=null
+			def hpoTermId=tokens[0]
+			hpoTermIds[hpoTermId]=null
+		}
 	}
 	return hpoTermIds
 }
@@ -112,19 +112,19 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     def lineNr = i + 1
 
     def line = lines[i]
-    if (line == null) continue;
-    
-    def tokens = line.split('\t', -1)
-    if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
-    
-    def sample
-    try {
-      sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile(), hpoTermIdMap)
-    } catch(IllegalArgumentException e) {
-      exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
+    if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
+
+			def sample
+			try {
+				sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile(), hpoTermIdMap)
+			} catch(IllegalArgumentException e) {
+				exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
+			}
+			sample.index = i
+			samples << sample
     }
-    sample.index = i
-    samples << sample
   }
 
   def projects

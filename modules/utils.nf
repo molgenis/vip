@@ -19,12 +19,12 @@ def parseFastaIndex(faiFile) {
     def lineNr = i + 1
 
     def line = lines[i]
-    if (line == null) continue;
+    if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
 
-    def tokens = line.split('\t', -1)
-    if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
-    
-    contigs += [contig: tokens[0], size: tokens[1] as long, location: tokens[2] as long, basesPerLine: tokens[3] as long, bytesPerLine: tokens[4] as long]
+			contigs += [contig: tokens[0], size: tokens[1] as long, location: tokens[2] as long, basesPerLine: tokens[3] as long, bytesPerLine: tokens[4] as long]
+    }
   }
   return contigs
 }
