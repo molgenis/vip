@@ -244,18 +244,14 @@ def parseValueFile(token, col, rootDir) {
 
 def parseValue(token, col, rootDir) {
   def value
-  switch(col.type) {
-    case "string":
-      value = col.list ? parseValueStringList(token, col) : parseValueString(token, col)
-      break
-    case "boolean":
-      value = parseValueBoolean(token, col)
-      break
-    case "file":
-      value = col.list ? parseValueFileList(token, col, rootDir) : parseValueFile(token, col, rootDir)
-      break
-    default:
-      throw new RuntimeException("unexpected column type '${col.type}'")
+  if(col.type == 'string') {
+    value = col.list ? parseValueStringList(token, col) : parseValueString(token, col)
+  } else if(col.type == 'boolean') {
+    value = parseValueBoolean(token, col)
+  } else if(col.type == 'file') {
+    value = col.list ? parseValueFileList(token, col, rootDir) : parseValueFile(token, col, rootDir)
+  } else {
+    throw new RuntimeException("unexpected column type '${col.type}'")
   }
   return value;
 }
