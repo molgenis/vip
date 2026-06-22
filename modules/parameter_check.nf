@@ -20,9 +20,7 @@ def assertAllKeysExist(
             Map<String, Object> target,
             String path
     ) {
-        for (Map.Entry<String, Object> entry : source.entrySet()) {
-            String key = entry.getKey();
-            Object sourceValue = entry.getValue();
+        source.each { key, sourceValue ->
             String currentPath = path.isEmpty() ? key : path + "." + key;
 
             if (!target.containsKey(key)) {

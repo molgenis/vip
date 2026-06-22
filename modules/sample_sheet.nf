@@ -9,7 +9,7 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 	}
 
 	def hpoTermIds=[:]
-	for (def i = 1; i < lines.size(); i++) {
+	(1..<lines.size()).each { i ->
 		def lineNr = i + 1
 
 		def line = lines[i]
@@ -104,7 +104,7 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
   if (lines.size() == 1) exit 1, "error parsing '${csvFilename}': file does not contain data"
 
   def samples=[]
-  for (def i = 1; i < lines.size(); i++) {
+  (1..<lines.size()).each { i ->
     def lineNr = i + 1
 
     def line = lines[i]
