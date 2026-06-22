@@ -95,14 +95,14 @@ workflow deepvariant {
       
     // group gvcf chunks by project by family
     Channel.empty().mix(ch_gvcf_per_chunk_called, ch_gvcf_per_chunk_trio_called, ch_gvcf_per_chunk_duo_called, ch_cram_per_chunk.zero_reads, ch_cram_per_chunk_with_reads.skip)
-      | map { meta, gvcfs -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.family.samples.size()), [sample: meta.sample, gvcfs: gvcfs]] }
+      | map { meta, gvcfs -> [groupKey(meta.findAll { it.key != 'sample' }, meta.family.samples.size()), [sample: meta.sample, gvcfs: gvcfs]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index } )
       | map { key, group -> validateGroup(key, group) }
       | set { ch_gvcf_per_chunk_per_family }
     
     // group gvcf chunks by sample
     ch_gvcf_per_chunk_per_family
-      | flatMap { meta, group -> group.collect { item -> [[*:meta, sample: item.sample], group.collect { it.gvcfs[item.sample.individual_id] }.findAll { it != null } ] } }
+      | flatMap { meta, group -> group.collect { item -> [meta + [sample: item.sample], group.collect { it.gvcfs[item.sample.individual_id] }.findAll { it != null } ] } }
       | branch { meta, gvcfs ->
           // samples included in multiple trios result in multiple gvcfs
           multiple: gvcfs.size() > 1
@@ -126,7 +126,7 @@ workflow deepvariant {
       | set{ch_gvcfs_per_chunk_per_sample_mixed}
 
     ch_gvcfs_per_chunk_per_sample_mixed.publish
-      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'chunk' }, meta.chunk.total), gvcf] }
+      | map { meta, gvcf -> [groupKey(meta.findAll { it.key != 'chunk' }, meta.chunk.total), gvcf] }
       | groupTuple
       | map { key, group -> validateGroup(key, group) }
       | map { meta, gvcfs -> [meta, gvcfs.findAll { it != null }.data] }
@@ -134,10 +134,10 @@ workflow deepvariant {
       | publish_gvcf
 
     ch_gvcfs_per_chunk_per_sample_mixed.done
-      | map { meta, gvcf -> [groupKey([*:meta].findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [meta: meta,sample: meta.sample, gvcf: gvcf]] }
+      | map { meta, gvcf -> [groupKey(meta.findAll { it.key != 'family' && it.key != 'sample' }, meta.project.samples.size()), [meta: meta,sample: meta.sample, gvcf: gvcf]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
-      | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{ it.sample }]], group.collect{ it.gvcf }] }
+      | map { meta, group -> [meta + [project:meta.project + [samples: group.collect{ it.sample }]], group.collect{ it.gvcf }] }
       | set { ch_gvcfs_per_chunk_per_project }
 
     ch_gvcfs_per_chunk_per_project
@@ -161,7 +161,7 @@ workflow deepvariant {
  
     // group chunked vcfs by project
     Channel.empty().mix(ch_vcf_per_chunk_called, ch_gvcf_per_chunk_by_project.zero)
-      | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'chunk' }, meta.chunk.total), [index: meta.chunk.index, vcf: vcf]] }
+      | map { meta, vcf -> [groupKey(meta.findAll { it.key != 'chunk' }, meta.chunk.total), [index: meta.chunk.index, vcf: vcf]] }
       | groupTuple
       | map { key, group -> [key.getGroupTarget(), group.sort { left, right -> left.index <=> right.index }.collect { it.vcf } ] }
       | branch { meta, vcfs ->

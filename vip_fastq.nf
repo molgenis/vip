@@ -56,7 +56,7 @@ workflow fastq {
 
     // mix paired-end and single channels
     ch_input_paired_end_aligned.mix(ch_input_single_aligned)
-      | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+      | map { meta, cram, cramIndex, cramStats -> meta + [project: meta.project + [assembly: params.assembly], sample: meta.sample + [cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | cram
 }
 

@@ -79,12 +79,12 @@ def determineChunks(meta) {
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
-    return !chunks.isEmpty() ? chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ]) : [[*:meta, chunk: [index: 0, regions: [], total: 0] ]]
+    return !chunks.isEmpty() ? chunks.collect(chunk -> meta + [chunk: [index: index++, regions: chunk, total: chunks.size()] ]) : [meta + [chunk: [index: 0, regions: [], total: 0] ]]
 }
 
 def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
     // take into account that scatter returns one 'empty' chunk in case of zero 'calculated' chunks
-    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
+    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), meta + [vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
 }
 
 def postGroupTupleConcat(groupKey, group) {
@@ -110,6 +110,6 @@ def postGroupTupleConcat(groupKey, group) {
     vcfs = sortedMetaList.collect { it.vcf }
     vcfIndexes = sortedMetaList.collect { it.vcf_index }
   }
-  meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+  meta = meta.findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
   return [meta, vcfs, vcfIndexes]
 }

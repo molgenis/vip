@@ -86,7 +86,7 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ]
   ]
 
-  def cols = [*:commonCols, *:additionalCols]
+  def cols = commonCols + additionalCols
 
   def hpoTermIdMap = parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename)
 
@@ -181,7 +181,7 @@ def parseHeader(tokens, colMetaMap) {
     if (index == null) {
       if(col.required == true) throw new IllegalArgumentException("missing column '${colId}'")
     }
-    colMetaIndexMap[colId] = [*:col, index: index]
+    colMetaIndexMap[colId] = col + [index: index]
   }
 
   return colMetaIndexMap
@@ -289,7 +289,7 @@ def parseProjects(samples, cols) {
       projectSamples = []
       samplesByProject[sample.project_id] = projectSamples
     }
-    projectSamples.push([*:sample].findAll { it.key != 'project_id'})
+    projectSamples.push(sample.findAll { it.key != 'project_id'})
   }
   
   // create projects

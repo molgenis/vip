@@ -35,10 +35,10 @@ workflow mtdnasnv {
 
     // Group the vcfs per project
     Channel.empty().mix(ch_mtdnasnv_gatk, ch_mtdnasnv.zero_reads)
-      | map { meta, vcf -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, vcf: vcf]] }
+      | map { meta, vcf -> [groupKey(meta.findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, vcf: vcf]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
       | map { key, group -> validateGroup(key, group) }
-      | map { meta, group -> [[*:meta, project:[*:meta.project, samples: group.collect{it.sample}]], group.collect { it.vcf }] }
+      | map { meta, group -> [meta + [project:meta.project + [samples: group.collect{it.sample}]], group.collect { it.vcf }] }
       | branch { meta, vcfs ->
           multiple: vcfs.count { it != null } > 1
                     return [meta, vcfs.findAll { it != null }]

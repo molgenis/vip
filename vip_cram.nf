@@ -98,7 +98,7 @@ workflow cram {
 
     // continue with vcf workflow
     Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_called.ready)
-      | map { meta, vcf -> [*:meta, vcf: vcf] }
+      | map { meta, vcf -> meta + [vcf: vcf] }
       | vcf
 }
 
@@ -117,20 +117,20 @@ workflow {
   ch_sample
     | map { meta -> [meta, meta.project.assembly, meta.sample.cram] }
     | validate_cram
-    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+    | map { meta, cram, cramIndex, cramStats -> meta + [sample: meta.sample + [cram: [data: cram, index: cramIndex, stats: cramStats]]] }
     | set { ch_sample_validated }
 
   // update project samples
   ch_sample_validated
-    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+    | map { meta -> [groupKey(meta.findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
     | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, samples -> [*:meta, project: [*:meta.project, samples: samples]] }
+    | map { meta, samples -> meta + [project: meta.project + [samples: samples]] }
     | set { ch_project_validated }
 
   // decide whether realignment is required
   ch_project_validated
-    | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
+    | flatMap { meta -> meta.project.samples.collect { sample -> meta + [sample: sample] } }
     | cram
 }
 
@@ -174,7 +174,7 @@ def parseSampleSheet(params) {
   ]
 
 	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
-  return projects.collect { project -> [*:project, assembly: params.assembly] }
+  return projects.collect { project -> project + [assembly: params.assembly] }
 }
 
 def validateParameters(params) {

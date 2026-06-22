@@ -37,7 +37,7 @@ workflow vcf {
 
         ch_gado.run
         | gado
-        | map { meta, gado_scores -> [*:meta, gado: gado_scores] }
+        | map { meta, gado_scores -> meta + [gado: gado_scores] }
         | set { ch_gado_done }
 
         ch_gado_done.mix(ch_gado.skip)
@@ -58,12 +58,12 @@ workflow vcf {
       Channel.empty().mix(ch_inputs_scattered.split, ch_inputs.ready)
         | map { meta -> [meta, meta.vcf.data, meta.vcf.index] }
         | split
-        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> [*:meta, vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }
+        | map { meta, vcfChunk, vcfChunkIndex, vcfChunkStats -> meta + [vcf: [data: vcfChunk, index: vcfChunkIndex, stats: vcfChunkStats]] }
         | set { ch_inputs_scattered_split }
 
       // process chunks
       Channel.empty().mix(ch_inputs_scattered.ready, ch_inputs_scattered_split)
-        | map { meta -> [[*:meta, probands: getProbands(meta.project.samples), hpo_ids: getHpoIds(meta.project.samples) ], meta.vcf.data, meta.vcf.index, meta.vcf.stats] }
+        | map { meta -> [meta + [probands: getProbands(meta.project.samples), hpo_ids: getHpoIds(meta.project.samples) ], meta.vcf.data, meta.vcf.index, meta.vcf.stats] }
         | branch { meta, vcf, vcfIndex, vcfStats ->
             process: nrRecords(vcfStats) > 0
             empty: true
@@ -196,7 +196,7 @@ workflow vcf {
 
         ch_outputs.concat
             | concat
-            | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
+            | map { meta, vcf, vcfIndex, vcfStats -> meta + [vcf: vcf, vcf_index: vcfIndex, vcf_stats: vcfStats] }
             | branch { meta ->
                 slice: meta.project.samples.any{ sample -> sample.cram != null }
                 ready: true
@@ -204,7 +204,7 @@ workflow vcf {
             | set { ch_concated }
      
           ch_outputs.ready
-            | map { meta, vcfs, vcfIndexes -> [*:meta, vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
+            | map { meta, vcfs, vcfIndexes -> meta + [vcf: vcfs.first(), vcf_index: vcfIndexes.first()] }
             | set { ch_output_singleton }
 
           ch_output_singleton.mix(ch_concated)
@@ -215,15 +215,15 @@ workflow vcf {
             | set { ch_output }
 
         ch_output.slice
-            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> [*:meta, sample: sample] } }
+            | flatMap { meta -> meta.project.samples.findAll{ sample -> sample.cram != null }.collect{ sample -> meta + [sample: sample] } }
             | map { meta -> [meta, meta.vcf, meta.vcf_index, meta.sample.cram.data] }
             | slice
-            | map { meta, cram -> [*:meta, cram: cram] }
+            | map { meta, cram -> meta + [cram: cram] }
             | map { meta -> [groupKey(meta.project.id, meta.project.samples.count{ sample -> sample.cram != null }), meta] }
             | groupTuple(remainder: true)
             | map { key, metaList -> 
-                def meta = [*:metaList.first()].findAll { it.key != 'sample' && it.key != 'cram' }
-                [*:meta, crams: metaList.sort { left, right -> left.sample.index <=> right.sample.index }.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
+                def meta = metaList.first().findAll { it.key != 'sample' && it.key != 'cram' }
+                meta + [crams: metaList.sort { left, right -> left.sample.index <=> right.sample.index }.collect { [family_id: it.sample.family_id, individual_id: it.sample.individual_id, cram: it.cram] } ]
               }
             | set { ch_sliced }
 
@@ -283,7 +283,7 @@ workflow {
 
   // liftover and validate cram per sample
 	ch_project.cram
-	  | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
+	  | flatMap { meta -> meta.project.samples.collect { sample -> meta + [sample: sample] } }
 	  | branch { meta ->
 				process: meta.sample.cram != null
 				ready:   true
@@ -300,10 +300,10 @@ workflow {
 
   // merge cram channels per project
   Channel.empty().mix(ch_sample_cram_validated, ch_sample_cram.ready)
-    | map { meta, cram -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram]] }
+    | map { meta, cram -> [groupKey(meta.findAll { it.key != 'sample' }, meta.project.samples.size), [sample: meta.sample, cram: cram]] }
     | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index })
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, containers -> [meta, [samples: containers.collect { [*:it.sample, cram: it.cram] }]] }
+    | map { meta, containers -> [meta, [samples: containers.collect { it.sample + [cram: it.cram] }]] }
     | set { ch_project_cram_processed }
 
   // merge vcf and cram channels and update project
@@ -314,7 +314,7 @@ workflow {
     | map { meta, containers ->
         def vcf = containers.find { it.vcf != null }.vcf
         def samples = containers.find { it.samples != null }.samples
-        [*:meta, vcf: vcf, project: [*:meta.project, assembly: params.assembly, samples: samples]]
+        meta + [vcf: vcf, project: meta.project + [assembly: params.assembly, samples: samples]]
       }
     | set { ch_project_processed }
 
