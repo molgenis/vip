@@ -44,10 +44,10 @@ def determineChunks(meta) {
   def fastaContigs = parseFastaIndex(params[meta.project.assembly].reference.fastaFai).collectEntries { record -> [record.contig, record] }
   def records = meta.vcf.stats.readLines().collect { line -> line.split('\t') }
 
-  int chunkSize = 10000
-  int maxNrRecords = records.size() > 0 ? Math.max((records.max { record -> record[2] as int })[2] as int, chunkSize) : chunkSize
+  def chunkSize = 10000
+  def maxNrRecords = records.size() > 0 ? Math.max((records.max { record -> record[2] as int })[2] as int, chunkSize) : chunkSize
 
-  int regionNrRecords=0
+  def regionNrRecords=0
   def regions=[]
   def chunks=[]
   records.each { record ->
@@ -57,7 +57,7 @@ def determineChunks(meta) {
         def fasta = params[meta.project.assembly].reference.fasta
         throw new IllegalArgumentException("vcf chromosome '${vcfContig}' does not exist in reference genome '${fasta}' (assembly '${meta.project.assembly}'). are you using the correct reference genome?")
     }
-    int contigNrRecords = record[2] as int
+    def contigNrRecords = record[2] as int
     if(regionNrRecords + contigNrRecords <= maxNrRecords) {
       regions.add([chrom: fastaContig.contig, chromStart: 0, chromEnd: fastaContig.size])
       regionNrRecords += contigNrRecords

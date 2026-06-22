@@ -15,7 +15,7 @@ def parseFastaIndex(faiFile) {
   if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
 
   def contigs = []
-  for (int i = 0; i < lines.size(); i++) {
+  for (def i = 0; i < lines.size(); i++) {
     def lineNr = i + 1
 
     def line = lines[i]
