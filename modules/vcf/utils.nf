@@ -103,7 +103,9 @@ def postGroupTupleConcat(groupKey, group) {
   def metaList = validatedKeyGroup[1]
 
   def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
-  def meta, vcfs, vcfIndexes
+  def meta
+  def vcfs
+  def vcfIndexes
   if(filteredMetaList.size() == 0) {
     meta = metaList.first()
     vcfs = [meta.vcf]
