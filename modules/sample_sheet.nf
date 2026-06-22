@@ -198,17 +198,17 @@ def parseValueStringList(token, col) {
 }
 
 def parseValueString(token, col) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   if(value != null) {
-    if(col.enum && !col.enum.contains(value) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
+    if(col['enum'] && !col['enum'].contains(value) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col['enum'].join(", ")}]")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
   }
   return value
 }
 
 def parseValueBoolean(token, col) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   
   def booleanValue
@@ -226,7 +226,7 @@ def parseValueFileList(token, col, rootDir) {
 }
 
 def parseValueFile(token, col, rootDir) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   def fileValue
   if(value != null) {
