@@ -32,12 +32,12 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
   def commonCols = [
     project_id: [
       type: "string",
-      default: { 'vip' },
+      'default': { 'vip' },
       regex: /[a-zA-Z0-9_-]+/
     ],
     family_id: [
       type: "string",
-      default: { "fam${seq_nr++}" },
+      'default': { "fam${seq_nr++}" },
       regex: /[a-zA-Z0-9_-]+/
     ],
     individual_id: [
@@ -75,13 +75,13 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     sequencing_method: [
       type: "string",
-      default: { 'WGS' },
+      'default': { 'WGS' },
       'enum': ['WES', 'WGS'],
       scope: "project"
     ],
     pcr_performed: [
       type: "boolean",
-      default: { 'false' },
+      'default': { 'false' },
       scope: "project"
     ]
   ]
