@@ -55,7 +55,11 @@ def determineChunks(meta) {
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
-    chunks.collect(chunk -> meta + [chunk: [index: index++, regions: chunk, total: chunks.size()] ])
+    chunks.collect(chunk ->
+    	def currentIndex = index
+      index += 1
+    	meta + [chunk: [index: currentIndex, regions: chunk, total: chunks.size()] ]
+    )
 }
 
 def createPedigree(sampleSheet) {

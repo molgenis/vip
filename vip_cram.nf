@@ -21,10 +21,10 @@ workflow cram {
   take: meta
   main:
     def nrActivateVariantCallerTypes = 0
-    if(params.cram.call_snv) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_str) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_sv) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_cnv) ++nrActivateVariantCallerTypes;
+    if(params.cram.call_snv) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_str) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_sv) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_cnv) nrActivateVariantCallerTypes += 1;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
     meta    

@@ -37,7 +37,11 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     family_id: [
       type: "string",
-      'default': { "fam${seq_nr++}" },
+      'default': {
+        def id = "fam${seq_nr}"
+        seq_nr += 1
+        return id
+      },
       regex: /[a-zA-Z0-9_-]+/
     ],
     individual_id: [
