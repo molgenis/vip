@@ -194,7 +194,7 @@ def parseHeader(tokens, colMetaMap) {
 def parseValueStringList(token, col) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect(value -> parseValueString(value, col))
+  return values.collect { value -> parseValueString(value, col) }
 }
 
 def parseValueString(token, col) {
@@ -222,7 +222,7 @@ def parseValueBoolean(token, col) {
 def parseValueFileList(token, col, rootDir) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect(value -> parseValueFile(value, col, rootDir))
+  return values.collect { value -> parseValueFile(value, col, rootDir) }
 }
 
 def parseValueFile(token, col, rootDir) {
@@ -315,5 +315,5 @@ def parseProjects(samples, cols) {
 }
 
 def getAssemblies(projects) {
-  projects.collect(project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly }).flatten().unique()
+  projects.collect { project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly } }.flatten().unique()
 }

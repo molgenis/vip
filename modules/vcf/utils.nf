@@ -79,7 +79,7 @@ def determineChunks(meta) {
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
-    return !chunks.isEmpty() ? chunks.collect(chunk ->
+    return !chunks.isEmpty() ? chunks.collect { chunk ->
 			def currentIndex = index
 			index += 1
 
@@ -89,7 +89,7 @@ def scatter(meta) {
 							regions: chunk,
 							total: total
 					]
-			]) : [meta + [chunk: [index: 0, regions: [], total: 0] ]]
+			] } : [meta + [chunk: [index: 0, regions: [], total: 0] ]]
 }
 
 def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
