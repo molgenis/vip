@@ -431,7 +431,7 @@ def validate(projects) {
 }
 
 def validateParameters(params) {
-  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_vcf.config");
+  def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_vcf.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
 }
