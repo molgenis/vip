@@ -16,9 +16,9 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * input:  [project, sample, ...]
  */
 workflow gvcf {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
       | flatMap { meta -> scatter(meta) }
       | set { ch_inputs_scattered }
 

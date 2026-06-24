@@ -11,10 +11,10 @@ include { publish_gvcf } from '../modules/cram/publish_gvcf'
  * output: meta[project, ...                ], vcf
  */
 workflow deepvariant {
-  take: meta
+  take: meta_ch
   main:
     // determine for which chunks variant calling is possible
-    meta
+    meta_ch
       | branch { meta ->
           with_reads: nrMappedReadsInChunk(meta.chunk, meta.sample.cram.stats) > 0
                       return meta

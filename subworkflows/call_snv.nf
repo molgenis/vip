@@ -12,9 +12,9 @@ include { concat_snv_vcf } from '../modules/cram/concat_snv_vcf'
  * output: meta[project, ...        ], vcf
  */
 workflow snv {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
 			| multiMap { it -> normal: chrm: it }
 			| set { ch_snv }
     

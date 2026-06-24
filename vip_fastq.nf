@@ -12,9 +12,9 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * output: [project, sample [cram, ...], ...]
  */
 workflow fastq {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
       | branch { meta ->
           paired_end: !meta.sample.fastq_r1.isEmpty() && !meta.sample.fastq_r2.isEmpty()
           single: true

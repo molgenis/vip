@@ -13,10 +13,10 @@ include { validateGroup } from '../modules/utils'
  * output: meta[project, ...        ], vcf
  */
 workflow sv {
-  take: meta
+  take: meta_ch
   main:
     // split channel in crams with and without mapped reads
-    meta
+    meta_ch
       | branch { meta ->
           with_reads: nrMappedReads(meta.sample.cram.stats) > 0
                       return meta

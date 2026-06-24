@@ -18,7 +18,7 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * output: [project, vcf,    ...]
  */
 workflow cram {
-  take: meta
+  take: meta_ch
   main:
     def nrActivateVariantCallerTypes = 0
     if(params.cram.call_snv) nrActivateVariantCallerTypes += 1;
@@ -27,7 +27,7 @@ workflow cram {
     if(params.cram.call_cnv) nrActivateVariantCallerTypes += 1;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
-    meta    
+    meta_ch
       | multiMap { it -> coverage: snv: str: sv: cnv: it }
       | set { ch_cram_multi }
 

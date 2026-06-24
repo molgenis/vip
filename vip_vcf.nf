@@ -26,9 +26,9 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * input: [project, vcf, chunk (optional), ...]
  */
 workflow vcf {
-    take: meta
+    take: meta_ch
     main:
-      meta
+      meta_ch
         | branch { meta ->
               run: !getProbandHpoIds(meta.project.samples).join(",").isEmpty() && areProbandHpoIdsIndentical(meta.project.samples)
               skip: true

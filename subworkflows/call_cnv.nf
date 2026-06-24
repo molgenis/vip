@@ -12,10 +12,10 @@ include { merge_cnv_vcf } from '../modules/cram/merge_vcf'
  * output: meta[project, ...        ], vcf
  */
 workflow cnv {
-  take: meta
+  take: meta_ch
   main:
     // split channel in crams with and without mapped reads
-    meta
+    meta_ch
       | branch { meta ->
           with_reads: nrMappedReads(meta.sample.cram.stats) > 0
                       return meta

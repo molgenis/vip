@@ -8,10 +8,10 @@ include { validateGroup } from '../modules/utils'
 // include {call} from '../modules/cram/deepvariant.nf'
 
 workflow mtdnasnv {
-  take: meta
+  take: meta_ch
   main:
     // Split the channel in crams with mapped and without mapped reads
-    meta
+    meta_ch
       | branch { meta ->
           with_reads: nrMappedReads(meta.sample.cram.stats) > 0
                       return meta
