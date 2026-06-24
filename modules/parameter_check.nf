@@ -1,6 +1,6 @@
 //Reads a configuration file and returns only its parameter section
 def readConfigParams(String filePath) {
-    def defaultConfig = nextflow.config.ConfigParserFactory.create().parse( new File(filePath).toURI().toURL() );
+    def defaultConfig = nextflow.config.ConfigParserFactory.create().parse( new File(filePath));
     return defaultConfig.get("params");
 }
 
