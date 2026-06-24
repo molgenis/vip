@@ -87,7 +87,7 @@ def scatter(meta) {
 					chunk: [
 							index: currentIndex,
 							regions: chunk,
-							total: total
+							total: chunks.size()
 					]
 			] } : [meta + [chunk: [index: 0, regions: [], total: 0] ]]
 }
