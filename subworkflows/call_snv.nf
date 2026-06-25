@@ -27,7 +27,7 @@ workflow snv {
       | map { meta ->
           def familySize = meta.project.samples.count { it.family_id == meta.sample.family_id }
           def family = [id: meta.sample.family_id]
-          return [groupKey(meta + [family: family].findAll { it.key != 'sample' }, familySize), meta.sample]
+          return [groupKey((meta + [family: family]).findAll { it.key != 'sample' }, familySize), meta.sample]
         }
       | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
       | map { key, group -> validateGroup(key, group) }
