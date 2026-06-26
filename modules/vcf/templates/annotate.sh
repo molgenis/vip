@@ -199,6 +199,9 @@ vep() {
   if [ -n "!{vepPluginGnomAdPath}" ]; then
     args+=("--plugin" "gnomAD,!{vepPluginGnomAdPath}")
   fi
+  if [ -n "!{vepPluginGnomAdMtPath}" ]; then
+    args+=("--plugin" "gnomADMt,file=!{vepPluginGnomAdMtPath}")
+  fi
   if [ -n "!{vepPluginClinVarPath}" ]; then
       args+=("--plugin" "ClinVar,!{vepPluginClinVarPath}")
   fi
