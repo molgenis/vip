@@ -1,13 +1,12 @@
 //Reads a configuration file and returns only its parameter section
 def readConfigParams(String filePath) {
-    def defaultConfig = nextflow.config.ConfigParserFactory.create().parse( new File(filePath).toURI().toURL() );
-    HashMap<String, Object> defaultParams = defaultConfig.get("params");
-    return defaultParams;
+    def defaultConfig = nextflow.config.ConfigParserFactory.create().parse( new File(filePath));
+    return defaultConfig.get("params");
 }
 
 
 //Adds some CLI options (input and output) as these also end up in the default params object.
-def addCliParameters(Map<String, Object> paramsMap) {
+def addCliParameters(Map paramsMap) {
     paramsMap.put("input", "path/to/samplesheet");
     paramsMap.put("output", "path/to/outputdir");
     return paramsMap;
@@ -16,13 +15,11 @@ def addCliParameters(Map<String, Object> paramsMap) {
 
 //Method that asserts that all supplied parameters are valid.
 def assertAllKeysExist(
-            Map<String, Object> source,
-            Map<String, Object> target,
+            Map source,
+            Map target,
             String path
     ) {
-        for (Map.Entry<String, Object> entry : source.entrySet()) {
-            String key = entry.getKey();
-            Object sourceValue = entry.getValue();
+        source.each { key, sourceValue ->
             String currentPath = path.isEmpty() ? key : path + "." + key;
 
             if (!target.containsKey(key)) {
@@ -41,8 +38,8 @@ def assertAllKeysExist(
                 }
 
                 assertAllKeysExist(
-                        (Map<String, Object>) sourceValue,
-                        (Map<String, Object>) targetValue,
+                        sourceValue,
+                        targetValue,
                         currentPath
                 );
             }

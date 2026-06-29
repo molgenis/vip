@@ -16,15 +16,15 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * input:  [project, sample, ...]
  */
 workflow gvcf {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
       | flatMap { meta -> scatter(meta) }
       | set { ch_inputs_scattered }
 
     // joint variant calling per project, per chunk
     ch_inputs_scattered
-      | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+      | map { meta -> [groupKey(meta.findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
       | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
       | map { key, group -> validateGroup(key, group) }
       | map { meta, samples -> [meta, samples.collect { it.gvcf.data }, samples.collect { it.gvcf.index } ]}
@@ -39,7 +39,7 @@ workflow gvcf {
       | merge_publish
 
     ch_vcf_per_chunk_called.done
-      | map { meta, vcf, vcfIndex, vcfStats -> [*:meta, vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
+      | map { meta, vcf, vcfIndex, vcfStats -> meta + [vcf: [data: vcf, index: vcfIndex, stats: vcfStats]] }
       | vcf
 }
 
@@ -126,7 +126,7 @@ workflow {
     | map { meta, containers ->
         def gVcf = containers.find { it.gvcf != null }.gvcf
         def cram = containers.find { it.cram != null }?.cram
-        [*:meta, sample: [*:meta.sample, gvcf: gVcf, cram: cram]]
+        meta + [sample: meta.sample + [gvcf: gVcf, cram: cram]]
       }
     | set { ch_sample_preprocessed }
 
@@ -135,7 +135,7 @@ workflow {
   | map { meta -> [groupKey(meta.project, meta.project.samples.size), meta.sample] }
   | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
   | map { key, group -> validateGroup(key, group) }
-  | map { project, samples -> [*:project, assembly: params.assembly, samples: samples] }
+  | map { project, samples -> project + [assembly: params.assembly, samples: samples] }
   | set { ch_project_preprocessed }
 
   // map to updated samples
@@ -156,8 +156,8 @@ def parseSampleSheet(params) {
   def cols = [
 		assembly: [
 			type: "string",
-			default: { 'GRCh38' },
-			enum: ['GRCh37', 'GRCh38', 'T2T']
+			'default': { 'GRCh38' },
+			'enum': ['GRCh37', 'GRCh38', 'T2T']
 		],
     gvcf: [
       type: "file",
@@ -186,7 +186,7 @@ def validate(projects) {
 }
 
 def validateParameters(params) {
-  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_gvcf.config");
+  def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_gvcf.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
 }

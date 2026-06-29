@@ -9,17 +9,17 @@ def parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename) {
 	}
 
 	def hpoTermIds=[:]
-	for (int i = 1; i < lines.size(); i++) {
+	(1..<lines.size()).each { i ->
 		def lineNr = i + 1
 
 		def line = lines[i]
-		if (line == null) continue;
+		if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != 3) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
 
-		def tokens = line.split('\t', -1)
-		if (tokens.length != 3) exit 1, "error parsing '${hpoPhenotypicAbnormalityFilename}' line ${lineNr}: expected 3 columns instead of ${tokens.length}"
-
-		def hpoTermId=tokens[0]
-		hpoTermIds[hpoTermId]=null
+			def hpoTermId=tokens[0]
+			hpoTermIds[hpoTermId]=null
+		}
 	}
 	return hpoTermIds
 }
@@ -32,12 +32,16 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
   def commonCols = [
     project_id: [
       type: "string",
-      default: { 'vip' },
+      'default': { 'vip' },
       regex: /[a-zA-Z0-9_-]+/
     ],
     family_id: [
       type: "string",
-      default: { "fam${seq_nr++}" },
+      'default': {
+        def id = "fam${seq_nr}"
+        seq_nr += 1
+        return id
+      },
       regex: /[a-zA-Z0-9_-]+/
     ],
     individual_id: [
@@ -55,7 +59,7 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     sex: [
       type: "string",
-      enum: ["male", "female"]
+      'enum': ["male", "female"]
     ],
     affected: [
       type: "boolean",
@@ -75,18 +79,18 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     sequencing_method: [
       type: "string",
-      default: { 'WGS' },
-      enum: ['WES', 'WGS'],
+      'default': { 'WGS' },
+      'enum': ['WES', 'WGS'],
       scope: "project"
     ],
     pcr_performed: [
       type: "boolean",
-      default: { 'false' },
+      'default': { 'false' },
       scope: "project"
     ]
   ]
 
-  def cols = [*:commonCols, *:additionalCols]
+  def cols = commonCols + additionalCols
 
   def hpoTermIdMap = parseHpoPhenotypicAbnormality(hpoPhenotypicAbnormalityFilename)
 
@@ -104,23 +108,23 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
   if (lines.size() == 1) exit 1, "error parsing '${csvFilename}': file does not contain data"
 
   def samples=[]
-  for (int i = 1; i < lines.size(); i++) {
+  (1..<lines.size()).each { i ->
     def lineNr = i + 1
 
     def line = lines[i]
-    if (line == null) continue;
-    
-    def tokens = line.split('\t', -1)
-    if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
-    
-    def sample
-    try {
-      sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile(), hpoTermIdMap)
-    } catch(IllegalArgumentException e) {
-      exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
+    if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != headerTokens.length) exit 1, "error parsing '${csvFilename}' line ${lineNr}: expected ${headerTokens.length} columns instead of ${tokens.length}"
+
+			def sample
+			try {
+				sample = parseSample(tokens, colsWithIndex, csvFile.getParentFile(), hpoTermIdMap)
+			} catch(IllegalArgumentException e) {
+				exit 1, "error parsing '${csvFilename}' line ${lineNr}: ${e.message}"
+			}
+			sample.index = i
+			samples << sample
     }
-    sample.index = i
-    samples << sample
   }
 
   def projects
@@ -181,7 +185,7 @@ def parseHeader(tokens, colMetaMap) {
     if (index == null) {
       if(col.required == true) throw new IllegalArgumentException("missing column '${colId}'")
     }
-    colMetaIndexMap[colId] = [*:col, index: index]
+    colMetaIndexMap[colId] = col + [index: index]
   }
 
   return colMetaIndexMap
@@ -190,21 +194,21 @@ def parseHeader(tokens, colMetaMap) {
 def parseValueStringList(token, col) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect(value -> parseValueString(value, col))
+  return values.collect { value -> parseValueString(value, col) }
 }
 
 def parseValueString(token, col) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   if(value != null) {
-    if(col.enum && !col.enum.contains(value) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col.enum.join(", ")}]")
+    if(col['enum'] && !col['enum'].contains(value) && value != null) throw new IllegalArgumentException("invalid value '${token}', valid values are [${col['enum'].join(", ")}]")
     if(col.regex && !(value ==~ col.regex)) throw new IllegalArgumentException("invalid value '${token}' does not match regex '${col.regex}'")
   }
   return value
 }
 
 def parseValueBoolean(token, col) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   
   def booleanValue
@@ -218,11 +222,11 @@ def parseValueBoolean(token, col) {
 def parseValueFileList(token, col, rootDir) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect(value -> parseValueFile(value, col, rootDir))
+  return values.collect { value -> parseValueFile(value, col, rootDir) }
 }
 
 def parseValueFile(token, col, rootDir) {
-  def value = token.length() > 0 ? token : (col.default ? col.default() : null)
+  def value = token.length() > 0 ? token : (col['default'] ? col['default']() : null)
   if(col.required && value == null) throw new IllegalArgumentException("required value is empty")
   def fileValue
   if(value != null) {
@@ -240,18 +244,14 @@ def parseValueFile(token, col, rootDir) {
 
 def parseValue(token, col, rootDir) {
   def value
-  switch(col.type) {
-    case "string":
-      value = col.list ? parseValueStringList(token, col) : parseValueString(token, col)
-      break
-    case "boolean":
-      value = parseValueBoolean(token, col)
-      break
-    case "file":
-      value = col.list ? parseValueFileList(token, col, rootDir) : parseValueFile(token, col, rootDir)
-      break
-    default:
-      throw new RuntimeException("unexpected column type '${col.type}'")
+  if(col.type == 'string') {
+    value = col.list ? parseValueStringList(token, col) : parseValueString(token, col)
+  } else if(col.type == 'boolean') {
+    value = parseValueBoolean(token, col)
+  } else if(col.type == 'file') {
+    value = col.list ? parseValueFileList(token, col, rootDir) : parseValueFile(token, col, rootDir)
+  } else {
+    throw new RuntimeException("unexpected column type '${col.type}'")
   }
   return value;
 }
@@ -289,7 +289,7 @@ def parseProjects(samples, cols) {
       projectSamples = []
       samplesByProject[sample.project_id] = projectSamples
     }
-    projectSamples.push([*:sample].findAll { it.key != 'project_id'})
+    projectSamples.push(sample.findAll { it.key != 'project_id'})
   }
   
   // create projects
@@ -311,5 +311,5 @@ def parseProjects(samples, cols) {
 }
 
 def getAssemblies(projects) {
-  projects.collect(project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly }).flatten().unique()
+  projects.collect { project -> project.containsKey("assembly") ? [project.assembly] : project.samples.collect { sample -> sample.assembly } }.flatten().unique()
 }

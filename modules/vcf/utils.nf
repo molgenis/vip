@@ -44,10 +44,10 @@ def determineChunks(meta) {
   def fastaContigs = parseFastaIndex(params[meta.project.assembly].reference.fastaFai).collectEntries { record -> [record.contig, record] }
   def records = meta.vcf.stats.readLines().collect { line -> line.split('\t') }
 
-  int chunkSize = 10000
-  int maxNrRecords = records.size() > 0 ? Math.max((records.max { record -> record[2] as int })[2] as int, chunkSize) : chunkSize
+  def chunkSize = 10000
+  def maxNrRecords = records.size() > 0 ? Math.max((records.max { record -> record[2] as int })[2] as int, chunkSize) : chunkSize
 
-  int regionNrRecords=0
+  def regionNrRecords=0
   def regions=[]
   def chunks=[]
   records.each { record ->
@@ -57,7 +57,7 @@ def determineChunks(meta) {
         def fasta = params[meta.project.assembly].reference.fasta
         throw new IllegalArgumentException("vcf chromosome '${vcfContig}' does not exist in reference genome '${fasta}' (assembly '${meta.project.assembly}'). are you using the correct reference genome?")
     }
-    int contigNrRecords = record[2] as int
+    def contigNrRecords = record[2] as int
     if(regionNrRecords + contigNrRecords <= maxNrRecords) {
       regions.add([chrom: fastaContig.contig, chromStart: 0, chromEnd: fastaContig.size])
       regionNrRecords += contigNrRecords
@@ -79,12 +79,22 @@ def determineChunks(meta) {
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
-    return !chunks.isEmpty() ? chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ]) : [[*:meta, chunk: [index: 0, regions: [], total: 0] ]]
+    return !chunks.isEmpty() ? chunks.collect { chunk ->
+			def currentIndex = index
+			index += 1
+
+			meta + [
+					chunk: [
+							index: currentIndex,
+							regions: chunk,
+							total: chunks.size()
+					]
+			] } : [meta + [chunk: [index: 0, regions: [], total: 0] ]]
 }
 
 def preGroupTupleConcat(meta, vcf, vcfCsi, vcfStats) {
     // take into account that scatter returns one 'empty' chunk in case of zero 'calculated' chunks
-    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), [*:meta, vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
+    [groupKey(meta.project.id, meta.chunk.total != 0 ? meta.chunk.total : 1), meta + [vcf: vcf, vcf_index: vcfCsi, vcf_stats: vcfStats]]
 }
 
 def postGroupTupleConcat(groupKey, group) {
@@ -93,7 +103,9 @@ def postGroupTupleConcat(groupKey, group) {
   def metaList = validatedKeyGroup[1]
 
   def filteredMetaList = metaList.findAll { meta -> nrRecords(meta.vcf_stats) > 0 }
-  def meta, vcfs, vcfIndexes
+  def meta
+  def vcfs
+  def vcfIndexes
   if(filteredMetaList.size() == 0) {
     meta = metaList.first()
     vcfs = [meta.vcf]
@@ -110,6 +122,6 @@ def postGroupTupleConcat(groupKey, group) {
     vcfs = sortedMetaList.collect { it.vcf }
     vcfIndexes = sortedMetaList.collect { it.vcf_index }
   }
-  meta = [*:meta].findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
+  meta = meta.findAll { it.key != 'vcf' && it.key != 'vcf_index' && it.key != 'vcf_stats' && it.key != 'chunk' }
   return [meta, vcfs, vcfIndexes]
 }
