@@ -18,16 +18,16 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * output: [project, vcf,    ...]
  */
 workflow cram {
-  take: meta
+  take: meta_ch
   main:
     def nrActivateVariantCallerTypes = 0
-    if(params.cram.call_snv) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_str) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_sv) ++nrActivateVariantCallerTypes;
-    if(params.cram.call_cnv) ++nrActivateVariantCallerTypes;
+    if(params.cram.call_snv) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_str) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_sv) nrActivateVariantCallerTypes += 1;
+    if(params.cram.call_cnv) nrActivateVariantCallerTypes += 1;
 
     // output pre-preprocessed crams to coverage, cnv, snv, str and sv channels
-    meta    
+    meta_ch
       | multiMap { it -> coverage: snv: str: sv: cnv: it }
       | set { ch_cram_multi }
 
@@ -98,7 +98,7 @@ workflow cram {
 
     // continue with vcf workflow
     Channel.empty().mix(ch_project_vcf_filtered, ch_project_vcf_called.ready)
-      | map { meta, vcf -> [*:meta, vcf: vcf] }
+      | map { meta, vcf -> meta + [vcf: vcf] }
       | vcf
 }
 
@@ -117,20 +117,20 @@ workflow {
   ch_sample
     | map { meta -> [meta, meta.project.assembly, meta.sample.cram] }
     | validate_cram
-    | map { meta, cram, cramIndex, cramStats -> [*:meta, sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+    | map { meta, cram, cramIndex, cramStats -> meta + [sample: meta.sample + [cram: [data: cram, index: cramIndex, stats: cramStats]]] }
     | set { ch_sample_validated }
 
   // update project samples
   ch_sample_validated
-    | map { meta -> [groupKey([*:meta].findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
+    | map { meta -> [groupKey(meta.findAll { it.key != 'sample' }, meta.project.samples.size), meta.sample] }
     | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
     | map { key, group -> validateGroup(key, group) }
-    | map { meta, samples -> [*:meta, project: [*:meta.project, samples: samples]] }
+    | map { meta, samples -> meta + [project: meta.project + [samples: samples]] }
     | set { ch_project_validated }
 
   // decide whether realignment is required
   ch_project_validated
-    | flatMap { meta -> meta.project.samples.collect { sample -> [*:meta, sample: sample] } }
+    | flatMap { meta -> meta.project.samples.collect { sample -> meta + [sample: sample] } }
     | cram
 }
 
@@ -167,18 +167,18 @@ def parseSampleSheet(params) {
     ],
     sequencing_platform: [
       type: "string",
-      default: { 'nanopore' },
-      enum: ['illumina', 'nanopore', 'pacbio_hifi'],
+      'default': { 'nanopore' },
+      'enum': ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
     ]
   ]
 
 	def projects = parseCommonSampleSheet(params.input, params.hpo_phenotypic_abnormality, cols)
-  return projects.collect { project -> [*:project, assembly: params.assembly] }
+  return projects.collect { project -> project + [assembly: params.assembly] }
 }
 
 def validateParameters(params) {
-  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_cram.config");
+  def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_cram.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
 }

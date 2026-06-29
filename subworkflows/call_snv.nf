@@ -12,9 +12,9 @@ include { concat_snv_vcf } from '../modules/cram/concat_snv_vcf'
  * output: meta[project, ...        ], vcf
  */
 workflow snv {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
 			| multiMap { it -> normal: chrm: it }
 			| set { ch_snv }
     
@@ -27,12 +27,12 @@ workflow snv {
       | map { meta ->
           def familySize = meta.project.samples.count { it.family_id == meta.sample.family_id }
           def family = [id: meta.sample.family_id]
-          return [groupKey([*:meta, family: family].findAll { it.key != 'sample' }, familySize), meta.sample]
+          return [groupKey((meta + [family: family]).findAll { it.key != 'sample' }, familySize), meta.sample]
         }
       | groupTuple(remainder: true, sort: { left, right -> left.index <=> right.index })
       | map { key, group -> validateGroup(key, group) }
-      | map { meta, samples -> [*:meta, family: [*:meta.family, samples: samples]] }
-      | flatMap { meta -> meta.family.samples.collect { sample -> [*:meta, sample: sample ] } }
+      | map { meta, samples -> meta + [family: meta.family + [samples: samples]] }
+      | flatMap { meta -> meta.family.samples.collect { sample -> meta + [sample: sample ] } }
       | set { ch_snv_family }
       
     // split channel in cram chunks with and without mapped reads
