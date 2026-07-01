@@ -187,11 +187,11 @@ install_files() {
   data+=("8c65c0ec075781c49dffc78d87a64360" "images/expansionhunter-5.0.0+build.3.sif" "")
   data+=("570df812e546946ebe2a11141be4ea12" "images/fastp-1.1.0.sif" "")
   data+=("f3bf2f8f28698a86fad298da369bfab5" "images/gado-1.0.3+build.3.sif" "")
-  data+=("f9ea6cdc68f0b586a0673b07c65ced28" "images/gatk-4.6.2.0.sif" "")
+  data+=("5b5dd030bf292e72023007b1f5029e84" "images/gatk-4.6.2.0+build.1.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("bc731b5fad6c75a1bc81b9afb75c06ca" "images/happy-0.3.15.sif" "")
   data+=("7718ec9b21b13b089bb31e7b97731dc1" "images/manta-1.6.0+build.2.sif" "")
-  data+=("54337bc1bed4fd505a7773e8920f2c0d" "images/minimap2-2.30.sif" "")
+  data+=("db415eb9b9dd11657580d1e7df99ed10" "images/minimap2-2.31.sif" "")
   data+=("ba207b583a9416eec6435c868ae498ea" "images/mosdepth-0.3.13.sif" "")
   data+=("8d7421af13d7db1739b28046bb6f2695" "images/picard-3.4.0.sif" "")
   data+=("0761f8f2466e9b9627ae8f73b3df00ad" "images/samtools-1.23.1.sif" "")
@@ -205,8 +205,23 @@ install_files() {
   data+=("1fa055c46e0ca6787f4450ec67fbc9e2" "images/vcf-report-8.2.4.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
-  data+=("552b8da06541123bde302a03bc5372ef" "nextflow-25.10.4-dist" "postprocess_nextflow")
-  #data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.6/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
+  # custom build nextflow dist to workaround https://github.com/nextflow-io/nextflow/issues/7261
+  # nextflow-26.04.4 with the following change applied:
+  #
+  # diff --git a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # index 434efe31c..2ca1f25a0 100644
+  # --- a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # +++ b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # @@ -849,7 +849,7 @@ class VariableScopeVisitor extends ScriptVisitorSupport {
+  #          if( !(currentDefinition instanceof ProcessNode) )
+  #              return;
+  #          var mn = asMethodVariable(variable);
+  # -        if( mn != null && mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
+  # +        if( mn != null && mn.getDeclaringClass() != null &&  mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
+  #              if( WARN_GLOBALS.contains(variable.getName()) )
+  #                  vsc.addWarning("The use of `" + variable.getName() + "` in a process is discouraged -- input files should be provided as process inputs", variable.getName(), context);
+  #          }
+  data+=("405286ba60fe4e519c2d8cec5608a047" "nextflow-26.04.4-dist" "postprocess_nextflow")
   data+=("cfa476704db9a67c0f94d99eb67d0fd2" "resources/annotsv/v3.5.5/2406_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a67ff13ccf5a346aee3cc27f35ffcffe" "resources/annotsv/v3.5.5/Annotations_Human_3.5.tar.gz" "postprocess_annotsv_annotations")
   data+=("296aedb05baca02176fe3c8767852d2d" "resources/annotsv/v3.5.5/jar/exomiser-rest-prioritiser-14.1.0.jar" "")

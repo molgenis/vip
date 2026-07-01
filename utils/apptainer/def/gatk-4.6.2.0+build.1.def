@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/openjdk-25.sif
+From: sif/build/debian-13.3.sif
 
 %help
     Genome Analysis Toolkit - Variant Discovery in High-Throughput Sequencing Data.
@@ -8,9 +8,8 @@ From: sif/build/openjdk-25.sif
     version=4.6.2.0
 
     # install
-    apk update
-    apk add libgomp gcompat
-    apk add --virtual=.build-dependencies curl
+    apt-get update > /dev/null
+    apt-get install unzip curl libgomp1 openjdk-25-jre > /dev/null
 
     mkdir -p /opt/gatk/lib
     curl -Ls -o gatk.zip "https://github.com/broadinstitute/gatk/releases/download/${version}/gatk-${version}.zip"
@@ -18,8 +17,7 @@ From: sif/build/openjdk-25.sif
     unzip -p gatk.zip "gatk-${version}/gatk-package-${version}-local.jar" > /opt/gatk/lib/gatk.jar
 
     # cleanup
-    apk del .build-dependencies
-    rm -rf /var/cache/apk/* gatk.zip
+    rm -rf /var/lib/apt/lists/*
 
 %runscript
     exec java -jar /opt/gatk/lib/gatk.jar "$@"
