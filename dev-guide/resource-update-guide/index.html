@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://molgenis.github.io/vip/dev-guide/resource-update-guide/" rel="canonical"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>Resource Updates - Variant Interpretation Pipeline</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/panzoom.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Resource Updates";
+        var mkdocs_page_input_path = "dev-guide/resource-update-guide.md";
+        var mkdocs_page_url = "/vip/dev-guide/resource-update-guide/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<meta name="panzoom-theme" content="readthedocs">
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> Variant Interpretation Pipeline
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Home</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../home/key_features/">Key features</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/requirements/">Requirements</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/installation/">Installation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/start_running/">Start running</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/command-line-options/">Command-line options</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/workflow/">Workflow</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/input/">Input</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output/">Output</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/config/">Config</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/fastq/">FastQ</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/cram/">CRAM</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/gvcf/">gVCF</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/vcf/">VCF</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/annotations/">Annotations</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/classification_trees/">Classification trees</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/report_templates/">Report templates</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal current" href="#">Resource Updates</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#purpose">Purpose</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#tools">Tools</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-typically-involve">Updates typically involve</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#resources">Resources</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples_1">Examples</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-typically-involve_1">Updates typically involve</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-tools">Updating Tools</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#default">Default</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-resources">Updating Resources</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#default_1">Default</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exceptions_1">Exceptions</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../help/issues/">Issues</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../help/frequently_asked_questions/">Frequently asked questions</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/acknowledgements/">Acknowledgements</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">Variant Interpretation Pipeline</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a></li>
+<li class="breadcrumb-item">Developer Guide</li>
+<li class="breadcrumb-item active">Resource Updates</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/molgenis/vip/edit/main/docs/dev-guide/resource-update-guide.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="resource-update-guide">Resource Update Guide<a class="headerlink" href="#resource-update-guide" title="Permanent link">¶</a></h1>
+<h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">¶</a></h2>
+<p>This guide describes how to update tools and resources used by VIP.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>Pipeline dependencies are divided into tools and resources.</p>
+<h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">¶</a></h3>
+<p>Tools are software components packaged as <a href="https://apptainer.org/">Apptainer</a> container images.</p>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h4>
+<ul>
+<li>BCFtools</li>
+<li>Minimap2</li>
+<li>Mosdepth</li>
+</ul>
+<h4 id="updates-typically-involve">Updates typically involve<a class="headerlink" href="#updates-typically-involve" title="Permanent link">¶</a></h4>
+<ul>
+<li>Updating the <code>.def</code> file</li>
+<li>Building a new <code>.sif</code> image</li>
+<li>Uploading the <code>.sif</code> to registry</li>
+<li>Updating the pipeline to use the new <code>.sif</code></li>
+<li>Validation</li>
+</ul>
+<h3 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">¶</a></h3>
+<p>Resources are non-executable datasets or configuration assets used by tools during analysis.</p>
+<h4 id="examples_1">Examples<a class="headerlink" href="#examples_1" title="Permanent link">¶</a></h4>
+<ul>
+<li>ClinVar</li>
+<li>HPO</li>
+<li>Classification tree</li>
+<li>Report template</li>
+</ul>
+<h4 id="updates-typically-involve_1">Updates typically involve<a class="headerlink" href="#updates-typically-involve_1" title="Permanent link">¶</a></h4>
+<ul>
+<li>Uploading the resources to registry</li>
+<li>Updating the pipeline to use the new resource</li>
+<li>Validation</li>
+</ul>
+<h2 id="updating-tools">Updating Tools<a class="headerlink" href="#updating-tools" title="Permanent link">¶</a></h2>
+<p>Decide whether this tool requires default or exceptional update procedure.</p>
+<h3 id="default">Default<a class="headerlink" href="#default" title="Permanent link">¶</a></h3>
+<ul>
+<li>Locate <code>&lt;tool&gt;.def</code> file in <code>utils/apptainer/def</code></li>
+<li>Update tool version number in the <code>&lt;tool&gt;.def</code> file</li>
+<li>Update tool version number in the <code>&lt;tool&gt;.def</code> filename</li>
+<li>Update tool version number in <code>utils/apptainer/makefile</code></li>
+<li>Run <code>make &lt;tool&gt;</code></li>
+<li>Ensure that filename was changed to prevent file overwrite in next step as well as prevent user caching issues</li>
+<li>Upload <code>sif/&lt;tool_with_updated_filename&gt;.sif</code> to https://download.molgeniscloud.org/downloads/vip/images</li>
+<li>Run <code>md5sum sif/&lt;tool_with_updated_filename&gt;.sif</code></li>
+<li>Update <code>&lt;tool_with_updated_filename&gt;.sif</code> filename and checksum in <code>/install_data.sh</code> located in function
+  <code>install_files()</code></li>
+<li>Update <code>&lt;tool_with_updated_filename&gt;.sif</code> in <code>config/nxf_&lt;workflow&gt;.config</code></li>
+</ul>
+<h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">¶</a></h3>
+<p>Exceptional update procedure might exist for some tools, contact @bartcharbon or @dennishendriksen.</p>
+<h2 id="updating-resources">Updating Resources<a class="headerlink" href="#updating-resources" title="Permanent link">¶</a></h2>
+<p>Decide whether this resource requires default or exceptional update procedure.</p>
+<h3 id="default_1">Default<a class="headerlink" href="#default_1" title="Permanent link">¶</a></h3>
+<ul>
+<li>Ensure that resource filename was changed to prevent file overwrite in next step as well as prevent user caching
+  issues</li>
+<li>Upload <code>&lt;resource&gt;</code> to https://download.molgeniscloud.org/downloads/vip/resources or the relevant subfolder</li>
+<li>Run <code>md5sum &lt;resource&gt;</code></li>
+<li>Update <code>&lt;resource&gt;</code> filename and checksum in <code>/install_data.sh</code> located in function <code>install_files()</code></li>
+<li>Update references to <code>&lt;resource&gt;</code> in pipeline code</li>
+</ul>
+<h3 id="exceptions_1">Exceptions<a class="headerlink" href="#exceptions_1" title="Permanent link">¶</a></h3>
+<p>Exceptional update procedure might exist for some tools, contact @bartcharbon or @dennishendriksen.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../../advanced/report_templates/" title="Report templates"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../help/issues/" title="Issues">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2026 University Medical Center Groningen All rights reserved</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/molgenis/vip/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../../advanced/report_templates/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../help/issues/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="../../js/mermaid.min.js"></script>
+<script src="../../search/main.js"></script>
+<script src="../../assets/javascripts/panzoom.min.js"></script>
+<script src="../../assets/javascripts/zoompan.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+</body>
+</html>
