@@ -202,7 +202,7 @@ install_files() {
   data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
   data+=("b87879d31670125bddb81b2187f1c1d8" "images/vcf-decision-tree-6.0.2.sif" "")
   data+=("cd4518870075d0ab92127ce810b5bc06" "images/vcf-inheritance-matcher-4.0.1.sif" "")
-  data+=("TODO" "images/vcf-report-8.3.0.sif" "")
+  data+=("408679beb6ba7fcbe36692f8aef7c764" "images/vcf-report-8.3.0.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
   # custom build nextflow dist to workaround https://github.com/nextflow-io/nextflow/issues/7261
@@ -279,7 +279,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("b4ad11f1299acb2d023ea8b188931da1" "resources/vep/cache/homo_sapiens_refseq_vep_115_GRCh38.tar.gz" "postprocess_vep")
-  data+=("e6ff6f27792808358cd84ef8721f8572" "resources/vip-report-template-v8.5.0.html" "")
+  data+=("5403eefa0e011ccbd54e9e3ee4da2712" "resources/vip-report-template-v8.5.1.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do
