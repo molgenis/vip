@@ -104,6 +104,21 @@
     },
     "cells": {
       "all": [
+{
+          "type": "composed",
+          "name": "notesInput",
+          "additionalConfig": 
+          {
+            "classification_options": [
+            { "value": "B", "label": "Benign" },
+            { "value": "LB", "label": "Likely Benign" },
+            { "value": "VUS", "label": "Variant of Uncertain Significance" },
+            { "value": "LP", "label": "Likely Pathogenic" },
+            { "value": "P", "label": "Pathogenic" },
+            { "value": "A", "label": "Artefact" }
+            ]
+          }
+        },
         {
           "type": "composed",
           "name": "locus"
@@ -195,6 +210,21 @@
         }
       ],
       "snv": [
+{
+          "type": "composed",
+          "name": "notesInput",
+          "additionalConfig": 
+          {
+            "classification_options": [
+            { "value": "B", "label": "Benign" },
+            { "value": "LB", "label": "Likely Benign" },
+            { "value": "VUS", "label": "Variant of Uncertain Significance" },
+            { "value": "LP", "label": "Likely Pathogenic" },
+            { "value": "P", "label": "Pathogenic" },
+            { "value": "A", "label": "Artefact" }
+            ]
+          }
+        },
         {
           "type": "composed",
           "name": "locus"
@@ -285,9 +315,28 @@
         }
       ],
       "str": [
+{
+          "type": "composed",
+          "name": "notesInput",
+          "additionalConfig": 
+          {
+            "classification_options": [
+            { "value": "B", "label": "Benign" },
+            { "value": "LB", "label": "Likely Benign" },
+            { "value": "VUS", "label": "Variant of Uncertain Significance" },
+            { "value": "LP", "label": "Likely Pathogenic" },
+            { "value": "P", "label": "Pathogenic" },
+            { "value": "A", "label": "Artefact" }
+            ]
+          }
+        },
         {
           "type": "composed",
           "name": "locus"
+        },
+{
+          "type": "composed",
+          "name": "numberOfRepeatUnits"
         },
         {
           "type": "composed",
