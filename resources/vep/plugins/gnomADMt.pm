@@ -64,11 +64,42 @@ use strict;
 use warnings;
 
 use List::Util qw(max);
+use Data::Dumper;
 
 use Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin;
 use Bio::EnsEMBL::Variation::Utils::Sequence qw(get_matched_variant_alleles);
 
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepTabixPlugin);
+
+sub _add_vip_required_fields {
+  my $requested_fields_str = shift;
+  print "REQUESTED_FIELDS_STR: $requested_fields_str";
+  if ( $requested_fields_str eq "" ) {
+    $requested_fields_str = "AC_hom:AC_het:AN";
+  }
+
+  # Split the requested fields for checking
+  my @requested_fields = split /:/, $requested_fields_str;
+  my $add_fields = "";
+
+  # Check for AC_hom
+  if ( (grep { $_ eq 'AC_hom' } @requested_fields) < 1 ) {
+    $add_fields .= ":AC_hom";
+  }
+
+  # Check for AC_het
+  if ( (grep { $_ eq 'AC_het' } @requested_fields) < 1 ) {
+    $add_fields .= ":AC_het";
+  }
+
+  # Check for AN
+  if ( (grep { $_ eq 'AN' } @requested_fields) < 1 ) {
+    $add_fields .= ":AN";
+  }
+
+  $requested_fields_str .= $add_fields;
+  return $requested_fields_str;
+}
 
 sub _validate_list_selection {
   # Validate string $selected can be split into a list of valid items,
@@ -157,6 +188,8 @@ sub new {
 
   # Process the requested fields
   my $requested_fields_str = defined $params->{fields} ? $params->{fields} : 'hap_AC_hom:hap_AC_het:hap_AF_hom:hap_AF_het:hap_AN';
+  $requested_fields_str = _add_vip_required_fields($requested_fields_str);
+  print "REQUESTED_FIELDS: $requested_fields_str \n";
   my $fields = _validate_list_selection($requested_fields_str, $info_ids);
 
   $self->{fields} = $fields;
@@ -245,6 +278,10 @@ sub get_header_info {
     ''.$prefix.$_ => $field_descriptions{$_};
   } @{$self->{fields}};
 
+  $header_info{gnomAD_mt_AF} = "Overall allele frequency ((gnomAD_AC_hom + gnomAD_AC_het) / gnomAD_AN)";
+
+  print "HEADER_INFO:";
+  print Dumper(\%header_info);
   return \%header_info;
 }
 
@@ -265,6 +302,7 @@ sub run {
   $vf_end = $vf_start if $vf_start > $vf_end;
 
   my @data = @{ $self->get_data($vf_chr, max(1, $vf_start -2), $vf_end) };
+  #print "RUN_DATA: @data";
 
   return {} unless @data;
 
@@ -291,6 +329,7 @@ sub run {
 
     if (@$matches){
       $gnomad_freqs = $data_candidate->{'result'};
+      # print "$_|" for keys $data_candidate->{'result'};
       last;
     }
   }
@@ -371,6 +410,14 @@ sub parse_data {
   @{$self->{fields}};
 
   my $result = {map { $keys{$_} => $vcf_data->{$_} } @{$self->{fields}}};
+  my $gnomad_mt_af = ($result->{gnomAD_AC_hom} + $result->{gnomAD_AC_het}) / $result->{gnomAD_AN};
+  print "GNOMAD MT AF: $gnomad_mt_af \n";
+
+  # Add the gnomAD MT AF to the result map
+  $result->{gnomAD_mt_AF} = $gnomad_mt_af;
+
+  print "$vcf_data->{'start'} | $vcf_data->{'ref'} | $vcf_data->{'alt'}";
+  print Dumper(\$result);
 
   return {
     ref => $vcf_data->{ref},

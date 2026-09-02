@@ -20,7 +20,7 @@ total_precision=$(grep '5,records' "${OUTPUT_DIR}/sompy_out/test.stats.csv" | cu
 f1_total=$(sompyF1Score "${total_precision}" "${total_recall}")
 
 # compare expected to actual output and store result
-test_threshold="0.83"
+test_threshold="0.89"
 if (( $(echo "${f1_total} == ${test_threshold}" | bc -l) )); then
     result="0"
 else
