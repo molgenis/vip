@@ -7,7 +7,7 @@ SCRIPT_NAME="$(basename "$0")"
 # SCRIPT_DIR is incorrect when vip.sh is submitted as a Slurm job that is submitted as part of another Slurm job
 VIP_DIR="${VIP_DIR:-"${SCRIPT_DIR}"}"
 VIP_DIR_DATA="${VIP_DIR_DATA:-"${VIP_DIR}/../data"}"
-VIP_VERSION="9.2.2"
+VIP_VERSION="9.3.0"
 
 display_version() {
   echo -e "${VIP_VERSION}"
@@ -147,7 +147,7 @@ execute_workflow() {
   fi
   local envStrict="true"
 
-  local -r nextflow_version="25.10.4"
+  local -r nextflow_version="26.04.4"
 
   local args=()
   args+=("-C" "${configs}")

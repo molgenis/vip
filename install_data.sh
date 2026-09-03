@@ -187,7 +187,7 @@ install_files() {
   data+=("8c65c0ec075781c49dffc78d87a64360" "images/expansionhunter-5.0.0+build.3.sif" "")
   data+=("570df812e546946ebe2a11141be4ea12" "images/fastp-1.1.0.sif" "")
   data+=("f3bf2f8f28698a86fad298da369bfab5" "images/gado-1.0.3+build.3.sif" "")
-  data+=("f9ea6cdc68f0b586a0673b07c65ced28" "images/gatk-4.6.2.0.sif" "")
+  data+=("5b5dd030bf292e72023007b1f5029e84" "images/gatk-4.6.2.0+build.1.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("bc731b5fad6c75a1bc81b9afb75c06ca" "images/happy-0.3.15.sif" "")
   data+=("7718ec9b21b13b089bb31e7b97731dc1" "images/manta-1.6.0+build.2.sif" "")
@@ -202,11 +202,26 @@ install_files() {
   data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
   data+=("b87879d31670125bddb81b2187f1c1d8" "images/vcf-decision-tree-6.0.2.sif" "")
   data+=("cd4518870075d0ab92127ce810b5bc06" "images/vcf-inheritance-matcher-4.0.1.sif" "")
-  data+=("1fa055c46e0ca6787f4450ec67fbc9e2" "images/vcf-report-8.2.4.sif" "")
+  data+=("408679beb6ba7fcbe36692f8aef7c764" "images/vcf-report-8.3.0.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
-  data+=("552b8da06541123bde302a03bc5372ef" "nextflow-25.10.4-dist" "postprocess_nextflow")
-  #data+=("d9083115672ba278a0ad9baf01f747b3" "resources/annotsv/v3.4.6/2309_hg19.tar.gz" "postprocess_annotsv_hg19")
+  # custom build nextflow dist to workaround https://github.com/nextflow-io/nextflow/issues/7261
+  # nextflow-26.04.4 with the following change applied:
+  #
+  # diff --git a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # index 434efe31c..2ca1f25a0 100644
+  # --- a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # +++ b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
+  # @@ -849,7 +849,7 @@ class VariableScopeVisitor extends ScriptVisitorSupport {
+  #          if( !(currentDefinition instanceof ProcessNode) )
+  #              return;
+  #          var mn = asMethodVariable(variable);
+  # -        if( mn != null && mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
+  # +        if( mn != null && mn.getDeclaringClass() != null &&  mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
+  #              if( WARN_GLOBALS.contains(variable.getName()) )
+  #                  vsc.addWarning("The use of `" + variable.getName() + "` in a process is discouraged -- input files should be provided as process inputs", variable.getName(), context);
+  #          }
+  data+=("405286ba60fe4e519c2d8cec5608a047" "nextflow-26.04.4-dist" "postprocess_nextflow")
   data+=("cfa476704db9a67c0f94d99eb67d0fd2" "resources/annotsv/v3.5.5/2406_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a67ff13ccf5a346aee3cc27f35ffcffe" "resources/annotsv/v3.5.5/Annotations_Human_3.5.tar.gz" "postprocess_annotsv_annotations")
   data+=("296aedb05baca02176fe3c8767852d2d" "resources/annotsv/v3.5.5/jar/exomiser-rest-prioritiser-14.1.0.jar" "")
@@ -221,8 +236,8 @@ install_files() {
   data+=("b12d66a565a43c32d2791972064040c3" "resources/GRCh38/apogee2_scores_20260414.tsv.gz" "")
   data+=("5a114663f9717cd86a6b315997197069" "resources/GRCh38/apogee2_scores_20260414.tsv.gz.tbi" "")
   data+=("dd90c1408de065ba7b27f8bd00a44d46" "resources/GRCh38/capice_model_v5.1.2_v6.ubj" "")
-  data+=("d3ae8978ce5e593f7dac78b9a52cad05" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz" "")
-  data+=("cc5e3a837a770aede91cfb7502e31769" "resources/GRCh38/clinvar_20251201_stripped.tsv.gz.tbi" "")
+  data+=("c52254893af4d8393cf72c40d3ec07bf" "resources/GRCh38/clinvar_20260822_stripped.tsv.gz" "")
+  data+=("2d6bfd500fac1170447356e41634ea78" "resources/GRCh38/clinvar_20260822_stripped.tsv.gz.tbi" "")
   data+=("c3197ab5a9e6a6e3429d611149b4dedd" "resources/GRCh38/default_exon_20250303.bed" "")
   data+=("f94e8888dd109d12512132a17793b4b9" "resources/GRCh38/default_gene_20250303.bed" "")
   data+=("8e842bfe9c1eeb0943a588ff5662b9aa" "resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict" "")
@@ -266,7 +281,7 @@ install_files() {
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
   data+=("b4ad11f1299acb2d023ea8b188931da1" "resources/vep/cache/homo_sapiens_refseq_vep_115_GRCh38.tar.gz" "postprocess_vep")
-  data+=("57cc9d5806673871f9ddcbc0de295d09" "resources/vip-report-template-v8.4.1.html" "")
+  data+=("e6edbce2c036561bfe7c73e4ac47cbcb" "resources/vip-report-template-v8.5.2.html" "")
 
 
   for ((i = 0; i < ${#data[@]}; i += 3)); do

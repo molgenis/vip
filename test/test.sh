@@ -94,6 +94,7 @@ run() {
   local -r vip_dir_data="${VIP_DIR_DATA:-"${vip_dir}/../data"}"
   local -r tests_output_dir="${VIP_DIR_TEST_OUTPUT:-"${SCRIPT_DIR}/output"}"
   local -r nextflow_home_dir="${NXF_HOME:-"${tests_output_dir}/.nextflow"}"
+  local -r apptainer_cache_dir="${vip_dir_data}/images"
 
   # submit test jobs
   local case_id
@@ -137,7 +138,7 @@ run() {
     sbatch_args+=("--mem=1gb")
     sbatch_args+=("--nodes=1")
     sbatch_args+=("--open-mode=append")
-    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},VIP_DIR_DATA=${vip_dir_data},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},NXF_CACHE_DIR=${test_nextflow_cache_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
+    sbatch_args+=("--export=PATH=${vip_dir}:${PATH},VIP_DIR=${vip_dir},VIP_DIR_DATA=${vip_dir_data},TMPDIR=${test_output_dir}/tmp,NXF_HOME=${nextflow_home_dir},NXF_TEMP=${test_nextflow_temp_dir},NXF_WORK=${test_nextflow_work_dir},NXF_CACHE_DIR=${test_nextflow_cache_dir},APPTAINER_CACHEDIR=${apptainer_cache_dir},OUTPUT_DIR=${test_output_dir},TEST_RESOURCES_DIR=${test_resources_dir},TEST_UTILS_DIR=${SCRIPT_DIR}")
     sbatch_args+=("--get-user-env=L")
     sbatch_args+=("--output=${test_output_dir}/log/slurm_job.out")
     sbatch_args+=("--error=${test_output_dir}/log/slurm_job.err")

@@ -12,9 +12,9 @@ include { readConfigParams; addCliParameters; assertAllKeysExist } from './modul
  * output: [project, sample [cram, ...], ...]
  */
 workflow fastq {
-  take: meta
+  take: meta_ch
   main:
-    meta
+    meta_ch
       | branch { meta ->
           paired_end: !meta.sample.fastq_r1.isEmpty() && !meta.sample.fastq_r2.isEmpty()
           single: true
@@ -56,7 +56,7 @@ workflow fastq {
 
     // mix paired-end and single channels
     ch_input_paired_end_aligned.mix(ch_input_single_aligned)
-      | map { meta, cram, cramIndex, cramStats -> [*:meta, project: [*:meta.project, assembly: params.assembly], sample: [*:meta.sample, cram: [data: cram, index: cramIndex, stats: cramStats]]] }
+      | map { meta, cram, cramIndex, cramStats -> meta + [project: meta.project + [assembly: params.assembly], sample: meta.sample + [cram: [data: cram, index: cramIndex, stats: cramStats]]] }
       | cram
 }
 
@@ -108,8 +108,8 @@ def parseSampleSheet(params) {
     ],
     sequencing_platform: [
       type: "string",
-      default: { 'nanopore' },
-      enum: ['illumina', 'nanopore', 'pacbio_hifi'],
+      'default': { 'nanopore' },
+      'enum': ['illumina', 'nanopore', 'pacbio_hifi'],
       scope: "project"
     ]
   ]
@@ -137,7 +137,7 @@ def validate(projects) {
 }
 
 def validateParameters(params) {
-  acceptedParameters = readConfigParams("${VIP_DIR}/config/nxf_fastq.config");
+  def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_fastq.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
 }

@@ -26,6 +26,8 @@ nav:
       - 'Annotations': 'advanced/annotations.md'
       - 'Classification trees': 'advanced/classification_trees.md'
       - 'Report templates': 'advanced/report_templates.md'
+  - 'Developer Guide':
+      - 'Resource Updates': 'dev-guide/resource-update-guide.md'
   - 'Help':
       - 'Issues': 'help/issues.md'
       - 'Frequently asked questions': 'help/frequently_asked_questions.md'

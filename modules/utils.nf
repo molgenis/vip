@@ -15,16 +15,16 @@ def parseFastaIndex(faiFile) {
   if (lines.size() == 0) exit 1, "error parsing '${faiFile}': file is empty"
 
   def contigs = []
-  for (int i = 0; i < lines.size(); i++) {
+  (0..<lines.size()).each { i ->
     def lineNr = i + 1
 
     def line = lines[i]
-    if (line == null) continue;
+    if (line != null) {
+			def tokens = line.split('\t', -1)
+			if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
 
-    def tokens = line.split('\t', -1)
-    if (tokens.length != 5) exit 1, "error parsing '${faiFile}' line ${lineNr}: expected 5 columns instead of ${tokens.length}"
-    
-    contigs += [contig: tokens[0], size: tokens[1] as long, location: tokens[2] as long, basesPerLine: tokens[3] as long, bytesPerLine: tokens[4] as long]
+			contigs += [contig: tokens[0], size: tokens[1] as long, location: tokens[2] as long, basesPerLine: tokens[3] as long, bytesPerLine: tokens[4] as long]
+    }
   }
   return contigs
 }
@@ -55,7 +55,11 @@ def determineChunks(meta) {
 def scatter(meta) {
     def chunks = determineChunks(meta)
     def index = 0
-    chunks.collect(chunk -> [*:meta, chunk: [index: index++, regions: chunk, total: chunks.size()] ])
+    chunks.collect { chunk ->
+    	def currentIndex = index
+      index += 1
+    	meta + [chunk: [index: currentIndex, regions: chunk, total: chunks.size()] ]
+    }
 }
 
 def createPedigree(sampleSheet) {
