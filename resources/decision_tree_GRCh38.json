@@ -250,13 +250,55 @@
           "value": "chrM"
       },
       "outcomeTrue": {
-          "nextNode": "mtdna_transcript"
+          "nextNode": "gnomAD_mt_AF"
       },
       "outcomeFalse": {
           "nextNode": "gnomAD"
       },
       "outcomeMissing": {
           "nextNode": "gnomAD"
+      }
+    },
+    "gnomAD_mt_AF": {
+      "label": "GnomAD MT AF",
+      "description": "gnomAD MT Allele Frequency",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/gnomAD_mt_AF"
+      ],
+      "outcomes": [
+        {
+          "description": "Allele Frequency < 0.00002",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_mt_AF",
+              "operator": "<",
+              "value": 0.00002
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "Allele Frequency >= 0.005",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_mt_AF",
+              "operator": ">=",
+              "value": 0.005
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "mtdna_transcript"
+      },
+      "outcomeMissing": {
+        "nextNode": "mtdna_transcript"
       }
     },
     "mtdna_transcript": {

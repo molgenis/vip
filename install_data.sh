@@ -256,6 +256,8 @@ install_files() {
   data+=("a538173d85ea32638e05d36b602c8c32" "resources/GRCh38/GRCh38_PAR_20251126.bed" "")
   data+=("d6bf19522fdcf67b7ef871e1cde1970e" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz" "")
   data+=("9a0930823b0739a50816664fe9cfce0c" "resources/GRCh38/gnomad.total.v4.1.sites.stripped-v3.tsv.gz.tbi" "")
+  data+=("d0ef2bd882ae44236897d743cb5528cf" "resources/GRCh38/gnomad.genomes.v3.1.sites.chrM.vcf.bgz" "")
+  data+=("14f18719f5d86a00a00c475368913f8f" "resources/GRCh38/gnomad.genomes.v3.1.sites.chrM.vcf.bgz.tbi" "")
   data+=("43858006bdf98145b6fd239490bd0478" "resources/GRCh38/hg38.phyloP100way.bw" "")
   data+=("1c427de2e7f81caf73afbd50dd81cdf3" "resources/GRCh38/hmtvar_trna_scores.tsv.gz" "")
   data+=("7e64d9d639fd1501cbef8c24e1e866df" "resources/GRCh38/hmtvar_trna_scores.tsv.gz.tbi" "")
