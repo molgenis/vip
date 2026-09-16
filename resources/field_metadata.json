@@ -767,6 +767,13 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
+        "gnomAD_AF_hom": {
+          "label": "gnomad AF hom",
+          "description": "gnomAD mt homoplasmic allele frequency",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "gnomAD_COV": {
           "label": "gnomAD COV",
           "description": "gnomAD coverage (percent of individuals in gnomAD source)",

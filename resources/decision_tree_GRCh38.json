@@ -259,6 +259,48 @@
           "nextNode": "gnomAD"
       }
     },
+    "gnomAD_mt_AF": {
+      "label": "GnomAD MT AF",
+      "description": "gnomAD MT Allele Frequency",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "INFO/CSQ/gnomAD_AF_hom"
+      ],
+      "outcomes": [
+        {
+          "description": "Allele Frequency < 0.00002",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_AF_hom",
+              "operator": "<",
+              "value": 0.00002
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lp"
+          }
+        },
+        {
+          "description": "Allele Frequency >= 0.005",
+          "queries": [
+            {
+              "field": "INFO/CSQ/gnomAD_AF_hom",
+              "operator": ">=",
+              "value": 0.005
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_lb"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "sv"
+      },
+      "outcomeMissing": {
+        "nextNode": "sv"
+      }
+    },
     "mtdna_transcript": {
       "label": "mtDNA transcript",
       "description": "Which mtDNA transcript",
@@ -273,10 +315,10 @@
           }
       },
       "outcomeMissing": {
-          "nextNode": "sv"
+          "nextNode": "gnomAD_mt_AF"
       },
       "outcomeDefault": {
-          "nextNode": "sv"
+          "nextNode": "gnomAD_mt_AF"
       }
     },
     "mitotip": {
@@ -295,7 +337,7 @@
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "sv"
+        "nextNode": "gnomAD_mt_AF"
       }
     },
     "apogee": {
@@ -314,7 +356,7 @@
         "nextNode": "exit_lb"
       },
       "outcomeMissing": {
-        "nextNode": "sv"
+        "nextNode": "gnomAD_mt_AF"
       }
     },
     "gnomAD": {
