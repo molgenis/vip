@@ -760,20 +760,6 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
-        "gnomAD_AC_het": {
-          "label": "gnomAD AC het",
-          "description": "gnomAD mt total heteroplasmic allele count",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "INTEGER"
-        },
-        "gnomAD_AC_hom": {
-          "label": "gnomAD AC hom",
-          "description": "gnomAD mt total homoplasmic allele count",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "INTEGER"
-        },
         "gnomAD_AF": {
           "label": "gnomAD AF",
           "description": "gnomAD allele frequency",
@@ -781,12 +767,12 @@
           "numberCount": 1,
           "type": "FLOAT"
         },
-        "gnomAD_AN": {
-          "label": "gnomAD AN",
-          "description": "gnomAD mt total allele number",
+        "gnomAD_AF_hom": {
+          "label": "gnomad AF hom",
+          "description": "gnomAD mt homoplasmic allele frequency",
           "numberType": "NUMBER",
           "numberCount": 1,
-          "type": "INTEGER"
+          "type": "FLOAT"
         },
         "gnomAD_COV": {
           "label": "gnomAD COV",
@@ -815,13 +801,6 @@
           "numberType": "NUMBER",
           "numberCount": 1,
           "type": "INTEGER"
-        },
-        "gnomAD_mt_AF": {
-          "label": "GnomAD MT AF",
-          "description": "gnomAD mt Allele Frequency",
-          "numberType": "NUMBER",
-          "numberCount": 1,
-          "type": "FLOAT"
         },
         "gnomAD_SRC": {
           "label": "gnomAD SRC",

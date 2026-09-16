@@ -87,22 +87,22 @@ str_status_ -->|"normal"| exit_lb_
 str_status_ -->|"default"| exit_vus_
 str_status_ -->|"pre_mutation"| exit_vus_
 str_status_ -->|"full_mutation"| exit_lp_
-is_mtdna_ -->|"true"| gnomAD_mt_AF_
+is_mtdna_ -->|"true"| mtdna_transcript_
 is_mtdna_ -->|"false"| gnomAD_
 is_mtdna_ -->|"missing"| gnomAD_
-gnomAD_mt_AF_ -->|"default"| mtdna_transcript_
+gnomAD_mt_AF_ -->|"default"| sv_
 gnomAD_mt_AF_ -->|"Allele Frequency < 0.00002"| exit_lp_
 gnomAD_mt_AF_ -->|"Allele Frequency >= 0.005"| exit_lb_
-gnomAD_mt_AF_ -->|"missing"| mtdna_transcript_
-mtdna_transcript_ -->|"default"| sv_
+gnomAD_mt_AF_ -->|"missing"| sv_
+mtdna_transcript_ -->|"default"| gnomAD_mt_AF_
 mtdna_transcript_ -->|"tRNA"| mitotip_
 mtdna_transcript_ -->|"protein_coding"| apogee_
 mitotip_ -->|"true"| exit_lp_
 mitotip_ -->|"false"| exit_lb_
-mitotip_ -->|"missing"| sv_
+mitotip_ -->|"missing"| gnomAD_mt_AF_
 apogee_ -->|"true"| exit_lp_
 apogee_ -->|"false"| exit_lb_
-apogee_ -->|"missing"| sv_
+apogee_ -->|"missing"| gnomAD_mt_AF_
 gnomAD_ -->|"true"| sv_
 gnomAD_ -->|"false"| gnomAD_AF_
 gnomAD_AF_ -->|"default"| sv_
