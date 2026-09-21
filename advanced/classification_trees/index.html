@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -187,6 +187,7 @@ sv_("Is SV")
 str_("Is STR")
 str_status_("STR Status")
 is_mtdna_("is mtDNA")
+gnomAD_mt_AF_("GnomAD MT AF")
 mtdna_transcript_("mtDNA transcript")
 mitotip_("MitoTIP")
 apogee_("APOGEE")
@@ -240,15 +241,19 @@ str_status_ --&gt;|"full_mutation"| exit_lp_
 is_mtdna_ --&gt;|"true"| mtdna_transcript_
 is_mtdna_ --&gt;|"false"| gnomAD_
 is_mtdna_ --&gt;|"missing"| gnomAD_
-mtdna_transcript_ --&gt;|"default"| sv_
+gnomAD_mt_AF_ --&gt;|"default"| sv_
+gnomAD_mt_AF_ --&gt;|"Allele Frequency &lt; 0.00002"| exit_lp_
+gnomAD_mt_AF_ --&gt;|"Allele Frequency &gt;= 0.005"| exit_lb_
+gnomAD_mt_AF_ --&gt;|"missing"| sv_
+mtdna_transcript_ --&gt;|"default"| gnomAD_mt_AF_
 mtdna_transcript_ --&gt;|"tRNA"| mitotip_
 mtdna_transcript_ --&gt;|"protein_coding"| apogee_
 mitotip_ --&gt;|"true"| exit_lp_
 mitotip_ --&gt;|"false"| exit_lb_
-mitotip_ --&gt;|"missing"| sv_
+mitotip_ --&gt;|"missing"| gnomAD_mt_AF_
 apogee_ --&gt;|"true"| exit_lp_
 apogee_ --&gt;|"false"| exit_lb_
-apogee_ --&gt;|"missing"| sv_
+apogee_ --&gt;|"missing"| gnomAD_mt_AF_
 gnomAD_ --&gt;|"true"| sv_
 gnomAD_ --&gt;|"false"| gnomAD_AF_
 gnomAD_AF_ --&gt;|"default"| sv_

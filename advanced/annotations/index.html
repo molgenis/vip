@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -1164,16 +1164,16 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>NCBI Gene ID of affected gene</td>
 </tr>
 <tr>
-<td>INFO/CSQ/gnomAD_COV</td>
-<td>float</td>
-<td>VEP plugin</td>
-<td>gnomAD coverage (percent of individuals in gnomAD source)</td>
-</tr>
-<tr>
 <td>INFO/CSQ/gnomAD_AF</td>
 <td>float</td>
 <td>VEP plugin</td>
 <td>gnomAD allele frequency</td>
+</tr>
+<tr>
+<td>INFO/CSQ/gnomAD_COV</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>gnomAD coverage (percent of individuals in gnomAD source)</td>
 </tr>
 <tr>
 <td>INFO/CSQ/gnomAD_FAF95</td>
@@ -1192,6 +1192,12 @@ your output file depending on the sample sheet content and configuration.</p>
 <td>integer</td>
 <td>VEP plugin</td>
 <td>gnomAD number of homozygotes</td>
+</tr>
+<tr>
+<td>INFO/CSQ/gnomAD_MT_AF_hom</td>
+<td>float</td>
+<td>VEP plugin</td>
+<td>gnomAD mitochondrial homoplasmic allele frequency</td>
 </tr>
 <tr>
 <td>INFO/CSQ/gnomAD_QC</td>
