@@ -795,6 +795,13 @@
           "numberCount": 1,
           "type": "INTEGER"
         },
+        "gnomAD_MT_AF_hom": {
+          "label": "gnomad MT AF hom",
+          "description": "gnomAD mt homoplasmic allele frequency",
+          "numberType": "NUMBER",
+          "numberCount": 1,
+          "type": "FLOAT"
+        },
         "gnomAD_SRC": {
           "label": "gnomAD SRC",
           "description": "gnomAD source",

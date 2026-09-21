@@ -272,7 +272,7 @@ all processes and their non-default configuration.
 | vcf_classify_samples_publish | 2                | 64 MB              | 15 m             |
 | vcf_concat                   | 2                | 32 / 64 MB         | 15 m             |
 | vcf_filter                   | 2                | 128 / 256 MB       | 15 m             |
-| vcf_filter_samples           | 2                | 32 / 64 MB         | 15 m             |
+| vcf_filter_samples           | 2                | 64 / 128 MB        | 15 m             |
 | vcf_inheritance              | 2                | 1 / 2 GB           | 15 m             |
 | vcf_liftover                 | 2                | 4 GB               | 15 m             |
 | vcf_normalize                | 2 / 4            | 256 / 512 MB       | 15 m             |
