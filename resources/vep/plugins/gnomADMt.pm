@@ -204,7 +204,7 @@ sub new {
     }
   }
 
-  my $prefix = 'gnomAD';
+  my $prefix = 'gnomAD_MT';
   $self->{prefix} = $prefix;
 
   return $self;
