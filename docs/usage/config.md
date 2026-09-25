@@ -236,9 +236,9 @@ all processes and their non-default configuration.
 | deepvariant_concat_vcfs  | 2                | 64 MB              | 15 m             |
 | deepvariant_joint_call   | 2                | 2 GB               | 15 m             |
 | gatk_filtermutect2_mito  | 2                | 1 GB               | 15 m             |
-| gatk_mutect2_mito        | 4                | 3 GB               | 30 m             |
-| manta_joint_call         | 4                | 2 / 8 GB           | 2 / 5 h          |
-| publish_gvcf             | 2                | 3 GB               | 15 m             |
+| gatk_mutect2_mito        | 4                | 4 GB               | 30 m             |
+| manta_joint_call         | 4                | 2 / 8 GB           | 2 / 16 h         |
+| publish_gvcf             | 4                | 6 GB               | 59 m             |
 | publish_vcf              | 2                | 32 / 64 MB         | 15 m             |
 | publish_mtdna_vcf        | 2                | 32 / 64 MB         | 15 m             |
 | spectre_call             | 4                | 4 GB               | 1 h              |
@@ -247,7 +247,7 @@ all processes and their non-default configuration.
 | vcf_merge_mtdnasnv       | 2                | 64 MB              | 15 m             |
 | vcf_merge_str            | 2                | 64 MB              | 15 m             |
 | vcf_merge_sv             | 2                | 64 MB              | 15 m             |
-| whatshap                 | 2                | 2 / 8 GB           | 1 h              |
+| whatshap                 | 4                | 2 / 32 GB          | 1 h / 8 h        |
 
 ### gVCF
 
@@ -278,7 +278,7 @@ all processes and their non-default configuration.
 | vcf_liftover                 | 2                | 4 GB               | 15 m             |
 | vcf_normalize                | 2 / 4            | 256 / 512 MB       | 15 m             |
 | vcf_report                   | 2                | 4 / 8 GB           | 15 m / 30 m      |
-| vcf_slice                    | 4                | 2 GB               | 15 m             |
+| vcf_slice                    | 4                | 8 GB               | 15 m             |
 | vcf_split                    | 2                | 64 MB              | 15 m             |
 | vcf_validate                 | 2 / 3            | 100 MB             | 30 m             |
 
