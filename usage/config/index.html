@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -298,6 +298,11 @@ Both the zipped and unzipped fasta should have an index.</p>
 <td>cnv.spectre.GRCh38.metadata</td>
 <td><em>installed</em></td>
 <td>metadata file for Ns removal, update this file only when using a different GRCh38 version than the one provided by VIP.</td>
+</tr>
+<tr>
+<td>cram.call_cnv</td>
+<td>true</td>
+<td>enable/disable the detection of copy number variants</td>
 </tr>
 <tr>
 <td>cram.call_snv</td>
