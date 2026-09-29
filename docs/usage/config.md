@@ -238,7 +238,7 @@ all processes and their non-default configuration.
 | gatk_filtermutect2_mito  | 2                | 1 GB               | 15 m             |
 | gatk_mutect2_mito        | 4                | 4 GB               | 30 m             |
 | manta_joint_call         | 4                | 2 / 8 GB           | 2 / 16 h         |
-| publish_gvcf             | 4                | 6 GB               | 59 m             |
+| publish_gvcf             | 2                | 6 GB               | 1 h              |
 | publish_vcf              | 2                | 32 / 64 MB         | 15 m             |
 | publish_mtdna_vcf        | 2                | 32 / 64 MB         | 15 m             |
 | spectre_call             | 4                | 4 GB               | 1 h              |
