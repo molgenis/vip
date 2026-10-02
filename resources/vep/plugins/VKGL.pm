@@ -38,14 +38,13 @@ sub get_header_info {
     $result->{VKGL} = "file:" . $self->params->[0] . "'";
     $result->{VKGL_CL} = "VKGL consensus variant classification.";
     if (!$self->{consensus_only}) {
-        $result->{VKGL_AMC} = "VKGL AMC variant classification.";
+        $result->{VKGL_AMC} = "VKGL Amasterdam UMC variant classification.";
         $result->{VKGL_ERASMUS} = "VKGL ERASMUS variant classification.";
         $result->{VKGL_LUMC} = "VKGL LUMC variant classification.";
         $result->{VKGL_NKI} = "VKGL NKI variant classification.";
         $result->{VKGL_UMCG} = "VKGL UMCG variant classification.";
         $result->{VKGL_UMCU} = "VKGL UMCU variant classification.";
         $result->{VKGL_RADBOUD_MUMC} = "VKGL RADBOUD/MUMC variant classification.";
-        $result->{VKGL_VUMC} = "VKGL VUMC variant classification.";
     }
     return $result;
 }
@@ -79,13 +78,17 @@ sub create_key {
 sub map_class {
     my $src_class = $_[0];
     my $class;
+    if (length $src_class && ($src_class eq "B" || $src_class eq "LB" || $src_class eq "VUS" || $src_class eq "LP" || $src_class eq "P")) {
+        $class = $src_class;
+    }
+
     if ($src_class eq "Benign" || $src_class eq "B") {
         $class = "B";
     }
     elsif ($src_class eq "Likely benign" || $src_class eq "LB") {
         $class = "LB";
     }
-    elsif ($src_class eq "VUS" || $src_class eq "VUS") {
+    elsif ($src_class eq "VUS") {
         $class = "VUS";
     }
     elsif ($src_class eq "Likely pathogenic" || $src_class eq "LP") {
@@ -106,6 +109,10 @@ sub map_consensus {
     my $src_consensus = $_[0];
     my $classes = $_[1];
     my $class_consensus;
+
+    if (length $src_consensus && ($src_consensus eq "B" || $src_consensus eq "LB" || $src_consensus eq "VUS" || $src_consensus eq "LP" || $src_consensus eq "P")) {
+        $class_consensus = $src_consensus;
+    }
 
     if (length $src_consensus && $src_consensus ne "No consensus" && $src_consensus ne "Opposite classifications") {
         if ($src_consensus eq "VUS") {
