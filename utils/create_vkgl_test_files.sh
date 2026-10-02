@@ -106,9 +106,9 @@ validate() {
 
   # existing output files
   local existing
-  for existing in "vkgl_lb_${date}.bcf.gz" "vkgl_lb_${date}.bcf.gz.csi" \
-    "vkgl_lp_${date}.bcf" "vkgl_lp_${date}.bcf.csi" \
-    "vkgl_vus_${date}.vcf.gz" "vkgl_vus_${date}.vcf.gz.tbi"; do
+  for existing in "vkgl_lb_${date}.bcf.gz" \
+    "vkgl_lp_${date}.bcf" \
+    "vkgl_vus_${date}.vcf.gz"; do
     if [[ -f "${output_dir}/${existing}" ]]; then
       echo -e "output file '${output_dir}/${existing}' already exists"
       exit 1
@@ -121,17 +121,13 @@ validate() {
     exit 1
   fi
 
-  # bcftools, bgzip, tabix
+  # bcftools, bgzip
   if ! command -v bcftools &> /dev/null; then
     echo "command 'bcftools' could not be found (possible solution: run 'ml BCFtools' before executing this script)"
     exit 1
   fi
   if ! command -v bgzip &> /dev/null; then
     echo "command 'bgzip' could not be found (possible solution: run 'ml BCFtools' before executing this script)"
-    exit 1
-  fi
-  if ! command -v tabix &> /dev/null; then
-    echo "command 'tabix' could not be found (possible solution: run 'ml BCFtools' before executing this script)"
     exit 1
   fi
 }
