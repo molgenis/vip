@@ -79,6 +79,10 @@ sub create_key {
 sub map_class {
     my $src_class = $_[0];
     my $class;
+    if (length $src_class && ($src_class eq "B" || $src_class eq "LB" || $src_class eq "VUS" || $src_class eq "LP" || $src_class eq "P")) {
+        $class = $src_class;
+    }
+
     if ($src_class eq "Benign" || $src_class eq "B") {
         $class = "B";
     }
@@ -106,6 +110,10 @@ sub map_consensus {
     my $src_consensus = $_[0];
     my $classes = $_[1];
     my $class_consensus;
+
+    if (length $src_consensus && ($src_consensus eq "B" || $src_consensus eq "LB" || $src_consensus eq "VUS" || $src_consensus eq "LP" || $src_consensus eq "P")) {
+        $class_consensus = $src_consensus;
+    }
 
     if (length $src_consensus && $src_consensus ne "No consensus" && $src_consensus ne "Opposite classifications") {
         if ($src_consensus eq "VUS") {
