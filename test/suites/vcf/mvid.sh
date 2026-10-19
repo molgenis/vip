@@ -6,6 +6,7 @@ source "${TEST_UTILS_DIR}/utils.sh"
 
 args=()
 args+=("--workflow" "vcf")
+args+=("--config" "${TEST_UTILS_DIR}/test.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 

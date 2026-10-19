@@ -18,6 +18,7 @@ ln -sf "${VIP_DIR_DATA}/test/resources/illumina_WES_GRCh38_chr20.cram" "${VIP_DI
 
 args=()
 args+=("--workflow" "gvcf")
+args+=("--config" "${TEST_UTILS_DIR}/test.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 

@@ -22,6 +22,7 @@ done
 
 args=()
 args+=("--workflow" "fastq")
+args+=("--config" "${TEST_UTILS_DIR}/test.cfg")
 args+=("--output" "${OUTPUT_DIR}")
 args+=("--resume")
 
