@@ -200,7 +200,7 @@ install_files() {
   data+=("5872a0d033b9b9655852d0a6125cbddf" "images/straglr-1.5.6+build.1.sif" "")
   data+=("38b3ab915427b73a66d30e4b3aa279b5" "images/straglr-tsv2vcf-1.2.0+build.1.sif" "")
   data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
-  data+=("b87879d31670125bddb81b2187f1c1d8" "images/vcf-decision-tree-6.0.2.sif" "")
+  data+=("todo" "images/vcf-decision-tree-6.0.3.sif" "")
   data+=("cd4518870075d0ab92127ce810b5bc06" "images/vcf-inheritance-matcher-4.0.1.sif" "")
   data+=("408679beb6ba7fcbe36692f8aef7c764" "images/vcf-report-8.3.0.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
