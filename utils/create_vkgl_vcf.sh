@@ -53,6 +53,7 @@ create_output() {
   regions=$(zcat "${reference}" | awk '/^>/{print substr($1,2)}' | paste -sd "," -)
   # Only keep variants on contigs that are part of the reference (bcftools sort cannot handle undefined contigs).
   # Chromosome names are matched to the reference naming (e.g. '8' -> 'chr8', 'chr8' -> '8', 'M' <-> 'MT' <-> 'chrM').
+  # Variants with identical REF and ALT are removed (not real variants).
   awk '
     BEGIN {
       FS=OFS="\t"
@@ -79,6 +80,11 @@ create_output() {
       next
     }
     {
+      # Skip variants where REF and ALT are identical (not a real variant)
+      if (toupper($4) == toupper($5)) {
+        identical++
+        next
+      }
       r = resolve($1)
       if (r == "") {
         dropped++
@@ -93,6 +99,9 @@ create_output() {
       }
     }
     END {
+      if (identical > 0) {
+        print "WARNING: " identical " variants skipped, identical REF and ALT" > "/dev/stderr"
+      }
       if (dropped > 0) {
         print "WARNING: " dropped " variants skipped, contig not in reference (input contigs:" examples ")" > "/dev/stderr"
       }
