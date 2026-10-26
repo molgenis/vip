@@ -222,7 +222,16 @@ def parseValueBoolean(token, col) {
 def parseValueFileList(token, col, rootDir) {
   def values = token.length() > 0 ? token.split(',', -1) : []
   if(col.required && values.size() == 0) throw new IllegalArgumentException("required value is empty")
-  return values.collect { value -> parseValueFile(value, col, rootDir) }
+
+  def list_of_files = []
+  if (values.size() >= 1) {
+    values.each { value ->
+      def files_listing = files(value).collect { it.toString() }
+      files_listing.sort()
+      list_of_files.addAll(files_listing)
+    }
+  }
+  return list_of_files.collect { filename -> parseValueFile(filename, col, rootDir) }
 }
 
 def parseValueFile(token, col, rootDir) {
