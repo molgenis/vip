@@ -139,6 +139,7 @@ The default decision tree to classify variant-consequences in the context of sam
 flowchart TD
 gt_("Genotype")
 gq_("Genotype quality")
+mt_hl_filtering_("mtDNA HL < 10%")
 only_IP_("Only if AD IP")
 vig_("Inheritance match gene")
 vim_("Inheritance match")
@@ -161,9 +162,12 @@ gt_ -->|"MIXED"| gq_
 gt_ -->|"HET"| gq_
 gt_ -->|"HOM_VAR"| gq_
 gt_ -->|"UNAVAILABLE"| exit_u3_
-gq_ -->|"true"| only_IP_
+gq_ -->|"true"| mt_hl_filtering_
 gq_ -->|"false"| exit_u3_
-gq_ -->|"missing"| only_IP_
+gq_ -->|"missing"| mt_hl_filtering_
+mt_hl_filtering_ -->|"default"| only_IP_
+mt_hl_filtering_ -->|"chrM and AF < 0.1"| exit_u3_
+mt_hl_filtering_ -->|"missing"| only_IP_
 only_IP_ -->|"true"| vid_IP_
 only_IP_ -->|"false"| vig_
 only_IP_ -->|"missing"| vig_
