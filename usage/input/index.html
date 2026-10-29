@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <meta name="panzoom-theme" content="readthedocs">
-<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+<meta name="panzoom-data" content='{"selectors": [".mermaid", ".d2"], "initial_zoom_level": 1.0}'> </head>
 <body class="wy-body-for-nav" role="document">
 <div class="wy-grid-for-nav">
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
@@ -341,7 +341,7 @@ specific columns.</p>
 <td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
-<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. single-reads file(s)</td>
+<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. single-reads file(s)<sup>4</sup></td>
 </tr>
 <tr>
 <td><code>fastq_r1</code></td>
@@ -349,7 +349,7 @@ specific columns.</p>
 <td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
-<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #1</td>
+<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #1<sup>4</sup></td>
 </tr>
 <tr>
 <td><code>fastq_r2</code></td>
@@ -357,7 +357,7 @@ specific columns.</p>
 <td>sample</td>
 <td>yes<sup>2</sup></td>
 <td></td>
-<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #2</td>
+<td>allowed file extensions: [<code>fastq</code>, <code>fastq.gz</code>, <code>fq</code>, <code>fq.gz</code>]. paired-end reads file(s) #2<sup>4</sup></td>
 </tr>
 <tr>
 <td><code>sequencing_platform</code></td>
@@ -370,7 +370,8 @@ specific columns.</p>
 </tbody>
 </table>
 <p><sup>2</sup> Either the <code>fastq</code> or the <code>fastq_r1</code> and <code>fastq_r2</code> are required.
-<sup>3</sup> <code>stop_receiving</code> when <a href="https://software-docs.nanoporetech.com/output-specifications">Nanopore output</a> adaptive sampling file specification &lt; 0.1 was used, <code>sequence</code> for version 0.1 and above.</p>
+<sup>3</sup> <code>stop_receiving</code> when <a href="https://software-docs.nanoporetech.com/output-specifications">Nanopore output</a> adaptive sampling file specification &lt; 0.1 was used, <code>sequence</code> for version 0.1 and above.
+<sup>4</sup> You can specify a path to a folder containing multiple fastq files, for example via <code>/path/to/sample_folder/*.fastq.gz</code> or <code>/path/to/sample_folder/sample01_R1_L00[1-4].fastq.gz</code>, to collect fastq files <code>sample01_R1_L001.fastq.gz</code> to <code>sample01_R1_L004.fastq.gz</code>.</p>
 <h2 id="columns-cram">Columns: CRAM<a class="headerlink" href="#columns-cram" title="Permanent link">¶</a></h2>
 <table>
 <thead>
