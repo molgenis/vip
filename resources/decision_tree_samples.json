@@ -43,10 +43,46 @@
         "value": 20
       },
       "outcomeTrue": {
-        "nextNode": "only_IP"
+        "nextNode": "mt_hl_filtering"
       },
       "outcomeFalse": {
         "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "mt_hl_filtering"
+      }
+    },
+    "mt_hl_filtering": {
+      "label": "mtDNA HL < 10%",
+      "description": "mtDNA HL <10% filtering",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "#CHROM",
+        "FORMAT/AF"
+      ],
+      "outcomes": [
+        {
+          "description": "chrM and AF < 0.1",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "#CHROM",
+              "operator": "==",
+              "value": "chrM"
+            },
+            {
+              "field": "FORMAT/AF",
+              "operator": "<",
+              "value": 0.1
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_u3"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "only_IP"
       },
       "outcomeMissing": {
         "nextNode": "only_IP"
