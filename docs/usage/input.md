@@ -48,13 +48,14 @@ specific columns.
 | column                  | type          | scope   | required        | default      | description                                                                                                                                                     |
 |-------------------------|---------------|---------|-----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ``adaptive_sampling``   | ``file``      | sample  |                 |              | allowed file extensions: [``csv``]. for ``nanopore`` adaptive sampling experiments, used to filter `stop_receiving`<sup>3</sup> or `sequence`<sup>3</sup> reads | 
-| ``fastq``               | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)                                                                     |
-| ``fastq_r1``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1                                                              |
-| ``fastq_r2``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2                                                              |
+| ``fastq``               | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. single-reads file(s)<sup>4</sup>                                                         |
+| ``fastq_r1``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #1<sup>4</sup>                                                  |
+| ``fastq_r2``            | ``file list`` | sample  | yes<sup>2</sup> |              | allowed file extensions: [``fastq``, ``fastq.gz``, ``fq``, ``fq.gz``]. paired-end reads file(s) #2<sup>4</sup>                                                  |
 | ``sequencing_platform`` | ``enum``      | project |                 | ``nanopore`` | allowed values: [``illumina``,``nanopore``,``pacbio_hifi``]                                                                                                     |
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 <sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) adaptive sampling file specification < 0.1 was used, `sequence` for version 0.1 and above.
+<sup>4</sup> You can specify a path to a folder containing multiple fastq files, for example via `/path/to/sample_folder/*.fastq.gz` or `/path/to/sample_folder/sample01_R1_L00[1-4].fastq.gz`, to collect fastq files `sample01_R1_L001.fastq.gz` to `sample01_R1_L004.fastq.gz`.
 
 ## Columns: CRAM
 
