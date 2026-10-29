@@ -139,7 +139,7 @@ The default decision tree to classify variant-consequences in the context of sam
 flowchart TD
 gt_("Genotype")
 gq_("Genotype quality")
-mt_hl_filtering_("mtDNA HL < 10%")
+mt_hl_filtering_("mtDNA Heteroplasmy level < 10%")
 only_IP_("Only if AD IP")
 vig_("Inheritance match gene")
 vim_("Inheritance match")
