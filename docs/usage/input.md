@@ -55,7 +55,7 @@ specific columns.
 
 <sup>2</sup> Either the `fastq` or the ``fastq_r1`` and ``fastq_r2`` are required.
 <sup>3</sup> `stop_receiving` when [Nanopore output](https://software-docs.nanoporetech.com/output-specifications) adaptive sampling file specification < 0.1 was used, `sequence` for version 0.1 and above.
-<sup>4</sup> You can specify a path to a folder containing multiple fastq files for one sample via `/path/to/sample_folder/*.fastq.gz` or for example: `/path/to/sample_folder/sample01_R1_L00[1-4].fastq.gz` to collect fastq files `sample01_R1_L001.fastq.gz` to `sample01_R1_L004.fastq.gz`.
+<sup>4</sup> You can specify a path to a folder containing multiple fastq files for example via `/path/to/sample_folder/*.fastq.gz` or: `/path/to/sample_folder/sample01_R1_L00[1-4].fastq.gz` to collect fastq files `sample01_R1_L001.fastq.gz` to `sample01_R1_L004.fastq.gz`.
 
 ## Columns: CRAM
 
