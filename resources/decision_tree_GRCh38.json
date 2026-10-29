@@ -532,7 +532,7 @@
       "fields": ["INFO/CSQ/Consequence"],
       "outcomes": [
         {
-          "description": "",
+          "description": "Variant is only downstream or upstream",
           "operator": "OR",
           "queries": [
             {
@@ -547,7 +547,7 @@
             }
           ],
           "outcomeTrue": {
-            "nextNode": "exit_fl"
+            "nextNode": "exit_rm"
           }
         }
       ],
@@ -612,12 +612,6 @@
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
-    },
-    "exit_fl": {
-      "label": "FL",
-      "description": "Flanking",
-      "type": "LEAF",
-      "class": "FL"
     }
   }
 }
