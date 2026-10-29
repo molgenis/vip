@@ -522,6 +522,39 @@
         "nextNode": "exit_vus"
       },
       "outcomeFalse": {
+        "nextNode": "downstream_upstream"
+      }
+    },
+    "downstream_upstream": {
+      "label": "Downstream/Upstream",
+      "description": "Downstream/Upstream gene variant",
+      "type": "BOOL_MULTI",
+      "fields": ["INFO/CSQ/Consequence"],
+      "outcomes": [
+        {
+          "description": "",
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/Consequence",
+              "operator": "==",
+              "value": ["downstream_gene_variant"]
+            },
+            {
+              "field": "INFO/CSQ/Consequence",
+              "operator": "==",
+              "value": ["upstream_gene_variant"]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_fl"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "capice"
+      },
+      "outcomeMissing": {
         "nextNode": "capice"
       }
     },
@@ -579,6 +612,12 @@
       "description": "Pathogenic",
       "type": "LEAF",
       "class": "P"
+    },
+    "exit_fl": {
+      "label": "FL",
+      "description": "Flanking",
+      "type": "LEAF",
+      "class": "FL"
     }
   }
 }
