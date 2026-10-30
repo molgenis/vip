@@ -123,7 +123,7 @@ utr5_ -->|"true"| exit_vus_
 utr5_ -->|"false"| downstream_upstream_
 downstream_upstream_ -->|"default"| capice_
 downstream_upstream_ -->|"missing"| capice_
-downstream_upstream_ -->|"Variant is only downstream or upstream"| exit_rm_
+downstream_upstream_ -->|"Only upstream or downstream of a gene"| exit_rm_
 capice_ -->|"true"| exit_lp_
 capice_ -->|"false"| exit_lb_
 capice_ -->|"missing"| exit_vus_
