@@ -522,6 +522,39 @@
         "nextNode": "exit_vus"
       },
       "outcomeFalse": {
+        "nextNode": "downstream_upstream"
+      }
+    },
+    "downstream_upstream": {
+      "label": "Downstream/Upstream",
+      "description": "Located upstream or downstream of a gene, with no other consequence",
+      "type": "BOOL_MULTI",
+      "fields": ["INFO/CSQ/Consequence"],
+      "outcomes": [
+        {
+          "description": "Located upstream or downstream of a gene, with no other consequence",
+          "operator": "OR",
+          "queries": [
+            {
+              "field": "INFO/CSQ/Consequence",
+              "operator": "==",
+              "value": ["downstream_gene_variant"]
+            },
+            {
+              "field": "INFO/CSQ/Consequence",
+              "operator": "==",
+              "value": ["upstream_gene_variant"]
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_rm"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "capice"
+      },
+      "outcomeMissing": {
         "nextNode": "capice"
       }
     },

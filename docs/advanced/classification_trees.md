@@ -36,7 +36,7 @@ sv_("Is SV")
 str_("Is STR")
 str_status_("STR Status")
 is_mtdna_("is mtDNA")
-gnomAD_mt_AF_("GnomAD MT AF")
+gnomAD_MT_AF_("GnomAD MT AF")
 mtdna_transcript_("mtDNA transcript")
 mitotip_("MitoTIP")
 apogee_("APOGEE")
@@ -45,6 +45,7 @@ gnomAD_AF_("GnomAD AF")
 annotSV_("AnnotSV")
 spliceAI_("SpliceAI")
 utr5_("5' UTR")
+downstream_upstream_("Downstream/Upstream")
 capice_("CAPICE")
 exit_rm_("Remove")
 style exit_rm_ fill:#00ff00
@@ -90,19 +91,19 @@ str_status_ -->|"full_mutation"| exit_lp_
 is_mtdna_ -->|"true"| mtdna_transcript_
 is_mtdna_ -->|"false"| gnomAD_
 is_mtdna_ -->|"missing"| gnomAD_
-gnomAD_mt_AF_ -->|"default"| sv_
-gnomAD_mt_AF_ -->|"Allele Frequency < 0.00002"| exit_lp_
-gnomAD_mt_AF_ -->|"Allele Frequency >= 0.005"| exit_lb_
-gnomAD_mt_AF_ -->|"missing"| sv_
-mtdna_transcript_ -->|"default"| gnomAD_mt_AF_
+gnomAD_MT_AF_ -->|"default"| sv_
+gnomAD_MT_AF_ -->|"Allele Frequency < 0.00002"| exit_lp_
+gnomAD_MT_AF_ -->|"Allele Frequency >= 0.005"| exit_lb_
+gnomAD_MT_AF_ -->|"missing"| sv_
+mtdna_transcript_ -->|"default"| gnomAD_MT_AF_
 mtdna_transcript_ -->|"tRNA"| mitotip_
 mtdna_transcript_ -->|"protein_coding"| apogee_
 mitotip_ -->|"true"| exit_lp_
 mitotip_ -->|"false"| exit_lb_
-mitotip_ -->|"missing"| gnomAD_mt_AF_
+mitotip_ -->|"missing"| gnomAD_MT_AF_
 apogee_ -->|"true"| exit_lp_
 apogee_ -->|"false"| exit_lb_
-apogee_ -->|"missing"| gnomAD_mt_AF_
+apogee_ -->|"missing"| gnomAD_MT_AF_
 gnomAD_ -->|"true"| sv_
 gnomAD_ -->|"false"| gnomAD_AF_
 gnomAD_AF_ -->|"default"| sv_
@@ -119,7 +120,10 @@ spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.13"| exit_vus_
 spliceAI_ -->|"Delta score (acceptor/donor gain/loss) > 0.42"| exit_lp_
 spliceAI_ -->|"missing"| utr5_
 utr5_ -->|"true"| exit_vus_
-utr5_ -->|"false"| capice_
+utr5_ -->|"false"| downstream_upstream_
+downstream_upstream_ -->|"default"| capice_
+downstream_upstream_ -->|"missing"| capice_
+downstream_upstream_ -->|"Only upstream or downstream of a gene"| exit_rm_
 capice_ -->|"true"| exit_lp_
 capice_ -->|"false"| exit_lb_
 capice_ -->|"missing"| exit_vus_
