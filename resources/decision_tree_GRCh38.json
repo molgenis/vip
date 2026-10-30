@@ -532,7 +532,7 @@
       "fields": ["INFO/CSQ/Consequence"],
       "outcomes": [
         {
-          "description": "Variant is only downstream or upstream",
+          "description": "Located upstream or downstream of a gene, with no other consequence",
           "operator": "OR",
           "queries": [
             {
