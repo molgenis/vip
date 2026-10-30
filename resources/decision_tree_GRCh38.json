@@ -527,7 +527,7 @@
     },
     "downstream_upstream": {
       "label": "Downstream/Upstream",
-      "description": "Downstream/Upstream gene variant",
+      "description": "Located upstream or downstream of a gene, with no other consequence",
       "type": "BOOL_MULTI",
       "fields": ["INFO/CSQ/Consequence"],
       "outcomes": [
