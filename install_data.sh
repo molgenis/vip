@@ -202,7 +202,7 @@ install_files() {
   data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
   data+=("27781478bd0445b0a72f33349430fb3b" "images/vcf-decision-tree-6.0.4.sif" "")
   data+=("cd4518870075d0ab92127ce810b5bc06" "images/vcf-inheritance-matcher-4.0.1.sif" "")
-  data+=("TODO" "images/vcf-report-8.3.1.sif" "")
+  data+=("8701a1c19d91c9a0e71f940a5bc4ff33" "images/vcf-report-8.3.1.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
   # custom build nextflow dist to workaround https://github.com/nextflow-io/nextflow/issues/7261
