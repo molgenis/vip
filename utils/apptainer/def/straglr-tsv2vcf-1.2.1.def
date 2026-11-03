@@ -8,14 +8,14 @@ From: sif/build/openjdk-25.sif
 %post
     version_major=1
     version_minor=2
-    version_patch=0
+    version_patch=1
 
     # install
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/straglr-tsv2vcf/lib
     curl --fail --silent --show-error --location --output /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar "https://github.com/molgenis/straglr-tsv2vcf/releases/download/v${version_major}.${version_minor}.${version_patch}/straglrTsv2Vcf.jar"
-    echo "469b8114ed1aab0292b122d06836e8490dfdceec8e879abb80a5de328beaca24  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
+    echo "32f6fd14d5bbc32298f59f034a1855480c5cefa79923122ebca0095b7203cace  /opt/straglr-tsv2vcf/lib/straglrTsv2Vcf.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
