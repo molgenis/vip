@@ -8,14 +8,14 @@ From: sif/build/openjdk-25.sif
 %post
     version_major=4
     version_minor=0
-    version_patch=1
+    version_patch=2
 
     # install
     apk add --virtual=.build-dependencies curl
 
     mkdir -p /opt/vcf-inheritance-matcher/lib
     curl --fail --silent --show-error --location --output /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar "https://github.com/molgenis/vip-inheritance-matcher/releases/download/v${version_major}.${version_minor}.${version_patch}/vcf-inheritance-matcher.jar"
-    echo "035c1bdf0d494e5cb542625212ec70b6fad012f524a9b9c4ef5369589656c7c2  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
+    echo "526d0e343b6685b831bad5973aeae3430cfb3afa8b0ec4872e7f993e143644cd  /opt/vcf-inheritance-matcher/lib/vcf-inheritance-matcher.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies
