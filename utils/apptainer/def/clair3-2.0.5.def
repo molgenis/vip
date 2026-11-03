@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: hkubal/clair3:v2.0.5

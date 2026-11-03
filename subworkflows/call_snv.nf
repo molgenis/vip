@@ -3,6 +3,7 @@ nextflow.enable.dsl=2
 include { scatter; validateGroup } from '../modules/utils'
 include { nrMappedReadsInChunk } from '../modules/cram/utils'
 include { deepvariant; validateCallDeepVariantParams } from '../subworkflows/call_snv_deepvariant'
+include { clair3; validateClair3Params } from '../subworkflows/call_snv_clair3'
 include { mtdnasnv } from '../subworkflows/call_mtdna_snv'
 include { concat_snv_vcf } from '../modules/cram/concat_snv_vcf'
 /*
@@ -43,17 +44,21 @@ workflow snv {
     // split channel in crams based on tool that supports sequencing platform
     ch_snv_family_chunk
       | branch { meta ->
-          deepvariant: meta.project.sequencing_platform == 'illumina' || meta.project.sequencing_platform == 'nanopore' || meta.project.sequencing_platform == 'pacbio_hifi'
-          // add new tools here
+          deepvariant: meta.project.sequencing_platform == 'illumina' || meta.project.sequencing_platform == 'pacbio_hifi'
+          clair3: meta.project.sequencing_platform == 'nanopore'
         }
       | set { ch_snv_chunk_by_platform }
+
+    ch_snv_chunk_by_platform.clair3
+      | clair3
+      | set { ch_snv_clair3 }
 
     ch_snv_chunk_by_platform.deepvariant
       | deepvariant
       | set { ch_snv_deepvariant }
     
-    // Concat the vcfs of both deepvariant and gatk
-    Channel.empty().mix(ch_snv_deepvariant, ch_snv_mtdna)
+    // Concat the vcfs of both clair3 or deepvariant and gatk
+    Channel.empty().mix(ch_snv_clair3, ch_snv_deepvariant, ch_snv_mtdna)
       | map { meta, vcf -> [groupKey(meta, 2), vcf] }
       | groupTuple(remainder: true)
       | map { key, group -> validateGroup(key, group) }
