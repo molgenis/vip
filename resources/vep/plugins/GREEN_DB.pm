@@ -85,12 +85,12 @@ sub get_scores {
   if($size >= 1){
     for my $i (0 .. $#data) {
       my @line = split("\t", $data[$i]);
+      next if $line[8] eq "NA";
+      
       #if no value present for the type of region (line[4]), or the current line has a higher score (line[6]) for this type of region, add/overwrite it in the result.
       if(!$values->{$line[4]} || $line[8] > $values->{$line[4]}){
-        if($line[8] ne "NA"){
-          $values->{$line[4]} = $line[8];
-          $values->{"controlled_genes"} = $line[18];
-        }
+				$values->{$line[4]} = $line[8];
+				$values->{"controlled_genes"} = $line[18];
       }
     }
   }
