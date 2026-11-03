@@ -205,23 +205,7 @@ install_files() {
   data+=("8701a1c19d91c9a0e71f940a5bc4ff33" "images/vcf-report-8.3.1.sif" "")
   data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
   data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
-  # custom build nextflow dist to workaround https://github.com/nextflow-io/nextflow/issues/7261
-  # nextflow-26.04.9 with the following change applied:
-  #
-  # diff --git a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
-  # index 434efe31c..2ca1f25a0 100644
-  # --- a/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
-  # +++ b/modules/nf-lang/src/main/java/nextflow/script/control/VariableScopeVisitor.java
-  # @@ -849,7 +849,7 @@ class VariableScopeVisitor extends ScriptVisitorSupport {
-  #          if( !(currentDefinition instanceof ProcessNode) )
-  #              return;
-  #          var mn = asMethodVariable(variable);
-  # -        if( mn != null && mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
-  # +        if( mn != null && mn.getDeclaringClass() != null &&  mn.getDeclaringClass().getTypeClass() == ScriptDsl.class ) {
-  #              if( WARN_GLOBALS.contains(variable.getName()) )
-  #                  vsc.addWarning("The use of `" + variable.getName() + "` in a process is discouraged -- input files should be provided as process inputs", variable.getName(), context);
-  #          }
-  data+=("8b5964b02ce8e1abe52df2ca065402f2" "nextflow-26.04.9-dist" "postprocess_nextflow")
+  data+=("bbb7bee9b968bcd3777061f9fd1ccbea" "nextflow-26.10.5-dist" "postprocess_nextflow")
   data+=("cfa476704db9a67c0f94d99eb67d0fd2" "resources/annotsv/v3.5.5/2406_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a67ff13ccf5a346aee3cc27f35ffcffe" "resources/annotsv/v3.5.5/Annotations_Human_3.5.tar.gz" "postprocess_annotsv_annotations")
   data+=("296aedb05baca02176fe3c8767852d2d" "resources/annotsv/v3.5.5/jar/exomiser-rest-prioritiser-14.1.0.jar" "")
