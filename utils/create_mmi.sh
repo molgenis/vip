@@ -8,13 +8,13 @@
 #SBATCH --nodes=1
 #SBATCH --open-mode=append
 #SBATCH --export=NONE
-#SBATCH --get-user-env=L
+#SBATCH --get-user-env
 set -euo pipefail
 
 main() {
   local -r resourceDir="../vip/resources/GRCh38"
   cd "${resourceDir}"
-  apptainer exec --no-mount home "../vip/images/minimap2-2.27_v2.sif" minimap2 -t 8 -d GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+  apptainer exec --no-mount home "../vip/images/minimap2-2.31.sif" minimap2 -t 8 -d GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz.mmi GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
 }
 
 main "${@}"
