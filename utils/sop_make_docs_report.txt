@@ -1,0 +1,38 @@
+# SOP: Create new VIP report for documentation
+
+## 1. Run `make_new_docs_report.sh`
+
+Run the script `make_new_docs_report.sh`, if you want to use the vip module:
+
+```
+screen -S make_new_vip_report
+sh make_new_docs_report.sh -p /path/to/prm/datadir -d /path/to/tmp/datadir -o /path/to/outputdir
+```
+
+If you wish to run from a vip repo do:
+```
+screen -S make_new_vip_report
+sh make_new_docs_report.sh -p /path/to/prm/datadir -d /path/to/tmp/datadir -o /path/to/outputdir -r /path/to/vip_repo
+```
+
+Note that the repo directory should contain vip.sh etc.
+
+
+## 2. Make screenshots
+
+Make two screenshots: one of the page with the list of variants, the second of page with a specific variant and the genome browser
+
+## 3. Update files in the repo
+
+TODOs:
+- Make a new brach from the main branch, for example: `git checkout -b docs/update_report` (Switch to main and pull the latest changes beforehand if necessary)
+- Update `docs/img/report_example.png` with the new screenshot of the list of variants
+- Update `docs/img/report_example_variant.png` with the new screenshot of the specific variant
+- Update `docs/vip_giab_hg002.html` with the new report created by the vip run
+
+## 4. Make PR
+
+TODOs:
+- Check that the changes are correct, than commit and push
+- Make PR on github
+- Have PR reviewed and approved
