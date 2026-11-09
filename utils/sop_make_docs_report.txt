@@ -32,4 +32,4 @@ Make two screenshots: one of the page with the list of variants, the second of p
 ## 4. Make PR
 
 - Make PR on github
-- Have PR reviewed and approved
+- Aks a team member to review your PR
