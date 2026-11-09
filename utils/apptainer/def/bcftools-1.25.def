@@ -4,14 +4,13 @@ Stage: build
 
 %post
     version_major=1
-    version_minor=23
-    version_patch=1
+    version_minor=25
 
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community curl build-base zlib-dev bzip2-dev xz-dev libdeflate-dev
     
     # download
-    curl --fail --silent --show-error --location --output bcftools-${version_major}.${version_minor}.${version_patch}.tar.bz2 https://github.com/samtools/bcftools/releases/download/${version_major}.${version_minor}.${version_patch}/bcftools-${version_major}.${version_minor}.${version_patch}.tar.bz2
-    echo "01899a46f9420cdc1385d52fcfc84cce2806f9c996b787081a90d7dfc85eafa3  bcftools-${version_major}.${version_minor}.${version_patch}.tar.bz2" | sha256sum -c
+    curl --fail --silent --show-error --location --output bcftools-${version_major}.${version_minor}.${version_patch}.tar.bz2 https://github.com/samtools/bcftools/releases/download/${version_major}.${version_minor}.${version_patch}/bcftools-${version_major}.${version_minor}.tar.bz2
+    echo "f96e583d2315998645bb56756f1c8f230c489512db2655b0f623198ebc8a2d99  bcftools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
     tar xf bcftools-${version_major}.${version_minor}.${version_patch}.tar.bz2

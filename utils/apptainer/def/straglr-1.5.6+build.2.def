@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/build/python-3.11.14.sif
+From: sif/build/python-3.15.2.sif
 
 %post
     apt-get update > /dev/null

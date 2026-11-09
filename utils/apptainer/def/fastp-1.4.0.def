@@ -1,12 +1,12 @@
 Bootstrap: localimage
-From: sif/build/alpine-3.23.3.sif
+From: sif/build/alpine-3.23.8.sif
 
 %help
     fastp - A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
 
 %post
     version_major=1
-    version_minor=1
+    version_minor=4
     version_patch=0
 
     apk add --virtual=.build-dependencies curl

@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: sif/bcftools-1.23.1.sif
+From: sif/bcftools-1.25.sif
 Stage: build
 
 Bootstrap: localimage
@@ -18,13 +18,13 @@ From: sif/build/openjdk-25.sif
 %post
     version_major=3
     version_minor=5
-    version_patch=5
+    version_patch=10
 
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
     apk add --virtual=.build-dependencies build-base curl git
 
     # bedtools
-    curl --fail --silent --show-error --location --output /usr/local/bin/bedtools https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
+    curl --fail --silent --show-error --location --output /usr/local/bin/bedtools https://github.com/arq5x/bedtools2/releases/download/v2.31.1/bedtools.static.binary
     echo "e85d74b6c11b664c05176b1dbf7d2891ad0383ae93805db2d29034db5c2d80ce  /usr/local/bin/bedtools" | sha256sum -c
     chmod +x /usr/local/bin/bedtools
 
