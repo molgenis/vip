@@ -25,7 +25,7 @@ Make two screenshots: one of the page with the list of variants, the second of p
 ## 3. Update files in the repo
 
 TODOs:
-- Make a new brach from the main branch, for example: `git checkout -b docs/update_report` (Switch to main and pull the latest changes beforehand if necessary)
+- Make a new branch from the main branch, for example: `git checkout -b docs/update_report`.
 - Update `docs/img/report_example.png` with the new screenshot of the list of variants
 - Update `docs/img/report_example_variant.png` with the new screenshot of the specific variant
 - Update `docs/vip_giab_hg002.html` with the new report created by the vip run
