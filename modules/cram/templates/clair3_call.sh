@@ -8,30 +8,37 @@ create_bed () {
 call_small_variants () {
     local args=()
     args+=("--bam_fn" "!{cram}")
+    args+=("--bed_fn" "!{bed}")
     args+=("--ref_fn" "!{reference}")
     args+=("--threads" "!{task.cpus}")
     args+=("--platform" "ont")
     args+=("--model_path" "!{model}")
     args+=("--output" ".")
     args+=("--include_all_ctgs")
-    args+=("--gender" "!{sampleSex}")
+    args+=("--sample_name" "!{sampleName}")
+    args+=("--gvcf")
+    if [ -n "!{sampleSex}" ] && [ "!{sampleSex}" != "null" ]; then
+        args+=("--gender" "!{sampleSex}")
+    else
+        args+=("--gender" "unknown")
+    fi
     if [ -n "!{parRegionsBed}" ]; then
         args+=("--par_regions_bed=!{parRegionsBed}")
     fi
-    # workaround for 'default' sample name in output in case sample name can't be derived from CallVariantsOutput or nonvariant site TFRecords
-    args+=("--postprocess_variants_extra_args=--sample_name=\"!{sampleName}\"")
     mkdir tmp
     TMPDIR=tmp ${CMD_CLAIR3} "${args[@]}"
+    
+    mv merge_output.gvcf.gz !{vcfOut}
 }
 
 call_small_variants_cleanup () {
- # rm -rf intermediate_results
- # rm -rf tmp
+  rm merge_output.gvcf.gz
+  rm -rf tmp
 }
 
 index () {
- # ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
- # ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
+  ${CMD_BCFTOOLS} index --csi --output "!{vcfOutIndex}" --threads "!{task.cpus}" "!{vcfOut}"
+  ${CMD_BCFTOOLS} index --stats "!{vcfOut}" > "!{vcfOutStats}"
 }
 
 main() {

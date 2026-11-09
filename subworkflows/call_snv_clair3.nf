@@ -31,7 +31,7 @@ workflow clair3 {
       | set { ch_gvcf_per_chunk_called }
       
     // group gvcf chunks by project by family
-    Channel.empty().mix(ch_gvcf_per_chunk_called, ch_gvcf_per_chunk_trio_called, ch_gvcf_per_chunk_duo_called, ch_cram_per_chunk.zero_reads, ch_cram_per_chunk_with_reads.skip)
+    Channel.empty().mix(ch_gvcf_per_chunk_called, ch_cram_per_chunk.zero_reads)
       | map { meta, gvcfs -> [groupKey(meta.findAll { it.key != 'sample' }, meta.family.samples.size()), [sample: meta.sample, gvcfs: gvcfs]] }
       | groupTuple(remainder: true, sort: { left, right -> left.sample.index <=> right.sample.index } )
       | map { key, group -> validateGroup(key, group) }
@@ -130,7 +130,7 @@ workflow clair3 {
     ch_vcf_per_project
 }
 
-def validateCallDeepVariantParams(assemblies) {
+def validateClair3Params(assemblies) {
   def glnexusWesPreset = params.snv.glnexus.WES.preset
   if (!(glnexusWesPreset ==~ /DeepVariant|DeepVariantWES|DeepVariantWES_MED_DP|DeepVariant_unfiltered/))  exit 1, "parameter 'params.snv.glnexus.WES.preset' value '${glnexusWesPreset}' is invalid. allowed values are [DeepVariant, DeepVariantWES, DeepVariantWES_MED_DP, DeepVariant_unfiltered]"
 

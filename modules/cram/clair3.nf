@@ -22,7 +22,7 @@ process call {
     vcfOutIndex="${vcfOut}.csi"
     vcfOutStats="${vcfOut}.stats"
 
-    model=params.snv.clair3.model_name
+    model=params.snv.clair3.model
 
     template 'clair3_call.sh'
 
