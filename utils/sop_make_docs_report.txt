@@ -31,7 +31,6 @@ Make two screenshots: one of the page with the list of variants, the second of p
 
 ## 4. Make PR
 
-TODOs:
 - Check that the changes are correct, than commit and push
 - Make PR on github
 - Have PR reviewed and approved
