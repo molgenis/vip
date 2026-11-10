@@ -13,7 +13,7 @@ Bootstrap: scratch
     alpine_minirootfs_path="${APPTAINER_TMPDIR}/${alpine_minirootfs}"
 
     curl --fail --silent --show-error --location --output "${alpine_minirootfs_path}" "${alpine_minirootfs_url}"
-    echo "42d0e6d8de5521e7bf92e075e032b5690c1d948fa9775efa32a51a38b25460fb  ${alpine_minirootfs_path}" | sha256sum --check
+    echo "56e2810205c17a5dff78cdd7b2c2af4ccdef16f18d765d5bb0f527438b136676  ${alpine_minirootfs_path}" | sha256sum --check
     tar --extract --gzip --file="${alpine_minirootfs_path}" --directory="${APPTAINER_ROOTFS}" --exclude=./dev --exclude=./etc/hosts
 
 %environment

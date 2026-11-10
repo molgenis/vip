@@ -10,12 +10,12 @@ Stage: build
     apt-get install curl bzip2 gcc make zlib1g-dev libbz2-dev liblzma-dev libdeflate-dev > /dev/null
 
     # download
-    curl --fail --silent --show-error --location --output samtools-${version_major}.${version_minor}.${version_patch}.tar.bz2 https://github.com/samtools/samtools/releases/download/${version_major}.${version_minor}.${version_patch}/samtools-${version_major}.${version_minor}.tar.bz2
+    curl --fail --silent --show-error --location --output samtools-${version_major}.${version_minor}.tar.bz2 https://github.com/samtools/samtools/releases/download/${version_major}.${version_minor}/samtools-${version_major}.${version_minor}.tar.bz2
     echo "8bbd2b3cb447953149a74ab0b00e3ec4e88a789a27b8373a31fa6b5b2dee02b1  samtools-${version_major}.${version_minor}.tar.bz2" | sha256sum -c
 
     # install
-    tar xf samtools-${version_major}.${version_minor}.${version_patch}.tar.bz2
-    cd samtools-${version_major}.${version_minor}.${version_patch}
+    tar xf samtools-${version_major}.${version_minor}.tar.bz2
+    cd samtools-${version_major}.${version_minor}
     ./configure --silent --disable-libcurl --disable-gcs --disable-s3 --without-curses --disable-ref-cache
     make --silent
     make --silent install

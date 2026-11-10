@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: python:3.15.2-slim-trixie
+From: python:3.11.15-slim-trixie
 
 %help
     Python 3.15 on Debian 13 "Trixie"
