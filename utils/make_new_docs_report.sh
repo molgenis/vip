@@ -17,22 +17,10 @@ usage() {
 
 copy_data() {
   local -r prm_dir="${1}"
-  local -r data_dir="${2}"
-  
-  if [[ ! -d "${data_dir}/assemblevalidationset_14" ]]; then
-    echo -e "Rsyncing ${prm_dir}/assemblevalidationset_14 into ${data_dir}"
-    rsync -a "${prm_dir}/assemblevalidationset_14" "${data_dir}"
-  fi
-  
-  if [[ ! -d "${data_dir}/assemblevalidationset_15" ]]; then
-    echo -e "Rsyncing ${prm_dir}/assemblevalidationset_15 into ${data_dir}"
-    rsync -a "${prm_dir}/assemblevalidationset_15" "${data_dir}"
-  fi
-  
-  if [[ ! -d "${data_dir}/assemblevalidationset_16" ]]; then
-    echo -e "Rsyncing ${prm_dir}/assemblevalidationset_16 into ${data_dir}"
-    rsync -a "${prm_dir}/assemblevalidationset_16" "${data_dir}"
-  fi
+  local -r data_dir="${2}/fastq"
+
+  echo -e "Rsyncing ${prm_dir}*.fastq.gz into ${data_dir}"
+  rsync -a "${prm_dir}*.fastq.gz" "${data_dir}"
 }
 
 
@@ -44,16 +32,6 @@ family_id	individual_id	paternal_id	maternal_id	proband	sex	affected	hpo_ids	seq
 AshkenazimTrio	HG002	HG003	HG004	true	male	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${data_dir}/fastq/HG002_R1.fastq.gz	${data_dir}/fastq/HG002_R2.fastq.gz	true
 AshkenazimTrio	HG003			false	male	false		illumina	WES	${data_dir}/fastq/HG003_R1.fastq.gz	${data_dir}/fastq/HG003_R2.fastq.gz	true
 AshkenazimTrio	HG004			false	female	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${data_dir}/fastq/HG004_R1.fastq.gz	${data_dir}/fastq/HG004_R2.fastq.gz	true
-EOF
-}
-
-
-make_test_sample_sheet() {
-  local -r data_dir="${1}"
-
-cat << EOF > testsheet.tsv
-family_id	individual_id	proband	sex	affected	sequencing_platform	sequencing_method	fastq_r1	fastq_r2	pcr_performed
-AshkenazimSingle	HG002	true	male	true	illumina	WES	${data_dir}/assemblevalidationset_14/hg002_chr10_R1_L001.fastq.gz	${data_dir}/assemblevalidationset_14/hg002_chr10_R2_L001.fastq.gz	true
 EOF
 }
 
