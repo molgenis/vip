@@ -20,7 +20,7 @@ copy_data() {
   local -r data_dir="${2}/fastq"
 
   echo -e "Rsyncing ${prm_dir}*.fastq.gz into ${data_dir}"
-  rsync -a "${prm_dir}*.fastq.gz" "${data_dir}"
+  rsync -a "${prm_dir}"*.fastq.gz "${data_dir}"
 }
 
 
