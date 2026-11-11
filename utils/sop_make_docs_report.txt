@@ -2,7 +2,9 @@
 
 ## 1. Run `make_new_docs_report.sh`
 
-Run the script `make_new_docs_report.sh`, if you want to use the vip module:
+Run the script `make_new_docs_report.sh` on a research cluster, find the data on the permanent storage in the `example-report` folder in the vip project folder.
+
+If you want to use the vip module:
 
 ```
 screen -S make_new_vip_report
