@@ -42,7 +42,7 @@ make_sample_sheet() {
 cat << EOF > new_report_samplesheet.tsv
 family_id	individual_id	paternal_id	maternal_id	proband	sex	affected	hpo_ids	sequencing_platform	sequencing_method	fastq_r1	fastq_r2	pcr_performed
 AshkenazimTrio	HG002	HG003	HG004	true	male	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${data_dir}/fastq/HG002_R1.fastq.gz	${data_dir}/fastq/HG002_R2.fastq.gz	true
-AshkenazimTrio	HG003			false	male	false		illumina	WES	${data_dir}/assemblevalidationset_15/VaSe_2025-12-12_2025-12-12_L1_R1.fastq.gz	${data_dir}/assemblevalidationset_15/VaSe_2025-12-12_2025-12-12_L1_R2.fastq.gz	true
+AshkenazimTrio	HG003			false	male	false		illumina	WES	${data_dir}/fastq/HG003_R1.fastq.gz	${data_dir}/fastq/HG003_R2.fastq.gz	true
 AshkenazimTrio	HG004			false	female	true	HP:0004383,HP:0045017,HP:0001627	illumina	WES	${data_dir}/assemblevalidationset_16/VaSe_2025-12-12_2025-12-12_L1_R1.fastq.gz	${data_dir}/assemblevalidationset_16/VaSe_2025-12-12_2025-12-12_L1_R2.fastq.gz	true
 EOF
 }
