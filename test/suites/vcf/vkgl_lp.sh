@@ -12,7 +12,7 @@ args+=("--resume")
 
 runVip "${args}" "${TEST_RESOURCES_DIR}/vkgl_lp.tsv"
 
-runSompy "${TEST_RESOURCES_DIR}/vkgl_lp_202507.bcf" "${OUTPUT_DIR}/vip.vcf.gz"
+runSompy "${TEST_RESOURCES_DIR}/vkgl_lp_202609.bcf" "${OUTPUT_DIR}/vip.vcf.gz"
 
 # collect the recall and precision and f1 score value
 total_recall=$(grep '5,records' "${OUTPUT_DIR}/sompy_out/test.stats.csv" | cut -d ',' -f 10)
