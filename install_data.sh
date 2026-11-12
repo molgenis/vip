@@ -176,35 +176,36 @@ install_files() {
     touch "${vip_install_db_file}"
   fi
 
+
   # when modifying data array, please keep list in 'ls -l' order
   local data=()
-  data+=("cd943f56552e1ce5e8c7013218d111e9" "images/annotsv-3.5.5+build.1.sif" "")
-  data+=("d2cf2210cfdc113dd390faceea468fd4" "images/bcftools-1.23.1.sif" "")
-  data+=("cda632523f686d5a7165fb394d16624c" "images/capice-5.1.2+build.1.sif" "")
-  data+=("cad49a9d2c5e489b802887a4d22247b1" "images/cutesv-2.1.3+441433d.sif" "")
+  data+=("70f347e690251e0ed80007f1aa0ca0b4" "images/annotsv-3.5.10.sif" "")
+  data+=("c6ddb77419b4948c31d2c046f54ff472" "images/bcftools-1.25.sif" "")
+  data+=("22b990e63aa1e20d8c50412da90b8477" "images/capice-5.1.2+build.2.sif" "")
+  data+=("70eee44e1d2c9670d4a46f36f0f13179" "images/cutesv-2.1.4.sif" "")
   data+=("28937e8a97287c85b030d43e9362fecc" "images/deepvariant-1.10.0.sif" "")
   data+=("bf91f77bd18989d13c2d631a6be09f5a" "images/deepvariant_deeptrio-1.10.0.sif" "")
-  data+=("8c65c0ec075781c49dffc78d87a64360" "images/expansionhunter-5.0.0+build.3.sif" "")
-  data+=("570df812e546946ebe2a11141be4ea12" "images/fastp-1.1.0.sif" "")
-  data+=("f3bf2f8f28698a86fad298da369bfab5" "images/gado-1.0.3+build.3.sif" "")
-  data+=("5b5dd030bf292e72023007b1f5029e84" "images/gatk-4.6.2.0+build.1.sif" "")
+  data+=("f58f56e6853842160774e24ce5059655" "images/expansionhunter-5.0.0+build.4.sif" "")
+  data+=("df79d98cc5d185cd5628008bd9d7d273" "images/fastp-1.4.0.sif" "")
+  data+=("97f84a49cf5cc2d98fd3b1704a05040b" "images/gado-1.0.3+build.4.sif" "")
+  data+=("99111ed97a95d8d696b811c5b07857a0" "images/gatk-4.7.0.0.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("bc731b5fad6c75a1bc81b9afb75c06ca" "images/happy-0.3.15.sif" "")
   data+=("7718ec9b21b13b089bb31e7b97731dc1" "images/manta-1.6.0+build.2.sif" "")
-  data+=("db415eb9b9dd11657580d1e7df99ed10" "images/minimap2-2.31.sif" "")
-  data+=("ba207b583a9416eec6435c868ae498ea" "images/mosdepth-0.3.13.sif" "")
-  data+=("8d7421af13d7db1739b28046bb6f2695" "images/picard-3.4.0.sif" "")
-  data+=("0761f8f2466e9b9627ae8f73b3df00ad" "images/samtools-1.23.1.sif" "")
-  data+=("ab68b8a9ddb9419f5c35fc3af93dbc60" "images/seqtk-1.5.sif" "")
-  data+=("31dfde07fdbdd477835730bfaeea55c3" "images/spectre-0.2.1+9058094.sif" "")
-  data+=("5872a0d033b9b9655852d0a6125cbddf" "images/straglr-1.5.6+build.1.sif" "")
-  data+=("d9e77c00765026e155d1c13022403946" "images/straglr-tsv2vcf-1.2.1.sif" "")
-  data+=("990e3fced3002042568f42ca7fe01d82" "images/stranger-0.9.3+build.1.sif" "")
-  data+=("ac503a217bb2e3cff42b3ad9a782056e" "images/vcf-decision-tree-6.0.5.sif" "")
-  data+=("96da4aa30c330258cb722dbee841c313" "images/vcf-inheritance-matcher-4.0.2.sif" "")
-  data+=("8701a1c19d91c9a0e71f940a5bc4ff33" "images/vcf-report-8.3.1.sif" "")
-  data+=("25e155b30bd3f8e3decc5c958a77da35" "images/vep-115.2+d7cffe1.sif" "")
-  data+=("add4444ac81fcab641a196bddc449b3a" "images/whatshap-2.8.sif" "")
+  data+=("a70fa401c498689b4d0cbcd4a499766b" "images/minimap2-2.31+build.1.sif" "")
+  data+=("a09ed1d5373652b7d3530d9902a5b245" "images/mosdepth-0.3.14--h87be163_2.sif" "")
+  data+=("1778c58983ce745bd2fc317ff9c34570" "images/picard-3.5.0.sif" "")
+  data+=("3e621985a06287a76cb8f60b56ecd7bc" "images/samtools-1.25.sif" "")
+  data+=("c0c9c7b117339b093f9b60b71b99bff7" "images/seqtk-1.5+build.1.sif" "")
+  data+=("a7a14535df35f2344a0e6998ce3c9777" "images/spectre-0.2.1+9058094+build.1.sif" "")
+  data+=("b761f2822f9724037afdee6696370571" "images/straglr-1.5.6+build.2.sif" "")
+  data+=("6d5311a7b5ecee77f8ad22ef00b5b1eb" "images/straglr-tsv2vcf-1.2.1+build.1.sif" "")
+  data+=("8c7d5f9d50697a76fc77b133304a26f6" "images/stranger-0.10.2.sif" "")
+  data+=("474fc9466207c2d9eb96015f1014f00c" "images/vcf-decision-tree-6.0.5+build.1.sif" "")
+  data+=("d804173bd338474bcad457381b2debdf" "images/vcf-inheritance-matcher-4.0.2+build.1.sif" "")
+  data+=("da3927fd9b909a9ff711f7856368ef83" "images/vcf-report-8.3.1+build.1.sif" "")
+  data+=("6f1841d626e241835ff9f90acbfbc9fe" "images/vep-116.3.sif" "")
+  data+=("3f97db2fe9b6261a85c468c9f654711d" "images/whatshap-2.8+build.1.sif" "")
   data+=("bbb7bee9b968bcd3777061f9fd1ccbea" "nextflow-26.10.5-dist" "postprocess_nextflow")
   data+=("cfa476704db9a67c0f94d99eb67d0fd2" "resources/annotsv/v3.5.5/2406_phenotype.zip" "postprocess_annotsv_phenotype")
   data+=("a67ff13ccf5a346aee3cc27f35ffcffe" "resources/annotsv/v3.5.5/Annotations_Human_3.5.tar.gz" "postprocess_annotsv_annotations")
@@ -264,7 +265,7 @@ install_files() {
   data+=("d94140e762dfc6da23011718cccf2609" "resources/hpo_20240813.tsv" "")
   data+=("b62d33e85321a3104e58c129232e98df" "resources/hpo_20240813_phenotypic_abnormality.tsv" "")
   data+=("788d16796ba90b74a7c9b48d26905601" "resources/inheritance_20250411.tsv" "")
-  data+=("b4ad11f1299acb2d023ea8b188931da1" "resources/vep/cache/homo_sapiens_refseq_vep_115_GRCh38.tar.gz" "postprocess_vep")
+  data+=("88f31b0590a59e7996220c47b5ebe6c4" "resources/vep/cache/homo_sapiens_refseq_vep_116_GRCh38.tar.gz" "postprocess_vep")
   data+=("56042033325eb3714431ae81ccb3e6fd" "resources/vip-report-template-v8.6.0.html" "")
 
 
@@ -342,3 +343,4 @@ main() {
 }
 
 main "${@}"
+
