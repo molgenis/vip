@@ -3,7 +3,7 @@ From: sif/build/python-3.11.15.sif
 
 %post
     # --only-binary: ensure deps are not installed from source packages
-    pip install --no-cache-dir \
+    pip install \
       --only-binary=numpy,pandas,scipy,scikit-learn,xgboost \
       capice==5.1.2
 
