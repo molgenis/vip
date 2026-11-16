@@ -32,7 +32,6 @@ call_small_variants () {
 }
 
 call_small_variants_cleanup () {
-  rm merge_output.gvcf.gz
   rm -rf tmp
 }
 
