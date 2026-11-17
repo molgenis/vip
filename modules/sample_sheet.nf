@@ -59,9 +59,11 @@ def parseCommonSampleSheet(csvFilename, hpoPhenotypicAbnormalityFilename, additi
     ],
     sex: [
       type: "string",
+      required: true,
       'enum': ["male", "female"]
     ],
     affected: [
+      required: true,
       type: "boolean",
     ],
     proband: [
