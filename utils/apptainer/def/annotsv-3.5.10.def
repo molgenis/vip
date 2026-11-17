@@ -3,11 +3,12 @@ From: sif/bcftools-1.25.sif
 Stage: build
 
 Bootstrap: localimage
-From: sif/build/openjdk-25.sif
+From: sif/build/openjdk-25+build.1.sif
 
 %help
     AnnotSV: Annotation and Ranking of Human Structural Variations
-    Usage: apptainer run annotSv.sif -annotationsDir [path_to_annotations_dir] -SVinputFile [your_vcf]
+    Usage: apptainer run -B [annotations_dir]:/annotations -B [data_dir]:/data annotSv.sif -annotationsDir /annotations -SVinputFile /data/[your_vcf] -outputDir /data/out
+    No writable overlay is needed. -outputDir must be a writable bind mount.
 
 %files from build
     /usr/local/bin/bcftools
@@ -19,9 +20,13 @@ From: sif/build/openjdk-25.sif
     version_major=3
     version_minor=5
     version_patch=10
+    annotsv_dir="/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}"
 
     apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community zlib libbz2 xz-libs libdeflate tcl bash iproute2
-    apk add --virtual=.build-dependencies build-base curl git
+    # ADDED: python + packages PyPI has no musl wheels for (scikit-learn), taken from Alpine
+    apk add python3 py3-pip py3-numpy py3-scipy py3-scikit-learn py3-pyarrow
+    # ADDED: cargo/rust (fastobo has no musl wheel), libffi/openssl (fallback for poetry deps)
+    apk add --virtual=.build-dependencies build-base curl git python3-dev cargo rust libffi-dev openssl-dev
 
     # bedtools
     curl --fail --silent --show-error --location --output /usr/local/bin/bedtools https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
@@ -34,14 +39,73 @@ From: sif/build/openjdk-25.sif
     tar xf annot-sv.tar.gz -C /usr/share
 
     (
-      cd "/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}"
+      cd "$annotsv_dir"
       sed -i 's|/usr/bin/bash|/bin/bash|' Makefile
       make --silent PREFIX=. install
     )
 
+    # ADDED: PhenoGeniusCli, installed where AnnotSV expects it:
+    #   $ANNOTSV/share/python3/phenogeniuscli/PhenoGeniusCli
+    python3 -m venv /opt/poetry
+    /opt/poetry/bin/pip install --quiet poetry
+    ln -s /opt/poetry/bin/poetry /usr/local/bin/poetry
+    export POETRY_VIRTUALENVS_IN_PROJECT=true
+    export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+
+    pg_dir="$annotsv_dir/share/python3/phenogeniuscli"
+    mkdir -p "$pg_dir"
+    (
+      cd "$pg_dir"
+      # same clone/checkout steps as AnnotSV's checkPhenoGeniusCliInstall.sh
+      git clone https://github.com/kyauy/PhenoGeniusCli.git
+      cd PhenoGeniusCli
+      git checkout tags/v.1.1.3
+      rm -rf .git .gitattributes .github .gitignore
+      # poetry gets an empty dependency list (no dev group -> no atomicwrites/pkg_resources failure);
+      # dependencies live in .venv: numpy/scipy/scikit-learn/pyarrow from apk, the rest from PyPI
+      sed -i '/^\(pandas\|ujson\|numpy\|scikit-learn\|pandarallel\|click\|pyarrow\|pronto\|pytest\) = /d; /^\[tool.poetry.group.dev.dependencies\]/d' pyproject.toml
+      python3 -m venv --system-site-packages .venv
+      .venv/bin/pip install "pandas==2.3.3" ujson pandarallel click pronto    # pandas<3: pandarallel breaks on pandas 3
+      poetry install    # creates poetry.lock; nothing to download
+    )
+
+    # validate the build with AnnotSV's own (original) check script, then the python imports
+    bash "$annotsv_dir/share/bash/AnnotSV/checkPhenoGeniusCliInstall.sh" "$annotsv_dir/share" \
+        || { echo "PhenoGeniusCli check FAILED"; tail -n 30 "$pg_dir"/*.log; exit 1; }
+    (cd "$pg_dir/PhenoGeniusCli" && poetry run python3 -c "import numpy, pandas, scipy, sklearn, pyarrow, pandarallel, pronto, ujson; print('numpy', numpy.__version__, 'pandas', pandas.__version__, 'sklearn', sklearn.__version__, 'pyarrow', pyarrow.__version__)")
+
+    # ADDED: read-only runtime. AnnotSV's check script writes logs into the install tree; replace it with a
+    # version that only verifies the build-time install, and send AnnotSV's failure log to -outputDir.
+    cat > "$annotsv_dir/share/bash/AnnotSV/checkPhenoGeniusCliInstall.sh" <<'EOF'
+#!/bin/bash
+# Read-only-safe replacement: PhenoGeniusCli is installed at image build time; this only verifies it.
+ANNOTSV_SHARE_DIR="$1"
+if ! command -v poetry > /dev/null 2>&1; then
+    echo "Poetry seems not to be installed"
+    echo "WARNING: No PhenoGenius annotations available."
+    exit 1
+fi
+cd "$ANNOTSV_SHARE_DIR/python3/phenogeniuscli/PhenoGeniusCli" 2>&1 || { echo "PhenoGeniusCli directory not found in $ANNOTSV_SHARE_DIR/python3/phenogeniuscli"; echo "WARNING: No PhenoGenius annotations available."; exit 1; }
+out=$(poetry run python3 phenogenius_cli.py --help 2>&1)
+if echo "$out" | grep -q -- "--hpo_list"; then
+    exit 0
+fi
+echo "phenogenius_cli.py not working:"
+echo "$out" | tail -n 20
+echo "WARNING: No PhenoGenius annotations available."
+exit 1
+EOF
+    chmod 0755 "$annotsv_dir/share/bash/AnnotSV/checkPhenoGeniusCliInstall.sh"
+    sed -i 's|set logFile "$g_AnnotSV(installDir)/share/python3/phenogeniuscli/\[clock format|set logFile "$g_AnnotSV(outputDir)/[clock format|' "$annotsv_dir"/share/tcl*/AnnotSV/AnnotSV-phenogenius.tcl
+    grep -q 'g_AnnotSV(outputDir)/\[clock format' "$annotsv_dir"/share/tcl*/AnnotSV/AnnotSV-phenogenius.tcl
+
     # Set Environment
-    echo "export PATH=\"$PATH:/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/bin\"" >> "${APPTAINER_ENVIRONMENT}"
-    echo "export ANNOTSV=\"/usr/share/AnnotSV-${version_major}.${version_minor}.${version_patch}/\"" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export PATH=\"$PATH:${annotsv_dir}/bin\"" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export ANNOTSV=\"${annotsv_dir}/\"" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export POETRY_VIRTUALENVS_IN_PROJECT=true" >> "${APPTAINER_ENVIRONMENT}"
+    echo "export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring" >> "${APPTAINER_ENVIRONMENT}"
+    # ADDED: poetry cache in a writable place at runtime (single quotes: expanded at runtime, not build time)
+    echo 'export POETRY_CACHE_DIR="${ANNOTSV_OUTPUT_DIR}/poetry-cache-$(id -u)"' >> "${APPTAINER_ENVIRONMENT}"
 
     # cleanup
     apk del .build-dependencies
@@ -53,3 +117,4 @@ From: sif/build/openjdk-25.sif
 %test
     set -euo pipefail
     AnnotSV --help > /dev/null 2>&1
+    bash /usr/share/AnnotSV-3.5.10/share/bash/AnnotSV/checkPhenoGeniusCliInstall.sh /usr/share/AnnotSV-3.5.10/share

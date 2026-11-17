@@ -179,7 +179,7 @@ install_files() {
 
   # when modifying data array, please keep list in 'ls -l' order
   local data=()
-  data+=("70f347e690251e0ed80007f1aa0ca0b4" "images/annotsv-3.5.10.sif" "")
+  data+=("185d5bafeddfbf4717dbd70cfec0db4e" "images/annotsv-3.5.10.sif" "")
   data+=("c6ddb77419b4948c31d2c046f54ff472" "images/bcftools-1.25.sif" "")
   data+=("22b990e63aa1e20d8c50412da90b8477" "images/capice-5.1.2+build.2.sif" "")
   data+=("70eee44e1d2c9670d4a46f36f0f13179" "images/cutesv-2.1.4.sif" "")
