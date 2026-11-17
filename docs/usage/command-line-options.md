@@ -15,6 +15,7 @@ usage: vip.sh -w <arg> -i <arg> -o <arg>
   -c, --config   <arg>  path to additional nextflow .cfg (optional)
   -p, --profile  <arg>  nextflow configuration profile (optional)
   -r, --resume          resume execution using cached results (default: false)
+  -q, --quiet           disable nextflow progress updates and only keep logging
   -h, --help            print this message and exit
 ```
 
@@ -29,6 +30,7 @@ usage: vip.sh -w <arg> -i <arg> -o <arg>
 - `config` as described [here](config.md)
 - `profile` the configuration profile to use. allowed values are `local`, `slurm` plus any profiles added in `--config`
 - `resume` useful to continue executions that was stopped by an error using cached results
+- `quiet` useful for less status update logging in slurm job output file
 
 ## Defaults
 
