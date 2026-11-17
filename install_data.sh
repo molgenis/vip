@@ -191,7 +191,7 @@ install_files() {
   data+=("99111ed97a95d8d696b811c5b07857a0" "images/gatk-4.7.0.0.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
   data+=("bc731b5fad6c75a1bc81b9afb75c06ca" "images/happy-0.3.15.sif" "")
-  data+=("7718ec9b21b13b089bb31e7b97731dc1" "images/manta-1.6.0+build.2.sif" "")
+  data+=("a53445c9668d2ccc6d3690562c0caaf0" "images/manta-1.6.0+build.2.sif" "")
   data+=("a70fa401c498689b4d0cbcd4a499766b" "images/minimap2-2.31+build.1.sif" "")
   data+=("a09ed1d5373652b7d3530d9902a5b245" "images/mosdepth-0.3.14.sif" "")
   data+=("1778c58983ce745bd2fc317ff9c34570" "images/picard-3.5.0.sif" "")
