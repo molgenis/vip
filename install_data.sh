@@ -190,7 +190,6 @@ install_files() {
   data+=("d420ad889b495b54a09c5f7b71313fb4" "images/gado-1.0.3+build.4.sif" "")
   data+=("fad3b30baf9f285998e51085c6a51413" "images/gatk-4.7.0.0.sif" "")
   data+=("d25ba2124ef883b1b6f7a2eff2cb8201" "images/glnexus_v1.4.5-patched.sif" "")
-  data+=("bc731b5fad6c75a1bc81b9afb75c06ca" "images/happy-0.3.15.sif" "")
   data+=("64397027ea45a429d48003b18b42d09b" "images/manta-1.6.0+build.3.sif" "")
   data+=("a70fa401c498689b4d0cbcd4a499766b" "images/minimap2-2.31+build.1.sif" "")
   data+=("a09ed1d5373652b7d3530d9902a5b245" "images/mosdepth-0.3.14.sif" "")
