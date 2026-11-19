@@ -32,8 +32,12 @@ From: sif/build/debian-13.7.sif
     apt-get clean
     rm -rf /var/lib/apt/lists/*
 
-%help
-    Manta calls structural variants (SVs) and indels from mapped paired-end sequencing reads.
+%environment
+    export PATH=/opt/manta/bin:/opt/python2/bin:$PATH
+    
+%test
+    configManta.py --help > /dev/null
+    python2 --version
 
 %help
     Manta calls structural variants (SVs) and indels from mapped paired-end sequencing reads.
