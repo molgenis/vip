@@ -30,7 +30,7 @@ usage: vip.sh -w <arg> -i <arg> -o <arg>
 - `config` as described [here](config.md)
 - `profile` the configuration profile to use. allowed values are `local`, `slurm` plus any profiles added in `--config`
 - `resume` useful to continue executions that was stopped by an error using cached results
-- `quiet` useful for less status update logging in slurm job output file
+- `quiet` useful for less status update logging in the slurm job output file
 
 ## Defaults
 
