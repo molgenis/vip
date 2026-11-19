@@ -1,2 +1,2 @@
-individual_id	sequencing_platform	pcr_performed	cram
-HG002	nanopore	true	${VIP_DIR_DATA}/test/resources/nanopore.cram
+individual_id	sex	affected	sequencing_platform	pcr_performed	cram
+HG002	male	true	nanopore	true	${VIP_DIR_DATA}/test/resources/nanopore.cram

@@ -4,11 +4,11 @@ The `--input` value is a tab-separated file (sample-sheet) with each row describ
 
 A minimal sample-sheet for the `vcf` workflow could look like this:
 
-| individual_id | vcf            |
-|---------------|----------------|
-| sample0       | sample0.vcf.gz |
-| sample1       | sample1.vcf.gz |
-| sample2       | sample2.vcf.gz |
+| individual_id | sex    | affected | vcf            |
+|---------------|--------|----------|----------------|
+| sample0       | female | true     | sample0.vcf.gz |
+| sample1       | male   | true     | sample1.vcf.gz |
+| sample2       | female | true     | sample2.vcf.gz |
 
 Sample-sheet values are case sensitive. Columns can contain values of different types:
 
