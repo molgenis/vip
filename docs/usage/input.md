@@ -1,5 +1,5 @@
 # Input
-
+ 
 The `--input` value is a tab-separated file (sample-sheet) with each row describing the data and metadata of a sample.
 
 A minimal sample-sheet for the `vcf` workflow could look like this:
