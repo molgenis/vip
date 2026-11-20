@@ -57,32 +57,37 @@ runVip() {
 }
 
 # arguments:
-#   $1  path to vcf gold standard set
-#   $2  path to test vcf results
-#   $3  path to reference genome to use (default = VIP default ref genome)
-runSompy() {
-  local sompy_args=()
-  sompy_args+=("som.py")
-  sompy_args+=("${1}")
-  sompy_args+=("${2}")
-  sompy_args+=("-o" "${OUTPUT_DIR}/sompy_out/test")
-  if [[ -v 3 ]]; then
-    sompy_args+=("-r" "${3}")
-  else
-    sompy_args+=("-r" "${VIP_DIR_DATA}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna")
-  fi
+#   $1  path to vcf gold standard set (vcf, vcf.gz or bcf)
+#   $2  path to test vcf results      (vcf, vcf.gz or bcf)
+runVcfCompare() {
+  local truth="$1" query="$2" out="${OUTPUT_DIR}/isec_out"
+  local vip_images_dir="${VIP_DIR_DATA}/images"
+  local bcftools_sif="${vip_images_dir}/bcftools-1.25.sif"
 
-  mkdir -p "${OUTPUT_DIR}/sompy_out"
+  rm -rf "${out}"
+  mkdir -p "${out}"
 
-  vip_images_dir="${VIP_DIR_DATA}/images"
+  CMD_BCFTOOLS() { apptainer exec "${bcftools_sif}" bcftools "$@"; }
 
-  apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${sompy_args[@]}"
-}
+  # Normalize both inputs the same way (split multi-allelics). bcftools reads
+  # vcf, vcf.gz and bcf transparently, and always writes bgzipped vcf here.
+  CMD_BCFTOOLS norm -m -any "${truth}" -Oz -o "${out}/truth.vcf.gz" || return 1
+  CMD_BCFTOOLS index -f "${out}/truth.vcf.gz" || return 1
 
-# arguments
-#   $1  sompy precision score
-#   $2  sompy recall score
-sompyF1Score() {
-  f1_score=$(printf "%0.2f" "$(echo "2 * ((${1} * ${2}) / (${1} + ${2}))" | bc -l)")
-  echo "${f1_score}"
+  CMD_BCFTOOLS norm -m -any "${query}" -Oz -o "${out}/query.vcf.gz" || return 1
+  CMD_BCFTOOLS index -f "${out}/query.vcf.gz" || return 1
+
+  CMD_BCFTOOLS isec -c none -Ov -p "${out}/isec" "${out}/truth.vcf.gz" "${out}/query.vcf.gz" || return 1
+
+  local fn fp tp
+  fn=$(grep -vc '^#' "${out}/isec/0000.vcf" || true)  # truth only
+  fp=$(grep -vc '^#' "${out}/isec/0001.vcf" || true)  # query only
+  tp=$(grep -vc '^#' "${out}/isec/0002.vcf" || true)  # shared
+
+  unset -f CMD_BCFTOOLS
+
+  # prints: precision recall f1
+  awk -v tp="${tp}" -v fp="${fp}" -v fn="${fn}" 'BEGIN {
+    p = (tp+fp) ? tp/(tp+fp) : 0; r = (tp+fn) ? tp/(tp+fn) : 0;
+    f = (p+r) ? 2*p*r/(p+r) : 0; printf "%.2f %.2f %.2f\n", p, r, f }'
 }
