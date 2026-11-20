@@ -176,7 +176,6 @@ install_files() {
     touch "${vip_install_db_file}"
   fi
 
-
   # when modifying data array, please keep list in 'ls -l' order
   local data=()
   data+=("8a0ee38afc9eb534cbaa7c989faf1925" "images/annotsv-3.5.10.sif" "")
