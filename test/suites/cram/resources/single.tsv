@@ -1,2 +1,2 @@
-family_id	proband	individual_id	hpo_ids	sequencing_platform	cram	sequencing_method	regions
-fam0	true	NA12878	HP:0001626,HP:0000707	illumina	${VIP_DIR_DATA}/test/resources/single.cram	WES	${TEST_RESOURCES_DIR}/single.bed
+family_id	proband	individual_id	sex	affected	hpo_ids	sequencing_platform	cram	sequencing_method	regions
+fam0	true	NA12878	female	true	HP:0001626,HP:0000707	illumina	${VIP_DIR_DATA}/test/resources/single.cram	WES	${TEST_RESOURCES_DIR}/single.bed

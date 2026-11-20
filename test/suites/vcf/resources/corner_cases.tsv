@@ -1,2 +1,2 @@
-individual_id	vcf
-SAMPLE0	${TEST_RESOURCES_DIR}/corner_cases.vcf
+individual_id	sex	affected	vcf
+SAMPLE0	female	true	${TEST_RESOURCES_DIR}/corner_cases.vcf
