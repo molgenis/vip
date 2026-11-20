@@ -6,6 +6,7 @@ include { filter_reads } from './modules/fastq/adaptive_sampling'
 include { minimap2_align; minimap2_align_paired_end } from './modules/fastq/minimap2'
 include { cram; validateCramParams } from './vip_cram'
 include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
+include { getDecisionTreeClasses; checkSuppliedClasses; checkFilterClasses } from './modules/vcf_filter_class_check'
 
 /**
  * input:  [project, sample [...      ], ...]
@@ -64,6 +65,7 @@ workflow {
   def projects = parseSampleSheet(params)
   validateFastqParams([params.assembly])
   validateParameters(params)
+  validateVcfFilterClasses(params)
 
   // run fastq workflow for each sample in each project
   Channel.from(projects)
@@ -140,4 +142,9 @@ def validateParameters(params) {
   def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_fastq.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
+}
+
+def validateVcfFilterClasses(params) {
+  checkFilterClasses(params.vcf.classify.GRCh38.decision_tree, params.vcf.filter.classes)
+  checkFilterClasses(params.vcf.classify_samples.GRCh38.decision_tree, params.vcf.filter_samples.classes)
 }

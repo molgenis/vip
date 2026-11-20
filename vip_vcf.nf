@@ -21,6 +21,7 @@ include { nrRecords; getProbands; getHpoIds; scatter; preGroupTupleConcat; postG
 include { gado } from './modules/vcf/gado'
 include { bed_filter } from './modules/vcf/bed_filter'
 include { readConfigParams; addCliParameters; assertAllKeysExist } from './modules/parameter_check'
+include { getDecisionTreeClasses; checkSuppliedClasses; checkFilterClasses } from './modules/vcf_filter_class_check'
 
 /**
  * input: [project, vcf, chunk (optional), ...]
@@ -237,6 +238,7 @@ workflow {
   def assemblies = getAssemblies(projects)
   validateVcfParams(assemblies)
   validateParameters(params);
+  validateVcfFilterClasses(params)
 
   // preprocess vcfs and crams in parallel
   Channel.from(projects)
@@ -434,4 +436,9 @@ def validateParameters(params) {
   def acceptedParameters = readConfigParams("${env('VIP_DIR')}/config/nxf_vcf.config");
   acceptedParameters = addCliParameters(acceptedParameters);
   assertAllKeysExist(params, acceptedParameters, "");
+}
+
+def validateVcfFilterClasses(params) {
+  checkFilterClasses(params.vcf.classify.GRCh38.decision_tree, params.vcf.filter.classes)
+  checkFilterClasses(params.vcf.classify_samples.GRCh38.decision_tree, params.vcf.filter_samples.classes)
 }
