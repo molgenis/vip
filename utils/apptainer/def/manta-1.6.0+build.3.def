@@ -33,7 +33,7 @@ From: sif/build/debian-13.7.sif
     rm -rf /var/lib/apt/lists/*
 
 %environment
-    export PATH=/opt/manta/bin:/opt/python2/bin:$PATH
+    PATH=/opt/manta/bin:/opt/python2/bin:$PATH
     
 %test
     configManta.py --help > /dev/null
