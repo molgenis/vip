@@ -56,38 +56,54 @@ runVip() {
   vip.sh "${args[@]}" 1> /dev/null
 }
 
-# arguments:
-#   $1  path to vcf gold standard set (vcf, vcf.gz or bcf)
-#   $2  path to test vcf results      (vcf, vcf.gz or bcf)
+# Arguments:
+#   $1  path to VCF gold standard set (vcf, vcf.gz or bcf)
+#   $2  path to test VCF results (vcf, vcf.gz or bcf)
+#   $3  filter query to PASS variants only (true/false, default false)
 runVcfCompare() {
-  local truth="$1" query="$2" out="${OUTPUT_DIR}/isec_out"
+  local truth="$1"
+  local query="$2"
+  local pass_only="${3:-false}"
+
+  local out="${OUTPUT_DIR}/isec_out"
   local vip_images_dir="${VIP_DIR_DATA}/images"
   local bcftools_sif="${vip_images_dir}/bcftools-1.25.sif"
 
   rm -rf "${out}"
-  mkdir -p "${out}"
+  mkdir -p "${out}" || return 1
 
-  CMD_BCFTOOLS() { apptainer exec "${bcftools_sif}" bcftools "$@"; }
+  CMD_BCFTOOLS() {
+    apptainer exec "${bcftools_sif}" bcftools "$@"
+  }
 
-  # Normalize both inputs the same way (split multi-allelics). bcftools reads
-  # vcf, vcf.gz and bcf transparently, and always writes bgzipped vcf here.
-  CMD_BCFTOOLS norm -m -any "${truth}" -Oz -o "${out}/truth.vcf.gz" || return 1
+  CMD_BCFTOOLS view "${truth}" -Oz \
+    -o "${out}/truth.vcf.gz" || return 1
+
   CMD_BCFTOOLS index -f "${out}/truth.vcf.gz" || return 1
+  local view_args=()
+  [[ "${pass_only}" == "true" ]] && view_args+=(--apply-filters PASS)
 
-  CMD_BCFTOOLS norm -m -any "${query}" -Oz -o "${out}/query.vcf.gz" || return 1
+  CMD_BCFTOOLS view "${view_args[@]}" "${query}" -Oz \
+    -o "${out}/query.vcf.gz" || return 1
   CMD_BCFTOOLS index -f "${out}/query.vcf.gz" || return 1
-
-  CMD_BCFTOOLS isec -c none -Ov -p "${out}/isec" "${out}/truth.vcf.gz" "${out}/query.vcf.gz" || return 1
+  CMD_BCFTOOLS isec -c none -Ov -p "${out}/isec" \
+    "${out}/truth.vcf.gz" \
+    "${out}/query.vcf.gz" || return 1
 
   local fn fp tp
-  fn=$(grep -vc '^#' "${out}/isec/0000.vcf" || true)  # truth only
-  fp=$(grep -vc '^#' "${out}/isec/0001.vcf" || true)  # query only
-  tp=$(grep -vc '^#' "${out}/isec/0002.vcf" || true)  # shared
+
+  fn=$(grep -vc '^#' "${out}/isec/0000.vcf" || 0)
+  fp=$(grep -vc '^#' "${out}/isec/0001.vcf" || 0)
+  tp=$(grep -vc '^#' "${out}/isec/0002.vcf" || 0)
 
   unset -f CMD_BCFTOOLS
 
-  # prints: precision recall f1
+  # Calculate precision, recall and F1
   awk -v tp="${tp}" -v fp="${fp}" -v fn="${fn}" 'BEGIN {
-    p = (tp+fp) ? tp/(tp+fp) : 0; r = (tp+fn) ? tp/(tp+fn) : 0;
-    f = (p+r) ? 2*p*r/(p+r) : 0; printf "%.2f %.2f %.2f\n", p, r, f }'
+    p = (tp+fp) ? tp/(tp+fp) : 0
+    r = (tp+fn) ? tp/(tp+fn) : 0
+    f = (p+r) ? 2*p*r/(p+r) : 0
+
+    printf "%.2f %.2f %.2f\n", p, r, f
+  }'
 }
