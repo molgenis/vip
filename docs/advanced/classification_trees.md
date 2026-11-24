@@ -202,6 +202,7 @@ vid_IP_ -->|"missing"| exit_u2_
 Please note that the classification tree only classifies variants, and filtering based on those classes is handled in
 the next step of the pipeline.
 The behaviour of the filtering is based on the classes specified in the configuration of the pipeline.
+Please also note that the classes used for filtering should be present in the used classification tree when using a custamized decision tree and filtering.
 
 ### Configuration
 
