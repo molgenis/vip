@@ -194,6 +194,10 @@ main() {
   fi
   local resume="false"
   local stub="false"
+  local quiet="false"
+  if [[ -n "${SLURM_JOB_ID:-}" ]]; then
+    quiet="true"
+  fi
 
   eval set -- "${args}"
   while :; do
