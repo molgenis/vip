@@ -1,0 +1,255 @@
+{
+  "rootNode": "gt",
+  "nodes": {
+    "gt": {
+      "label": "Genotype",
+      "description": "Genotype",
+      "type": "CATEGORICAL",
+      "field": "FORMAT/GENOTYPE/TYPE",
+      "outcomeMap": {
+        "HET": {
+          "nextNode": "gq"
+        },
+        "HOM_REF": {
+          "nextNode": "exit_u3"
+        },
+        "HOM_VAR": {
+          "nextNode": "gq"
+        },
+        "MIXED": {
+          "nextNode": "gq"
+        },
+        "NO_CALL": {
+          "nextNode": "exit_u3"
+        },
+        "UNAVAILABLE": {
+          "nextNode": "exit_u3"
+        }
+      },
+      "outcomeMissing": {
+        "nextNode": "gq"
+      },
+      "outcomeDefault": {
+        "nextNode": "gq"
+      }
+    },
+    "gq": {
+      "type": "BOOL",
+      "label": "Genotype quality",
+      "description": "Genotype quality",
+      "query": {
+        "field": "FORMAT/GQ",
+        "operator": ">=",
+        "value": 20
+      },
+      "outcomeTrue": {
+        "nextNode": "mt_hl_filtering"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "mt_hl_filtering"
+      }
+    },
+    "mt_hl_filtering": {
+      "label": "mtDNA HL < 10%",
+      "description": "mtDNA HL <10% filtering",
+      "type": "BOOL_MULTI",
+      "fields": [
+        "#CHROM",
+        "FORMAT/AF"
+      ],
+      "outcomes": [
+        {
+          "description": "chrM and AF < 0.1",
+          "operator": "AND",
+          "queries": [
+            {
+              "field": "#CHROM",
+              "operator": "==",
+              "value": "chrM"
+            },
+            {
+              "field": "FORMAT/AF",
+              "operator": "<",
+              "value": 0.1
+            }
+          ],
+          "outcomeTrue": {
+            "nextNode": "exit_u3"
+          }
+        }
+      ],
+      "outcomeDefault": {
+        "nextNode": "only_IP"
+      },
+      "outcomeMissing": {
+        "nextNode": "only_IP"
+      }
+    },
+    "only_IP": {
+      "type": "BOOL",
+      "label": "Only if AD IP",
+      "description": "Only AD IP suitable for pedigree.",
+      "query": {
+        "field": "FORMAT/VI",
+        "operator": "contains_none",
+        "value": ["AR","AD","XLR","XLD","YL","MT","AR_C"]
+      },
+      "outcomeTrue": {
+        "nextNode": "vid_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "vig"
+      },
+      "outcomeMissing": {
+        "nextNode": "vig"
+      }
+    },
+    "vig": {
+      "type": "BOOL",
+      "label": "Inheritance match gene",
+      "description": "Inheritance match gene",
+      "query": {
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
+        "nextNode": "vim"
+      },
+      "outcomeFalse": {
+        "nextNode": "vid"
+      },
+      "outcomeMissing": {
+        "nextNode": "vid"
+      }
+    },
+    "vim": {
+      "type": "BOOL",
+      "label": "Inheritance match",
+      "description": "Inheritance match",
+      "query": {
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
+    "vig_IP": {
+      "type": "BOOL",
+      "label": "Inheritance match gene (IP)",
+      "description": "Inheritance match gene, incomplete penetrance",
+      "query": {
+        "field": "FORMAT/VIG",
+        "operator": "contains",
+        "value": "field:INFO/CSQ/Gene"
+      },
+      "outcomeTrue": {
+        "nextNode": "vim_IP"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u3"
+      }
+    },
+    "vim_IP": {
+      "type": "BOOL",
+      "label": "Inheritance match (IP)",
+      "description": "Inheritance match, incomplete penetrance",
+      "query": {
+        "field": "FORMAT/VIM",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u4"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u4"
+      }
+    },
+    "vid": {
+      "type": "BOOL",
+      "label": "Inheritance denovo",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "exit_u3"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
+    "vid_IP": {
+      "type": "BOOL",
+      "label": "Inheritance denovo (IP)",
+      "description": "Inheritance denovo",
+      "query": {
+        "field": "FORMAT/VID",
+        "operator": "==",
+        "value": 1
+      },
+      "outcomeTrue": {
+        "nextNode": "exit_u1"
+      },
+      "outcomeFalse": {
+        "nextNode": "vig_IP"
+      },
+      "outcomeMissing": {
+        "nextNode": "exit_u2"
+      }
+    },
+    "exit_u1": {
+      "label": "Usable: probably",
+      "description": "Usable: probably",
+      "type": "LEAF",
+      "class": "U1"
+    },
+    "exit_u2": {
+      "label": "Usable: maybe",
+      "description": "Usable: maybe",
+      "type": "LEAF",
+      "class": "U2"
+    },
+    "exit_u3": {
+      "label": "Usable: probably not",
+      "description": "Usable: probably not",
+      "type": "LEAF",
+      "class": "U3"
+    },
+    "exit_u4": {
+      "label": "Usable: if IP",
+      "description": "Usable: in case of incomplete penetrance",
+      "type": "LEAF",
+      "class": "U4"
+    },
+    "exit_r": {
+      "label": "Remove",
+      "description": "Remove variant",
+      "type": "LEAF",
+      "class": "R"
+    }
+  }
+}
