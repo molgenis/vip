@@ -57,9 +57,9 @@ runVip() {
 }
 
 # Arguments:
-#   $1  path to VCF gold standard set (vcf, vcf.gz or bcf)
-#   $2  path to test VCF results (vcf, vcf.gz or bcf)
-#   $3  filter query to PASS variants only (true/false, default false)
+#   $1  path to VCF gold standard set (vcf, vcf.gz or bcf).
+#   $2  path to test VCF results (vcf, vcf.gz or bcf).
+#   $3  filter query to PASS variants only (true/false, default false).
 runVcfCompare() {
   local truth="$1"
   local query="$2"
