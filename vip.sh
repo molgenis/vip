@@ -22,6 +22,7 @@ usage() {
   -p, --profile           <arg>  nextflow configuration profile (optional)
   -r, --resume                   resume execution using cached results (default: false)
   -s, --stub                     quickly prototype workflow logic using process script stubs
+  -q, --quiet                    disable nextflow progress updates and only keep logging
   -h, --help                     display this help and exit
   -v, --version                  display version information and exit
 For complete documentation, visit <https://molgenis.github.io/vip/>"
@@ -101,6 +102,7 @@ execute_workflow() {
   local -r paramProfile="${5}"
   local -r paramResume="${6}"
   local -r paramStub="${7}"
+  local -r paramQuiet="${8}"
 
   rm -f "${paramOutput}/log/nxf_report.html"
   rm -f "${paramOutput}/log/nxf_timeline.html"
@@ -166,11 +168,14 @@ execute_workflow() {
   if [[ "${paramStub}" == "true" ]]; then
     args+=("-stub")
   fi
+  if [[ "${paramQuiet}" == "true" ]]; then
+    args+=("-ansi-log" "false")
+  fi
   (cd "${paramOutput}" && APPTAINER_BIND="${APPTAINER_BIND-${envBind}}" APPTAINER_CACHEDIR="${envCacheDir}" NXF_VER="${nextflow_version}" NXF_HOME="${envHome}" NXF_TEMP="${envTemp}" NXF_WORK="${envWork}" NXF_CACHE_DIR="${envNxfCacheDir}" NXF_ENABLE_STRICT="${envStrict}" NXF_JVM_ARGS="${envJvm}" NXF_OFFLINE="true" NXF_DISABLE_CHECK_LATEST="true" VIP_DIR="${VIP_DIR}" VIP_DIR_DATA="${VIP_DIR_DATA}" VIP_VERSION="${VIP_VERSION}" bash "${VIP_DIR_DATA}/nextflow-${nextflow_version}-dist" "${args[@]}")
 }
 
 main() {
-  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rsvh --long workflow:,input:,output:,config:,profile:,resume,stub,version,help -- "$@")
+  local args=$(getopt -a -n pipeline -o w:i:o:c:p:rsqvh --long workflow:,input:,output:,config:,profile:,resume,stub,quiet,version,help -- "$@")
   # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     usage
@@ -189,6 +194,10 @@ main() {
   fi
   local resume="false"
   local stub="false"
+  local quiet="false"
+  if [[ -n "${SLURM_JOB_ID:-}" ]]; then
+    quiet="true"
+  fi
 
   eval set -- "${args}"
   while :; do
@@ -231,6 +240,10 @@ main() {
       stub="true"
       shift
       ;;
+    -q | --quiet)
+      quiet="true"
+      shift
+      ;;
     --)
       shift
       break
@@ -251,7 +264,7 @@ main() {
     mkdir -p "${output}"
   fi
   
-  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}" "${stub}"
+  execute_workflow "${workflow}" "${input}" "${output}" "${config}" "${profile}" "${resume}" "${stub}" "${quiet}"
 }
 
 main "${@}"
