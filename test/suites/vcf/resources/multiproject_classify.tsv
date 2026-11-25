@@ -1,11 +1,11 @@
-project_id	family_id	individual_id	vcf
-vip0	fam0	individual0	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip0	fam0	individual1	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip0	fam0	individual2	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip0	fam0	individual3	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip0	fam0	individual4	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip0	fam0	individual5	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
-vip1	fam1	individual6	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
-vip1	fam1	individual7	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
-vip1	fam1	individual8	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
-vip2	fam2	individual9	${TEST_RESOURCES_DIR}/multiproject_classify_fam2_annotations.vcf.gz
+project_id	family_id	individual_id	sex	affected	vcf
+vip0	fam0	individual0	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip0	fam0	individual1	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip0	fam0	individual2	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip0	fam0	individual3	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip0	fam0	individual4	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip0	fam0	individual5	male	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam0_annotations.vcf.gz
+vip1	fam1	individual6	female	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
+vip1	fam1	individual7	female	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
+vip1	fam1	individual8	female	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam1_annotations.vcf.gz
+vip2	fam2	individual9	female	true	${TEST_RESOURCES_DIR}/multiproject_classify_fam2_annotations.vcf.gz

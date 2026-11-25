@@ -1,14 +1,14 @@
 # Input
-
+ 
 The `--input` value is a tab-separated file (sample-sheet) with each row describing the data and metadata of a sample.
 
 A minimal sample-sheet for the `vcf` workflow could look like this:
 
-| individual_id | vcf            |
-|---------------|----------------|
-| sample0       | sample0.vcf.gz |
-| sample1       | sample1.vcf.gz |
-| sample2       | sample2.vcf.gz |
+| individual_id | sex    | affected | vcf            |
+|---------------|--------|----------|----------------|
+| sample0       | female | true     | sample0.vcf.gz |
+| sample1       | male   | true     | sample1.vcf.gz |
+| sample2       | female | true     | sample2.vcf.gz |
 
 Sample-sheet values are case sensitive. Columns can contain values of different types:
 
@@ -26,20 +26,20 @@ specific columns.
 
 ## Columns
 
-| column                | type            | scope   | required | default                 | description                                                                                                                                                     |                                        
-|-----------------------|-----------------|---------|----------|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ``project_id``        | ``string``      | project |          | ``vip``                 | project identifier                                                                                                                                              |
-| ``family_id``         | ``string``      | family  |          | ``fam<index>``          | family identifier                                                                                                                                               |
-| ``individual_id``     | ``string``      | sample  | yes      |                         | sample identifier of the individual                                                                                                                             |
-| ``paternal_id``       | ``string``      | family  |          |                         | sample identifier of the father                                                                                                                                 |
-| ``maternal_id``       | ``string``      | family  |          |                         | sample identifier of the mother                                                                                                                                 |
-| ``sex``               | ``enum``        | sample  |          | unknown sex             | ``values: [male,female]`` Please note that an unknown sex leads to a Spectre CNV analysis that assumes ``female`` for the ploidy determination of chromosome X. |
-| ``affected``          | ``boolean``     | sample  |          | unknown affected status | whether the individual is affected                                                                                                                              |
-| ``proband``           | ``boolean``     | sample  |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                    |
-| ``hpo_ids``           | ``string list`` | sample  |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                         |
-| ``sequencing_method`` | ``enum``        | project |          | ``WGS``                 | allowed values: [``WES``,``WGS``]                                                                                                                               |
-| ``regions``           | ``file``        | project |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                        |
-| ``pcr_performed``     | ``boolean``     | project | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                               |
+| column                | type            | scope   | required | default                 | description                                                                                                                                                             |                                        
+|-----------------------|-----------------|---------|----------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ``project_id``        | ``string``      | project |          | ``vip``                 | project identifier                                                                                                                                                      |
+| ``family_id``         | ``string``      | family  |          | ``fam<index>``          | family identifier                                                                                                                                                       |
+| ``individual_id``     | ``string``      | sample  | yes      |                         | sample identifier of the individual                                                                                                                                     |
+| ``paternal_id``       | ``string``      | family  |          |                         | sample identifier of the father                                                                                                                                         |
+| ``maternal_id``       | ``string``      | family  |          |                         | sample identifier of the mother                                                                                                                                         |
+| ``sex``               | ``enum``        | sample  | yes      |                         | ``values: [male,female,unknown]`` Please note that an unknown sex leads to a Spectre CNV analysis that assumes ``female`` for the ploidy determination of chromosome X. |
+| ``affected``          | ``enum``        | sample  | yes      |                         | ``values: [true,false,unknown]`` whether the individual is affected                                                                                                                                      |
+| ``proband``           | ``boolean``     | sample  |          | depends<sup>1</sup>     | individual being reported on                                                                                                                                            |
+| ``hpo_ids``           | ``string list`` | sample  |          |                         | regex: `/HP:\d{7}/` from HPO v2024-08-13. term must be a child of 'Phenotypic abnormality' (HP:0000118)                                                                 |
+| ``sequencing_method`` | ``enum``        | project |          | ``WGS``                 | allowed values: [``WES``,``WGS``]                                                                                                                                       |
+| ``regions``           | ``file``        | project |          |                         | allowed file extensions: [``bed``]. filter variants overlapping with regions in bed file                                                                                |
+| ``pcr_performed``     | ``boolean``     | project | false    | false                   | Indication if PCR was performed to get the data, if so certain tools will be disabled due to not being compatible with this data.                                       |
 
 <sup>1</sup> Exception: if no probands are defined in the sample-sheet then all samples are considered to be probands.
 
