@@ -6,7 +6,7 @@ From: sif/build/openjdk-25.sif
 
 %post    
     version_major=3
-    version_minor=4
+    version_minor=5
     version_patch=0
 
     # install
@@ -15,7 +15,7 @@ From: sif/build/openjdk-25.sif
 
     mkdir -p /opt/picard/lib
     curl --fail --silent --show-error --location --output /opt/picard/lib/picard.jar "https://github.com/broadinstitute/picard/releases/download/${version_major}.${version_minor}.${version_patch}/picard.jar"
-    echo "e76128c283889fc583c9dea33a3b7448974c067d102c9e35be152642d4d5f901  /opt/picard/lib/picard.jar" | sha256sum -c
+    echo "b7d97861c3a54ba5a421f5a317f38382f955803862d30ef4aca2bcdc54943631  /opt/picard/lib/picard.jar" | sha256sum -c
 
     # cleanup
     apk del .build-dependencies

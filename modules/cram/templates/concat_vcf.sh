@@ -2,20 +2,51 @@
 set -euo pipefail
 
 concat () {
-  local args=()
-  args+=("concat")
-  args+=("--allow-overlaps")
-  args+=("--remove-duplicates")
-  args+=("--output-type" "z")
-  args+=("--output" "unsorted_!{vcfOut}")
-  args+=("--no-version")
-  args+=("--threads" "!{task.cpus}")
+  local non_empty_vcfs=()
+  local first=""
+
   for vcf in !{vcfs}
   do
-    args+=("sorted_${vcf}")
+    local f="sorted_${vcf}"
+    [[ -z "${first}" ]] && first="${f}"
+
+    ${CMD_BCFTOOLS} index -f "${f}" || return 1
+
+    # index -n prints the number of records
+    if [[ "$(${CMD_BCFTOOLS} index -n "${f}")" -gt 0 ]]
+    then
+      non_empty_vcfs+=("${f}")
+    fi
   done
 
-  ${CMD_BCFTOOLS} "${args[@]}"
+  [[ -n "${first}" ]] || { echo "no input VCFs" >&2; return 1; }
+
+  if [[ ${#non_empty_vcfs[@]} -eq 0 ]]
+  then
+    # all inputs are header-only: pass the first one through
+    ${CMD_BCFTOOLS} view \
+      --output-type z \
+      --output "unsorted_!{vcfOut}" \
+      --no-version \
+      "${first}"
+  elif [[ ${#non_empty_vcfs[@]} -eq 1 ]]
+  then
+    # nothing to concatenate
+    ${CMD_BCFTOOLS} view \
+      --output-type z \
+      --output "unsorted_!{vcfOut}" \
+      --no-version \
+      "${non_empty_vcfs[0]}"
+  else
+    ${CMD_BCFTOOLS} concat \
+      --allow-overlaps \
+      --remove-duplicates \
+      --output-type z \
+      --output "unsorted_!{vcfOut}" \
+      --no-version \
+      --threads "!{task.cpus}" \
+      "${non_empty_vcfs[@]}"
+  fi
 }
 
 bcftools_sort () {

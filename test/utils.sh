@@ -56,33 +56,54 @@ runVip() {
   vip.sh "${args[@]}" 1> /dev/null
 }
 
-# arguments:
-#   $1  path to vcf gold standard set
-#   $2  path to test vcf results
-#   $3  path to reference genome to use (default = VIP default ref genome)
-runSompy() {
-  local sompy_args=()
-  sompy_args+=("som.py")
-  sompy_args+=("${1}")
-  sompy_args+=("${2}")
-  sompy_args+=("-o" "${OUTPUT_DIR}/sompy_out/test")
-  if [[ -v 3 ]]; then
-    sompy_args+=("-r" "${3}")
-  else
-    sompy_args+=("-r" "${VIP_DIR_DATA}/resources/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna")
-  fi
+# Arguments:
+#   $1  path to VCF gold standard set (vcf, vcf.gz or bcf).
+#   $2  path to test VCF results (vcf, vcf.gz or bcf).
+#   $3  filter query to PASS variants only (true/false, default false).
+runVcfCompare() {
+  local truth="$1"
+  local query="$2"
+  local pass_only="${3:-false}"
 
-  mkdir -p "${OUTPUT_DIR}/sompy_out"
+  local out="${OUTPUT_DIR}/isec_out"
+  local vip_images_dir="${VIP_DIR_DATA}/images"
+  local bcftools_sif="${vip_images_dir}/bcftools-1.25.sif"
 
-  vip_images_dir="${VIP_DIR_DATA}/images"
+  rm -rf "${out}"
+  mkdir -p "${out}" || return 1
 
-  apptainer exec "${vip_images_dir}/happy-0.3.15.sif" "${sompy_args[@]}"
-}
+  CMD_BCFTOOLS() {
+    apptainer exec "${bcftools_sif}" bcftools "$@"
+  }
 
-# arguments
-#   $1  sompy precision score
-#   $2  sompy recall score
-sompyF1Score() {
-  f1_score=$(printf "%0.2f" "$(echo "2 * ((${1} * ${2}) / (${1} + ${2}))" | bc -l)")
-  echo "${f1_score}"
+  CMD_BCFTOOLS view "${truth}" -Oz \
+    -o "${out}/truth.vcf.gz" || return 1
+
+  CMD_BCFTOOLS index -f "${out}/truth.vcf.gz" || return 1
+  local view_args=()
+  [[ "${pass_only}" == "true" ]] && view_args+=(--apply-filters PASS)
+
+  CMD_BCFTOOLS view "${view_args[@]}" "${query}" -Oz \
+    -o "${out}/query.vcf.gz" || return 1
+  CMD_BCFTOOLS index -f "${out}/query.vcf.gz" || return 1
+  CMD_BCFTOOLS isec -c none -Ov -p "${out}/isec" \
+    "${out}/truth.vcf.gz" \
+    "${out}/query.vcf.gz" || return 1
+
+  local fn fp tp
+
+  fn=$(grep -vc '^#' "${out}/isec/0000.vcf" || 0)
+  fp=$(grep -vc '^#' "${out}/isec/0001.vcf" || 0)
+  tp=$(grep -vc '^#' "${out}/isec/0002.vcf" || 0)
+
+  unset -f CMD_BCFTOOLS
+
+  # Calculate precision, recall and F1
+  awk -v tp="${tp}" -v fp="${fp}" -v fn="${fn}" 'BEGIN {
+    p = (tp+fp) ? tp/(tp+fp) : 0
+    r = (tp+fn) ? tp/(tp+fn) : 0
+    f = (p+r) ? 2*p*r/(p+r) : 0
+
+    printf "%.2f %.2f %.2f\n", p, r, f
+  }'
 }

@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: quay.io/biocontainers/mosdepth:0.3.14--h87be163_2
