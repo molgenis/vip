@@ -148,6 +148,7 @@ variants of interest.</p>
   -c, --config   &lt;arg&gt;  path to additional nextflow .cfg (optional)
   -p, --profile  &lt;arg&gt;  nextflow configuration profile (optional)
   -r, --resume          resume execution using cached results (default: false)
+  -q, --quiet           disable nextflow progress updates and only keep logging
   -h, --help            print this message and exit
 </code></pre></div>
 <h2 id="required">Required<a class="headerlink" href="#required" title="Permanent link">¶</a></h2>
@@ -161,6 +162,7 @@ variants of interest.</p>
 <li><code>config</code> as described <a href="../config/">here</a></li>
 <li><code>profile</code> the configuration profile to use. allowed values are <code>local</code>, <code>slurm</code> plus any profiles added in <code>--config</code></li>
 <li><code>resume</code> useful to continue executions that was stopped by an error using cached results</li>
+<li><code>quiet</code> useful for less status update logging in the slurm job output file</li>
 </ul>
 <h2 id="defaults">Defaults<a class="headerlink" href="#defaults" title="Permanent link">¶</a></h2>
 <p>By default <code>vip</code>:</p>

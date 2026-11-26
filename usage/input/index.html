@@ -147,20 +147,28 @@
 <thead>
 <tr>
 <th>individual_id</th>
+<th>sex</th>
+<th>affected</th>
 <th>vcf</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>sample0</td>
+<td>female</td>
+<td>true</td>
 <td>sample0.vcf.gz</td>
 </tr>
 <tr>
 <td>sample1</td>
+<td>male</td>
+<td>true</td>
 <td>sample1.vcf.gz</td>
 </tr>
 <tr>
 <td>sample2</td>
+<td>female</td>
+<td>true</td>
 <td>sample2.vcf.gz</td>
 </tr>
 </tbody>
@@ -259,17 +267,17 @@ specific columns.</p>
 <td><code>sex</code></td>
 <td><code>enum</code></td>
 <td>sample</td>
+<td>yes</td>
 <td></td>
-<td>unknown sex</td>
-<td><code>values: [male,female]</code> Please note that an unknown sex leads to a Spectre CNV analysis that assumes <code>female</code> for the ploidy determination of chromosome X.</td>
+<td><code>values: [male,female,unknown]</code> Please note that an unknown sex leads to a Spectre CNV analysis that assumes <code>female</code> for the ploidy determination of chromosome X.</td>
 </tr>
 <tr>
 <td><code>affected</code></td>
-<td><code>boolean</code></td>
+<td><code>enum</code></td>
 <td>sample</td>
+<td>yes</td>
 <td></td>
-<td>unknown affected status</td>
-<td>whether the individual is affected</td>
+<td><code>values: [true,false,unknown]</code> whether the individual is affected</td>
 </tr>
 <tr>
 <td><code>proband</code></td>
