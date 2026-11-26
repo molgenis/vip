@@ -1,2 +1,2 @@
-family_id	individual_id	vcf
-FAM0	SAMPLE0	${TEST_RESOURCES_DIR}/vkgl_lp_202507.bcf
+family_id	individual_id	sex	affected	vcf
+FAM0	SAMPLE0	male	true	${TEST_RESOURCES_DIR}/vkgl_lp_202507.bcf

@@ -1,2 +1,2 @@
-individual_id	sequencing_platform	cram
-HG002	nanopore	${VIP_DIR_DATA}/test/resources/NA12878-minion-ul_GRCh38.bam
+individual_id	sex	affected	sequencing_platform	cram
+HG002	female	true	nanopore	${VIP_DIR_DATA}/test/resources/NA12878-minion-ul_GRCh38.bam
