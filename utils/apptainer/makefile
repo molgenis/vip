@@ -12,37 +12,36 @@ SIF_BUILD_DIR := $(SIF_DIR)/build
 SIF_UTILS_DIR := $(SIF_DIR)/utils
 
 # .sif versions
-VER_ALPINE := 3.23.3
-VER_ANNOTSV := 3.5.5+build.1
-VER_BCFTOOLS := 1.23.1
-VER_CAPICE := 5.1.2+build.1
-VER_CUTESV := 2.1.3+441433d
-VER_DEBIAN := 13.3
+VER_ALPINE := 3.24.4
+VER_ANNOTSV := 3.5.10
+VER_BCFTOOLS := 1.25
+VER_CAPICE := 5.1.2+build.2
+VER_CUTESV := 2.1.4
+VER_DEBIAN := 13.7
 VER_DEEPVARIANT := 1.10.0
 VER_DEEPVARIANT_DEEPTRIO := 1.10.0
-VER_EXPANSIONHUNTER := 5.0.0+build.3
-VER_FASTP := 1.1.0
-VER_GADO := 1.0.3+build.3
-VER_GATK := 4.6.2.0+build.1
-VER_HAPPY := 0.3.15
-VER_MANTA := 1.6.0+build.2
-VER_MINIMAP2 := 2.31
-VER_MOSDEPTH := 0.3.13
-VER_OPENJDK := 25
-VER_PICARD := 3.4.0
-VER_PYTHON := 3.11.14
-VER_SAMTOOLS := 1.23.1
-VER_SEQTK := 1.5
-VER_SPECTRE := 0.2.1+9058094
-VER_STRAGLR := 1.5.6+build.1
-VER_STRAGLR_TSV2VCF := 1.2.1
-VER_STRANGER := 0.9.3+build.1
-VER_VCF_DECISION_TREE := 6.0.5
-VER_VCF_INHERITANCE := 3.2.2
-VER_VCF_INHERITANCE_MATCHER := 4.0.2
-VER_VCF_REPORT := 8.3.1
-VER_VEP := 115.2+d7cffe1
-VER_WHATSHAP := 2.8
+VER_EXPANSIONHUNTER := 5.0.0+build.4
+VER_FASTP := 1.4.0
+VER_GADO := 1.0.3+build.4
+VER_GATK := 4.7.0.0
+VER_MANTA := 1.6.0+build.3
+VER_MINIMAP2 := 2.31+build.1
+VER_MOSDEPTH := 0.3.14
+VER_OPENJDK := 25+build.1
+VER_PICARD := 3.5.0
+VER_PYTHON := 3.15.2
+VER_SAMTOOLS := 1.25
+VER_SEQTK := 1.5+build.1
+VER_SPECTRE := 0.2.1+9058094+build.1
+VER_STRAGLR := 1.5.6+build.2
+VER_STRAGLR_TSV2VCF := 1.2.1+build.1
+VER_STRANGER := 0.10.2
+VER_VCF_DECISION_TREE := 6.0.5+build.1
+VER_VCF_INHERITANCE := 3.2.2+build.1
+VER_VCF_INHERITANCE_MATCHER := 4.0.2+build.1
+VER_VCF_REPORT := 8.3.1+build.1
+VER_VEP := 116.3
+VER_WHATSHAP := 2.8+build.1
 
 # .sif targets
 SIF_ALPINE := $(SIF_BUILD_DIR)/alpine-$(VER_ALPINE).sif
@@ -57,7 +56,6 @@ SIF_EXPANSIONHUNTER := $(SIF_DIR)/expansionhunter-$(VER_EXPANSIONHUNTER).sif
 SIF_FASTP := $(SIF_DIR)/fastp-$(VER_FASTP).sif
 SIF_GADO := $(SIF_DIR)/gado-$(VER_GADO).sif
 SIF_GATK := $(SIF_DIR)/gatk-$(VER_GATK).sif
-SIF_HAPPY := $(SIF_DIR)/happy-$(VER_HAPPY).sif
 SIF_MANTA := $(SIF_DIR)/manta-$(VER_MANTA).sif
 SIF_MINIMAP2 := $(SIF_DIR)/minimap2-$(VER_MINIMAP2).sif
 SIF_MOSDEPTH := $(SIF_DIR)/mosdepth-$(VER_MOSDEPTH).sif
@@ -116,7 +114,6 @@ all: \
         fastp \
         gado \
         gatk \
-        happy \
         manta \
         minimap2 \
         mosdepth \
@@ -155,7 +152,6 @@ $(eval $(call build_image,expansionhunter,$(SIF_EXPANSIONHUNTER),$(DEF_DIR)/expa
 $(eval $(call build_image,fastp,$(SIF_FASTP),$(DEF_DIR)/fastp-$(VER_FASTP).def,$(SIF_ALPINE)))
 $(eval $(call build_image,gado,$(SIF_GADO),$(DEF_DIR)/gado-$(VER_GADO).def,$(SIF_OPENJDK)))
 $(eval $(call build_image,gatk,$(SIF_GATK),$(DEF_DIR)/gatk-$(VER_GATK).def,$(SIF_DEBIAN)))
-$(eval $(call build_image,happy,$(SIF_HAPPY),$(DEF_DIR)/happy-$(VER_HAPPY).def,))
 $(eval $(call build_image,manta,$(SIF_MANTA),$(DEF_DIR)/manta-$(VER_MANTA).def,$(SIF_DEBIAN)))
 $(eval $(call build_image,minimap2,$(SIF_MINIMAP2),$(DEF_DIR)/minimap2-$(VER_MINIMAP2).def,$(SIF_ALPINE)))
 $(eval $(call build_image,mosdepth,$(SIF_MOSDEPTH),$(DEF_DIR)/mosdepth-$(VER_MOSDEPTH).def,))

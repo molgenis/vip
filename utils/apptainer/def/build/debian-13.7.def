@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: debian:13.3-slim
+From: debian:13.7-slim
 
 %help
     Debian 13 "Trixie"
